@@ -3,13 +3,31 @@ export default async function handler(request, response) {
     return response.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const { message } = await request.json();
+  let message;
+  try {
+    const body = await request.json();
+    message = body.message;
+
+    if (!message) {
+      return response
+        .status(400)
+        .json({ error: "Pesan (message) tidak ditemukan di body request" });
+    }
+  } catch (e) {
+    return response
+      .status(400)
+      .json({ error: "Gagal mem-parsing request body JSON" });
+  }
+
   const apiKey = process.env.GROQ_API_KEY;
 
   if (!apiKey) {
     return response
       .status(500)
-      .json({ error: "API key tidak diatur di server" });
+      .json({
+        error:
+          "GROQ_API_KEY tidak diatur di server Vercel. Cek Environment Variables.",
+      });
   }
 
   try {
@@ -38,11 +56,20 @@ export default async function handler(request, response) {
       }
     );
 
+    if (!groqResponse.ok) {
+      const errorData = await groqResponse.json();
+      return response.status(groqResponse.status).json({
+        error:
+          "Error dari Groq: " + (errorData.error?.message || "Unknown error"),
+        details: errorData,
+      });
+    }
+
     const data = await groqResponse.json();
     response.status(200).json(data);
   } catch (error) {
     response
       .status(500)
-      .json({ error: "Gagal mengambil data dari Groq: " + error.message });
+      .json({ error: "Gagal fetch ke Groq: " + error.message });
   }
 }
