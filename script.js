@@ -2654,70 +2654,991 @@ window.navigateBreadcrumb = navigateBreadcrumb;
 window.submitTask = submitTask;
 window.switchTab = switchTab;
 
-function getContextForQuery(query) {
-  const lowerQuery = query.toLowerCase();
-  let context = {};
+function getSchedule(input) {
+  let dayToFind = "";
+  if (input.includes("senin")) dayToFind = "monday";
+  else if (input.includes("selasa")) dayToFind = "tuesday";
+  else if (input.includes("rabu")) dayToFind = "wednesday";
+  else if (input.includes("kamis")) dayToFind = "thursday";
+  else if (input.includes("jumat")) dayToFind = "friday";
+  else if (input.includes("hari ini")) {
+    const days = [
+      "sunday",
+      "monday",
+      "tuesday",
+      "wednesday",
+      "thursday",
+      "friday",
+      "saturday",
+    ];
+    dayToFind = days[new Date().getDay()];
+    if (dayToFind === "sunday" || dayToFind === "saturday") {
+      return translations[currentLanguage]["chat.schedule.today_off"];
+    }
+  }
 
-  if (lowerQuery.includes("ipk") || lowerQuery.includes("gpa")) {
-    context.gpa = document.querySelector(".cards .card-value").textContent;
+  if (dayToFind) {
+    const scheduleEl = document.querySelector(
+      `.schedule-day[data-day="${dayToFind}"]`
+    );
+    if (!scheduleEl)
+      return translations[currentLanguage]["chat.schedule.not_found"];
+
+    const dayName = scheduleEl.querySelector("h3").textContent;
+    let response = translations[currentLanguage][
+      "chat.schedule.header"
+    ].replace("{dayName}", dayName);
+    const classes = scheduleEl.querySelectorAll(
+      ".class-item:not(.custom-event)"
+    );
+
+    if (classes.length === 0) {
+      response += translations[currentLanguage]["chat.briefing.no_class"];
+    } else {
+      classes.forEach((item) => {
+        const time = item.querySelector(".class-time .time-start").textContent;
+        const course = item.querySelector(".class-name").textContent.trim();
+        const room = item.querySelector(".class-room").textContent;
+        response += translations[currentLanguage]["chat.schedule.item"]
+          .replace("{time}", time)
+          .replace("{course}", course)
+          .replace("{room}", room);
+      });
+    }
+    response += "</ul>";
+    return response;
   }
-  if (lowerQuery.includes("sks") || lowerQuery.includes("credits")) {
-    context.sks_semester_ini =
-      document.querySelectorAll(".cards .card-value")[1].textContent;
+
+  return translations[currentLanguage]["chat.schedule.prompt"];
+}
+
+function getCourseList() {
+  const courseNames = Object.values(attendanceData).map(
+    (course) => course.name
+  );
+  let response = translations[currentLanguage]["chat.courselist.header"];
+  courseNames.forEach((name) => {
+    response += `<li>${name}</li>`;
+  });
+  response += "</ul>";
+  return response;
+}
+
+function getCourseDetails(input) {
+  let courseKey = "";
+  if (input.includes("algoritma")) courseKey = "algorithms";
+  else if (input.includes("database")) courseKey = "databases";
+  else if (input.includes("webdev")) courseKey = "webdev";
+  else if (input.includes("software")) courseKey = "softwareeng";
+
+  if (courseKey) {
+    const course = attendanceData[courseKey];
+    let response = translations[currentLanguage]["chat.coursedetails.info"]
+      .replace("{name}", course.name)
+      .replace("{code}", course.code)
+      .replace("{credits}", course.credits)
+      .replace("{meetings}", course.meetings.length)
+      .replace("{tasks}", course.tasks.length)
+      .replace("{materials}", course.materials.length);
+    response += translations[currentLanguage][
+      "chat.coursedetails.prompt"
+    ].replace(/{courseKey}/g, courseKey);
+    return response;
   }
-  if (lowerQuery.includes("kehadiran") || lowerQuery.includes("attendance")) {
-    context.kehadiran_total =
+  return translations[currentLanguage]["chat.fallback"];
+}
+
+function getTasks(input) {
+  let courseKey = "";
+  if (input.includes("algoritma")) courseKey = "algorithms";
+  else if (input.includes("database")) courseKey = "databases";
+  else if (input.includes("webdev")) courseKey = "webdev";
+  else if (input.includes("software")) courseKey = "softwareeng";
+
+  let coursesToSearch = [];
+  if (courseKey) {
+    coursesToSearch.push(attendanceData[courseKey]);
+  } else {
+    coursesToSearch = Object.values(attendanceData);
+  }
+
+  let pendingTasks = [];
+  coursesToSearch.forEach((course) => {
+    course.tasks.forEach((task) => {
+      if (
+        task.status === "not_submitted" ||
+        task.status === "pending" ||
+        task.status === "not_started"
+      ) {
+        pendingTasks.push(
+          translations[currentLanguage]["chat.tasks.item"]
+            .replace("{courseName}", course.name)
+            .replace("{title}", task.title)
+            .replace("{deadline}", task.deadline)
+        );
+      }
+    });
+  });
+
+  if (pendingTasks.length === 0) {
+    if (courseKey) {
+      return translations[currentLanguage]["chat.tasks.none_specific"].replace(
+        "{courseName}",
+        attendanceData[courseKey].name
+      );
+    } else {
+      return translations[currentLanguage]["chat.tasks.none_all"];
+    }
+  }
+
+  let response = translations[currentLanguage]["chat.tasks.header"];
+  response += pendingTasks.join("");
+  response += "</ul>";
+  return response;
+}
+
+function getGrades(input) {
+  let courseKey = "";
+  if (input.includes("algoritma")) courseKey = "algorithms";
+  else if (input.includes("database")) courseKey = "databases";
+  else if (input.includes("webdev")) courseKey = "webdev";
+  else if (input.includes("software")) courseKey = "softwareeng";
+
+  if (!courseKey) {
+    return translations[currentLanguage]["chat.grades.prompt"];
+  }
+
+  const course = attendanceData[courseKey];
+  const gradedTasks = course.tasks.filter(
+    (task) => task.status === "submitted" || task.status === "late"
+  );
+
+  if (gradedTasks.length === 0) {
+    return translations[currentLanguage]["chat.grades.none"].replace(
+      "{courseName}",
+      course.name
+    );
+  }
+
+  let response = translations[currentLanguage]["chat.grades.header"].replace(
+    "{courseName}",
+    course.name
+  );
+  gradedTasks.forEach((task) => {
+    if (task.score !== null) {
+      response += translations[currentLanguage]["chat.grades.item"]
+        .replace("{title}", task.title)
+        .replace("{score}", task.score)
+        .replace("{maxScore}", task.maxScore);
+    } else {
+      response += translations[currentLanguage][
+        "chat.grades.item_pending"
+      ].replace("{title}", task.title);
+    }
+  });
+  response += "</ul>";
+  return response;
+}
+
+function getMaterials(input) {
+  let courseKey = "";
+  if (input.includes("algoritma")) courseKey = "algorithms";
+  else if (input.includes("database")) courseKey = "databases";
+  else if (input.includes("webdev")) courseKey = "webdev";
+  else if (input.includes("software")) courseKey = "softwareeng";
+
+  if (!courseKey) {
+    return translations[currentLanguage]["chat.grades.prompt"];
+  }
+
+  const course = attendanceData[courseKey];
+  const latestMaterials = course.materials.slice(-3).reverse();
+
+  let response =
+    translations[currentLanguage]["chat.updates.latest_material"].replace(
+      "{material}",
+      ""
+    ) + ` <b>${course.name}</b>:<ul>`;
+  latestMaterials.forEach((material) => {
+    response += `<li><b>${material.title}</b> (${material.type}) - ${material.file}</li>`;
+  });
+  response += "</ul>";
+  return response;
+}
+
+function getAttendance(input) {
+  let courseKey = "";
+  if (input.includes("algoritma")) courseKey = "algorithms";
+  else if (input.includes("database")) courseKey = "databases";
+  else if (input.includes("webdev")) courseKey = "webdev";
+  else if (input.includes("software")) courseKey = "softwareeng";
+
+  if (!courseKey) {
+    const attendance =
       document.querySelectorAll(".cards .card-value")[2].textContent;
+    return translations[currentLanguage]["chat.attendance.overall"].replace(
+      "{attendance}",
+      attendance
+    );
+  }
+
+  const course = attendanceData[courseKey];
+  const stats = calculateAttendanceStats(course.meetings);
+
+  return translations[currentLanguage]["chat.attendance.specific"]
+    .replace("{name}", course.name)
+    .replace("{present}", stats.present)
+    .replace("{absent}", stats.absent)
+    .replace("{late}", stats.late)
+    .replace("{rate}", stats.rate);
+}
+
+function getPerformanceSummary(addMotivation = false) {
+  let courseScores = {};
+  let totalAverage = 0;
+  let totalCoursesWithScores = 0;
+
+  Object.entries(attendanceData).forEach(([key, course]) => {
+    let totalScore = 0;
+    let taskCount = 0;
+    course.tasks.forEach((task) => {
+      if (task.score !== null) {
+        totalScore += task.score / task.maxScore;
+        taskCount++;
+      }
+    });
+
+    if (taskCount > 0) {
+      const avg = (totalScore / taskCount) * 100;
+      courseScores[course.name] = avg;
+      totalAverage += avg;
+      totalCoursesWithScores++;
+    } else {
+      courseScores[course.name] = null;
+    }
+  });
+
+  if (totalCoursesWithScores === 0) {
+    return translations[currentLanguage]["chat.perf.no_scores"];
+  }
+
+  const sortedScores = Object.entries(courseScores)
+    .filter(([name, score]) => score !== null)
+    .sort((a, b) => a[1] - b[1]);
+
+  const bestCourse = sortedScores[sortedScores.length - 1];
+  const worstCourse = sortedScores[0];
+  const overallAvg = (totalAverage / totalCoursesWithScores).toFixed(1);
+
+  let response = translations[currentLanguage]["chat.perf.summary"]
+    .replace("{avg}", overallAvg)
+    .replace("{bestCourse}", bestCourse[0])
+    .replace("{bestScore}", bestCourse[1].toFixed(1))
+    .replace("{worstCourse}", worstCourse[0])
+    .replace("{worstScore}", worstCourse[1].toFixed(1));
+
+  if (addMotivation) {
+    response +=
+      "<br><br>" +
+      translations[currentLanguage]["motivation.response"]
+        .replace("{bestCourse}", bestCourse[0])
+        .replace("{worstCourse}", worstCourse[0]);
+  }
+
+  return response;
+}
+
+function getMissedItems() {
+  let missedTasks = [];
+  let missedMeetings = [];
+
+  Object.entries(attendanceData).forEach(([key, course]) => {
+    course.tasks.forEach((task) => {
+      if (task.status === "not_submitted") {
+        missedTasks.push(
+          translations[currentLanguage]["chat.missed.task_item"]
+            .replace("{courseName}", course.name)
+            .replace("{title}", task.title)
+            .replace("{deadline}", task.deadline)
+        );
+      }
+    });
+    course.meetings.forEach((meeting) => {
+      if (meeting.status === "absent") {
+        missedMeetings.push(
+          translations[currentLanguage]["chat.missed.meeting_item"]
+            .replace("{courseName}", course.name)
+            .replace("{id}", meeting.id)
+            .replace("{topic}", meeting.topic)
+        );
+      }
+    });
+  });
+
+  let response = translations[currentLanguage]["chat.missed.header"];
+
+  if (missedTasks.length > 0) {
+    response += translations[currentLanguage]["chat.missed.tasks_header"];
+    response += missedTasks.join("");
+    response += "</ul>";
+  } else {
+    response += translations[currentLanguage]["chat.missed.tasks_none"];
+  }
+
+  if (missedMeetings.length > 0) {
+    response += translations[currentLanguage]["chat.missed.meetings_header"];
+    response += missedMeetings.join("");
+    response += "</ul>";
+  } else {
+    response += translations[currentLanguage]["chat.missed.meetings_none"];
+  }
+
+  return response;
+}
+
+function getLatestUpdates() {
+  let nextTask = null;
+  let latestMaterial = null;
+  let soonestDeadline = Infinity;
+  let latestUploadDate = 0;
+
+  Object.values(attendanceData).forEach((course) => {
+    course.tasks.forEach((task) => {
+      if (task.status === "not_submitted" || task.status === "not_started") {
+        const deadlineDate = Date.parse(task.deadline);
+        if (deadlineDate > Date.now() && deadlineDate < soonestDeadline) {
+          soonestDeadline = deadlineDate;
+          nextTask = `<b>${course.name}</b>: ${task.title} (Deadline: ${task.deadline})`;
+        }
+      }
+    });
+
+    course.materials.forEach((material) => {
+      const uploadDate = Date.parse(material.uploadDate);
+      if (uploadDate > latestUploadDate) {
+        latestUploadDate = uploadDate;
+        latestMaterial = `<b>${course.name}</b>: ${material.title} (${material.file})`;
+      }
+    });
+  });
+
+  let response = translations[currentLanguage]["chat.updates.header"];
+
+  const taskText = nextTask
+    ? nextTask
+    : translations[currentLanguage]["chat.updates.no_task"];
+  response += translations[currentLanguage]["chat.updates.next_task"].replace(
+    "{task}",
+    taskText
+  );
+
+  const materialText = latestMaterial
+    ? latestMaterial
+    : translations[currentLanguage]["chat.updates.no_material"];
+  response += translations[currentLanguage][
+    "chat.updates.latest_material"
+  ].replace("{material}", materialText);
+
+  response += "</ul>";
+  return response;
+}
+
+function getTaskDescription(input) {
+  let courseKey = "";
+  if (input.includes("algoritma")) courseKey = "algorithms";
+  else if (input.includes("database")) courseKey = "databases";
+  else if (input.includes("webdev")) courseKey = "webdev";
+  else if (input.includes("software")) courseKey = "softwareeng";
+
+  if (!courseKey) {
+    return translations[currentLanguage]["chat.desc.prompt"];
+  }
+
+  const course = attendanceData[courseKey];
+  let taskToDescribe = null;
+
+  taskToDescribe = course.tasks.find(
+    (task) => task.status === "pending" || task.status === "not_submitted"
+  );
+
+  if (!taskToDescribe) {
+    const gradedTasks = course.tasks.filter((task) => task.score !== null);
+    if (gradedTasks.length > 0) {
+      taskToDescribe = gradedTasks[gradedTasks.length - 1];
+    }
+  }
+
+  if (!taskToDescribe) {
+    return translations[currentLanguage]["chat.desc.none"].replace(
+      "{courseName}",
+      course.name
+    );
+  }
+
+  return translations[currentLanguage]["chat.desc.response"]
+    .replace("{title}", taskToDescribe.title)
+    .replace("{courseName}", course.name)
+    .replace("{description}", taskToDescribe.description);
+}
+
+function getTopicsForCurrentWeek() {
+  let response = translations[currentLanguage]["chat.topics.header"];
+  let foundAny = false;
+
+  Object.values(attendanceData).forEach((course) => {
+    const currentWeek = course.currentWeek;
+    const meeting = course.meetings.find((m) => m.id === currentWeek);
+
+    if (meeting) {
+      response += translations[currentLanguage]["chat.topics.item"]
+        .replace("{courseName}", course.name)
+        .replace("{topic}", meeting.topic)
+        .replace("{id}", meeting.id);
+      foundAny = true;
+    }
+  });
+
+  response += "</ul>";
+
+  if (!foundAny) {
+    return translations[currentLanguage]["chat.topics.none"];
+  }
+  return response;
+}
+
+function getLecturerInfo(input) {
+  let courseKey = "";
+  let i18nKey = "";
+  let courseName = "";
+
+  if (input.includes("algoritma")) {
+    courseKey = "algorithms";
+    i18nKey = "courses.algorithms";
+    courseName = "Algorithms";
+  } else if (input.includes("database")) {
+    courseKey = "databases";
+    i18nKey = "courses.databases";
+    courseName = "Databases";
+  } else if (input.includes("webdev")) {
+    courseKey = "webdev";
+    i18nKey = "courses.web_development";
+    courseName = "Web Development";
+  } else if (input.includes("software")) {
+    courseKey = "softwareeng";
+    i18nKey = "courses.software_engineering";
+    courseName = "Software Engineering";
+  }
+
+  if (!courseKey) {
+    return translations[currentLanguage]["lecturer.prompt"];
+  }
+
+  const courseEl = document.querySelector(`h4[data-i18n="${i18nKey}"]`);
+  if (!courseEl) {
+    return translations[currentLanguage]["lecturer.not_found"].replace(
+      "{courseName}",
+      courseName
+    );
+  }
+
+  const classItem = courseEl.closest(".class-item");
+  const lecturer = classItem.querySelector(".class-lecturer").textContent;
+  const room = classItem.querySelector(".class-room").textContent;
+
+  if (input.includes("dosen")) {
+    return translations[currentLanguage]["lecturer.info"]
+      .replace("{courseName}", courseName)
+      .replace("{lecturer}", lecturer);
+  } else {
+    return translations[currentLanguage]["lecturer.room"]
+      .replace("{courseName}", courseName)
+      .replace("{room}", room);
+  }
+}
+
+function getCourseCredits(input) {
+  let courseKey = "";
+  if (input.includes("algoritma")) courseKey = "algorithms";
+  else if (input.includes("database")) courseKey = "databases";
+  else if (input.includes("webdev")) courseKey = "webdev";
+  else if (input.includes("software")) courseKey = "softwareeng";
+
+  if (!courseKey) {
+    return translations[currentLanguage]["credits.prompt"];
+  }
+
+  const course = attendanceData[courseKey];
+  return translations[currentLanguage]["credits.info"]
+    .replace("{courseName}", course.name)
+    .replace("{credits}", course.credits);
+}
+
+function getUrgentTask() {
+  let urgentTask = null;
+  let soonestDeadline = Infinity;
+
+  Object.values(attendanceData).forEach((course) => {
+    course.tasks.forEach((task) => {
+      if (task.status === "not_submitted" || task.status === "not_started") {
+        const deadlineDate = Date.parse(task.deadline);
+        if (deadlineDate > Date.now() && deadlineDate < soonestDeadline) {
+          soonestDeadline = deadlineDate;
+          urgentTask = {
+            courseName: course.name,
+            title: task.title,
+            deadline: task.deadline,
+          };
+        }
+      }
+    });
+  });
+
+  if (!urgentTask) {
+    return translations[currentLanguage]["urgent.none"];
+  }
+
+  let response = translations[currentLanguage]["urgent.header"];
+  response +=
+    "<br>" +
+    translations[currentLanguage]["urgent.item"]
+      .replace("{courseName}", urgentTask.courseName)
+      .replace("{title}", urgentTask.title)
+      .replace("{deadline}", urgentTask.deadline);
+
+  return response;
+}
+
+function getTasksByStatus(input) {
+  let status = "";
+  let statusKey = "";
+
+  if (input.includes("terlambat")) {
+    status = "late";
+    statusKey = "late_status";
+  } else if (input.includes("sedang dinilai")) {
+    status = "pending";
+    statusKey = "pending_review";
+  } else {
+    return translations[currentLanguage]["chat.fallback"];
+  }
+
+  let foundTasks = [];
+  Object.values(attendanceData).forEach((course) => {
+    course.tasks.forEach((task) => {
+      if (task.status === status) {
+        foundTasks.push(
+          translations[currentLanguage]["tasks_status.item"]
+            .replace("{courseName}", course.name)
+            .replace("{title}", task.title)
+            .replace("{deadline}", task.deadline)
+        );
+      }
+    });
+  });
+
+  const statusText = translations[currentLanguage][`tasks.${statusKey}`];
+
+  if (foundTasks.length === 0) {
+    return translations[currentLanguage]["tasks_status.none"].replace(
+      "{status}",
+      statusText
+    );
+  }
+
+  let response = translations[currentLanguage]["tasks_status.header"].replace(
+    "{status}",
+    statusText
+  );
+  response += foundTasks.join("");
+  response += "</ul>";
+  return response;
+}
+
+function getDailyBriefing() {
+  const today = new Date();
+  const todayDayName = today.toLocaleDateString(currentLanguage, {
+    weekday: "long",
+  });
+  const todayDateStr = today.toLocaleDateString(currentLanguage, {
+    day: "numeric",
+    month: "short",
+  });
+  const todayKey = today
+    .toLocaleDateString("en-US", { weekday: "long" })
+    .toLowerCase();
+
+  let response = translations[currentLanguage]["chat.briefing.header"]
+    .replace("{dayName}", todayDayName)
+    .replace("{date}", todayDateStr);
+
+  const scheduleEl = document.querySelector(
+    `.schedule-day[data-day="${todayKey}"]`
+  );
+  if (scheduleEl) {
+    const classes = scheduleEl.querySelectorAll(
+      ".class-item:not(.custom-event)"
+    );
+    if (classes.length === 0) {
+      response += translations[currentLanguage]["chat.briefing.no_class"];
+    } else {
+      classes.forEach((item) => {
+        const time = item.querySelector(".class-time .time-start").textContent;
+        const courseName = item.querySelector(".class-name").textContent.trim();
+        const i18nKey = item
+          .querySelector(".class-name")
+          .dataset.i18n.split(".")[1];
+        const courseData = attendanceData[i18nKey];
+        const topic = courseData
+          ? courseData.meetings.find((m) => m.id === courseData.currentWeek)
+              ?.topic || courseName
+          : courseName;
+
+        response += translations[currentLanguage]["chat.briefing.class_item"]
+          .replace("{time}", time)
+          .replace("{course}", courseName)
+          .replace("{topic}", topic);
+      });
+    }
+  } else {
+    response += translations[currentLanguage]["chat.briefing.no_class"];
+  }
+
+  response += "</ul>";
+
+  const deadlineTodayTasks = [];
+  const todayDeadlineStr = today.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  Object.values(attendanceData).forEach((course) => {
+    course.tasks.forEach((task) => {
+      if (
+        task.deadline === todayDeadlineStr &&
+        (task.status === "not_submitted" || task.status === "not_started")
+      ) {
+        deadlineToTodayTasks.push(
+          translations[currentLanguage]["chat.briefing.deadline_item"]
+            .replace("{taskTitle}", task.title)
+            .replace("{courseName}", course.name)
+        );
+      }
+    });
+  });
+
+  response += translations[currentLanguage]["chat.briefing.deadline_header"];
+  if (deadlineToTodayTasks.length > 0) {
+    response += "<ul>" + deadlineTodayTasks.join("") + "</ul>";
+  } else {
+    response += translations[currentLanguage]["chat.briefing.deadline_none"];
+  }
+
+  return response;
+}
+
+function getAttendanceWarning() {
+  let warningList = [];
+  Object.values(attendanceData).forEach((course) => {
+    const stats = calculateAttendanceStats(course.meetings);
+    if (stats.absent > 0) {
+      warningList.push(
+        translations[currentLanguage]["chat.attendance_warn.item"]
+          .replace("{courseName}", course.name)
+          .replace("{absentCount}", stats.absent)
+      );
+    }
+  });
+
+  if (warningList.length === 0) {
+    return translations[currentLanguage]["chat.attendance_warn.none"];
+  }
+
+  let response = translations[currentLanguage]["chat.attendance_warn.header"];
+  response += warningList.join("");
+  response += "</ul>";
+  return response;
+}
+
+function getTaskCounter(input) {
+  let courseKey = "";
+  if (input.includes("algoritma")) courseKey = "algorithms";
+  else if (input.includes("database")) courseKey = "databases";
+  else if (input.includes("webdev")) courseKey = "webdev";
+  else if (input.includes("software")) courseKey = "softwareeng";
+
+  let totalCount = 0;
+
+  if (courseKey) {
+    const course = attendanceData[courseKey];
+    course.tasks.forEach((task) => {
+      if (task.status === "not_submitted" || task.status === "not_started") {
+        totalCount++;
+      }
+    });
+
+    if (totalCount === 0) {
+      return translations[currentLanguage]["chat.task_count.none"].replace(
+        "{courseName}",
+        course.name
+      );
+    } else {
+      return translations[currentLanguage]["chat.task_count.item"]
+        .replace("{count}", totalCount)
+        .replace("{courseName}", course.name);
+    }
+  } else {
+    Object.values(attendanceData).forEach((course) => {
+      course.tasks.forEach((task) => {
+        if (task.status === "not_submitted" || task.status === "not_started") {
+          totalCount++;
+        }
+      });
+    });
+
+    if (totalCount === 0) {
+      return translations[currentLanguage]["chat.task_count.all_none"];
+    } else {
+      return translations[currentLanguage]["chat.task_count.all"].replace(
+        "{count}",
+        totalCount
+      );
+    }
+  }
+}
+
+function getContextForQuery(query) {
+  let input = query.toLowerCase().trim();
+
+  if (input.includes("hello") || input.includes("hi")) input += " halo";
+  if (input.includes("thanks") || input.includes("thank you"))
+    input += " terima kasih";
+  if (input.includes("help")) input += " bantuan";
+  if (input.includes("performance") || input.includes("how am i doing"))
+    input += " performa";
+  if (input.includes("missed") || input.includes("forgot")) input += " lewat";
+  if (input.includes("update") || input.includes("latest")) input += " terbaru";
+  if (input.includes("topic") || input.includes("topics")) input += " topik";
+  if (input.includes("this week")) input += " minggu ini";
+  if (input.includes("now")) input += " sekarang";
+  if (input.includes("description")) input += " deskripsi";
+  if (input.includes("gpa")) input += " ipk";
+  if (input.includes("credits")) input += " sks";
+  if (input.includes("who am i") || input.includes("my name"))
+    input += " nama saya";
+  if (input.includes("schedule")) input += " jadwal";
+  if (input.includes("today")) input += " hari ini";
+  if (input.includes("course") || input.includes("courses"))
+    input += " mata kuliah";
+  if (
+    input.includes("task") ||
+    input.includes("tasks") ||
+    input.includes("assignment") ||
+    input.includes("deadline")
+  )
+    input += " tugas";
+  if (
+    input.includes("grade") ||
+    input.includes("grades") ||
+    input.includes("score")
+  )
+    input += " nilai";
+  if (input.includes("material") || input.includes("materials"))
+    input += " materi";
+  if (
+    input.includes("attendance") ||
+    input.includes("absence") ||
+    input.includes("absen")
+  )
+    input += " absen";
+  if (input.includes("lecturer")) input += " dosen";
+  if (input.includes("room")) input += " ruang";
+  if (
+    input.includes("urgent") ||
+    input.includes("closest") ||
+    input.includes("nearest")
+  )
+    input += " mendesak";
+  if (input.includes("late")) input += " terlambat";
+  if (input.includes("pending")) input += " sedang dinilai";
+  if (input.includes("monday")) input += " senin";
+  if (input.includes("tuesday")) input += " selasa";
+  if (input.includes("wednesday")) input += " rabu";
+  if (input.includes("thursday")) input += " kamis";
+  if (input.includes("friday")) input += " jumat";
+  if (input.includes("algorithms") || input.includes("algorithm"))
+    input += " algoritma";
+  if (input.includes("databases") || input.includes("database"))
+    input += " database";
+  if (input.includes("web development") || input.includes("web dev"))
+    input += " webdev";
+  if (input.includes("software engineering") || input.includes("software"))
+    input += " software";
+  if (
+    input.includes("agenda") ||
+    input.includes("briefing") ||
+    input.includes("rangkuman")
+  )
+    input += " rangkumanharian";
+  if (
+    input.includes("warning") ||
+    input.includes("rawan") ||
+    (input.includes("absen") && input.includes("jelek"))
+  )
+    input += " peringatanabsen";
+  if (
+    (input.includes("how many") || input.includes("berapa")) &&
+    (input.includes("remaining") || input.includes("sisa"))
+  )
+    input += " hitungtugas";
+
+  if (
+    input.includes("halo") ||
+    input.includes("hai") ||
+    input.includes("selamat")
+  ) {
+    return translations[currentLanguage]["chat.hello"];
+  }
+  if (input.includes("terima kasih") || input.includes("makasih")) {
+    return translations[currentLanguage]["chat.welcome"];
+  }
+  if (input.includes("bantuan") || input.includes("bisa apa")) {
+    return translations[currentLanguage]["chat.help"];
   }
 
   if (
-    lowerQuery.includes("tugas") ||
-    lowerQuery.includes("tasks") ||
-    lowerQuery.includes("deadline")
+    input.includes("rangkumanharian") ||
+    (input.includes("jadwal") && input.includes("hari ini"))
   ) {
-    let tasksContext = {};
-    if (lowerQuery.includes("algoritma")) {
-      tasksContext.algorithms = attendanceData.algorithms.tasks.map((t) => ({
-        judul: t.title,
-        deadline: t.deadline,
-        status: t.status,
-      }));
-    } else if (lowerQuery.includes("database")) {
-      tasksContext.databases = attendanceData.databases.tasks.map((t) => ({
-        judul: t.title,
-        deadline: t.deadline,
-        status: t.status,
-      }));
-    } else if (lowerQuery.includes("webdev")) {
-      tasksContext.webdev = attendanceData.webdev.tasks.map((t) => ({
-        judul: t.title,
-        deadline: t.deadline,
-        status: t.status,
-      }));
-    } else if (lowerQuery.includes("software")) {
-      tasksContext.softwareeng = attendanceData.softwareeng.tasks.map((t) => ({
-        judul: t.title,
-        deadline: t.deadline,
-        status: t.status,
-      }));
-    }
-    if (Object.keys(tasksContext).length > 0) {
-      context.tasks = tasksContext;
-    }
+    return getDailyBriefing();
+  }
+  if (input.includes("peringatanabsen")) {
+    return getAttendanceWarning();
+  }
+  if (input.includes("hitungtugas")) {
+    return getTaskCounter(input);
   }
 
-  if (lowerQuery.includes("jadwal") || lowerQuery.includes("schedule")) {
-    let scheduleContext = {};
-    Object.entries(attendanceData).forEach(([key, course]) => {
-      scheduleContext[course.name] = course.meetings.map(
-        (m) => `Pertemuan ${m.id} (${m.date}): ${m.topic}`
-      );
-    });
-    context.schedule = scheduleContext;
+  if (input.includes("dosen") || input.includes("ruang")) {
+    return getLecturerInfo(input);
+  }
+  if (
+    input.includes("sks") &&
+    (input.includes("algoritma") ||
+      input.includes("database") ||
+      input.includes("webdev") ||
+      input.includes("software"))
+  ) {
+    return getCourseCredits(input);
+  }
+  if (
+    input.includes("mendesak") ||
+    (input.includes("tugas") && input.includes("terdekat"))
+  ) {
+    return getUrgentTask();
+  }
+  if (
+    input.includes("tugas") &&
+    (input.includes("terlambat") || input.includes("sedang dinilai"))
+  ) {
+    return getTasksByStatus(input);
   }
 
-  if (Object.keys(context).length === 0) {
-    return null;
+  if (
+    input.includes("performa") ||
+    (input.includes("nilai") &&
+      (input.includes("bagus") ||
+        input.includes("jelek") ||
+        input.includes("gimana")))
+  ) {
+    return getPerformanceSummary(true);
   }
-  return context;
+  if (
+    input.includes("lupa") ||
+    input.includes("lewat") ||
+    input.includes("alpa")
+  ) {
+    return getMissedItems();
+  }
+  if (
+    input.includes("terbaru") ||
+    (input.includes("info") && input.includes("baru"))
+  ) {
+    return getLatestUpdates();
+  }
+  if (
+    input.includes("topik") &&
+    (input.includes("minggu ini") || input.includes("sekarang"))
+  ) {
+    return getTopicsForCurrentWeek();
+  }
+  if (input.includes("deskripsi") && input.includes("tugas")) {
+    return getTaskDescription(input);
+  }
+
+  if (input.includes("ipk")) {
+    const gpa = document.querySelector(".cards .card-value").textContent;
+    return translations[currentLanguage]["chat.gpa"].replace("{gpa}", gpa);
+  }
+
+  if (input.includes("tugas")) {
+    return getTasks(input);
+  }
+  if (input.includes("nilai") || input.includes("skor")) {
+    return getGrades(input);
+  }
+  if (
+    input.includes("materi") ||
+    input.includes("slide") ||
+    input.includes("pdf")
+  ) {
+    return getMaterials(input);
+  }
+  if (input.includes("absen") || input.includes("kehadiran")) {
+    return getAttendance(input);
+  }
+
+  if (
+    input.includes("sks") &&
+    !(
+      input.includes("algoritma") ||
+      input.includes("database") ||
+      input.includes("webdev") ||
+      input.includes("software")
+    )
+  ) {
+    const sks = document.querySelectorAll(".cards .card-value")[1].textContent;
+    return translations[currentLanguage]["chat.credits"].replace("{sks}", sks);
+  }
+  if (
+    input.includes("nama saya") ||
+    input.includes("siapa saya") ||
+    input.includes("nim")
+  ) {
+    return translations[currentLanguage]["chat.whoami"];
+  }
+
+  if (input.includes("jadwal")) {
+    return getSchedule(input);
+  }
+
+  if (
+    input.includes("mata kuliah") &&
+    !input.includes("tugas") &&
+    !input.includes("nilai") &&
+    !input.includes("materi")
+  ) {
+    return getCourseList();
+  }
+
+  if (
+    input.includes("algoritma") ||
+    input.includes("database") ||
+    input.includes("webdev") ||
+    input.includes("software")
+  ) {
+    return getCourseDetails(input);
+  }
+
+  return null;
 }
