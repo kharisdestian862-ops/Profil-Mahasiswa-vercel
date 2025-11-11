@@ -4,9 +4,11 @@ export default async function handler(request, response) {
   }
 
   let message;
+  let context;
   try {
     const body = request.body;
     message = body.message;
+    context = body.context;
 
     if (!message) {
       return response
@@ -28,6 +30,29 @@ export default async function handler(request, response) {
     });
   }
 
+  // --- LOGIKA PROMPT BARU ---
+  // Kita buat prompt sistem dan prompt pengguna secara dinamis
+
+  let systemPrompt =
+    "Anda adalah Asdos (Asisten Dashboard) yang ramah dan membantu. Jawab pertanyaan mahasiswa dengan singkat dan jelas.";
+  let userPrompt = message;
+
+  // Jika frontend mengirim data konteks, kita gabungkan ke dalam prompt
+  if (context) {
+    systemPrompt +=
+      "\n\nSelalu gunakan data yang ada di bagian 'KONTEKS' untuk menjawab pertanyaan pengguna. Jangan mengarang data jika data tidak ada di konteks. Selalu jawab dalam bahasa yang sama dengan bahasa di 'PERTANYAAN SAYA'.";
+
+    // Stringify data konteks agar rapi
+    const contextString = JSON.stringify(context, null, 2);
+
+    userPrompt = `KONTEKS:
+${contextString}
+
+PERTANYAAN SAYA:
+${message}`;
+  }
+  // --- AKHIR LOGIKA PROMPT BARU ---
+
   try {
     const groqResponse = await fetch(
       "https://api.groq.com/openai/v1/chat/completions",
@@ -42,12 +67,11 @@ export default async function handler(request, response) {
           messages: [
             {
               role: "system",
-              content:
-                "Anda adalah Asdos (Asisten Dashboard) yang ramah dan membantu. Jawab pertanyaan mahasiswa dengan singkat dan jelas.",
+              content: systemPrompt,
             },
             {
               role: "user",
-              content: message,
+              content: userPrompt,
             },
           ],
         }),
