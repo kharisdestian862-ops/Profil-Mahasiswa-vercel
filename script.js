@@ -2558,13 +2558,22 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const loadingMessageId = addMessage("...", "bot", true);
 
+      // --- PERUBAHAN UTAMA DI SINI ---
+      // 1. Panggil fungsi baru kita untuk mengambil data konteks
+      const contextData = getContextForQuery(query);
+
+      // 2. Kirim 'message' DAN 'context' ke backend
       fetch("/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ message: query }),
+        body: JSON.stringify({
+          message: query,
+          context: contextData, // Kirim data konteks yang relevan
+        }),
       })
+        // --- AKHIR PERUBAHAN ---
         .then((response) => response.json())
         .then((data) => {
           removeMessage(loadingMessageId);
@@ -2644,3 +2653,71 @@ window.downloadMaterial = downloadMaterial;
 window.navigateBreadcrumb = navigateBreadcrumb;
 window.submitTask = submitTask;
 window.switchTab = switchTab;
+
+function getContextForQuery(query) {
+  const lowerQuery = query.toLowerCase();
+  let context = {};
+
+  if (lowerQuery.includes("ipk") || lowerQuery.includes("gpa")) {
+    context.gpa = document.querySelector(".cards .card-value").textContent;
+  }
+  if (lowerQuery.includes("sks") || lowerQuery.includes("credits")) {
+    context.sks_semester_ini =
+      document.querySelectorAll(".cards .card-value")[1].textContent;
+  }
+  if (lowerQuery.includes("kehadiran") || lowerQuery.includes("attendance")) {
+    context.kehadiran_total =
+      document.querySelectorAll(".cards .card-value")[2].textContent;
+  }
+
+  if (
+    lowerQuery.includes("tugas") ||
+    lowerQuery.includes("tasks") ||
+    lowerQuery.includes("deadline")
+  ) {
+    let tasksContext = {};
+    if (lowerQuery.includes("algoritma")) {
+      tasksContext.algorithms = attendanceData.algorithms.tasks.map((t) => ({
+        judul: t.title,
+        deadline: t.deadline,
+        status: t.status,
+      }));
+    } else if (lowerQuery.includes("database")) {
+      tasksContext.databases = attendanceData.databases.tasks.map((t) => ({
+        judul: t.title,
+        deadline: t.deadline,
+        status: t.status,
+      }));
+    } else if (lowerQuery.includes("webdev")) {
+      tasksContext.webdev = attendanceData.webdev.tasks.map((t) => ({
+        judul: t.title,
+        deadline: t.deadline,
+        status: t.status,
+      }));
+    } else if (lowerQuery.includes("software")) {
+      tasksContext.softwareeng = attendanceData.softwareeng.tasks.map((t) => ({
+        judul: t.title,
+        deadline: t.deadline,
+        status: t.status,
+      }));
+    }
+    if (Object.keys(tasksContext).length > 0) {
+      context.tasks = tasksContext;
+    }
+  }
+
+  if (lowerQuery.includes("jadwal") || lowerQuery.includes("schedule")) {
+    let scheduleContext = {};
+    Object.entries(attendanceData).forEach(([key, course]) => {
+      scheduleContext[course.name] = course.meetings.map(
+        (m) => `Pertemuan ${m.id} (${m.date}): ${m.topic}`
+      );
+    });
+    context.schedule = scheduleContext;
+  }
+
+  if (Object.keys(context).length === 0) {
+    return null;
+  }
+  return context;
+}
