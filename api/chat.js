@@ -5,7 +5,7 @@ export default async function handler(request, response) {
 
   let message;
   try {
-    const body = await request.json();
+    const body = request.body;
     message = body.message;
 
     if (!message) {
@@ -22,12 +22,10 @@ export default async function handler(request, response) {
   const apiKey = process.env.GROQ_API_KEY;
 
   if (!apiKey) {
-    return response
-      .status(500)
-      .json({
-        error:
-          "GROQ_API_KEY tidak diatur di server Vercel. Cek Environment Variables.",
-      });
+    return response.status(500).json({
+      error:
+        "GROQ_API_KEY tidak diatur di server Vercel. Cek Environment Variables.",
+    });
   }
 
   try {
