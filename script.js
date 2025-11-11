@@ -2558,11 +2558,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       const loadingMessageId = addMessage("...", "bot", true);
 
-      // --- PERUBAHAN UTAMA DI SINI ---
-      // 1. Panggil fungsi baru kita untuk mengambil data konteks
-      const contextData = getContextForQuery(query);
+      const contextData = getContextForAI(query);
 
-      // 2. Kirim 'message' DAN 'context' ke backend
       fetch("/api/chat", {
         method: "POST",
         headers: {
@@ -2570,10 +2567,9 @@ document.addEventListener("DOMContentLoaded", function () {
         },
         body: JSON.stringify({
           message: query,
-          context: contextData, // Kirim data konteks yang relevan
+          context: contextData,
         }),
       })
-        // --- AKHIR PERUBAHAN ---
         .then((response) => response.json())
         .then((data) => {
           removeMessage(loadingMessageId);
@@ -3407,7 +3403,7 @@ function getTaskCounter(input) {
   }
 }
 
-function getContextForQuery(query) {
+function getContextForAI(query) {
   let input = query.toLowerCase().trim();
 
   if (input.includes("hello") || input.includes("hi")) input += " halo";
