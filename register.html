@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="register.page_title">Register - Student Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="login-page">
+    <div class="login-wrapper">
+      <div class="login-promo">
+        <div class="promo-content">
+          <div class="promo-logo">*</div>
+          <h1 data-i18n="register.title">Buat Akun Anda</h1>
+          <p data-i18n="register.subtitle">
+            Daftar sekali dan kelola seluruh jadwal akademik Anda di satu
+            tempat.
+          </p>
+          <div class="promo-footer">
+            <p>© 2024 UCIC. All rights reserved.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="login-form-container">
+        <div class="form-wrapper">
+          <h3 class="form-logo-text">🎓 Dashboard Mahasiswa</h3>
+          <h2 data-i18n="register.welcome">Mulai Mendaftar</h2>
+
+          <form class="login-form" id="registerForm">
+            <div class="form-group">
+              <label for="fullname" data-i18n="register.fullname"
+                >Nama Lengkap</label
+              >
+              <input
+                type="text"
+                id="fullname"
+                placeholder="Masukan Nama Lengkap"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="email" data-i18n="register.email">Email</label>
+              <input
+                type="email"
+                id="email"
+                placeholder="Masukan Email"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="password" data-i18n="register.password"
+                >Password</label
+              >
+              <input
+                type="password"
+                id="password"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="confirm-password" data-i18n="register.confirm"
+                >Konfirmasi Password</label
+              >
+              <input
+                type="password"
+                id="confirm-password"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+
+            <button type="submit" data-i18n="register.button">Buat Akun</button>
+          </form>
+
+          <div class="login-footer-mobile">
+            <p class="form-subtext">
+              <span data-i18n="register.have_account">Sudah punya akun?</span>
+              <a href="index.html" data-i18n="register.login_now"
+                >Masuk di sini</a
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // === LOGIKA REGISTER & TRANSLATION ===
+      const translations = {
+        en: {
+          "register.page_title": "Register - Student Dashboard",
+          "register.title": "Create Your Account",
+          "register.subtitle":
+            "Sign up once and manage your entire academic schedule in one place.",
+          "register.welcome": "Get Started",
+          "register.have_account": "Already have an account?",
+          "register.login_now": "Login here",
+          "register.fullname": "Full Name",
+          "register.email": "Email",
+          "register.password": "Password",
+          "register.confirm": "Confirm Password",
+          "register.button": "Create Account",
+          "register.or": "or",
+          "register.google": "Sign up with Google",
+        },
+        id: {
+          "register.page_title": "Daftar - Dashboard Mahasiswa",
+          "register.title": "Buat Akun Anda",
+          "register.subtitle":
+            "Daftar sekali dan kelola seluruh jadwal akademik Anda di satu tempat.",
+          "register.welcome": "Mulai Mendaftar",
+          "register.have_account": "Sudah punya akun?",
+          "register.login_now": "Masuk di sini",
+          "register.fullname": "Nama Lengkap",
+          "register.email": "Email",
+          "register.password": "Password",
+          "register.confirm": "Konfirmasi Password",
+          "register.button": "Buat Akun",
+          "register.or": "atau",
+          "register.google": "Daftar dengan Google",
+        },
+      };
+
+      let currentLanguage = "id"; // Default
+
+      function applyTranslations() {
+        const elements = document.querySelectorAll("[data-i18n]");
+        elements.forEach((element) => {
+          const key = element.getAttribute("data-i18n");
+          if (translations[currentLanguage][key]) {
+            element.textContent = translations[currentLanguage][key];
+          }
+        });
+        document.title = translations[currentLanguage]["register.page_title"];
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // 1. Cek bahasa dari dashboard
+        const savedLanguage = localStorage.getItem("preferredLanguage");
+        if (savedLanguage && translations[savedLanguage]) {
+          currentLanguage = savedLanguage;
+        }
+        applyTranslations();
+
+        // 2. Logika submit form (seperti kode Anda sebelumnya)
+        document
+          .getElementById("registerForm")
+          .addEventListener("submit", function (e) {
+            e.preventDefault();
+            // Simpan bahasa saat daftar (opsional)
+            localStorage.setItem("preferredLanguage", currentLanguage);
+            alert("Registrasi berhasil! Silakan login.");
+            window.location.href = "index.html";
+          });
+      });
+    </script>
+  </body>
+</html>

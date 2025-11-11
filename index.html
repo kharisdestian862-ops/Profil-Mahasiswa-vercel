@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="login.page_title">Login - Student Dashboard</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body class="login-page">
+    <div class="login-wrapper">
+      <div class="login-promo">
+        <div class="promo-content">
+          <div class="promo-logo">*</div>
+          <h1 data-i18n="login.title">Halo, Selamat Datang!</h1>
+          <p data-i18n="login.subtitle">
+            Masuk untuk mengakses dashboard akademik Anda di UCIC.
+          </p>
+          <div class="promo-footer">
+            <p>© 2024 UCIC. All rights reserved.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="login-form-container">
+        <div class="form-wrapper">
+          <h3 class="form-logo-text">🎓 Dashboard Mahasiswa</h3>
+          <h2 data-i18n="login.welcome">Selamat Datang Kembali</h2>
+
+          <form class="login-form" id="loginForm">
+            <div class="form-group">
+              <label for="email" data-i18n="login.email">Email</label>
+              <input
+                type="email"
+                id="email"
+                placeholder="Masukan Email"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label for="password" data-i18n="login.password">Password</label>
+              <input
+                type="password"
+                id="password"
+                placeholder="••••••••"
+                required
+              />
+            </div>
+
+            <div class="form-options">
+              <a href="#" data-i18n="login.forgot">Lupa password?</a>
+            </div>
+
+            <button type="submit" data-i18n="login.button">Masuk</button>
+          </form>
+
+          <div class="login-footer-mobile">
+            <p>
+              <span data-i18n="login.no_account">Belum punya akun?</span>
+              <a href="register.html" data-i18n="login.register_now"
+                >Daftar sekarang</a
+              >
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // === LOGIKA LOGIN & TRANSLATION ===
+      const translations = {
+        en: {
+          "login.page_title": "Login - Student Dashboard",
+          "login.title": "Hello, Welcome!",
+          "login.subtitle":
+            "Sign in to access your academic dashboard at UCIC.",
+          "login.welcome": "Welcome Back",
+          "login.no_account": "Don't have an account?",
+          "login.register_now": "Register now",
+          "login.email": "Email",
+          "login.password": "Password",
+          "login.forgot": "Forgot password?",
+          "login.button": "Sign In",
+          "login.or": "or",
+          "login.google": "Continue with Google",
+        },
+        id: {
+          "login.page_title": "Masuk - Dashboard Mahasiswa",
+          "login.title": "Halo, Selamat Datang!",
+          "login.subtitle":
+            "Masuk untuk mengakses dashboard akademik Anda di UCIC.",
+          "login.welcome": "Selamat Datang Kembali",
+          "login.no_account": "Belum punya akun?",
+          "login.register_now": "Daftar sekarang",
+          "login.email": "Email",
+          "login.password": "Password",
+          "login.forgot": "Lupa password?",
+          "login.button": "Masuk",
+          "login.or": "atau",
+          "login.google": "Lanjutkan dengan Google",
+        },
+      };
+
+      let currentLanguage = "id"; // Default
+
+      function applyTranslations() {
+        const elements = document.querySelectorAll("[data-i18n]");
+        elements.forEach((element) => {
+          const key = element.getAttribute("data-i18n");
+          if (translations[currentLanguage][key]) {
+            element.textContent = translations[currentLanguage][key];
+          }
+        });
+        document.title = translations[currentLanguage]["login.page_title"];
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        // 1. Cek bahasa dari dashboard
+        const savedLanguage = localStorage.getItem("preferredLanguage");
+        if (savedLanguage && translations[savedLanguage]) {
+          currentLanguage = savedLanguage;
+        }
+        applyTranslations();
+
+        // 2. Logika submit form (seperti kode Anda sebelumnya)
+        document
+          .getElementById("loginForm")
+          .addEventListener("submit", function (e) {
+            e.preventDefault();
+            // Simpan bahasa saat login (opsional, tapi bagus)
+            localStorage.setItem("preferredLanguage", currentLanguage);
+            window.location.href = "dashboard.html";
+          });
+      });
+    </script>
+  </body>
+</html>
