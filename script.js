@@ -1,5 +1,5 @@
 // Complete Data Structure with Attendance, Tasks, and Materials
-const attendanceData = {
+let attendanceData = {
   algorithms: {
     name: "Algorithms",
     code: "GL303",
