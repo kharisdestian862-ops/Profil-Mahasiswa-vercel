@@ -1,4 +1,4 @@
-// api/study-rooms.js - UPDATE COMPLETE
+// api/study-rooms.js - COMPLETE VERSION
 const activeRooms = new Map();
 
 function generateRoomCode() {
@@ -72,11 +72,7 @@ export default async function handler(req, res) {
           roomToJoin.participants.push(userId);
         }
         console.log(`User ${userId} joined room ${roomCode}`);
-        return res.json({
-          success: true,
-          room: roomToJoin,
-          participants: roomToJoin.participants,
-        });
+        return res.json({ success: true, room: roomToJoin });
 
       case "get-participants":
         const roomParts = activeRooms.get(roomCode);
@@ -118,14 +114,12 @@ export default async function handler(req, res) {
             roomCandidate.candidates[userId] = [];
           }
           roomCandidate.candidates[userId].push(candidate);
-          console.log(`ICE candidate stored for ${userId}`);
         }
         return res.json({ success: true });
 
       case "get-candidates":
         const roomGetCandidates = activeRooms.get(roomCode);
         const candidates = roomGetCandidates?.candidates[targetUserId] || [];
-        // Clear candidates setelah diambil
         if (roomGetCandidates?.candidates[targetUserId]) {
           roomGetCandidates.candidates[targetUserId] = [];
         }
