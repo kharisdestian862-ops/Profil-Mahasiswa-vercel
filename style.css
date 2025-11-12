@@ -3962,225 +3962,243 @@ body.dark-mode .scroll-to-bottom-btn:hover {
   font-size: 0.9em;
 }
 
-.video-player-content {
-  display: grid;
-  grid-template-columns: 3fr 1fr; /* 2/3 layar untuk player, 1/3 untuk list */
-  gap: 2rem;
-  align-items: start;
+/* ===== CODE PLAYGROUND STYLES ===== */
+/* ===== CODE PLAYGROUND STYLES ===== */
+#codeplayground {
+  flex-direction: column;
 }
 
-.video-player-main {
+.playground-container {
   display: flex;
   flex-direction: column;
+  height: 80vh;
   gap: 1rem;
-}
-
-.course-title {
-  margin-bottom: 0.5rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--border);
-}
-
-.course-title h2 {
-  font-size: 1.5rem;
-  margin-bottom: 0.25rem;
-}
-
-.current-video-title {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: var(--text-primary);
-  margin-top: 0;
-  margin-bottom: 0.5rem;
-}
-
-/* Container untuk iframe (Memastikan video luas) */
-.youtube-player-container {
-  width: 100%;
-  aspect-ratio: 16 / 9; /* Memastikan iframe selalu 16:9 dan mengisi ruang yang tersedia */
-  background: #000;
-  border-radius: 8px;
+  background: var(--surface);
+  border-radius: 12px;
+  border: 1px solid var(--border);
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-#youtubePlayer {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-
-/* ===== STUDY ROOM VIDEO PLAYER - LARGE SIZE ===== */
-.video-player-content {
-  display: grid;
-  grid-template-columns: 3fr 1fr; /* 75% untuk player, 25% untuk list */
-  gap: 2rem;
-  align-items: start;
-  min-height: 70vh;
-}
-
-.video-player-main {
+.playground-toolbar {
   display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-/* Container untuk iframe YouTube - UKURAN BESAR */
-.youtube-player-container {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  background: #000;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  border: 1px solid var(--border);
-}
-
-#youtubePlayer {
-  width: 100%;
-  height: 100%;
-  border: none;
-}
-
-/* Judul video yang lebih menonjol */
-.current-video-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin: 0;
-  line-height: 1.3;
-}
-
-/* Deskripsi video */
-.video-description-box {
-  padding: 1.5rem;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--surface);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.video-description-box h4 {
-  font-weight: 600;
-  margin-bottom: 1rem;
-  color: var(--text-primary);
-  font-size: 1.1rem;
-}
-
-.video-description-box p {
-  color: var(--text-secondary);
-  line-height: 1.6;
-  margin: 0;
-}
-
-/* Video List Sidebar */
-.video-list-sidebar {
-  background: var(--surface);
-  padding: 1.5rem;
-  border-radius: 12px;
-  border: 1px solid var(--border);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  height: fit-content;
-  max-height: 600px;
-  overflow-y: auto;
-  position: sticky;
-  top: 2rem;
-}
-
-.video-list-sidebar h3 {
-  font-size: 1.25rem;
-  margin-bottom: 1.5rem;
-  color: var(--text-primary);
-  border-bottom: 2px solid var(--border);
-  padding-bottom: 0.75rem;
-  font-weight: 600;
-}
-
-.video-item {
+  gap: 1rem;
+  align-items: center;
   padding: 1rem;
-  cursor: pointer;
-  border-radius: 8px;
-  font-size: 0.95rem;
-  color: var(--text-primary);
-  transition: all 0.2s ease;
-  border: 1px solid transparent;
-  margin-bottom: 0.5rem;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-wrap: wrap;
 }
 
-.video-item:hover {
-  background: #f1f5f9;
-  border-color: var(--border);
+.language-select {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--surface);
+  color: var(--text-primary);
+  min-width: 150px;
+  cursor: pointer;
+}
+
+.run-btn {
+  background: var(--success);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.run-btn:hover {
+  background: #0da75c;
   transform: translateY(-1px);
 }
 
-.video-item.active {
+.save-btn,
+.share-btn {
   background: var(--primary);
   color: white;
-  border-color: var(--primary);
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.2s;
 }
 
-/* Dark mode adjustments */
-body.dark-mode .video-list-sidebar {
+.save-btn:hover,
+.share-btn:hover {
+  background: var(--primary-dark);
+}
+
+.playground-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  flex: 1;
+  min-height: 0;
+  padding: 0 1rem 1rem;
+}
+
+.editor-container {
   background: var(--surface);
-  border-color: var(--border);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  height: 100%;
 }
 
-body.dark-mode .video-item:hover {
-  background: #334155;
+.code-editor {
+  width: 100%;
+  height: 100%;
+  min-height: 400px;
 }
 
-body.dark-mode .video-item.active {
-  background: var(--primary);
-  color: white;
-}
-
-body.dark-mode .video-description-box {
+.output-container {
   background: var(--surface);
-  border-color: var(--border);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
-/* Responsive design */
-@media (max-width: 1024px) {
-  .video-player-content {
-    grid-template-columns: 2fr 1fr; /* 66% untuk player, 33% untuk list di tablet */
+.output-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.output-result {
+  flex: 1;
+  padding: 1rem;
+  overflow-y: auto;
+  font-family: "Courier New", monospace;
+  background: #1e1e1e;
+  color: #d4d4d4;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.live-preview {
+  grid-column: 1 / -1;
+  background: var(--surface);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  height: 300px;
+}
+
+.preview-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.preview-frame {
+  flex: 1;
+  border: none;
+  background: white;
+}
+
+.welcome-message {
+  text-align: center;
+  padding: 2rem;
+  color: #888;
+}
+
+/* Loading state */
+.output-result.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading-spinner {
+  width: 30px;
+  height: 30px;
+  border: 3px solid #333;
+  border-top: 3px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
   }
 }
 
+/* Theme toggle */
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.theme-toggle label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* Responsive */
 @media (max-width: 768px) {
-  .video-player-content {
-    grid-template-columns: 1fr; /* Stacked layout di mobile */
-    gap: 1.5rem;
+  .playground-content {
+    grid-template-columns: 1fr;
   }
 
-  .video-list-sidebar {
-    max-height: 400px;
-    position: static;
+  .playground-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
   }
 
-  .current-video-title {
-    font-size: 1.3rem;
-  }
-
-  .youtube-player-container {
-    border-radius: 8px;
+  .theme-toggle {
+    margin-left: 0;
+    justify-content: flex-start;
   }
 }
 
 @media (max-width: 480px) {
-  .video-player-content {
-    gap: 1rem;
+  .playground-container {
+    height: 70vh;
   }
 
-  .video-player-main {
-    gap: 1rem;
+  .playground-content {
+    padding: 0 0.5rem 0.5rem;
   }
+}
 
-  .current-video-title {
-    font-size: 1.2rem;
-  }
+/* Dark mode adjustments */
+body.dark-mode .playground-container,
+body.dark-mode .playground-toolbar,
+body.dark-mode .editor-container,
+body.dark-mode .output-container,
+body.dark-mode .live-preview {
+  background: var(--surface);
+  border-color: var(--border);
+}
 
-  .video-description-box {
-    padding: 1rem;
-  }
+body.dark-mode .language-select {
+  background: var(--background);
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+
+body.dark-mode .output-header {
+  background: var(--surface);
 }
