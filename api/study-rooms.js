@@ -1,8 +1,17 @@
-// api/study-rooms.js
+// api/study-rooms.js - UPDATE COMPLETE
 const activeRooms = new Map();
 
+function generateRoomCode() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
+  for (let i = 0; i < 6; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
 export default async function handler(req, res) {
-  // Enable CORS
+  // CORS headers
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -22,8 +31,18 @@ export default async function handler(req, res) {
     }
     const data = JSON.parse(body);
 
-    const { action, roomCode, roomName, userId, offer, answer, candidate } =
-      data;
+    const {
+      action,
+      roomCode,
+      roomName,
+      userId,
+      offer,
+      answer,
+      candidate,
+      targetUserId,
+    } = data;
+
+    console.log(`API Action: ${action}, Room: ${roomCode}, User: ${userId}`);
 
     switch (action) {
       case "create-room":
@@ -32,12 +51,13 @@ export default async function handler(req, res) {
           id: newRoomCode,
           name: roomName,
           createdBy: userId,
-          participants: [],
-          offers: new Map(),
-          answers: new Map(),
-          candidates: new Map(),
+          participants: [userId],
+          offers: {},
+          answers: {},
+          candidates: {},
         };
         activeRooms.set(newRoomCode, room);
+        console.log(`Room created: ${newRoomCode}`);
         return res.json({
           success: true,
           room: { id: newRoomCode, name: roomName },
@@ -51,52 +71,89 @@ export default async function handler(req, res) {
         if (!roomToJoin.participants.includes(userId)) {
           roomToJoin.participants.push(userId);
         }
-        return res.json({ success: true, room: roomToJoin });
+        console.log(`User ${userId} joined room ${roomCode}`);
+        return res.json({
+          success: true,
+          room: roomToJoin,
+          participants: roomToJoin.participants,
+        });
 
       case "get-participants":
         const roomParts = activeRooms.get(roomCode);
-        return res.json({
-          success: true,
-          participants: roomParts?.participants || [],
-        });
+        const participants = roomParts
+          ? roomParts.participants.filter((id) => id !== userId)
+          : [];
+        return res.json({ success: true, participants });
 
       case "store-offer":
         const roomOffer = activeRooms.get(roomCode);
         if (roomOffer) {
-          roomOffer.offers.set(userId, offer);
-        }
-        return res.json({ success: true });
-
-      case "store-answer":
-        const roomAnswer = activeRooms.get(roomCode);
-        if (roomAnswer) {
-          roomAnswer.answers.set(userId, answer);
+          roomOffer.offers[userId] = offer;
+          console.log(`Offer stored for ${userId} in ${roomCode}`);
         }
         return res.json({ success: true });
 
       case "get-offer":
         const roomGetOffer = activeRooms.get(roomCode);
-        const offerData = roomGetOffer?.offers.get(userId);
+        const offerData = roomGetOffer?.offers[targetUserId];
         return res.json({ success: true, offer: offerData });
+
+      case "store-answer":
+        const roomAnswer = activeRooms.get(roomCode);
+        if (roomAnswer) {
+          roomAnswer.answers[userId] = answer;
+          console.log(`Answer stored for ${userId} in ${roomCode}`);
+        }
+        return res.json({ success: true });
 
       case "get-answer":
         const roomGetAnswer = activeRooms.get(roomCode);
-        const answerData = roomGetAnswer?.answers.get(userId);
+        const answerData = roomGetAnswer?.answers[targetUserId];
         return res.json({ success: true, answer: answerData });
+
+      case "store-candidate":
+        const roomCandidate = activeRooms.get(roomCode);
+        if (roomCandidate) {
+          if (!roomCandidate.candidates[userId]) {
+            roomCandidate.candidates[userId] = [];
+          }
+          roomCandidate.candidates[userId].push(candidate);
+          console.log(`ICE candidate stored for ${userId}`);
+        }
+        return res.json({ success: true });
+
+      case "get-candidates":
+        const roomGetCandidates = activeRooms.get(roomCode);
+        const candidates = roomGetCandidates?.candidates[targetUserId] || [];
+        // Clear candidates setelah diambil
+        if (roomGetCandidates?.candidates[targetUserId]) {
+          roomGetCandidates.candidates[targetUserId] = [];
+        }
+        return res.json({ success: true, candidates });
+
+      case "leave-room":
+        const roomLeave = activeRooms.get(roomCode);
+        if (roomLeave) {
+          roomLeave.participants = roomLeave.participants.filter(
+            (id) => id !== userId
+          );
+          delete roomLeave.offers[userId];
+          delete roomLeave.answers[userId];
+          delete roomLeave.candidates[userId];
+
+          if (roomLeave.participants.length === 0) {
+            activeRooms.delete(roomCode);
+            console.log(`Room ${roomCode} deleted (empty)`);
+          }
+          console.log(`User ${userId} left room ${roomCode}`);
+        }
+        return res.json({ success: true });
 
       default:
         return res.json({ success: false, error: "Action tidak valid" });
     }
   } catch (error) {
+    console.error("API Error:", error);
     return res.json({ success: false, error: error.message });
   }
-}
-
-function generateRoomCode() {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let result = "";
-  for (let i = 0; i < 6; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
 }
