@@ -4155,6 +4155,25 @@ body.dark-mode .scroll-to-bottom-btn:hover {
   color: var(--text-secondary);
 }
 
+body.full-layout-active .sidebar-right {
+  display: none;
+}
+
+body.full-layout-active .main-wrapper {
+  grid-template-columns: 1fr;
+}
+
+body.full-layout-active .chatbot-fab {
+  display: none;
+}
+
+@media (max-width: 1200px) {
+  body.full-layout-active .main-wrapper {
+    padding: 1rem;
+    gap: 0;
+  }
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .playground-content {
