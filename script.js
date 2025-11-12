@@ -2952,7 +2952,15 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    const addMessage = (message, sender, isLoading = false) => {
+    const addMessage = (
+      message,
+      sender,
+      isLoading = false,
+      fromHistory = false
+    ) => {
+      const messagesContainer = document.getElementById("chatbotMessages");
+      if (!messagesContainer) return null;
+
       const msgDiv = document.createElement("div");
       msgDiv.className = `chat-message ${sender}`;
 
@@ -2966,9 +2974,11 @@ document.addEventListener("DOMContentLoaded", function () {
             '<span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span>';
           msgDiv.classList.add("loading");
         } else {
-          msgDiv.innerHTML = message.replace(/\n/g, "<br>");
+          // PERBAIKAN: Render HTML, jangan textContent
+          msgDiv.innerHTML = message; // Langsung render HTML
         }
       } else {
+        // Untuk user messages, tetap pakai textContent (aman)
         const textSpan = document.createElement("span");
         textSpan.className = "chat-text";
         textSpan.textContent = message;
@@ -2976,7 +2986,10 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       messagesContainer.appendChild(msgDiv);
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+      if (!fromHistory) {
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      }
 
       return messageId;
     };
