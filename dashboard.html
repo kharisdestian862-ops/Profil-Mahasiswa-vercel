@@ -58,6 +58,7 @@
             <a href="#" data-section="schedule" data-i18n="nav.schedule"
               >Class Schedule</a
             >
+            <a href="#" data-section="studyroom">Study Room</a>
             <a href="#" data-section="settings" data-i18n="nav.settings"
               >Settings</a
             >
@@ -1159,63 +1160,219 @@
             </div>
           </section>
 
-          <!-- Study Room Section -->
-          <div class="study-room-section">
-            <h3>Virtual Study Room</h3>
-            <p>Belajar bersama dengan video call</p>
+          <!-- STUDY ROOM SECTION -->
+          <section id="studyroom" class="section" style="display: none">
+            <div class="study-room-container">
+              <!-- Header -->
+              <div class="study-room-header">
+                <h2>🎓 Virtual Study Rooms</h2>
+                <p>Belajar bersama teman secara real-time</p>
+              </div>
 
-            <div class="room-actions">
-              <button onclick="showCreateRoomModal()" class="btn-primary">
-                🎯 Buat Room Baru
-              </button>
-              <button onclick="showJoinRoomModal()" class="btn-secondary">
-                🔗 Join dengan Kode
-              </button>
-            </div>
-          </div>
+              <!-- Main Content -->
+              <div class="study-room-content">
+                <!-- Sidebar Kiri (Room List) -->
+                <div class="rooms-sidebar">
+                  <div class="sidebar-header">
+                    <h3>Study Rooms</h3>
+                    <button
+                      class="btn-create-room"
+                      onclick="showCreateRoomModal()"
+                    >
+                      + Buat Room
+                    </button>
+                  </div>
 
-          <!-- Modals -->
-          <div id="createRoomModal" class="modal" style="display: none">
-            <div class="modal-content">
-              <h3>Buat Study Room</h3>
-              <input
-                type="text"
-                id="roomNameInput"
-                placeholder="Nama Room (contoh: Study Algorithms)"
-              />
-              <button onclick="createRoom()">Buat Room</button>
-              <button onclick="closeModal()">Batal</button>
-            </div>
-          </div>
+                  <div class="rooms-list">
+                    <div class="room-item active">
+                      <div class="room-icon">🎯</div>
+                      <div class="room-info">
+                        <div class="room-name">Algorithms Study</div>
+                        <div class="room-meta">3 orang online</div>
+                      </div>
+                    </div>
+                    <div class="room-item">
+                      <div class="room-icon">📊</div>
+                      <div class="room-info">
+                        <div class="room-name">Database Group</div>
+                        <div class="room-meta">2 orang online</div>
+                      </div>
+                    </div>
+                    <div class="room-item">
+                      <div class="room-icon">🌐</div>
+                      <div class="room-info">
+                        <div class="room-name">Web Dev Session</div>
+                        <div class="room-meta">1 orang online</div>
+                      </div>
+                    </div>
+                  </div>
 
-          <div id="joinRoomModal" class="modal" style="display: none">
-            <div class="modal-content">
-              <h3>Join Study Room</h3>
-              <input
-                type="text"
-                id="roomCodeInput"
-                placeholder="Kode Room (contoh: A1B2C3)"
-                maxlength="6"
-              />
-              <button onclick="joinRoom()">Join Room</button>
-              <button onclick="closeModal()">Batal</button>
-            </div>
-          </div>
+                  <div class="quick-actions">
+                    <button class="btn-join" onclick="showJoinRoomModal()">
+                      🔗 Join dengan Kode
+                    </button>
+                  </div>
+                </div>
 
-          <!-- Video Call UI -->
-          <div id="videoCallContainer" style="display: none">
-            <h3>Study Room</h3>
-            <div class="video-grid">
-              <video id="localVideo" autoplay muted playsinline></video>
-              <div id="remoteVideos"></div>
+                <!-- Area Tengah (Voice/Video Channels) -->
+                <div class="channels-area">
+                  <div class="channel-header">
+                    <h3>🎯 Algorithms Study</h3>
+                    <div class="channel-actions">
+                      <button class="btn-invite" onclick="showInviteModal()">
+                        📨 Invite Teman
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="voice-channels">
+                    <div class="channel-category">
+                      <h4>🔊 Voice Channels</h4>
+                      <div class="channel-list">
+                        <div class="voice-channel active">
+                          <div class="channel-icon">🔊</div>
+                          <span>General Discussion</span>
+                          <span class="user-count">3/10</span>
+                        </div>
+                        <div class="voice-channel">
+                          <div class="channel-icon">🔊</div>
+                          <span>Q&A Session</span>
+                          <span class="user-count">0/10</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="channel-category">
+                      <h4>📹 Video Channels</h4>
+                      <div class="channel-list">
+                        <div class="video-channel">
+                          <div class="channel-icon">📹</div>
+                          <span>Study Room 1</span>
+                          <span class="user-count">2/5</span>
+                        </div>
+                        <div class="video-channel">
+                          <div class="channel-icon">📹</div>
+                          <span>Breakout Room</span>
+                          <span class="user-count">0/5</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Participants List -->
+                  <div class="participants-section">
+                    <h4>Online - 3 orang</h4>
+                    <div class="participants-list">
+                      <div class="participant">
+                        <div class="user-avatar">K</div>
+                        <span class="username">Kharis</span>
+                        <span class="user-status speaking">🎤</span>
+                      </div>
+                      <div class="participant">
+                        <div class="user-avatar">A</div>
+                        <span class="username">Andi</span>
+                        <span class="user-status">🔇</span>
+                      </div>
+                      <div class="participant">
+                        <div class="user-avatar">S</div>
+                        <span class="username">Sari</span>
+                        <span class="user-status">🎧</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Sidebar Kanan (Chat & Controls) -->
+                <div class="chat-sidebar">
+                  <div class="chat-header">
+                    <h4>💬 Group Chat</h4>
+                  </div>
+
+                  <div class="chat-messages">
+                    <div class="message">
+                      <div class="message-avatar">K</div>
+                      <div class="message-content">
+                        <div class="message-author">Kharis</div>
+                        <div class="message-text">
+                          Halo guys! Ready belajar algorithms?
+                        </div>
+                        <div class="message-time">10:05</div>
+                      </div>
+                    </div>
+                    <div class="message">
+                      <div class="message-avatar">A</div>
+                      <div class="message-content">
+                        <div class="message-author">Andi</div>
+                        <div class="message-text">
+                          Iya, saya ada soal tentang dynamic programming nih
+                        </div>
+                        <div class="message-time">10:06</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="chat-input-container">
+                    <input
+                      type="text"
+                      placeholder="Ketik pesan..."
+                      class="chat-input"
+                    />
+                    <button class="btn-send">➤</button>
+                  </div>
+
+                  <!-- Voice Controls -->
+                  <div class="voice-controls">
+                    <button class="control-btn mute">🎤</button>
+                    <button class="control-btn deafen">🎧</button>
+                    <button class="control-btn video">📹</button>
+                    <button class="control-btn leave btn-danger">
+                      📞 Leave
+                    </button>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div class="call-controls">
-              <button onclick="toggleMute()">🎤 Mute</button>
-              <button onclick="toggleVideo()">📹 Video</button>
-              <button onclick="shareScreen()">🖥️ Share</button>
-              <button onclick="leaveCall()">📞 Leave</button>
+
+            <!-- Modals -->
+            <div id="createRoomModal" class="modal">
+              <div class="modal-content">
+                <h3>Buat Study Room</h3>
+                <input
+                  type="text"
+                  id="roomNameInput"
+                  placeholder="Nama Room (contoh: Study Algorithms)"
+                />
+                <div class="modal-actions">
+                  <button onclick="createRoom()" class="btn-primary">
+                    Buat Room
+                  </button>
+                  <button onclick="closeModal()" class="btn-secondary">
+                    Batal
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
+
+            <div id="joinRoomModal" class="modal">
+              <div class="modal-content">
+                <h3>Join Study Room</h3>
+                <input
+                  type="text"
+                  id="roomCodeInput"
+                  placeholder="Kode Room (contoh: A1B2C3)"
+                  maxlength="6"
+                />
+                <div class="modal-actions">
+                  <button onclick="joinRoom()" class="btn-primary">
+                    Join Room
+                  </button>
+                  <button onclick="closeModal()" class="btn-secondary">
+                    Batal
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
 
           <!-- Settings Section -->
           <section class="section" id="settings" style="display: none">
