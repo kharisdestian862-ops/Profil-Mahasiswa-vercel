@@ -3,7 +3,7 @@ export default async function handler(request, response) {
     return response.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const { message, context, language } = await request.json();
+  const { message, context, language } = request.body;
   const apiKey = process.env.GROQ_API_KEY;
 
   if (!apiKey) {
