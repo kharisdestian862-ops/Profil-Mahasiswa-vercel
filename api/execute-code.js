@@ -1,13 +1,13 @@
 import fetch from "node-fetch";
 
-// Mapping bahasa frontend ke runtime ID Piston API
+// Mapping bahasa frontend ke runtime ID dan versi Piston API
 const languageMapping = {
-  python: "python",
-  javascript: "javascript",
-  cpp: "cpp",
-  java: "java",
-  csharp: "csharp",
-  // Piston tidak mendukung HTML secara langsung, ini harus ditangani di frontend.
+  python: { runtime: "python", version: "3.10.0" }, // Menggunakan versi Python stabil
+  javascript: { runtime: "javascript", version: "18.15.0" }, // Node.js versi stabil
+  cpp: { runtime: "c++", version: "10.2.0" },
+  java: { runtime: "java", version: "15.0.2" },
+  csharp: { runtime: "csharp", version: "6.12.0" },
+  html: { runtime: "html", version: "5.0.0" }, // HTML/5
 };
 
 export default async function handler(req, res) {
@@ -27,18 +27,21 @@ export default async function handler(req, res) {
 
   try {
     const { language, code } = req.body;
-    const runtime = languageMapping[language];
+    const runtimeInfo = languageMapping[language];
 
-    if (!runtime) {
-      return res.status(400).json({
-        success: false,
-        error: `Language ${language} not supported by executor.`,
-      });
+    if (!runtimeInfo) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          error: `Language ${language} not supported by executor.`,
+        });
     }
 
-    // Data yang dikirim ke Piston API
+    // Data yang dikirim ke Piston API, sekarang menyertakan version
     const payload = {
-      language: runtime,
+      language: runtimeInfo.runtime,
+      version: runtimeInfo.version, // Mengirim versi sebagai string (SOLUSI)
       files: [{ content: code }],
     };
 
@@ -52,7 +55,6 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // 3. Format Output
     if (data.run && data.run.output) {
       let output = data.run.output;
       if (data.run.stderr) {
@@ -60,16 +62,21 @@ export default async function handler(req, res) {
       }
       return res.status(200).json({ success: true, output: output });
     } else {
-      return res.status(200).json({
-        success: false,
-        error: data.message || "Execution failed or API returned an error.",
-      });
+      // Jika ada error dari Piston (misalnya kode syntax error)
+      return res
+        .status(200)
+        .json({
+          success: false,
+          error: data.message || "Execution failed or API returned an error.",
+        });
     }
   } catch (error) {
     console.error("Executor API Error:", error);
-    return res.status(500).json({
-      success: false,
-      error: "Internal server error during execution.",
-    });
+    return res
+      .status(500)
+      .json({
+        success: false,
+        error: "Internal server error during execution.",
+      });
   }
 }
