@@ -768,39 +768,72 @@ let attendanceData = {
   },
 };
 
+// Tambahkan objek ini di dekat attendanceData, atau di global scope:
 const videoMaterials = {
   algorithms: [
     {
-      id: "video-1",
+      id: "v1-alg",
       title: "01. Pengantar Analisis Algoritma",
       url: "dQw4w9WgXcQ",
       description:
-        "Video pengantar tentang notasi Big O dan kompleksitas waktu.",
+        "Video pengantar yang menjelaskan konsep notasi Big O dan bagaimana menganalisis efisiensi waktu.",
     },
     {
-      id: "video-2",
-      title: "02. Visualisasi Sorting",
+      id: "v2-alg",
+      title: "02. Visualisasi Sorting Algorithms",
       url: "sort-visualization-id",
       description:
-        "Visualisasi bagaimana algoritma Bubble Sort dan Merge Sort bekerja.",
+        "Demonstrasi visual interaktif mengenai cara kerja algoritma Bubble Sort, Merge Sort, dan Quick Sort.",
+    },
+    {
+      id: "v3-alg",
+      title: "03. Konsep Dynamic Programming",
+      url: "dynamic-intro-id",
+      description:
+        "Materi dasar mengenai Dynamic Programming (DP) dan aplikasinya pada masalah Fibonacci.",
     },
   ],
   databases: [
     {
-      id: "video-3",
+      id: "v1-db",
       title: "01. Dasar-Dasar SQL CRUD",
       url: "sql-basics-id",
       description:
-        "Cara menggunakan perintah SELECT, INSERT, UPDATE, dan DELETE.",
+        "Panduan lengkap cara menggunakan perintah SELECT, INSERT, UPDATE, dan DELETE di SQL.",
     },
     {
-      id: "video-4",
-      title: "02. Penjelasan Normalisasi Database",
+      id: "v2-db",
+      title: "02. Penjelasan Normalisasi Database (3NF)",
       url: "normalization-theory-id",
-      description: "Penjelasan rinci mengenai 1NF, 2NF, dan 3NF.",
+      description:
+        "Teori Normalisasi database (1NF, 2NF, dan 3NF) untuk menghindari redundansi data.",
     },
   ],
-  // ... tambahkan webdev dan softwareeng jika ada
+  webdev: [
+    {
+      id: "v1-web",
+      title: "01. Responsive Design dengan Flexbox",
+      url: "flexbox-tutorial-id",
+      description:
+        "Tutorial membuat layout website yang responsif menggunakan Flexbox.",
+    },
+    {
+      id: "v2-web",
+      title: "02. Pengenalan ReactJS untuk Frontend",
+      url: "react-basics-id",
+      description:
+        "Video pengantar mengenai library ReactJS dan konsep dasar komponen.",
+    },
+  ],
+  softwareeng: [
+    {
+      id: "v1-se",
+      title: "01. Metodologi Agile dan Scrum",
+      url: "agile-scrum-id",
+      description:
+        "Penjelasan mengenai Agile dan Scrum untuk manajemen proyek pengembangan perangkat lunak.",
+    },
+  ],
 };
 
 // Valid attendance codes for each course (simulated)
@@ -4142,6 +4175,9 @@ function showVideoDetailView(courseKey) {
     document.getElementById("currentVideoTitle").textContent =
       "Tidak ada video";
     document.getElementById("youtubePlayer").src = "";
+    // Menambahkan reset deskripsi
+    document.getElementById("currentVideoDescription").textContent =
+      "Tidak ada materi video tersedia.";
   }
 }
 
