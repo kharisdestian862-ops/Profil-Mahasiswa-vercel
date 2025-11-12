@@ -4038,127 +4038,307 @@ function getContextForAI(query) {
 
 // ===== STUDY ROOM SYSTEM (HTTP Version) =====
 
-let currentRoomId = null;
+// Study Room dengan Real WebRTC
 let localStream = null;
-let peers = {};
+let peerConnections = {};
+let currentRoomId = null;
+let currentUserId = null;
 
-// Room Functions
-// Study Room Simple Functions
-function showCreateRoomModal() {
-  document.getElementById("createRoomModal").style.display = "flex";
+function generateUserId() {
+  return "user-" + Math.random().toString(36).substr(2, 9);
 }
 
-function showJoinRoomModal() {
-  document.getElementById("joinRoomModal").style.display = "flex";
-}
-
-function closeModal() {
-  document.getElementById("createRoomModal").style.display = "none";
-  document.getElementById("joinRoomModal").style.display = "none";
-  document.getElementById("roomNameInput").value = "";
-  document.getElementById("roomCodeInput").value = "";
-}
-
-function createRoom() {
+async function createRoom() {
   const roomName = document.getElementById("roomNameInput").value;
   if (!roomName) {
     alert("Masukkan nama room");
     return;
   }
 
-  const roomCode = generateRoomCode();
-  alert(
-    `Room "${roomName}" berhasil dibuat!\nKode Room: ${roomCode}\n\nShare kode ini ke teman-teman.`
-  );
-  closeModal();
-  startVideoCall(roomCode, roomName);
+  currentUserId = generateUserId();
+
+  try {
+    const response = await fetch("/api/study-rooms", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "create-room",
+        roomName: roomName,
+        userId: currentUserId,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      currentRoomId = data.room.id;
+      alert(
+        `Room "${roomName}" berhasil dibuat!\nKode: ${currentRoomId}\n\nShare kode ini ke teman-teman.`
+      );
+      closeModal();
+      await startVideoCall(currentRoomId, roomName);
+    } else {
+      alert("Error: " + data.error);
+    }
+  } catch (error) {
+    alert("Error creating room: " + error.message);
+  }
 }
 
-function joinRoom() {
+async function joinRoom() {
   const roomCode = document.getElementById("roomCodeInput").value.toUpperCase();
   if (!roomCode || roomCode.length !== 6) {
     alert("Masukkan kode room 6 karakter");
     return;
   }
-  alert(`Bergabung ke room: ${roomCode}`);
-  closeModal();
-  startVideoCall(roomCode, "Study Room");
-}
 
-function generateRoomCode() {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let result = "";
-  for (let i = 0; i < 6; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  currentUserId = generateUserId();
+
+  try {
+    const response = await fetch("/api/study-rooms", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "join-room",
+        roomCode: roomCode,
+        userId: currentUserId,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      currentRoomId = roomCode;
+      alert(`Berhasil join room: ${data.room.name}`);
+      closeModal();
+      await startVideoCall(roomCode, data.room.name);
+    } else {
+      alert("Error: " + data.error);
+    }
+  } catch (error) {
+    alert("Error joining room: " + error.message);
   }
-  return result;
 }
 
 async function startVideoCall(roomCode, roomName) {
   try {
-    // Hide empty state, show video area
+    // Setup UI
     document.querySelector(".empty-state").style.display = "none";
     document.getElementById("videoCallArea").style.display = "flex";
-
-    // Update header
     document.querySelector(
       ".study-room-simple-header h2"
     ).textContent = `🎓 ${roomName} (${roomCode})`;
 
     // Get user media
-    const stream = await navigator.mediaDevices.getUserMedia({
+    localStream = await navigator.mediaDevices.getUserMedia({
       video: true,
       audio: true,
     });
 
     const localVideo = document.getElementById("localVideo");
-    localVideo.srcObject = stream;
+    localVideo.srcObject = localStream;
 
-    // Simulate remote participant after 3 seconds
-    setTimeout(() => {
-      simulateRemoteParticipant();
-    }, 3000);
+    // Setup polling untuk check participants
+    startParticipantsPolling(roomCode);
   } catch (error) {
     console.error("Error accessing media:", error);
     alert("Tidak bisa mengakses kamera/mikrofon");
   }
 }
 
-function simulateRemoteParticipant() {
-  const videoGrid = document.querySelector(".video-grid");
-  const remoteVideo = document.createElement("div");
-  remoteVideo.className = "video-container";
-  remoteVideo.innerHTML = `
-        <div style="background: #374151; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px;">
-            Teman Study<br><small style="font-size: 14px; opacity: 0.7;">Bergabung nanti</small>
-        </div>
-        <div class="video-label">Teman</div>
-    `;
-  videoGrid.appendChild(remoteVideo);
+function startParticipantsPolling(roomCode) {
+  // Poll setiap 3 detik untuk check participants baru
+  setInterval(async () => {
+    try {
+      const response = await fetch("/api/study-rooms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "get-participants",
+          roomCode: roomCode,
+          userId: currentUserId,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        updateParticipantsUI(data.participants);
+      }
+    } catch (error) {
+      console.error("Error polling participants:", error);
+    }
+  }, 3000);
 }
 
+function updateParticipantsUI(participants) {
+  const videoGrid = document.querySelector(".video-grid");
+
+  // Hapus video remote yang lama (kecuali local video)
+  const remoteVideos = videoGrid.querySelectorAll(
+    ".video-container:not(.local-video)"
+  );
+  remoteVideos.forEach((video) => video.remove());
+
+  // Tambah video untuk setiap participant (kecuali diri sendiri)
+  participants.forEach((participantId) => {
+    if (participantId !== currentUserId && !peerConnections[participantId]) {
+      createPeerConnection(participantId);
+
+      // Buat video element untuk participant
+      const remoteVideo = document.createElement("div");
+      remoteVideo.className = "video-container remote-video";
+      remoteVideo.id = `video-${participantId}`;
+      remoteVideo.innerHTML = `
+                <video id="remoteVideo-${participantId}" autoplay playsinline></video>
+                <div class="video-label">Participant</div>
+            `;
+      videoGrid.appendChild(remoteVideo);
+    }
+  });
+}
+
+function createPeerConnection(participantId) {
+  const peerConnection = new RTCPeerConnection({
+    iceServers: [
+      { urls: "stun:stun.l.google.com:19302" },
+      { urls: "stun:stun1.l.google.com:19302" },
+    ],
+  });
+
+  peerConnections[participantId] = peerConnection;
+
+  // Add local stream tracks
+  localStream.getTracks().forEach((track) => {
+    peerConnection.addTrack(track, localStream);
+  });
+
+  // Handle incoming stream
+  peerConnection.ontrack = (event) => {
+    const remoteVideo = document.getElementById(`remoteVideo-${participantId}`);
+    if (remoteVideo && event.streams[0]) {
+      remoteVideo.srcObject = event.streams[0];
+    }
+  };
+
+  // Handle ICE candidates
+  peerConnection.onicecandidate = (event) => {
+    if (event.candidate) {
+      // Send ICE candidate ke server
+      fetch("/api/study-rooms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "store-candidate",
+          roomCode: currentRoomId,
+          userId: currentUserId,
+          candidate: event.candidate,
+          targetUserId: participantId,
+        }),
+      });
+    }
+  };
+
+  // Create offer untuk participant baru
+  createOffer(participantId);
+}
+
+async function createOffer(participantId) {
+  const peerConnection = peerConnections[participantId];
+
+  try {
+    const offer = await peerConnection.createOffer();
+    await peerConnection.setLocalDescription(offer);
+
+    // Simpan offer ke server
+    await fetch("/api/study-rooms", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "store-offer",
+        roomCode: currentRoomId,
+        userId: currentUserId,
+        offer: offer,
+        targetUserId: participantId,
+      }),
+    });
+  } catch (error) {
+    console.error("Error creating offer:", error);
+  }
+}
+
+// Fungsi kontrol tetap sama
 function toggleMute() {
-  alert("Audio toggled");
+  if (localStream) {
+    const audioTrack = localStream.getAudioTracks()[0];
+    if (audioTrack) {
+      audioTrack.enabled = !audioTrack.enabled;
+      alert("Audio " + (audioTrack.enabled ? "diaktifkan" : "dimute"));
+    }
+  }
 }
 
 function toggleVideo() {
-  alert("Video toggled");
+  if (localStream) {
+    const videoTrack = localStream.getVideoTracks()[0];
+    if (videoTrack) {
+      videoTrack.enabled = !videoTrack.enabled;
+      alert("Video " + (videoTrack.enabled ? "diaktifkan" : "dimatikan"));
+    }
+  }
 }
 
-function shareScreen() {
-  alert("Screen sharing started");
+async function shareScreen() {
+  try {
+    const screenStream = await navigator.mediaDevices.getDisplayMedia({
+      video: true,
+    });
+
+    const localVideo = document.getElementById("localVideo");
+    if (localVideo) {
+      localVideo.srcObject = screenStream;
+    }
+
+    // Replace video track di semua peer connections
+    const videoTrack = screenStream.getVideoTracks()[0];
+    Object.values(peerConnections).forEach((peer) => {
+      const sender = peer.getSenders().find((s) => s.track?.kind === "video");
+      if (sender) {
+        sender.replaceTrack(videoTrack);
+      }
+    });
+
+    alert("Screen sharing started");
+  } catch (error) {
+    alert("Error sharing screen: " + error.message);
+  }
 }
 
 function leaveCall() {
+  // Stop semua tracks
+  if (localStream) {
+    localStream.getTracks().forEach((track) => track.stop());
+  }
+
+  // Close semua peer connections
+  Object.values(peerConnections).forEach((peer) => peer.close());
+  peerConnections = {};
+
+  // Reset UI
   document.getElementById("videoCallArea").style.display = "none";
   document.querySelector(".empty-state").style.display = "block";
   document.querySelector(".study-room-simple-header h2").textContent =
     "🎓 Virtual Study Rooms";
-  document.querySelector(".video-grid").innerHTML = `
+
+  // Reset video grid
+  const videoGrid = document.querySelector(".video-grid");
+  videoGrid.innerHTML = `
         <div class="video-container local-video">
             <video id="localVideo" autoplay muted playsinline></video>
             <div class="video-label">Anda</div>
         </div>
     `;
+
+  currentRoomId = null;
+  currentUserId = null;
   alert("Left the study room");
 }
