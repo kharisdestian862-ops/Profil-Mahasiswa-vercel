@@ -4061,6 +4061,37 @@ function generateRoomCode() {
   return result;
 }
 
+function createRemoteVideoElement(participantId, stream) {
+  const videoGrid = document.getElementById("videoGrid");
+  if (!videoGrid) return;
+
+  // 1. Hapus video lama untuk ID ini (mencegah duplikasi saat refresh)
+  const existingContainer = document.getElementById(`video-${participantId}`);
+  if (existingContainer) {
+    existingContainer.remove();
+  }
+
+  // 2. Buat container video baru
+  const remoteContainer = document.createElement("div");
+  remoteContainer.className = "video-container remote-video";
+  remoteContainer.id = `video-${participantId}`;
+
+  // 3. Tambahkan elemen video dan label
+  remoteContainer.innerHTML = `
+    <video id="remoteVideo-${participantId}" autoplay playsinline></video>
+    <div class="video-label">User ${participantId.substring(5, 9)}</div>
+  `;
+
+  // 4. Masukkan container ke grid
+  videoGrid.appendChild(remoteContainer);
+
+  const videoElement = document.getElementById(`remoteVideo-${participantId}`);
+  if (videoElement && stream) {
+    videoElement.srcObject = stream;
+    console.log(`Remote video element created for ${participantId}`);
+  }
+}
+
 // Modal Functions
 function showCreateRoomModal() {
   const modal = document.getElementById("createRoomModal");
