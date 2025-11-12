@@ -2574,15 +2574,23 @@ document.addEventListener("DOMContentLoaded", function () {
         .then((data) => {
           removeMessage(loadingMessageId);
 
-          if (data.choices && data.choices[0].message) {
-            const aiResponse = data.choices[0].message.content;
+          // Grog API bisa kirim data langsung (pakai .choices) atau udah difilter backend
+          const aiResponse =
+            data.answer ||
+            data.choices?.[0]?.message?.content ||
+            data.message ||
+            null;
+
+          if (aiResponse) {
             addMessage(aiResponse, "bot");
           } else if (data.error) {
             addMessage("Maaf, ada error: " + data.error, "bot");
           } else {
             addMessage("Maaf, saya tidak menerima balasan yang valid.", "bot");
+            console.warn("Respon tidak dikenali:", data);
           }
         })
+
         .catch((error) => {
           removeMessage(loadingMessageId);
           addMessage(
