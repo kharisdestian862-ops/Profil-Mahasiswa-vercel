@@ -4511,20 +4511,30 @@ async function executeCSharp(code) {
   return await executeWithAPI("csharp", code);
 }
 
-// API-based code execution (simulated)
 async function executeWithAPI(language, code) {
-  // Simulate API call - in real implementation, you'd call an actual code execution API
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve(
-        `🔧 ${language.toUpperCase()} execution service\n\nThis would normally execute your ${language} code via a backend service.\n\nFor now, this is a simulation. To implement real execution, you would need:\n\n1. A code execution API (like JDoodle, Piston, or custom Docker setup)\n2. Backend service to handle compilation/execution\n3. Proper security sandboxing\n\nYour ${language} code:\n${
-          "```" + language
-        }\n${code}\n${"```"}`
-      );
-    }, 1000);
-  });
-}
+  try {
+    const response = await fetch("/api/execute-code", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ language, code }),
+    });
 
+    const data = await response.json();
+
+    if (!response.ok || data.success === false) {
+      const errorMsg = data.error || `Server Error: Status ${response.status}`;
+      return `❌ Execution Failed: ${errorMsg}`;
+    }
+
+    // Mengambil output dari respons API Vercel
+    const output = data.output || "Code executed successfully (no output).";
+    return output;
+  } catch (error) {
+    return `❌ Network Error: Could not reach execution server.`;
+  }
+}
 // Save code to localStorage
 function saveCode() {
   const language = document.getElementById("languageSelect").value;
