@@ -1688,16 +1688,12 @@ function switchSection(sectionId) {
         chart.resize();
       }, 100);
     }
-    if (sectionId === "studyroom") {
-      // <-- TAMBAHKAN INI
-      loadVideoLearningCenter();
-      document.getElementById("studyRoomVideoDetailView").style.display =
-        "none";
-      document.getElementById("studyRoomCourseListView").style.display =
-        "block";
-      updateBreadcrumb([
-        translations[currentLanguage]["nav.studyroom"] || "Study Room",
-      ]);
+    if (sectionId === "codeplayground") {
+      // Panggil initCodePlayground dengan sedikit delay untuk memastikan DOM sudah stabil
+      setTimeout(() => {
+        initCodePlayground();
+        loadCodePlayground(); // Muat kode tersimpan setelah editor siap
+      }, 50);
     }
   }
 }
