@@ -3,8 +3,8 @@ export default async function handler(request, response) {
     return response.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const { message, context, language } = await request.json();
-  // Catatan: Nama variabel di Vercel harus diubah menjadi DEEPSEEK_API_KEY di Langkah 3
+  const { message, context, language } = await request.body;
+
   const apiKey = process.env.DEEPSEEK_API_KEY;
 
   if (!apiKey) {
@@ -69,3 +69,4 @@ export default async function handler(request, response) {
       .json({ error: "Gagal mengambil data dari DeepSeek: " + error.message });
   }
 }
+
