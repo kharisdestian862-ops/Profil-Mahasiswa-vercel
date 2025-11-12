@@ -1667,11 +1667,13 @@ function switchSection(sectionId) {
 
   sections.forEach((sec) => (sec.style.display = "none"));
 
-  if (sectionId === "chatbot") {
-    document.body.classList.add("chatbot-active");
+  // === LOGIKA PENANDA LAYOUT BARU ===
+  if (sectionId === "chatbot" || sectionId === "codeplayground") {
+    document.body.classList.add("full-layout-active");
   } else {
-    document.body.classList.remove("chatbot-active");
+    document.body.classList.remove("full-layout-active");
   }
+  // === AKHIR LOGIKA PENANDA LAYOUT BARU ===
 
   const activeSection = document.getElementById(sectionId);
   if (activeSection) {
@@ -1689,10 +1691,10 @@ function switchSection(sectionId) {
       }, 100);
     }
     if (sectionId === "codeplayground") {
-      // Panggil initCodePlayground dengan sedikit delay untuk memastikan DOM sudah stabil
+      // Panggil initCodePlayground saat section diakses
       setTimeout(() => {
         initCodePlayground();
-        loadCodePlayground(); // Muat kode tersimpan setelah editor siap
+        loadCodePlayground();
       }, 50);
     }
   }
