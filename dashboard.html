@@ -1165,20 +1165,15 @@
 
           <section id="studyroom" class="section" style="display: none">
             <div class="breadcrumb" id="studyRoomBreadcrumb">
-              <span class="breadcrumb-item active" data-i18n="nav.studyroom"
-                >Study Room</span
-              >
+              <span class="breadcrumb-item active">Study Room</span>
             </div>
 
             <div id="studyRoomCourseListView">
-              <h2 data-i18n="studyroom.select_course_video">
-                Pilih Mata Kuliah
-              </h2>
-              <p class="section-description" data-i18n="studyroom.description">
+              <h2>Pilih Mata Kuliah</h2>
+              <p class="section-description">
                 Pilih mata kuliah untuk melihat koleksi video pembelajaran
                 terkait.
               </p>
-
               <div class="courses-grid" id="studyRoomCoursesGrid"></div>
             </div>
 
@@ -1186,24 +1181,23 @@
               <div class="detail-header">
                 <button class="back-btn" id="backToStudyRoomList">
                   <span>←</span>
-                  <span data-i18n="common.back_to_courses"
-                    >Kembali ke Mata Kuliah</span
-                  >
+                  <span>Kembali ke Mata Kuliah</span>
                 </button>
+                <div class="course-title">
+                  <h2 id="studyRoomCurrentCourseName">Algorithms</h2>
+                  <p id="studyRoomCurrentVideoCount">2 video tersedia</p>
+                </div>
               </div>
 
               <div class="video-player-content">
+                <!-- Bagian utama untuk video player -->
                 <div class="video-player-main">
-                  <div class="course-title">
-                    <h2 id="studyRoomCurrentCourseName">Algorithms</h2>
-                    <p id="studyRoomCurrentVideoCount">2 video tersedia</p>
-                  </div>
-
                   <div class="youtube-player-container">
                     <iframe
                       id="youtubePlayer"
                       src=""
                       frameborder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowfullscreen
                     ></iframe>
                   </div>
@@ -1220,8 +1214,10 @@
                   </div>
                 </div>
 
+                <!-- Sidebar untuk daftar video -->
                 <div class="video-list-sidebar" id="videoListSidebar">
                   <h3>Video Materi</h3>
+                  <!-- Daftar video akan diisi oleh JavaScript -->
                 </div>
               </div>
             </div>
