@@ -1584,7 +1584,6 @@ function switchSection(sectionId) {
     ".sidebar nav a, .mobile-sidebar nav a"
   );
   const sections = document.querySelectorAll(".section");
-  const mainWrapper = document.querySelector(".main-wrapper"); // <-- Tambahkan ini
 
   links.forEach((link) => link.classList.remove("active"));
 
@@ -1600,15 +1599,11 @@ function switchSection(sectionId) {
 
   sections.forEach((sec) => (sec.style.display = "none"));
 
-  // === LOGIKA BARU UNTUK LAYOUT CHATBOT ===
-  if (mainWrapper) {
-    if (sectionId === "chatbot") {
-      mainWrapper.classList.add("chatbot-active");
-    } else {
-      mainWrapper.classList.remove("chatbot-active");
-    }
+  if (sectionId === "chatbot") {
+    document.body.classList.add("chatbot-active");
+  } else {
+    document.body.classList.remove("chatbot-active");
   }
-  // === AKHIR LOGIKA BARU ===
 
   const activeSection = document.getElementById(sectionId);
   if (activeSection) {
