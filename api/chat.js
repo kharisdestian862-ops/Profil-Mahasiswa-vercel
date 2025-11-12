@@ -17,13 +17,19 @@ export default async function handler(request, response) {
   }
 
   try {
-    const { message, context, language = 'id' } = await request.json();
+    // Vercel compatible way to parse JSON
+    let body = '';
+    for await (const chunk of request) {
+      body += chunk;
+    }
+    
+    const { message, context, language = 'id' } = JSON.parse(body);
 
     if (!message) {
       return response.status(400).json({ error: 'Message is required' });
     }
 
-    const apiKey = process.env.DEEPSEEK_API_KEY; // Tetap pakai nama variabel ini
+    const apiKey = process.env.DEEPSEEK_API_KEY;
     
     if (!apiKey) {
       console.error('DEEPSEEK_API_KEY is missing');
@@ -37,17 +43,17 @@ export default async function handler(request, response) {
 
     console.log('Calling OpenRouter API...');
     
-    // Call OpenRouter API (bukan DeepSeek langsung)
+    // Call OpenRouter API
     const openRouterResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
-        'HTTP-Referer': 'https://your-domain.vercel.app', // Ganti dengan domain Anda
+        'HTTP-Referer': 'https://your-domain.vercel.app',
         'X-Title': 'UCIC Dashboard'
       },
       body: JSON.stringify({
-        model: 'deepseek/deepseek-chat', // Model melalui OpenRouter
+        model: 'deepseek/deepseek-chat',
         messages: [
           {
             role: 'system',
