@@ -2913,26 +2913,35 @@ document.addEventListener("DOMContentLoaded", function () {
           language: currentLanguage,
         }),
       })
-        .then((response) => response.json())
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
         .then((data) => {
           removeMessage(loadingMessageId);
 
-          if (data.choices && data.choices[0].message) {
+          // Handle berbagai format response
+          if (data.choices && data.choices[0] && data.choices[0].message) {
             const aiResponse = data.choices[0].message.content;
             addMessage(aiResponse, "bot");
           } else if (data.error) {
-            addMessage("Maaf, ada error: " + data.error, "bot");
+            addMessage(`Error: ${data.error}`, "bot");
+          } else if (data.message) {
+            addMessage(data.message, "bot");
           } else {
-            addMessage("Maaf, saya tidak menerima balasan yang valid.", "bot");
+            console.error("Unexpected API response:", data);
+            addMessage("Maaf, format response tidak dikenali.", "bot");
           }
         })
         .catch((error) => {
           removeMessage(loadingMessageId);
+          console.error("Fetch error:", error);
           addMessage(
             "Maaf, terjadi masalah koneksi ke server. Coba lagi nanti.",
             "bot"
           );
-          console.error("Error:", error);
         });
     };
 
