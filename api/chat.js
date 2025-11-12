@@ -3,20 +3,21 @@ export default async function handler(request, response) {
     return response.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const { message, context, language } = request.body;
-  const apiKey = process.env.GROQ_API_KEY;
+  const { message, context, language } = await request.json();
+  // Catatan: Nama variabel di Vercel harus diubah menjadi DEEPSEEK_API_KEY di Langkah 3
+  const apiKey = process.env.DEEPSEEK_API_KEY;
 
   if (!apiKey) {
     return response
       .status(500)
-      .json({ error: "API key tidak diatur di server" });
+      .json({ error: "API key (DEEPSEEK_API_KEY) tidak diatur di server" });
   }
 
   let systemPrompt;
 
   if (language === "id") {
     systemPrompt =
-      "Anda adalah Asdos (Asisten Dashboard) yang ramah dan membantu. Jawab pertanyaan mahasiswa dalam Bahasa Indonesia dengan singkat dan jelas.";
+      "Anda adalah Asdos (Asisten Dashboard) yang ramah dan membantu. Jawab pertanyaan mahasiswa dalam Bahasa Indonesia dengan singkat dan jelas. Nama pengguna adalah Kharis Destian Maulana.";
     if (context) {
       systemPrompt += `\n\nData yang relevan untuk pertanyaan ini adalah: "${context}". Gunakan data ini untuk merumuskan jawaban Anda. Jika data ini adalah jawaban lengkap (seperti sapaan atau IPK), cukup sampaikan kembali dengan cara yang ramah.`;
     } else {
@@ -25,7 +26,7 @@ export default async function handler(request, response) {
     }
   } else {
     systemPrompt =
-      "You are Asdos (Dashboard Assistant), a friendly and helpful assistant. Answer the student's questions in English clearly and concisely.";
+      "You are Asdos (Dashboard Assistant), a friendly and helpful assistant. Answer the student's questions in English clearly and concisely. The user's name is Kharis Destian Maulana.";
     if (context) {
       systemPrompt += `\n\nRelevant data for this question is: "${context}". Use this data to formulate your answer. If this data is a complete answer (like a greeting or GPA), just deliver it in a friendly way.`;
     } else {
@@ -35,8 +36,8 @@ export default async function handler(request, response) {
   }
 
   try {
-    const groqResponse = await fetch(
-      "https://api.groq.com/openai/v1/chat/completions",
+    const deepseekResponse = await fetch(
+      "https://api.deepseek.com/v1/chat/completions",
       {
         method: "POST",
         headers: {
@@ -44,7 +45,8 @@ export default async function handler(request, response) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "llama-3.1-8b-instant",
+          // Mengganti model Groq dengan model DeepSeek yang cepat dan kuat
+          model: "deepseek-chat",
           messages: [
             {
               role: "system",
@@ -59,11 +61,11 @@ export default async function handler(request, response) {
       }
     );
 
-    const data = await groqResponse.json();
+    const data = await deepseekResponse.json();
     response.status(200).json(data);
   } catch (error) {
     response
       .status(500)
-      .json({ error: "Gagal mengambil data dari Groq: " + error.message });
+      .json({ error: "Gagal mengambil data dari DeepSeek: " + error.message });
   }
 }
