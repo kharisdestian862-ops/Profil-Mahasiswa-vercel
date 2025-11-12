@@ -1,3 +1,4 @@
+
 * {
   margin: 0;
   padding: 0;
@@ -3495,6 +3496,30 @@ body.dark-mode .chat-message.bot {
 
 #chatbotSendBtn:hover {
   background: var(--primary-dark);
+}
+
+body.chatbot-active .chatbot-fab {
+  display: none;
+}
+
+body.chatbot-active .main-wrapper .sidebar-right {
+  display: none;
+}
+
+body.chatbot-active .main-wrapper {
+  grid-template-columns: 1fr;
+}
+
+body.chatbot-active .main-wrapper .main-content {
+  flex-grow: 1;
+  max-width: 100%;
+}
+
+@media (max-width: 1200px) {
+  body.chatbot-active .main-wrapper {
+    padding: 1rem;
+    gap: 0;
+  }
 }
 
 /* 5. Responsif untuk Halaman Chatbot */
