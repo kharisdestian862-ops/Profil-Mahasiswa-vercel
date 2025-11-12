@@ -4253,3 +4253,40 @@ document.addEventListener("DOMContentLoaded", function () {
   // Initialize study room system
   initStudyRoomSystem();
 });
+
+function showCreateRoomModal() {
+  document.getElementById("createRoomModal").style.display = "flex";
+}
+
+function showJoinRoomModal() {
+  document.getElementById("joinRoomModal").style.display = "flex";
+}
+
+function closeModal() {
+  document.getElementById("createRoomModal").style.display = "none";
+  document.getElementById("joinRoomModal").style.display = "none";
+}
+
+function createRoom() {
+  const roomName = document.getElementById("roomNameInput").value;
+  if (!roomName) {
+    alert("Masukkan nama room");
+    return;
+  }
+  alert(`Room "${roomName}" berhasil dibuat!`);
+  closeModal();
+}
+
+function joinRoom() {
+  const roomCode = document.getElementById("roomCodeInput").value.toUpperCase();
+  if (!roomCode || roomCode.length !== 6) {
+    alert("Masukkan kode room 6 karakter");
+    return;
+  }
+  alert(`Bergabung ke room: ${roomCode}`);
+  closeModal();
+}
+
+function showInviteModal() {
+  alert("Fitur invite teman akan datang soon!");
+}
