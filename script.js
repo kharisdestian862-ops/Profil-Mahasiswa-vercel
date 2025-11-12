@@ -4210,9 +4210,20 @@ function populateVideoList(courseKey, videos) {
 }
 
 function playVideo(video) {
-  const embedUrl = `https://www.youtube.com/embed/${video.url}?autoplay=1&rel=0`;
+  const embedUrl = `https://www.youtube.com/embed/${video.url}?autoplay=1&rel=0&modestbranding=1&showinfo=0`;
   document.getElementById("youtubePlayer").src = embedUrl;
   document.getElementById("currentVideoTitle").textContent = video.title;
   document.getElementById("currentVideoDescription").textContent =
     video.description;
+
+  // Update active state di sidebar
+  document
+    .querySelectorAll(".video-item")
+    .forEach((v) => v.classList.remove("active"));
+  const activeItem = document.querySelector(
+    `.video-item[data-video-id="${video.id}"]`
+  );
+  if (activeItem) {
+    activeItem.classList.add("active");
+  }
 }
