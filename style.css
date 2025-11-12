@@ -3962,390 +3962,175 @@ body.dark-mode .scroll-to-bottom-btn:hover {
   font-size: 0.9em;
 }
 
-/* STUDY ROOM STYLES - Discord-like Layout */
-.study-room-container {
-  display: flex;
-  flex-direction: column;
+/* STUDY ROOM SIMPLE STYLES */
+.study-room-fullscreen {
   height: calc(100vh - 80px);
-  background: #36393f;
-  color: white;
-}
-
-.study-room-header {
-  padding: 20px;
-  background: #2f3136;
-  border-bottom: 1px solid #202225;
-}
-
-.study-room-header h2 {
-  margin: 0;
-  color: white;
-}
-
-.study-room-header p {
-  margin: 5px 0 0 0;
-  color: #b9bbbe;
-}
-
-.study-room-content {
-  display: flex;
-  flex: 1;
-  overflow: hidden;
-}
-
-/* Sidebar Kiri - Rooms List */
-.rooms-sidebar {
-  width: 240px;
-  background: #2f3136;
-  border-right: 1px solid #202225;
+  background: #f8f9fa;
   display: flex;
   flex-direction: column;
 }
 
-.sidebar-header {
-  padding: 15px;
-  border-bottom: 1px solid #202225;
-}
-
-.sidebar-header h3 {
-  margin: 0 0 10px 0;
-  color: white;
-}
-
-.btn-create-room {
-  width: 100%;
-  padding: 8px;
-  background: #3ba55d;
-  color: white;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-}
-
-.rooms-list {
-  flex: 1;
-  padding: 10px 0;
-  overflow-y: auto;
-}
-
-.room-item {
-  display: flex;
-  align-items: center;
-  padding: 8px 15px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.room-item:hover {
-  background: #34373c;
-}
-
-.room-item.active {
-  background: #393c43;
-}
-
-.room-icon {
-  font-size: 18px;
-  margin-right: 10px;
-}
-
-.room-info {
-  flex: 1;
-}
-
-.room-name {
-  font-weight: 500;
-  color: white;
-}
-
-.room-meta {
-  font-size: 12px;
-  color: #b9bbbe;
-}
-
-.quick-actions {
-  padding: 15px;
-  border-top: 1px solid #202225;
-}
-
-.btn-join {
-  width: 100%;
-  padding: 8px;
-  background: #5865f2;
-  color: white;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-}
-
-/* Area Tengah - Channels */
-.channels-area {
-  flex: 1;
-  background: #36393f;
-  display: flex;
-  flex-direction: column;
-}
-
-.channel-header {
-  padding: 15px 20px;
-  border-bottom: 1px solid #202225;
+.study-room-simple-header {
+  padding: 20px 30px;
+  background: white;
+  border-bottom: 1px solid #e1e5e9;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.channel-header h3 {
+.study-room-simple-header h2 {
   margin: 0;
-  color: white;
+  color: #1e293b;
 }
 
-.btn-invite {
-  padding: 6px 12px;
-  background: #5865f2;
-  color: white;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-}
-
-.voice-channels {
-  flex: 1;
-  padding: 20px;
-  overflow-y: auto;
-}
-
-.channel-category {
-  margin-bottom: 25px;
-}
-
-.channel-category h4 {
-  margin: 0 0 10px 0;
-  color: #b9bbbe;
-  font-size: 12px;
-  text-transform: uppercase;
-}
-
-.channel-list {
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-
-.voice-channel,
-.video-channel {
-  display: flex;
-  align-items: center;
-  padding: 8px 10px;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.voice-channel:hover,
-.video-channel:hover {
-  background: #34373c;
-}
-
-.voice-channel.active {
-  background: #393c43;
-}
-
-.channel-icon {
-  margin-right: 8px;
-  font-size: 16px;
-}
-
-.user-count {
-  margin-left: auto;
-  font-size: 12px;
-  color: #b9bbbe;
-}
-
-.participants-section {
-  padding: 15px 20px;
-  border-top: 1px solid #202225;
-  background: #2f3136;
-}
-
-.participants-section h4 {
-  margin: 0 0 10px 0;
-  color: #b9bbbe;
-  font-size: 12px;
-  text-transform: uppercase;
-}
-
-.participants-list {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.participant {
-  display: flex;
-  align-items: center;
-  padding: 5px;
-  border-radius: 3px;
-}
-
-.participant:hover {
-  background: #34373c;
-}
-
-.user-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: #5865f2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  margin-right: 8px;
-}
-
-.username {
-  flex: 1;
-  color: white;
-}
-
-.user-status {
-  font-size: 14px;
-}
-
-.user-status.speaking {
-  color: #3ba55d;
-}
-
-/* Sidebar Kanan - Chat */
-.chat-sidebar {
-  width: 300px;
-  background: #2f3136;
-  border-left: 1px solid #202225;
-  display: flex;
-  flex-direction: column;
-}
-
-.chat-header {
-  padding: 15px;
-  border-bottom: 1px solid #202225;
-}
-
-.chat-header h4 {
-  margin: 0;
-  color: white;
-}
-
-.chat-messages {
-  flex: 1;
-  padding: 15px;
-  overflow-y: auto;
-}
-
-.message {
-  display: flex;
-  margin-bottom: 15px;
-}
-
-.message-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: #5865f2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: bold;
-  margin-right: 10px;
-}
-
-.message-content {
-  flex: 1;
-}
-
-.message-author {
-  font-weight: 500;
-  color: white;
-  margin-bottom: 4px;
-}
-
-.message-text {
-  color: #dcddde;
-  line-height: 1.4;
-}
-
-.message-time {
-  font-size: 11px;
-  color: #72767d;
-  margin-top: 2px;
-}
-
-.chat-input-container {
-  padding: 15px;
-  border-top: 1px solid #202225;
+.header-actions {
   display: flex;
   gap: 10px;
 }
 
-.chat-input {
-  flex: 1;
-  padding: 10px;
-  background: #40444b;
+.btn-create,
+.btn-join {
+  padding: 10px 20px;
   border: none;
-  border-radius: 3px;
-  color: white;
-}
-
-.chat-input::placeholder {
-  color: #72767d;
-}
-
-.btn-send {
-  padding: 10px 15px;
-  background: #5865f2;
-  color: white;
-  border: none;
-  border-radius: 3px;
+  border-radius: 8px;
   cursor: pointer;
+  font-weight: 500;
 }
 
-.voice-controls {
-  padding: 15px;
-  border-top: 1px solid #202225;
+.btn-create {
+  background: #6366f1;
+  color: white;
+}
+
+.btn-join {
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.study-room-content-simple {
+  flex: 1;
   display: flex;
-  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.empty-state {
+  text-align: center;
+  max-width: 400px;
+}
+
+.empty-icon {
+  font-size: 64px;
+  margin-bottom: 20px;
+}
+
+.empty-state h3 {
+  margin: 0 0 10px 0;
+  color: #1e293b;
+}
+
+.empty-state p {
+  color: #64748b;
+  margin-bottom: 30px;
+}
+
+.empty-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+/* Video Call Area */
+.video-call-area {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.video-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  align-content: start;
+}
+
+.video-container {
+  position: relative;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  aspect-ratio: 16/9;
+}
+
+.video-container video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.video-label {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.local-video video {
+  transform: scaleX(-1); /* Mirror effect untuk video lokal */
+}
+
+.call-controls {
+  padding: 20px;
+  background: white;
+  border-top: 1px solid #e1e5e9;
+  display: flex;
+  justify-content: center;
+  gap: 15px;
 }
 
 .control-btn {
-  flex: 1;
-  padding: 10px;
-  background: #4f545c;
-  color: white;
+  padding: 12px 24px;
   border: none;
-  border-radius: 3px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  color: #475569;
   cursor: pointer;
-  transition: background 0.2s;
+  font-weight: 500;
+  transition: all 0.2s;
 }
 
 .control-btn:hover {
-  background: #5d6269;
+  background: #e2e8f0;
 }
 
-.control-btn.leave {
-  background: #ed4245;
+.control-btn.btn-danger {
+  background: #ef4444;
+  color: white;
 }
 
-.control-btn.leave:hover {
-  background: #c03537;
+.control-btn.btn-danger:hover {
+  background: #dc2626;
 }
 
-/* Modal Styles untuk Study Room */
+/* Modal Styles (Sederhana) */
 .modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.8);
+  background: rgba(0, 0, 0, 0.5);
   display: none;
   justify-content: center;
   align-items: center;
@@ -4353,30 +4138,25 @@ body.dark-mode .scroll-to-bottom-btn:hover {
 }
 
 .modal-content {
-  background: #36393f;
+  background: white;
   padding: 30px;
-  border-radius: 8px;
+  border-radius: 12px;
   min-width: 400px;
-  border: 1px solid #202225;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 }
 
 .modal-content h3 {
   margin: 0 0 20px 0;
-  color: white;
+  color: #1e293b;
 }
 
 .modal-content input {
   width: 100%;
   padding: 12px;
-  background: #40444b;
-  border: 1px solid #202225;
-  border-radius: 3px;
-  color: white;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
   margin-bottom: 20px;
-}
-
-.modal-content input::placeholder {
-  color: #72767d;
+  font-size: 16px;
 }
 
 .modal-actions {
@@ -4387,22 +4167,18 @@ body.dark-mode .scroll-to-bottom-btn:hover {
 
 .btn-primary {
   padding: 10px 20px;
-  background: #5865f2;
+  background: #6366f1;
   color: white;
   border: none;
-  border-radius: 3px;
+  border-radius: 8px;
   cursor: pointer;
 }
 
 .btn-secondary {
   padding: 10px 20px;
-  background: #4f545c;
-  color: white;
-  border: none;
-  border-radius: 3px;
+  background: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
   cursor: pointer;
-}
-
-.btn-danger {
-  background: #ed4245;
 }
