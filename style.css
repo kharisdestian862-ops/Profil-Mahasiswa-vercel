@@ -3932,32 +3932,477 @@ body.dark-mode .scroll-to-bottom-btn:hover {
 
 .chat-message.bot .chat-text {
   line-height: 1.5;
-  word-wrap: break-word;
 }
 
+.chat-message.bot .chat-text b,
 .chat-message.bot .chat-text strong {
   font-weight: 600;
   color: #1e293b;
 }
 
+.chat-message.bot .chat-text i,
 .chat-message.bot .chat-text em {
   font-style: italic;
-  color: #475569;
 }
 
-.chat-message.bot .chat-text ul,
-.chat-message.bot .chat-text ol {
+.chat-message.bot .chat-text ul {
   margin: 8px 0;
-  padding-left: 24px;
+  padding-left: 20px;
 }
 
 .chat-message.bot .chat-text li {
   margin: 4px 0;
-  padding-left: 4px;
 }
 
-.chat-message.bot .chat-text br {
-  content: "";
-  display: block;
-  margin: 6px 0;
+.chat-message.bot .chat-text code {
+  background: #f1f5f9;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: "Courier New", monospace;
+  font-size: 0.9em;
+}
+
+/* STUDY ROOM STYLES - Discord-like Layout */
+.study-room-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 80px);
+  background: #36393f;
+  color: white;
+}
+
+.study-room-header {
+  padding: 20px;
+  background: #2f3136;
+  border-bottom: 1px solid #202225;
+}
+
+.study-room-header h2 {
+  margin: 0;
+  color: white;
+}
+
+.study-room-header p {
+  margin: 5px 0 0 0;
+  color: #b9bbbe;
+}
+
+.study-room-content {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Sidebar Kiri - Rooms List */
+.rooms-sidebar {
+  width: 240px;
+  background: #2f3136;
+  border-right: 1px solid #202225;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 15px;
+  border-bottom: 1px solid #202225;
+}
+
+.sidebar-header h3 {
+  margin: 0 0 10px 0;
+  color: white;
+}
+
+.btn-create-room {
+  width: 100%;
+  padding: 8px;
+  background: #3ba55d;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.rooms-list {
+  flex: 1;
+  padding: 10px 0;
+  overflow-y: auto;
+}
+
+.room-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.room-item:hover {
+  background: #34373c;
+}
+
+.room-item.active {
+  background: #393c43;
+}
+
+.room-icon {
+  font-size: 18px;
+  margin-right: 10px;
+}
+
+.room-info {
+  flex: 1;
+}
+
+.room-name {
+  font-weight: 500;
+  color: white;
+}
+
+.room-meta {
+  font-size: 12px;
+  color: #b9bbbe;
+}
+
+.quick-actions {
+  padding: 15px;
+  border-top: 1px solid #202225;
+}
+
+.btn-join {
+  width: 100%;
+  padding: 8px;
+  background: #5865f2;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+/* Area Tengah - Channels */
+.channels-area {
+  flex: 1;
+  background: #36393f;
+  display: flex;
+  flex-direction: column;
+}
+
+.channel-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid #202225;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.channel-header h3 {
+  margin: 0;
+  color: white;
+}
+
+.btn-invite {
+  padding: 6px 12px;
+  background: #5865f2;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.voice-channels {
+  flex: 1;
+  padding: 20px;
+  overflow-y: auto;
+}
+
+.channel-category {
+  margin-bottom: 25px;
+}
+
+.channel-category h4 {
+  margin: 0 0 10px 0;
+  color: #b9bbbe;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.channel-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.voice-channel,
+.video-channel {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.voice-channel:hover,
+.video-channel:hover {
+  background: #34373c;
+}
+
+.voice-channel.active {
+  background: #393c43;
+}
+
+.channel-icon {
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+.user-count {
+  margin-left: auto;
+  font-size: 12px;
+  color: #b9bbbe;
+}
+
+.participants-section {
+  padding: 15px 20px;
+  border-top: 1px solid #202225;
+  background: #2f3136;
+}
+
+.participants-section h4 {
+  margin: 0 0 10px 0;
+  color: #b9bbbe;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.participants-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.participant {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  border-radius: 3px;
+}
+
+.participant:hover {
+  background: #34373c;
+}
+
+.user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #5865f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.username {
+  flex: 1;
+  color: white;
+}
+
+.user-status {
+  font-size: 14px;
+}
+
+.user-status.speaking {
+  color: #3ba55d;
+}
+
+/* Sidebar Kanan - Chat */
+.chat-sidebar {
+  width: 300px;
+  background: #2f3136;
+  border-left: 1px solid #202225;
+  display: flex;
+  flex-direction: column;
+}
+
+.chat-header {
+  padding: 15px;
+  border-bottom: 1px solid #202225;
+}
+
+.chat-header h4 {
+  margin: 0;
+  color: white;
+}
+
+.chat-messages {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+}
+
+.message {
+  display: flex;
+  margin-bottom: 15px;
+}
+
+.message-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #5865f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.message-content {
+  flex: 1;
+}
+
+.message-author {
+  font-weight: 500;
+  color: white;
+  margin-bottom: 4px;
+}
+
+.message-text {
+  color: #dcddde;
+  line-height: 1.4;
+}
+
+.message-time {
+  font-size: 11px;
+  color: #72767d;
+  margin-top: 2px;
+}
+
+.chat-input-container {
+  padding: 15px;
+  border-top: 1px solid #202225;
+  display: flex;
+  gap: 10px;
+}
+
+.chat-input {
+  flex: 1;
+  padding: 10px;
+  background: #40444b;
+  border: none;
+  border-radius: 3px;
+  color: white;
+}
+
+.chat-input::placeholder {
+  color: #72767d;
+}
+
+.btn-send {
+  padding: 10px 15px;
+  background: #5865f2;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.voice-controls {
+  padding: 15px;
+  border-top: 1px solid #202225;
+  display: flex;
+  gap: 8px;
+}
+
+.control-btn {
+  flex: 1;
+  padding: 10px;
+  background: #4f545c;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.control-btn:hover {
+  background: #5d6269;
+}
+
+.control-btn.leave {
+  background: #ed4245;
+}
+
+.control-btn.leave:hover {
+  background: #c03537;
+}
+
+/* Modal Styles untuk Study Room */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #36393f;
+  padding: 30px;
+  border-radius: 8px;
+  min-width: 400px;
+  border: 1px solid #202225;
+}
+
+.modal-content h3 {
+  margin: 0 0 20px 0;
+  color: white;
+}
+
+.modal-content input {
+  width: 100%;
+  padding: 12px;
+  background: #40444b;
+  border: 1px solid #202225;
+  border-radius: 3px;
+  color: white;
+  margin-bottom: 20px;
+}
+
+.modal-content input::placeholder {
+  color: #72767d;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btn-primary {
+  padding: 10px 20px;
+  background: #5865f2;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  padding: 10px 20px;
+  background: #4f545c;
+  color: white;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.btn-danger {
+  background: #ed4245;
 }
