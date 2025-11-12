@@ -4046,44 +4046,54 @@ body.dark-mode .scroll-to-bottom-btn:hover {
 
 /* Video Call Area */
 .video-call-area {
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
+/* Video Grid (Ini yang membuat tampilan seperti Discord/Zoom) */
 .video-grid {
-  flex: 1;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
-  padding: 20px;
-  align-content: start;
+  gap: 10px;
+  width: 100%;
+  height: 60vh; /* Agar ada batas tinggi di desktop */
+  min-height: 300px;
+  max-height: 800px;
+  background: #1a1a1a;
+  border-radius: 10px;
+  padding: 10px;
+  overflow: hidden;
 }
 
 .video-container {
   position: relative;
-  background: #000;
-  border-radius: 12px;
+  width: 100%;
+  height: 100%;
+  background: #333;
+  border-radius: 8px;
   overflow: hidden;
-  aspect-ratio: 16/9;
 }
 
 .video-container video {
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: cover; /* Penting untuk menjaga rasio aspek video */
 }
 
 .video-label {
   position: absolute;
-  bottom: 10px;
-  left: 10px;
-  background: rgba(0, 0, 0, 0.7);
+  bottom: 5px;
+  left: 5px;
+  background: rgba(0, 0, 0, 0.5);
   color: white;
-  padding: 5px 10px;
+  padding: 2px 8px;
   border-radius: 4px;
-  font-size: 12px;
+  font-size: 0.8rem;
+  z-index: 2;
 }
 
 .local-video video {
@@ -4091,41 +4101,55 @@ body.dark-mode .scroll-to-bottom-btn:hover {
 }
 
 .call-controls {
-  padding: 20px;
-  background: white;
-  border-top: 1px solid #e1e5e9;
   display: flex;
   justify-content: center;
-  gap: 15px;
+  gap: 1.5rem;
+  padding: 1rem;
+  background: #f1f5f9;
+  border-radius: 10px;
 }
 
-.control-btn {
-  padding: 12px 24px;
+.call-controls .control-btn {
+  padding: 0.75rem 1.2rem;
   border: none;
   border-radius: 8px;
-  background: #f1f5f9;
-  color: #475569;
+  font-weight: 600;
   cursor: pointer;
-  font-weight: 500;
-  transition: all 0.2s;
-}
-
-.control-btn:hover {
   background: #e2e8f0;
+  color: #1a1a1a;
+  transition: background 0.2s;
 }
 
-.control-btn.btn-danger {
+.call-controls .control-btn:hover {
+  background: #cbd5e1;
+}
+
+.call-controls .btn-danger {
   background: #ef4444;
   color: white;
 }
 
-.control-btn.btn-danger:hover {
+.call-controls .btn-danger:hover {
   background: #dc2626;
 }
 
-/* Modal Styles (Sederhana) */
-/* STUDY ROOM MODAL FIX */
-/* === STUDY ROOM MODAL - SIMPLE FIX === */
+body.dark-mode .video-grid {
+  background: #0f172a;
+}
+body.dark-mode .video-container {
+  background: #333;
+}
+body.dark-mode .call-controls {
+  background: #1e293b;
+}
+body.dark-mode .call-controls .control-btn {
+  background: #334155;
+  color: var(--text-primary);
+}
+body.dark-mode .call-controls .control-btn:hover {
+  background: #475569;
+}
+
 .modal {
   position: fixed;
   top: 0;
