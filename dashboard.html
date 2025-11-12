@@ -1164,138 +1164,61 @@
           <!-- STUDY ROOM SECTION -->
 
           <section id="studyroom" class="section" style="display: none">
-            <div class="study-room-fullscreen">
-              <!-- Header Simple -->
-              <div class="study-room-simple-header">
-                <h2>🎓 Virtual Study Rooms</h2>
-                <div class="header-actions">
-                  <button class="btn-create" onclick="showCreateRoomModal()">
-                    + Buat Room
-                  </button>
-                  <button class="btn-join" onclick="showJoinRoomModal()">
-                    🔗 Join Room
-                  </button>
-                </div>
-              </div>
+            <div class="breadcrumb" id="studyRoomBreadcrumb">
+              <span class="breadcrumb-item active" data-i18n="nav.studyroom"
+                >Study Room</span
+              >
+            </div>
 
-              <!-- Content Area - Kosong sampai user buat/join room -->
-              <div class="study-room-content-simple">
-                <div class="empty-state">
-                  <div class="empty-icon">🎓</div>
-                  <h3>Belum ada Study Room</h3>
-                  <p>
-                    Buat room baru atau join room dengan kode untuk mulai
-                    belajar bersama
-                  </p>
-                  <div class="empty-actions">
-                    <button class="btn-primary" onclick="showCreateRoomModal()">
-                      Buat Room Baru
-                    </button>
-                    <button class="btn-secondary" onclick="showJoinRoomModal()">
-                      Join dengan Kode
-                    </button>
-                  </div>
-                </div>
+            <div id="studyRoomCourseListView">
+              <h2 data-i18n="studyroom.select_course_video">
+                Pilih Mata Kuliah
+              </h2>
+              <p class="section-description" data-i18n="studyroom.description">
+                Pilih mata kuliah untuk melihat koleksi video pembelajaran
+                terkait.
+              </p>
 
-                <!-- Video Call Area (akan muncul setelah join room) -->
-                <div
-                  id="videoCallArea"
-                  class="video-call-area"
-                  style="display: none"
-                >
-                  <div
-                    id="videoCallArea"
-                    class="video-call-area"
-                    style="display: none"
+              <div class="courses-grid" id="studyRoomCoursesGrid"></div>
+            </div>
+
+            <div id="studyRoomVideoDetailView" style="display: none">
+              <div class="detail-header">
+                <button class="back-btn" id="backToStudyRoomList">
+                  <span>←</span>
+                  <span data-i18n="common.back_to_courses"
+                    >Kembali ke Mata Kuliah</span
                   >
-                    <div class="video-grid" id="videoGrid">
-                      <div class="video-container local-video" id="video-self">
-                        <video
-                          id="localVideo"
-                          autoplay
-                          muted
-                          playsinline
-                        ></video>
-                        <div class="video-label">Anda</div>
-                      </div>
-                    </div>
-
-                    <div class="call-controls">
-                      <button class="control-btn" onclick="toggleMute()">
-                        🎤 Mute
-                      </button>
-                      <button class="control-btn" onclick="toggleVideo()">
-                        📹 Video
-                      </button>
-                      <button class="control-btn" onclick="shareScreen()">
-                        🖥️ Share
-                      </button>
-                      <button
-                        class="control-btn btn-danger"
-                        onclick="leaveCall()"
-                      >
-                        📞 Leave
-                      </button>
-                    </div>
-                  </div>
-
-                  <div class="call-controls">
-                    <button class="control-btn" onclick="toggleMute()">
-                      🎤 Mute
-                    </button>
-                    <button class="control-btn" onclick="toggleVideo()">
-                      📹 Video
-                    </button>
-                    <button class="control-btn" onclick="shareScreen()">
-                      🖥️ Share
-                    </button>
-                    <button
-                      class="control-btn btn-danger"
-                      onclick="leaveCall()"
-                    >
-                      📞 Leave
-                    </button>
-                  </div>
+                </button>
+                <div class="course-title">
+                  <h2 id="studyRoomCurrentCourseName">Algorithms</h2>
+                  <p id="studyRoomCurrentVideoCount">8 video tersedia</p>
                 </div>
               </div>
-            </div>
 
-            <!-- Modals (Sama seperti sebelumnya) -->
-            <div id="createRoomModal" class="modal">
-              <div class="modal-content">
-                <h3>Buat Study Room</h3>
-                <input
-                  type="text"
-                  id="roomNameInput"
-                  placeholder="Nama Room (contoh: Study Algorithms)"
-                />
-                <div class="modal-actions">
-                  <button onclick="createRoom()" class="btn-primary">
-                    Buat Room
-                  </button>
-                  <button onclick="closeModal()" class="btn-secondary">
-                    Batal
-                  </button>
+              <div class="video-player-content">
+                <div class="video-list-sidebar" id="videoListSidebar">
+                  <h3>Video Materi</h3>
                 </div>
-              </div>
-            </div>
 
-            <div id="joinRoomModal" class="modal">
-              <div class="modal-content">
-                <h3>Join Study Room</h3>
-                <input
-                  type="text"
-                  id="roomCodeInput"
-                  placeholder="Kode Room (contoh: A1B2C3)"
-                  maxlength="6"
-                />
-                <div class="modal-actions">
-                  <button onclick="joinRoom()" class="btn-primary">
-                    Join Room
-                  </button>
-                  <button onclick="closeModal()" class="btn-secondary">
-                    Batal
-                  </button>
+                <div class="video-player-main">
+                  <h3 id="currentVideoTitle">Video Title</h3>
+                  <div class="youtube-player-container">
+                    <iframe
+                      id="youtubePlayer"
+                      width="100%"
+                      height="400"
+                      src=""
+                      frameborder="0"
+                      allowfullscreen
+                    ></iframe>
+                  </div>
+                  <div class="video-description-box">
+                    <h4>Deskripsi Video:</h4>
+                    <p id="currentVideoDescription">
+                      Deskripsi video dari YouTube akan ditampilkan di sini.
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
