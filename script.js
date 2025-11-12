@@ -783,7 +783,7 @@ const translations = {
     "nav.profile": "Profile",
     "nav.grades": "Grades",
     "nav.attendance": "Attendance",
-    "nav.ai_assistant": "AI Assistant",
+    "nav.ai_assistant": "AIDA AI",
     "nav.settings": "Settings",
     "nav.logout": "Logout",
     "dashboard.title": "Kharis Dashboard",
@@ -2869,10 +2869,31 @@ document.addEventListener("DOMContentLoaded", function () {
   const messagesContainer = document.getElementById("chatbotMessages");
   const inputField = document.getElementById("chatbotInput");
   const sendBtn = document.getElementById("chatbotSendBtn");
+  const scrollToBottomBtn = document.getElementById("scrollToBottomBtn");
 
   if (chatbotFab && messagesContainer && inputField && sendBtn) {
     chatbotFab.addEventListener("click", () => {
       switchSection("chatbot");
+    });
+
+    scrollToBottomBtn.addEventListener("click", () => {
+      messagesContainer.scrollTo({
+        top: messagesContainer.scrollHeight,
+        behavior: "smooth",
+      });
+    });
+
+    messagesContainer.addEventListener("scroll", () => {
+      const scrollFromBottom =
+        messagesContainer.scrollHeight -
+        messagesContainer.scrollTop -
+        messagesContainer.clientHeight;
+
+      if (scrollFromBottom > 150) {
+        scrollToBottomBtn.classList.add("visible");
+      } else {
+        scrollToBottomBtn.classList.remove("visible");
+      }
     });
 
     const sendMessage = () => {
@@ -2894,29 +2915,22 @@ document.addEventListener("DOMContentLoaded", function () {
         body: JSON.stringify({
           message: query,
           context: contextData,
+          language: currentLanguage,
         }),
       })
         .then((response) => response.json())
         .then((data) => {
           removeMessage(loadingMessageId);
 
-          // Grog API bisa kirim data langsung (pakai .choices) atau udah difilter backend
-          const aiResponse =
-            data.answer ||
-            data.choices?.[0]?.message?.content ||
-            data.message ||
-            null;
-
-          if (aiResponse) {
+          if (data.choices && data.choices[0].message) {
+            const aiResponse = data.choices[0].message.content;
             addMessage(aiResponse, "bot");
           } else if (data.error) {
             addMessage("Maaf, ada error: " + data.error, "bot");
           } else {
             addMessage("Maaf, saya tidak menerima balasan yang valid.", "bot");
-            console.warn("Respon tidak dikenali:", data);
           }
         })
-
         .catch((error) => {
           removeMessage(loadingMessageId);
           addMessage(
