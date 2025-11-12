@@ -4010,93 +4010,177 @@ body.dark-mode .scroll-to-bottom-btn:hover {
   border: none;
 }
 
-/* Video List Sidebar (List Video) */
-.video-list-sidebar {
-  background: var(--surface);
-  padding: 1rem;
-  border-radius: 8px;
+/* ===== STUDY ROOM VIDEO PLAYER - LARGE SIZE ===== */
+.video-player-content {
+  display: grid;
+  grid-template-columns: 3fr 1fr; /* 75% untuk player, 25% untuk list */
+  gap: 2rem;
+  align-items: start;
+  min-height: 70vh;
+}
+
+.video-player-main {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Container untuk iframe YouTube - UKURAN BESAR */
+.youtube-player-container {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #000;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   border: 1px solid var(--border);
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-  height: fit-content;
-  max-height: 700px;
-  overflow-y: auto;
 }
 
-.video-list-sidebar h3 {
-  font-size: 1.1rem;
-  margin-bottom: 1rem;
+#youtubePlayer {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Judul video yang lebih menonjol */
+.current-video-title {
+  font-size: 1.5rem;
+  font-weight: 700;
   color: var(--text-primary);
-  border-bottom: 2px solid var(--border);
-  padding-bottom: 0.5rem;
+  margin: 0;
+  line-height: 1.3;
 }
 
-.video-item {
-  padding: 0.75rem 0.5rem;
-  cursor: pointer;
-  border-radius: 4px;
-  font-size: 0.95rem;
-  color: var(--text-primary);
-  transition: all 0.1s ease;
-}
-
-.video-item:hover {
-  background: #f1f5f9;
-}
-
-.video-item.active {
-  background: var(--primary); /* Warna Biru Dashboard */
-  color: white;
-}
-
-/* Deskripsi Video */
+/* Deskripsi video */
 .video-description-box {
-  padding: 1rem;
+  padding: 1.5rem;
   border: 1px solid var(--border);
-  border-radius: 8px;
-  background: #f8fafc;
+  border-radius: 12px;
+  background: var(--surface);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .video-description-box h4 {
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
   color: var(--text-primary);
+  font-size: 1.1rem;
 }
 
-/* DARK MODE ADJUSTMENTS */
+.video-description-box p {
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Video List Sidebar */
+.video-list-sidebar {
+  background: var(--surface);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: fit-content;
+  max-height: 600px;
+  overflow-y: auto;
+  position: sticky;
+  top: 2rem;
+}
+
+.video-list-sidebar h3 {
+  font-size: 1.25rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 0.75rem;
+  font-weight: 600;
+}
+
+.video-item {
+  padding: 1rem;
+  cursor: pointer;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  margin-bottom: 0.5rem;
+}
+
+.video-item:hover {
+  background: #f1f5f9;
+  border-color: var(--border);
+  transform: translateY(-1px);
+}
+
+.video-item.active {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+}
+
+/* Dark mode adjustments */
 body.dark-mode .video-list-sidebar {
   background: var(--surface);
   border-color: var(--border);
 }
 
-body.dark-mode .video-list-sidebar h3 {
-  border-bottom-color: var(--border);
-}
-
 body.dark-mode .video-item:hover {
   background: #334155;
-  color: var(--text-primary);
 }
+
 body.dark-mode .video-item.active {
   background: var(--primary);
   color: white;
 }
+
 body.dark-mode .video-description-box {
-  background: #1e293b;
+  background: var(--surface);
   border-color: var(--border);
 }
 
-/* Responsive */
-@media (max-width: 900px) {
+/* Responsive design */
+@media (max-width: 1024px) {
+  .video-player-content {
+    grid-template-columns: 2fr 1fr; /* 66% untuk player, 33% untuk list di tablet */
+  }
+}
+
+@media (max-width: 768px) {
   .video-player-content {
     grid-template-columns: 1fr; /* Stacked layout di mobile */
+    gap: 1.5rem;
   }
+
   .video-list-sidebar {
     max-height: 400px;
+    position: static;
   }
+
+  .current-video-title {
+    font-size: 1.3rem;
+  }
+
+  .youtube-player-container {
+    border-radius: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .video-player-content {
+    gap: 1rem;
+  }
+
   .video-player-main {
-    order: 1; /* Video main ke atas */
+    gap: 1rem;
   }
-  .video-list-sidebar {
-    order: 2; /* List video di bawah */
+
+  .current-video-title {
+    font-size: 1.2rem;
+  }
+
+  .video-description-box {
+    padding: 1rem;
   }
 }
