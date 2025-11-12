@@ -1161,64 +1161,72 @@
             </div>
           </section>
 
-          <!-- STUDY ROOM SECTION -->
-
-          <section id="studyroom" class="section" style="display: none">
-            <div class="breadcrumb" id="studyRoomBreadcrumb">
-              <span class="breadcrumb-item active">Study Room</span>
+          <section id="codeplayground" class="section" style="display: none">
+            <div class="breadcrumb">
+              <span class="breadcrumb-item active">Code Playground</span>
             </div>
 
-            <div id="studyRoomCourseListView">
-              <h2>Pilih Mata Kuliah</h2>
-              <p class="section-description">
-                Pilih mata kuliah untuk melihat koleksi video pembelajaran
-                terkait.
-              </p>
-              <div class="courses-grid" id="studyRoomCoursesGrid"></div>
-            </div>
+            <div class="playground-container">
+              <!-- Toolbar -->
+              <div class="playground-toolbar">
+                <select id="languageSelect" class="language-select">
+                  <option value="python">Python 3</option>
+                  <option value="javascript">JavaScript</option>
+                  <option value="html">HTML/CSS/JS</option>
+                  <option value="cpp">C++</option>
+                  <option value="java">Java</option>
+                  <option value="csharp">C#</option>
+                </select>
 
-            <div id="studyRoomVideoDetailView" style="display: none">
-              <div class="detail-header">
-                <button class="back-btn" id="backToStudyRoomList">
-                  <span>←</span>
-                  <span>Kembali ke Mata Kuliah</span>
+                <button id="runCode" class="run-btn">
+                  <span>▶️ Run Code</span>
                 </button>
-                <div class="course-title">
-                  <h2 id="studyRoomCurrentCourseName">Algorithms</h2>
-                  <p id="studyRoomCurrentVideoCount">2 video tersedia</p>
+
+                <button id="saveCode" class="save-btn">
+                  <span>💾 Save</span>
+                </button>
+
+                <button onclick="loadSavedCode()" class="share-btn">
+                  <span>📂 Load</span>
+                </button>
+
+                <div class="theme-toggle">
+                  <label>
+                    <input type="checkbox" id="editorTheme" />
+                    <span>Dark Theme</span>
+                  </label>
                 </div>
               </div>
 
-              <div class="video-player-content">
-                <!-- Bagian utama untuk video player -->
-                <div class="video-player-main">
-                  <div class="youtube-player-container">
-                    <iframe
-                      id="youtubePlayer"
-                      src=""
-                      frameborder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowfullscreen
-                    ></iframe>
-                  </div>
-
-                  <h3 id="currentVideoTitle" class="current-video-title">
-                    01. Pengantar Analisis Algoritma
-                  </h3>
-
-                  <div class="video-description-box">
-                    <h4>Deskripsi Video:</h4>
-                    <p id="currentVideoDescription">
-                      Deskripsi video dari YouTube akan ditampilkan di sini.
-                    </p>
-                  </div>
+              <!-- Editor and Output -->
+              <div class="playground-content">
+                <div class="editor-container">
+                  <div id="codeEditor" class="code-editor"></div>
                 </div>
 
-                <!-- Sidebar untuk daftar video -->
-                <div class="video-list-sidebar" id="videoListSidebar">
-                  <h3>Video Materi</h3>
-                  <!-- Daftar video akan diisi oleh JavaScript -->
+                <div class="output-container">
+                  <div class="output-header">
+                    <h4>Output</h4>
+                    <button id="clearOutput" class="clear-btn">Clear</button>
+                  </div>
+                  <div id="outputResult" class="output-result">
+                    <div class="welcome-message">
+                      <h3>🚀 Welcome to Code Playground!</h3>
+                      <p>
+                        Write your code and click "Run Code" to see the output
+                        here.
+                      </p>
+                    </div>
+                  </div>
                 </div>
+              </div>
+
+              <!-- For HTML/CSS/JS Live Preview -->
+              <div id="livePreview" class="live-preview" style="display: none">
+                <div class="preview-header">
+                  <h4>Live Preview</h4>
+                </div>
+                <iframe id="previewFrame" class="preview-frame"></iframe>
               </div>
             </div>
           </section>
