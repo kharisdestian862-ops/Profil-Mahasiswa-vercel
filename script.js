@@ -4431,119 +4431,14 @@ async function checkForAnswer(participantId, peerConnection) {
       }),
     });
 
-    async function checkForOffersAndAnswer() {
-      if (!currentRoomId || !currentUserId) return;
-
-      try {
-        // 1. Cek tawaran dari peserta lain (targetUserId = userId kita sendiri)
-        const response = await fetch("/api/study-rooms", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "get-offer",
-            roomCode: currentRoomId,
-            userId: currentUserId,
-            targetUserId: currentUserId, // Cek tawaran yang ditujukan untuk kita
-          }),
-        });
-
-        const data = await response.json();
-        const offer = data.offer;
-        if (data.success && offer && !peerConnections[offer.userId]) {
-          console.log(`Received new offer from: ${offer.userId}`);
-          // 2. Buat Peer Connection untuk pengirim tawaran
-          const peerConnection = await createPeerConnection(
-            offer.userId,
-            false
-          ); // false = jangan kirim offer balik
-
-          // 3. Set remote description dan buat answer
-          await peerConnection.setRemoteDescription(
-            new RTCSessionDescription(offer.sdp)
-          );
-          const answer = await peerConnection.createAnswer();
-          await peerConnection.setLocalDescription(answer);
-
-          // 4. Kirim answer ke server
-          await fetch("/api/study-rooms", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              action: "store-answer",
-              roomCode: currentRoomId,
-              userId: currentUserId,
-              answer: answer,
-              targetUserId: offer.userId,
-            }),
-          });
-          console.log(`Answer sent to ${offer.userId}`);
-        }
-      } catch (error) {
-        console.error("Error checking for offers:", error);
-      }
-    }
-
-    // Modifikasi kecil pada createPeerConnection untuk menghindari offer berulang
-    async function createPeerConnection(participantId, shouldSendOffer = true) {
-      console.log(`Creating peer connection for ${participantId}`);
-
-      try {
-        const peerConnection = new RTCPeerConnection({
-          iceServers: [
-            { urls: "stun:stun.l.google.com:19302" },
-            { urls: "stun:stun1.l.google.com:19302" },
-          ],
-        });
-
-        peerConnections[participantId] = peerConnection;
-
-        // Add local stream tracks
-        if (localStream) {
-          localStream.getTracks().forEach((track) => {
-            peerConnection.addTrack(track, localStream);
-          });
-        }
-
-        // Handle incoming stream
-        peerConnection.ontrack = (event) => {
-          console.log(`Received remote stream from ${participantId}`);
-          createRemoteVideoElement(participantId, event.streams[0]);
-        };
-
-        // Handle ICE candidates
-        peerConnection.onicecandidate = (event) => {
-          if (event.candidate) {
-            fetch("/api/study-rooms", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                action: "store-candidate",
-                roomCode: currentRoomId,
-                userId: currentUserId,
-                candidate: event.candidate,
-                targetUserId: participantId,
-              }),
-            }).catch((err) => console.error("Error sending candidate:", err));
-          }
-        };
-
-        // HANYA buat dan kirim offer jika shouldSendOffer = true (yaitu, jika kita yang memulai/bergabung)
-        if (shouldSendOffer) {
-          await createAndSendOffer(participantId, peerConnection);
-        }
-
-        return peerConnection; // Mengembalikan connection agar bisa dipakai di checkForOffersAndAnswer
-      } catch (error) {
-        console.error("Error creating peer connection:", error);
-      }
-    }
-
     const data = await response.json();
     if (data.success && data.answer) {
       console.log(`Received answer from ${participantId}`);
       await peerConnection.setRemoteDescription(
         new RTCSessionDescription(data.answer)
       );
+      // Setelah mendapat answer, kita perlu cek candidates yang dikirimkan bersamaan
+      checkCandidatesImmediately(participantId, peerConnection);
     } else {
       setTimeout(() => checkForAnswer(participantId, peerConnection), 1000);
     }
@@ -4714,6 +4609,157 @@ function leaveCall() {
   currentUserId = null;
 
   alert("Left the study room");
+}
+
+// TAMBAHKAN INI DI BAGIAN BAWAH FILE SCRIPT.JS (DI LUAR FUNGSI LAIN)
+
+async function checkForOffersAndAnswer() {
+  if (!currentRoomId || !currentUserId) return;
+
+  try {
+    const response = await fetch("/api/study-rooms", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "get-offer",
+        roomCode: currentRoomId,
+        userId: currentUserId,
+        targetUserId: currentUserId,
+      }),
+    });
+
+    const data = await response.json();
+    const offer = data.offer;
+    if (data.success && offer && !peerConnections[offer.userId]) {
+      console.log(`Received new offer from: ${offer.userId}`);
+      const peerConnection = await createPeerConnection(offer.userId, false);
+
+      await peerConnection.setRemoteDescription(
+        new RTCSessionDescription(offer.sdp)
+      );
+      const answer = await peerConnection.createAnswer();
+      await peerConnection.setLocalDescription(answer);
+
+      await fetch("/api/study-rooms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "store-answer",
+          roomCode: currentRoomId,
+          userId: currentUserId,
+          answer: answer,
+          targetUserId: offer.userId,
+        }),
+      });
+      console.log(`Answer sent to ${offer.userId}`);
+    }
+  } catch (error) {
+    console.error("Error checking for offers:", error);
+  }
+}
+
+// Fungsi duplikat yang salah harus diganti dengan fungsi yang sudah dimodifikasi ini
+async function createPeerConnection(participantId, shouldSendOffer = true) {
+  console.log(`Creating peer connection for ${participantId}`);
+
+  try {
+    const peerConnection = new RTCPeerConnection({
+      iceServers: [
+        { urls: "stun:stun.l.google.com:19302" },
+        { urls: "stun:stun1.l.google.com:19302" },
+      ],
+    });
+
+    peerConnections[participantId] = peerConnection;
+
+    if (localStream) {
+      localStream.getTracks().forEach((track) => {
+        peerConnection.addTrack(track, localStream);
+      });
+    }
+
+    peerConnection.ontrack = (event) => {
+      console.log(`Received remote stream from ${participantId}`);
+      createRemoteVideoElement(participantId, event.streams[0]);
+    };
+
+    peerConnection.onicecandidate = (event) => {
+      if (event.candidate) {
+        fetch("/api/study-rooms", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            action: "store-candidate",
+            roomCode: currentRoomId,
+            userId: currentUserId,
+            candidate: event.candidate,
+            targetUserId: participantId,
+          }),
+        }).catch((err) => console.error("Error sending candidate:", err));
+      }
+    };
+
+    if (shouldSendOffer) {
+      await createAndSendOffer(participantId, peerConnection);
+    }
+
+    return peerConnection;
+  } catch (error) {
+    console.error("Error creating peer connection:", error);
+  }
+}
+
+// Fungsi tambahan untuk performa
+async function checkCandidatesImmediately(participantId, peerConnection) {
+  console.log(`Checking candidates immediately for ${participantId}`);
+  try {
+    const response = await fetch("/api/study-rooms", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "get-candidates",
+        roomCode: currentRoomId,
+        userId: currentUserId,
+        targetUserId: participantId,
+      }),
+    });
+
+    const data = await response.json();
+    if (data.success && data.candidates.length > 0) {
+      console.log(
+        `Adding ${data.candidates.length} immediate ICE candidates for ${participantId}`
+      );
+      for (const candidate of data.candidates) {
+        await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+      }
+    }
+  } catch (error) {
+    console.error("Error checking immediate ICE candidates:", error);
+  }
+}
+
+// GANTI DEKLARASI startSignalingProcess() ANDA
+function startSignalingProcess() {
+  if (participantsInterval) clearInterval(participantsInterval);
+  if (candidatesInterval) clearInterval(candidatesInterval);
+  if (offerCheckInterval) clearInterval(offerCheckInterval);
+
+  // Poll untuk participants setiap 2 detik
+  participantsInterval = setInterval(async () => {
+    await checkParticipants();
+  }, 2000);
+
+  // Poll untuk tawaran masuk setiap 3 detik
+  offerCheckInterval = setInterval(async () => {
+    await checkForOffersAndAnswer();
+  }, 3000);
+
+  // Poll untuk ICE candidates setiap 1 detik
+  candidatesInterval = setInterval(async () => {
+    await checkIceCandidates();
+  }, 1000);
+
+  console.log("Signaling process started");
 }
 
 // Initialize study room system when page loads
