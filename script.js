@@ -4155,14 +4155,16 @@ document.addEventListener("keydown", function (event) {
   }
 }); // Study Room dengan Real WebRTC
 
+// ===== STUDY ROOM WITH REAL WEBRTC =====
 let localStream = null;
+let screenStream = null;
 let peerConnections = {};
 let currentRoomId = null;
 let currentUserId = null;
+let participantsInterval = null;
+let candidatesInterval = null;
 
-function generateUserId() {
-  return "user-" + Math.random().toString(36).substr(2, 9);
-}
+// [Keep your existing modal functions here...]
 
 async function createRoom() {
   const roomName = document.getElementById("roomNameInput").value;
@@ -4192,7 +4194,7 @@ async function createRoom() {
         `Room "${roomName}" berhasil dibuat!\nKode: ${currentRoomId}\n\nShare kode ini ke teman-teman.`
       );
       closeModal();
-      await startVideoCall(currentRoomId, roomName);
+      await initializeVideoCall(currentRoomId, roomName);
     } else {
       alert("Error: " + data.error);
     }
@@ -4227,7 +4229,7 @@ async function joinRoom() {
       currentRoomId = roomCode;
       alert(`Berhasil join room: ${data.room.name}`);
       closeModal();
-      await startVideoCall(roomCode, data.room.name);
+      await initializeVideoCall(roomCode, data.room.name || "Study Room");
     } else {
       alert("Error: " + data.error);
     }
@@ -4236,7 +4238,7 @@ async function joinRoom() {
   }
 }
 
-async function startVideoCall(roomCode, roomName) {
+async function initializeVideoCall(roomCode, roomName) {
   try {
     // Setup UI
     document.querySelector(".empty-state").style.display = "none";
@@ -4247,73 +4249,68 @@ async function startVideoCall(roomCode, roomName) {
 
     // Get user media
     localStream = await navigator.mediaDevices.getUserMedia({
-      video: true,
+      video: { width: 1280, height: 720 },
       audio: true,
     });
 
     const localVideo = document.getElementById("localVideo");
     localVideo.srcObject = localStream;
 
-    // Setup polling untuk check participants
-    startParticipantsPolling(roomCode);
+    // Start signaling process
+    startSignalingProcess();
   } catch (error) {
     console.error("Error accessing media:", error);
-    alert("Tidak bisa mengakses kamera/mikrofon");
+    alert(
+      "Tidak bisa mengakses kamera/mikrofon. Pastikan Anda memberikan izin."
+    );
   }
 }
 
-function startParticipantsPolling(roomCode) {
-  // Poll setiap 3 detik untuk check participants baru
-  setInterval(async () => {
-    try {
-      const response = await fetch("/api/study-rooms", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "get-participants",
-          roomCode: roomCode,
-          userId: currentUserId,
-        }),
-      });
+function startSignalingProcess() {
+  // Poll untuk participants
+  participantsInterval = setInterval(async () => {
+    await checkParticipants();
+  }, 2000);
 
-      const data = await response.json();
-      if (data.success) {
-        updateParticipantsUI(data.participants);
-      }
-    } catch (error) {
-      console.error("Error polling participants:", error);
-    }
-  }, 3000);
+  // Poll untuk ICE candidates
+  candidatesInterval = setInterval(async () => {
+    await checkIceCandidates();
+  }, 1000);
 }
 
-function updateParticipantsUI(participants) {
-  const videoGrid = document.querySelector(".video-grid");
+async function checkParticipants() {
+  try {
+    const response = await fetch("/api/study-rooms", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "get-participants",
+        roomCode: currentRoomId,
+        userId: currentUserId,
+      }),
+    });
 
-  // Hapus video remote yang lama (kecuali local video)
-  const remoteVideos = videoGrid.querySelectorAll(
-    ".video-container:not(.local-video)"
-  );
-  remoteVideos.forEach((video) => video.remove());
+    const data = await response.json();
+    if (data.success) {
+      await handleParticipants(data.participants);
+    }
+  } catch (error) {
+    console.error("Error checking participants:", error);
+  }
+}
 
-  // Tambah video untuk setiap participant (kecuali diri sendiri)
-  participants.forEach((participantId) => {
+async function handleParticipants(participants) {
+  participants.forEach(async (participantId) => {
     if (participantId !== currentUserId && !peerConnections[participantId]) {
-      createPeerConnection(participantId);
-
-      // Buat video element untuk participant
-      const remoteVideo = document.createElement("div");
-      remoteVideo.className = "video-container remote-video";
-      remoteVideo.id = `video-${participantId}`;
-      remoteVideo.innerHTML = `
-                <video id="remoteVideo-${participantId}" autoplay playsinline></video>
-                <div class="video-label">Participant</div>
-            `;
-      videoGrid.appendChild(remoteVideo);
+      console.log(`New participant detected: ${participantId}`);
+      await createPeerConnection(participantId);
     }
   });
 }
 
-function createPeerConnection(participantId) {
+async function createPeerConnection(participantId) {
+  console.log(`Creating peer connection for ${participantId}`);
+
   const peerConnection = new RTCPeerConnection({
     iceServers: [
       { urls: "stun:stun.l.google.com:19302" },
@@ -4324,15 +4321,21 @@ function createPeerConnection(participantId) {
   peerConnections[participantId] = peerConnection;
 
   // Add local stream tracks
-  localStream.getTracks().forEach((track) => {
-    peerConnection.addTrack(track, localStream);
-  });
+  if (localStream) {
+    localStream.getTracks().forEach((track) => {
+      peerConnection.addTrack(track, localStream);
+    });
+  }
 
   // Handle incoming stream
   peerConnection.ontrack = (event) => {
+    console.log(`Received remote stream from ${participantId}`);
     const remoteVideo = document.getElementById(`remoteVideo-${participantId}`);
     if (remoteVideo && event.streams[0]) {
       remoteVideo.srcObject = event.streams[0];
+    } else {
+      // Create video element jika belum ada
+      createRemoteVideoElement(participantId, event.streams[0]);
     }
   };
 
@@ -4350,17 +4353,32 @@ function createPeerConnection(participantId) {
           candidate: event.candidate,
           targetUserId: participantId,
         }),
-      });
+      }).catch((err) => console.error("Error sending candidate:", err));
     }
   };
 
-  // Create offer untuk participant baru
-  createOffer(participantId);
+  // Create and send offer
+  await createAndSendOffer(participantId, peerConnection);
 }
 
-async function createOffer(participantId) {
-  const peerConnection = peerConnections[participantId];
+function createRemoteVideoElement(participantId, stream) {
+  const videoGrid = document.querySelector(".video-grid");
+  const remoteVideo = document.createElement("div");
+  remoteVideo.className = "video-container remote-video";
+  remoteVideo.id = `video-${participantId}`;
+  remoteVideo.innerHTML = `
+        <video id="remoteVideo-${participantId}" autoplay playsinline></video>
+        <div class="video-label">Participant ${participantId.slice(-4)}</div>
+    `;
+  videoGrid.appendChild(remoteVideo);
 
+  const videoElement = document.getElementById(`remoteVideo-${participantId}`);
+  if (videoElement && stream) {
+    videoElement.srcObject = stream;
+  }
+}
+
+async function createAndSendOffer(participantId, peerConnection) {
   try {
     const offer = await peerConnection.createOffer();
     await peerConnection.setLocalDescription(offer);
@@ -4377,36 +4395,81 @@ async function createOffer(participantId) {
         targetUserId: participantId,
       }),
     });
+
+    console.log(`Offer sent to ${participantId}`);
+
+    // Check for answer
+    checkForAnswer(participantId, peerConnection);
   } catch (error) {
     console.error("Error creating offer:", error);
   }
 }
 
-// Fungsi kontrol tetap sama
-function toggleMute() {
-  if (localStream) {
-    const audioTrack = localStream.getAudioTracks()[0];
-    if (audioTrack) {
-      audioTrack.enabled = !audioTrack.enabled;
-      alert("Audio " + (audioTrack.enabled ? "diaktifkan" : "dimute"));
+async function checkForAnswer(participantId, peerConnection) {
+  try {
+    const response = await fetch("/api/study-rooms", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "get-answer",
+        roomCode: currentRoomId,
+        userId: currentUserId,
+        targetUserId: participantId,
+      }),
+    });
+
+    const data = await response.json();
+    if (data.success && data.answer) {
+      console.log(`Received answer from ${participantId}`);
+      await peerConnection.setRemoteDescription(
+        new RTCSessionDescription(data.answer)
+      );
+    } else {
+      // Poll again if no answer yet
+      setTimeout(() => checkForAnswer(participantId, peerConnection), 1000);
+    }
+  } catch (error) {
+    console.error("Error checking for answer:", error);
+  }
+}
+
+async function checkIceCandidates() {
+  for (const [participantId, peerConnection] of Object.entries(
+    peerConnections
+  )) {
+    try {
+      const response = await fetch("/api/study-rooms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "get-candidates",
+          roomCode: currentRoomId,
+          userId: currentUserId,
+          targetUserId: participantId,
+        }),
+      });
+
+      const data = await response.json();
+      if (data.success && data.candidates.length > 0) {
+        console.log(
+          `Adding ${data.candidates.length} ICE candidates for ${participantId}`
+        );
+        for (const candidate of data.candidates) {
+          await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+        }
+      }
+    } catch (error) {
+      console.error("Error checking ICE candidates:", error);
     }
   }
 }
 
-function toggleVideo() {
-  if (localStream) {
-    const videoTrack = localStream.getVideoTracks()[0];
-    if (videoTrack) {
-      videoTrack.enabled = !videoTrack.enabled;
-      alert("Video " + (videoTrack.enabled ? "diaktifkan" : "dimatikan"));
-    }
-  }
-}
-
+// Screen sharing function
 async function shareScreen() {
   try {
-    const screenStream = await navigator.mediaDevices.getDisplayMedia({
-      video: true,
+    screenStream = await navigator.mediaDevices.getDisplayMedia({
+      video: { cursor: "always" },
+      audio: true,
     });
 
     const localVideo = document.getElementById("localVideo");
@@ -4414,7 +4477,7 @@ async function shareScreen() {
       localVideo.srcObject = screenStream;
     }
 
-    // Replace video track di semua peer connections
+    // Replace video track in all peer connections
     const videoTrack = screenStream.getVideoTracks()[0];
     Object.values(peerConnections).forEach((peer) => {
       const sender = peer.getSenders().find((s) => s.track?.kind === "video");
@@ -4423,21 +4486,74 @@ async function shareScreen() {
       }
     });
 
+    // Handle when screen sharing is stopped
+    videoTrack.onended = () => {
+      switchBackToCamera();
+    };
+
     alert("Screen sharing started");
   } catch (error) {
-    alert("Error sharing screen: " + error.message);
+    console.error("Error sharing screen:", error);
+    if (error.name !== "NotAllowedError") {
+      alert("Error sharing screen: " + error.message);
+    }
   }
 }
 
+function switchBackToCamera() {
+  if (localStream) {
+    const localVideo = document.getElementById("localVideo");
+    if (localVideo) {
+      localVideo.srcObject = localStream;
+    }
+
+    // Switch back to camera track in all peer connections
+    const videoTrack = localStream.getVideoTracks()[0];
+    Object.values(peerConnections).forEach((peer) => {
+      const sender = peer.getSenders().find((s) => s.track?.kind === "video");
+      if (sender) {
+        sender.replaceTrack(videoTrack);
+      }
+    });
+
+    if (screenStream) {
+      screenStream.getTracks().forEach((track) => track.stop());
+      screenStream = null;
+    }
+  }
+}
+
+// [Keep your existing control functions (toggleMute, toggleVideo, leaveCall)...]
+
 function leaveCall() {
-  // Stop semua tracks
+  // Stop semua streams
   if (localStream) {
     localStream.getTracks().forEach((track) => track.stop());
+  }
+  if (screenStream) {
+    screenStream.getTracks().forEach((track) => track.stop());
   }
 
   // Close semua peer connections
   Object.values(peerConnections).forEach((peer) => peer.close());
   peerConnections = {};
+
+  // Clear intervals
+  if (participantsInterval) clearInterval(participantsInterval);
+  if (candidatesInterval) clearInterval(candidatesInterval);
+
+  // Notify server kita leave
+  if (currentRoomId && currentUserId) {
+    fetch("/api/study-rooms", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "leave-room",
+        roomCode: currentRoomId,
+        userId: currentUserId,
+      }),
+    }).catch(console.error);
+  }
 
   // Reset UI
   document.getElementById("videoCallArea").style.display = "none";
@@ -4456,5 +4572,6 @@ function leaveCall() {
 
   currentRoomId = null;
   currentUserId = null;
+
   alert("Left the study room");
 }
