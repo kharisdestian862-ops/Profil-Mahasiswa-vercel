@@ -1,9 +1,11 @@
+import fetch from "node-fetch";
+
 export default async function handler(request, response) {
   if (request.method !== "POST") {
     return response.status(405).json({ error: "Method Not Allowed" });
   }
 
-  const { message, context, language } = await request.body;
+  const { message, context, language } = request.body;
 
   const apiKey = process.env.DEEPSEEK_API_KEY;
 
@@ -45,7 +47,6 @@ export default async function handler(request, response) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          // Mengganti model Groq dengan model DeepSeek yang cepat dan kuat
           model: "deepseek-chat",
           messages: [
             {
@@ -69,4 +70,3 @@ export default async function handler(request, response) {
       .json({ error: "Gagal mengambil data dari DeepSeek: " + error.message });
   }
 }
-
