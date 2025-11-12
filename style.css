@@ -3964,7 +3964,7 @@ body.dark-mode .scroll-to-bottom-btn:hover {
 
 .video-player-content {
   display: grid;
-  grid-template-columns: 2fr 1fr; /* Main player lebih besar dari sidebar list */
+  grid-template-columns: 2fr 1fr; /* 2/3 layar untuk player, 1/3 untuk list */
   gap: 2rem;
   align-items: start;
 }
@@ -3975,18 +3975,40 @@ body.dark-mode .scroll-to-bottom-btn:hover {
   gap: 1rem;
 }
 
+.course-title {
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.course-title h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.current-video-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+}
+
+/* Container untuk iframe (Memastikan video luas) */
 .youtube-player-container {
   width: 100%;
-  aspect-ratio: 16 / 9; /* Memastikan iframe selalu 16:9 */
+  aspect-ratio: 16 / 9; /* Memastikan iframe selalu 16:9 dan mengisi ruang yang tersedia */
   background: #000;
   border-radius: 8px;
   overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 #youtubePlayer {
   border: none;
 }
 
+/* Video List Sidebar (List Video) */
 .video-list-sidebar {
   background: var(--surface);
   padding: 1rem;
@@ -4001,7 +4023,7 @@ body.dark-mode .scroll-to-bottom-btn:hover {
 .video-list-sidebar h3 {
   font-size: 1.1rem;
   margin-bottom: 1rem;
-  color: var(--primary);
+  color: var(--text-primary);
   border-bottom: 2px solid var(--border);
   padding-bottom: 0.5rem;
 }
@@ -4009,22 +4031,22 @@ body.dark-mode .scroll-to-bottom-btn:hover {
 .video-item {
   padding: 0.75rem 0.5rem;
   cursor: pointer;
-  border-bottom: 1px solid #eee;
-  font-size: 0.9rem;
+  border-radius: 4px;
+  font-size: 0.95rem;
   color: var(--text-primary);
+  transition: all 0.1s ease;
 }
 
 .video-item:hover {
   background: #f1f5f9;
-  border-radius: 4px;
 }
 
 .video-item.active {
-  background: var(--primary-dark);
+  background: var(--primary); /* Warna Biru Dashboard */
   color: white;
-  border-radius: 4px;
 }
 
+/* Deskripsi Video */
 .video-description-box {
   padding: 1rem;
   border: 1px solid var(--border);
@@ -4035,6 +4057,30 @@ body.dark-mode .scroll-to-bottom-btn:hover {
 .video-description-box h4 {
   font-weight: 600;
   margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+/* DARK MODE ADJUSTMENTS */
+body.dark-mode .video-list-sidebar {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+body.dark-mode .video-list-sidebar h3 {
+  border-bottom-color: var(--border);
+}
+
+body.dark-mode .video-item:hover {
+  background: #334155;
+  color: var(--text-primary);
+}
+body.dark-mode .video-item.active {
+  background: var(--primary);
+  color: white;
+}
+body.dark-mode .video-description-box {
+  background: #1e293b;
+  border-color: var(--border);
 }
 
 /* Responsive */
@@ -4043,6 +4089,12 @@ body.dark-mode .scroll-to-bottom-btn:hover {
     grid-template-columns: 1fr; /* Stacked layout di mobile */
   }
   .video-list-sidebar {
-    max-height: 400px; /* Batasi tinggi sidebar di mobile */
+    max-height: 400px;
+  }
+  .video-player-main {
+    order: 1; /* Video main ke atas */
+  }
+  .video-list-sidebar {
+    order: 2;
   }
 }
