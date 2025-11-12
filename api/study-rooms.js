@@ -1,22 +1,29 @@
 // api/study-rooms.js
-import { Server } from "socket.io";
-
-// Simpan active rooms di memory
 const activeRooms = new Map();
 
-function generateRoomCode() {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let result = "";
-  for (let i = 0; i < 6; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
-}
+export default async function handler(req, res) {
+  // Enable CORS
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-export default function handler(req, res) {
-  // Untuk Vercel, kita perlu setup Socket.io secara khusus
-  if (req.method === "POST") {
-    const { action, roomCode, roomName, userId } = req.body;
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  if (req.method !== "POST") {
+    return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  try {
+    let body = "";
+    for await (const chunk of req) {
+      body += chunk;
+    }
+    const data = JSON.parse(body);
+
+    const { action, roomCode, roomName, userId, offer, answer, candidate } =
+      data;
 
     switch (action) {
       case "create-room":
@@ -25,34 +32,71 @@ export default function handler(req, res) {
           id: newRoomCode,
           name: roomName,
           createdBy: userId,
-          participants: [userId],
-          createdAt: new Date(),
+          participants: [],
+          offers: new Map(),
+          answers: new Map(),
+          candidates: new Map(),
         };
         activeRooms.set(newRoomCode, room);
-        return res.status(200).json({ success: true, room });
+        return res.json({
+          success: true,
+          room: { id: newRoomCode, name: roomName },
+        });
 
       case "join-room":
-        const existingRoom = activeRooms.get(roomCode);
-        if (!existingRoom) {
-          return res
-            .status(404)
-            .json({ success: false, error: "Room tidak ditemukan" });
+        const roomToJoin = activeRooms.get(roomCode);
+        if (!roomToJoin) {
+          return res.json({ success: false, error: "Room tidak ditemukan" });
         }
-        if (!existingRoom.participants.includes(userId)) {
-          existingRoom.participants.push(userId);
+        if (!roomToJoin.participants.includes(userId)) {
+          roomToJoin.participants.push(userId);
         }
-        return res.status(200).json({ success: true, room: existingRoom });
+        return res.json({ success: true, room: roomToJoin });
 
-      case "get-room":
-        const roomToGet = activeRooms.get(roomCode);
-        return res.status(200).json({ success: true, room: roomToGet });
+      case "get-participants":
+        const roomParts = activeRooms.get(roomCode);
+        return res.json({
+          success: true,
+          participants: roomParts?.participants || [],
+        });
+
+      case "store-offer":
+        const roomOffer = activeRooms.get(roomCode);
+        if (roomOffer) {
+          roomOffer.offers.set(userId, offer);
+        }
+        return res.json({ success: true });
+
+      case "store-answer":
+        const roomAnswer = activeRooms.get(roomCode);
+        if (roomAnswer) {
+          roomAnswer.answers.set(userId, answer);
+        }
+        return res.json({ success: true });
+
+      case "get-offer":
+        const roomGetOffer = activeRooms.get(roomCode);
+        const offerData = roomGetOffer?.offers.get(userId);
+        return res.json({ success: true, offer: offerData });
+
+      case "get-answer":
+        const roomGetAnswer = activeRooms.get(roomCode);
+        const answerData = roomGetAnswer?.answers.get(userId);
+        return res.json({ success: true, answer: answerData });
 
       default:
-        return res
-          .status(400)
-          .json({ success: false, error: "Action tidak valid" });
+        return res.json({ success: false, error: "Action tidak valid" });
     }
+  } catch (error) {
+    return res.json({ success: false, error: error.message });
   }
+}
 
-  return res.status(405).json({ error: "Method not allowed" });
+function generateRoomCode() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
+  for (let i = 0; i < 6; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
 }
