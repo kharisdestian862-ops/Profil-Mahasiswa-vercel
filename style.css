@@ -3398,14 +3398,13 @@ body.dark-mode .chatbot-fab {
 .chatbot-fullpage-wrapper {
   display: flex;
   flex-direction: column;
-  flex: 1; /* Penting agar mengisi sisa halaman */
-  height: 75vh; /* Tentukan tinggi tetap */
-  max-height: 800px;
+  flex: 1;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  position: relative;
 }
 
 /* 3. Area Pesan (Adaptasi dari style lama) */
@@ -3509,10 +3508,6 @@ body.dark-mode .chat-message.bot {
   .chatbot-fab svg {
     width: 24px;
     height: 24px;
-  }
-
-  .chatbot-fullpage-wrapper {
-    height: 70vh; /* Gunakan lebih banyak ruang di mobile */
   }
 
   .chat-message {
@@ -3837,6 +3832,62 @@ body.dark-mode .chat-message.bot.loading {
 
 .loading-dot:nth-child(3) {
   animation-delay: 0.4s;
+}
+
+.chatbot-fullpage-wrapper {
+  position: relative;
+}
+
+.scroll-to-bottom-btn {
+  position: absolute;
+  bottom: 80px;
+  right: 2rem;
+  width: 44px;
+  height: 44px;
+  background: var(--surface);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  z-index: 10;
+  transition: all 0.3s ease;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(10px);
+}
+
+.scroll-to-bottom-btn.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.scroll-to-bottom-btn:hover {
+  background: var(--primary);
+  color: white;
+}
+
+body.dark-mode .scroll-to-bottom-btn {
+  background: #334155;
+  color: var(--text-primary);
+  border-color: #475569;
+}
+
+body.dark-mode .scroll-to-bottom-btn:hover {
+  background: var(--primary);
+}
+
+@media (max-width: 768px) {
+  .scroll-to-bottom-btn {
+    bottom: 70px;
+    right: 1.5rem;
+    width: 40px;
+    height: 40px;
+  }
 }
 
 @keyframes bounce {
