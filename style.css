@@ -3398,13 +3398,14 @@ body.dark-mode .chatbot-fab {
 .chatbot-fullpage-wrapper {
   display: flex;
   flex-direction: column;
-  flex: 1;
+  flex: 1; /* Penting agar mengisi sisa halaman */
+  height: 75vh; /* Tentukan tinggi tetap */
+  max-height: 800px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   overflow: hidden;
-  position: relative;
 }
 
 /* 3. Area Pesan (Adaptasi dari style lama) */
@@ -3508,6 +3509,10 @@ body.dark-mode .chat-message.bot {
   .chatbot-fab svg {
     width: 24px;
     height: 24px;
+  }
+
+  .chatbot-fullpage-wrapper {
+    height: 70vh; /* Gunakan lebih banyak ruang di mobile */
   }
 
   .chat-message {
