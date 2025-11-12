@@ -1159,6 +1159,64 @@
             </div>
           </section>
 
+          <!-- Study Room Section -->
+          <div class="study-room-section">
+            <h3>Virtual Study Room</h3>
+            <p>Belajar bersama dengan video call</p>
+
+            <div class="room-actions">
+              <button onclick="showCreateRoomModal()" class="btn-primary">
+                🎯 Buat Room Baru
+              </button>
+              <button onclick="showJoinRoomModal()" class="btn-secondary">
+                🔗 Join dengan Kode
+              </button>
+            </div>
+          </div>
+
+          <!-- Modals -->
+          <div id="createRoomModal" class="modal" style="display: none">
+            <div class="modal-content">
+              <h3>Buat Study Room</h3>
+              <input
+                type="text"
+                id="roomNameInput"
+                placeholder="Nama Room (contoh: Study Algorithms)"
+              />
+              <button onclick="createRoom()">Buat Room</button>
+              <button onclick="closeModal()">Batal</button>
+            </div>
+          </div>
+
+          <div id="joinRoomModal" class="modal" style="display: none">
+            <div class="modal-content">
+              <h3>Join Study Room</h3>
+              <input
+                type="text"
+                id="roomCodeInput"
+                placeholder="Kode Room (contoh: A1B2C3)"
+                maxlength="6"
+              />
+              <button onclick="joinRoom()">Join Room</button>
+              <button onclick="closeModal()">Batal</button>
+            </div>
+          </div>
+
+          <!-- Video Call UI -->
+          <div id="videoCallContainer" style="display: none">
+            <h3>Study Room</h3>
+            <div class="video-grid">
+              <video id="localVideo" autoplay muted playsinline></video>
+              <div id="remoteVideos"></div>
+            </div>
+            <div class="call-controls">
+              <button onclick="toggleMute()">🎤 Mute</button>
+              <button onclick="toggleVideo()">📹 Video</button>
+              <button onclick="shareScreen()">🖥️ Share</button>
+              <button onclick="leaveCall()">📞 Leave</button>
+            </div>
+          </div>
+
           <!-- Settings Section -->
           <section class="section" id="settings" style="display: none">
             <h2 data-i18n="settings.title">Settings</h2>
@@ -1342,6 +1400,7 @@
       </div>
     </div>
 
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="script.js"></script>
   </body>
