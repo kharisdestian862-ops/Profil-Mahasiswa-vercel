@@ -2974,11 +2974,11 @@ document.addEventListener("DOMContentLoaded", function () {
             '<span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span>';
           msgDiv.classList.add("loading");
         } else {
-          // PERBAIKAN: Render HTML, jangan textContent
-          msgDiv.innerHTML = message; // Langsung render HTML
+          // CONVERT MARKDOWN TO HTML
+          const htmlMessage = convertMarkdownToHTML(message);
+          msgDiv.innerHTML = htmlMessage;
         }
       } else {
-        // Untuk user messages, tetap pakai textContent (aman)
         const textSpan = document.createElement("span");
         textSpan.className = "chat-text";
         textSpan.textContent = message;
@@ -2993,6 +2993,38 @@ document.addEventListener("DOMContentLoaded", function () {
 
       return messageId;
     };
+
+    // Fungsi untuk convert markdown ke HTML
+    function convertMarkdownToHTML(markdown) {
+      if (!markdown) return "";
+
+      let html = markdown;
+
+      // Convert **bold** to <strong>
+      html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+      // Convert *italic* to <em>
+      html = html.replace(/\*(.*?)\*/g, "<em>$1</em>");
+
+      // Convert __bold__ (alternate syntax) to <strong>
+      html = html.replace(/__(.*?)__/g, "<strong>$1</strong>");
+
+      // Convert _italic_ (alternate syntax) to <em>
+      html = html.replace(/_(.*?)_/g, "<em>$1</em>");
+
+      // Convert line breaks to <br>
+      html = html.replace(/\n/g, "<br>");
+
+      // Convert lists (basic support)
+      html = html.replace(/^\s*[-*]\s+(.+)$/gm, "<li>$1</li>");
+      html = html.replace(/(<li>.*<\/li>)/s, "<ul>$1</ul>");
+
+      // Convert numbered lists
+      html = html.replace(/^\s*\d+\.\s+(.+)$/gm, "<li>$1</li>");
+      html = html.replace(/(<li>.*<\/li>)/s, "<ol>$1</ol>");
+
+      return html;
+    }
 
     function removeMessage(messageId) {
       const messageElement = document.getElementById(messageId);
