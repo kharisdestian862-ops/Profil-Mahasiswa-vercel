@@ -1,4 +1,6 @@
-// api/study-rooms.js - COMPLETE VERSION
+// api/study-rooms.js - FINAL SIGNALLING SERVER
+
+// Gunakan Map untuk menyimpan status room secara in-memory (sementara)
 const activeRooms = new Map();
 
 function generateRoomCode() {
@@ -10,6 +12,7 @@ function generateRoomCode() {
   return result;
 }
 
+// Handler utama Vercel Serverless Function
 export default async function handler(req, res) {
   // CORS headers
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -25,11 +28,14 @@ export default async function handler(req, res) {
   }
 
   try {
-    let body = "";
-    for await (const chunk of req) {
-      body += chunk;
+    const data = req.body; // Vercel sudah parse JSON untuk kita
+
+    // Pastikan req.body adalah objek
+    if (!data || typeof data !== "object") {
+      return res
+        .status(400)
+        .json({ success: false, error: "Invalid JSON body" });
     }
-    const data = JSON.parse(body);
 
     const {
       action,
@@ -52,6 +58,7 @@ export default async function handler(req, res) {
           name: roomName,
           createdBy: userId,
           participants: [userId],
+          // Menyimpan signaling data per koneksi
           offers: {},
           answers: {},
           candidates: {},
@@ -72,10 +79,16 @@ export default async function handler(req, res) {
           roomToJoin.participants.push(userId);
         }
         console.log(`User ${userId} joined room ${roomCode}`);
-        return res.json({ success: true, room: roomToJoin });
+        // Mengembalikan status room dan daftar peserta (kecuali diri sendiri)
+        return res.json({
+          success: true,
+          room: roomToJoin,
+          participants: roomToJoin.participants.filter((id) => id !== userId),
+        });
 
       case "get-participants":
         const roomParts = activeRooms.get(roomCode);
+        // Mengembalikan daftar peserta kecuali diri sendiri
         const participants = roomParts
           ? roomParts.participants.filter((id) => id !== userId)
           : [];
@@ -84,44 +97,66 @@ export default async function handler(req, res) {
       case "store-offer":
         const roomOffer = activeRooms.get(roomCode);
         if (roomOffer) {
-          roomOffer.offers[userId] = offer;
-          console.log(`Offer stored for ${userId} in ${roomCode}`);
+          // Menyimpan tawaran yang ditujukan untuk targetUserId
+          roomOffer.offers[targetUserId] = {
+            sdp: offer.sdp,
+            type: offer.type,
+            userId: userId,
+          };
+          console.log(`Offer stored for ${targetUserId} by ${userId}`);
         }
         return res.json({ success: true });
 
       case "get-offer":
         const roomGetOffer = activeRooms.get(roomCode);
-        const offerData = roomGetOffer?.offers[targetUserId];
+        // Mengambil tawaran yang ditujukan untuk kita (userId)
+        const offerData = roomGetOffer?.offers[userId];
+        if (roomGetOffer && offerData) {
+          // Hapus setelah diambil (agar tidak dikirim berulang)
+          delete roomGetOffer.offers[userId];
+        }
         return res.json({ success: true, offer: offerData });
 
       case "store-answer":
         const roomAnswer = activeRooms.get(roomCode);
         if (roomAnswer) {
-          roomAnswer.answers[userId] = answer;
-          console.log(`Answer stored for ${userId} in ${roomCode}`);
+          // Menyimpan jawaban yang ditujukan untuk targetUserId
+          roomAnswer.answers[targetUserId] = {
+            sdp: answer.sdp,
+            type: answer.type,
+            userId: userId,
+          };
+          console.log(`Answer stored for ${targetUserId} by ${userId}`);
         }
         return res.json({ success: true });
 
       case "get-answer":
         const roomGetAnswer = activeRooms.get(roomCode);
-        const answerData = roomGetAnswer?.answers[targetUserId];
+        // Mengambil jawaban yang ditujukan untuk kita (userId)
+        const answerData = roomGetAnswer?.answers[userId];
+        if (roomGetAnswer && answerData) {
+          delete roomGetAnswer.answers[userId];
+        }
         return res.json({ success: true, answer: answerData });
 
       case "store-candidate":
         const roomCandidate = activeRooms.get(roomCode);
         if (roomCandidate) {
-          if (!roomCandidate.candidates[userId]) {
-            roomCandidate.candidates[userId] = [];
+          // Menyimpan kandidat yang ditujukan untuk targetUserId
+          if (!roomCandidate.candidates[targetUserId]) {
+            roomCandidate.candidates[targetUserId] = [];
           }
-          roomCandidate.candidates[userId].push(candidate);
+          roomCandidate.candidates[targetUserId].push(candidate);
         }
         return res.json({ success: true });
 
       case "get-candidates":
         const roomGetCandidates = activeRooms.get(roomCode);
-        const candidates = roomGetCandidates?.candidates[targetUserId] || [];
-        if (roomGetCandidates?.candidates[targetUserId]) {
-          roomGetCandidates.candidates[targetUserId] = [];
+        // Mengambil kandidat yang ditujukan untuk kita (userId)
+        const candidates = roomGetCandidates?.candidates[userId] || [];
+        if (roomGetCandidates?.candidates[userId]) {
+          // Hapus kandidat setelah diambil
+          roomGetCandidates.candidates[userId] = [];
         }
         return res.json({ success: true, candidates });
 
@@ -131,9 +166,13 @@ export default async function handler(req, res) {
           roomLeave.participants = roomLeave.participants.filter(
             (id) => id !== userId
           );
-          delete roomLeave.offers[userId];
-          delete roomLeave.answers[userId];
-          delete roomLeave.candidates[userId];
+          // Hapus semua data signaling milik user yang keluar
+          Object.values(roomLeave.offers).forEach((offer) => {
+            if (offer.userId === userId) delete roomLeave.offers[userId];
+          });
+          Object.values(roomLeave.answers).forEach((answer) => {
+            if (answer.userId === userId) delete roomLeave.answers[userId];
+          });
 
           if (roomLeave.participants.length === 0) {
             activeRooms.delete(roomCode);
@@ -148,6 +187,11 @@ export default async function handler(req, res) {
     }
   } catch (error) {
     console.error("API Error:", error);
-    return res.json({ success: false, error: error.message });
+    return res
+      .status(500)
+      .json({
+        success: false,
+        error: error.message || "Internal Server Error",
+      });
   }
 }
