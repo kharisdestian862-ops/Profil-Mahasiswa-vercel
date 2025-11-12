@@ -1203,12 +1203,40 @@
                   class="video-call-area"
                   style="display: none"
                 >
-                  <div class="video-grid">
-                    <div class="video-container local-video">
-                      <video id="localVideo" autoplay muted playsinline></video>
-                      <div class="video-label">Anda</div>
+                  <div
+                    id="videoCallArea"
+                    class="video-call-area"
+                    style="display: none"
+                  >
+                    <div class="video-grid" id="videoGrid">
+                      <div class="video-container local-video" id="video-self">
+                        <video
+                          id="localVideo"
+                          autoplay
+                          muted
+                          playsinline
+                        ></video>
+                        <div class="video-label">Anda</div>
+                      </div>
                     </div>
-                    <!-- Remote videos akan ditambah di sini -->
+
+                    <div class="call-controls">
+                      <button class="control-btn" onclick="toggleMute()">
+                        🎤 Mute
+                      </button>
+                      <button class="control-btn" onclick="toggleVideo()">
+                        📹 Video
+                      </button>
+                      <button class="control-btn" onclick="shareScreen()">
+                        🖥️ Share
+                      </button>
+                      <button
+                        class="control-btn btn-danger"
+                        onclick="leaveCall()"
+                      >
+                        📞 Leave
+                      </button>
+                    </div>
                   </div>
 
                   <div class="call-controls">
