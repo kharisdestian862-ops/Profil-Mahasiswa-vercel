@@ -3,55 +3,36 @@ export default async function handler(request, response) {
     return response.status(405).json({ error: "Method Not Allowed" });
   }
 
-  let message;
-  let context;
-  try {
-    const body = request.body;
-    message = body.message;
-    context = body.context;
-
-    if (!message) {
-      return response
-        .status(400)
-        .json({ error: "Pesan (message) tidak ditemukan di body request" });
-    }
-  } catch (e) {
-    return response
-      .status(400)
-      .json({ error: "Gagal mem-parsing request body JSON" });
-  }
-
+  const { message, context, language } = await request.json();
   const apiKey = process.env.GROQ_API_KEY;
 
   if (!apiKey) {
-    return response.status(500).json({
-      error:
-        "GROQ_API_KEY tidak diatur di server Vercel. Cek Environment Variables.",
-    });
+    return response
+      .status(500)
+      .json({ error: "API key tidak diatur di server" });
   }
 
-  // --- LOGIKA PROMPT BARU ---
-  // Kita buat prompt sistem dan prompt pengguna secara dinamis
+  let systemPrompt;
 
-  let systemPrompt =
-    "Anda adalah Asdos (Asisten Dashboard) yang ramah dan membantu. Jawab pertanyaan mahasiswa dengan singkat dan jelas.";
-  let userPrompt = message;
-
-  // Jika frontend mengirim data konteks, kita gabungkan ke dalam prompt
-  if (context) {
-    systemPrompt +=
-      "\n\nSelalu gunakan data yang ada di bagian 'KONTEKS' untuk menjawab pertanyaan pengguna. Jangan mengarang data jika data tidak ada di konteks. Selalu jawab dalam bahasa yang sama dengan bahasa di 'PERTANYAAN SAYA'.";
-
-    // Stringify data konteks agar rapi
-    const contextString = JSON.stringify(context, null, 2);
-
-    userPrompt = `KONTEKS:
-${contextString}
-
-PERTANYAAN SAYA:
-${message}`;
+  if (language === "id") {
+    systemPrompt =
+      "Anda adalah Asdos (Asisten Dashboard) yang ramah dan membantu. Jawab pertanyaan mahasiswa dalam Bahasa Indonesia dengan singkat dan jelas.";
+    if (context) {
+      systemPrompt += `\n\nData yang relevan untuk pertanyaan ini adalah: "${context}". Gunakan data ini untuk merumuskan jawaban Anda. Jika data ini adalah jawaban lengkap (seperti sapaan atau IPK), cukup sampaikan kembali dengan cara yang ramah.`;
+    } else {
+      systemPrompt +=
+        "\n\nTidak ada data spesifik yang diberikan, jawab pertanyaan ini secara umum.";
+    }
+  } else {
+    systemPrompt =
+      "You are Asdos (Dashboard Assistant), a friendly and helpful assistant. Answer the student's questions in English clearly and concisely.";
+    if (context) {
+      systemPrompt += `\n\nRelevant data for this question is: "${context}". Use this data to formulate your answer. If this data is a complete answer (like a greeting or GPA), just deliver it in a friendly way.`;
+    } else {
+      systemPrompt +=
+        "\n\nNo specific data was provided; answer this question generally.";
+    }
   }
-  // --- AKHIR LOGIKA PROMPT BARU ---
 
   try {
     const groqResponse = await fetch(
@@ -71,27 +52,18 @@ ${message}`;
             },
             {
               role: "user",
-              content: userPrompt,
+              content: message,
             },
           ],
         }),
       }
     );
 
-    if (!groqResponse.ok) {
-      const errorData = await groqResponse.json();
-      return response.status(groqResponse.status).json({
-        error:
-          "Error dari Groq: " + (errorData.error?.message || "Unknown error"),
-        details: errorData,
-      });
-    }
-
     const data = await groqResponse.json();
     response.status(200).json(data);
   } catch (error) {
     response
       .status(500)
-      .json({ error: "Gagal fetch ke Groq: " + error.message });
+      .json({ error: "Gagal mengambil data dari Groq: " + error.message });
   }
 }
