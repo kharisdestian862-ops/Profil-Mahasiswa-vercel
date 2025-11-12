@@ -914,90 +914,165 @@ const translations = {
     "chat.greeting":
       "Hello Kharis! Ask me about your dashboard. Try typing 'help'.",
 
-    "chat.greeting":
-      "Hello Kharis! Ask me about your dashboard. Try typing 'help'.",
-    "chat.help":
-      "You can ask about your schedule, assignments, attendance, or lecturer info.",
-    "chat.welcome": "You're welcome! Let me know if you need anything else.",
-    "chat.hello": "Hi! How can I help you today?",
-    "chat.fallback": "Sorry, I couldn’t understand your question.",
-    "chat.schedule.header": "Your schedule for {dayName}: <ul>",
-    "chat.schedule.item": "<li>{time} - {course} ({room})</li>",
-    "chat.schedule.not_found": "No schedule found for that day.",
-    "chat.schedule.prompt": "Please specify the day you want to check.",
-    "chat.schedule.today_off": "You have no classes today. Enjoy your day off!",
-    "chat.briefing.header": "Daily briefing for {dayName}, {date}: <ul>",
-    "chat.briefing.class_item": "<li>{time} - {course}: {topic}</li>",
-    "chat.briefing.no_class": "No classes today.",
-    "chat.briefing.deadline_header": "<br><b>Today's Deadlines:</b>",
-    "chat.briefing.deadline_item": "<li>{taskTitle} - {courseName}</li>",
-    "chat.briefing.deadline_none": "No tasks due today.",
-    "chat.tasks.header": "<b>Pending Tasks:</b><ul>",
-    "chat.tasks.item": "<li>{courseName}: {title} (Deadline: {deadline})</li>",
-    "chat.tasks.none_all": "You have completed all tasks!",
-    "chat.tasks.none_specific": "No pending tasks for {courseName}.",
-    "chat.grades.prompt":
-      "Please specify the course you want to check grades for.",
-    "chat.grades.header": "<b>Grades for {courseName}:</b><ul>",
-    "chat.grades.item": "<li>{title}: {score}/{maxScore}</li>",
-    "chat.grades.item_pending": "<li>{title}: Awaiting grading</li>",
-    "chat.grades.none": "No graded tasks yet for {courseName}.",
-    "chat.missed.header": "<b>Missed Items:</b><ul>",
-    "chat.missed.tasks_header": "<b>Unsubmitted Tasks:</b><ul>",
-    "chat.missed.meetings_header": "<b>Missed Classes:</b><ul>",
-    "chat.missed.tasks_none": "No missed tasks.",
-    "chat.missed.meetings_none": "No missed classes.",
-    "chat.missed.task_item":
-      "<li>{courseName}: {title} (Deadline: {deadline})</li>",
-    "chat.missed.meeting_item": "<li>{courseName}: {id} - {topic}</li>",
-    "chat.updates.header": "<b>Latest Updates:</b><ul>",
-    "chat.updates.next_task": "<li>Next task: {task}</li>",
-    "chat.updates.no_task": "No upcoming tasks.",
-    "chat.updates.latest_material": "<li>Latest material: {material}</li>",
-    "chat.updates.no_material": "No new materials.",
-    "chat.perf.summary":
-      "Your average score is {avg}%. Best course: {bestCourse} ({bestScore}%), weakest: {worstCourse} ({worstScore}%).",
-    "chat.perf.no_scores": "No grades yet to calculate performance.",
-    "motivation.response":
-      "Keep up the good work in {bestCourse}! Try to improve your results in {worstCourse}.",
-    "chat.attendance.overall": "Your overall attendance rate is {attendance}.",
-    "chat.attendance.specific":
-      "Attendance for {name}: Present {present}, Absent {absent}, Late {late} ({rate}% attendance).",
-    "chat.attendance_warn.header": "<b>Attendance Warnings:</b><ul>",
-    "chat.attendance_warn.item":
-      "<li>{courseName}: {absentCount} absences</li>",
-    "chat.attendance_warn.none": "No attendance warnings.",
-    "chat.courselist.header": "<b>List of your courses:</b><ul>",
-    "chat.coursedetails.info":
-      "<b>{name}</b> ({code}) - {credits} credits. {meetings} meetings, {tasks} tasks, {materials} materials available.",
-    "chat.coursedetails.prompt":
-      "<br>You can ask about the tasks or materials for {courseKey}.",
-    "chat.desc.prompt": "Which course task do you want me to describe?",
-    "chat.desc.none": "No active task found for {courseName}.",
-    "chat.desc.response": "<b>{title}</b> ({courseName}): {description}",
-    "chat.gpa": "Your current GPA is {gpa}.",
-    "chat.credits": "You have taken a total of {sks} credits this semester.",
+    "chat.hello": "Hello, Kharis! How can I help you with your dashboard?",
+    "chat.welcome": "You're welcome! Happy to help.",
+    "chat.help": `I can answer a lot! Here is a complete list of what you can ask:
+        <br><br>
+        <b>1. General & Help</b>
+        <ul>
+          <li><b>Greeting:</b> "hello", "hi"</li>
+          <li><b>Help:</b> "help", "what can you do"</li>
+          <li><b>Profile:</b> "who am i", "my name"</li>
+          <li><b>Thanks:</b> "thanks", "thank you"</li>
+        </ul>
+        <b>2. Summary & Performance</b>
+        <ul>
+          <li><b>Daily Briefing:</b> "agenda for today"</li>
+          <li><b>Grade Performance:</b> "how's my performance"</li>
+          <li><b>GPA:</b> "what's my gpa"</li>
+          <li><b>Total Credits:</b> "how many credits"</li>
+        </ul>
+        <b>3. Schedule & Attendance</b>
+        <ul>
+          <li><b>Schedule by Day:</b> "schedule for today", "schedule for tuesday"</li>
+          <li><b>Attendance Warning:</b> "attendance warning"</li>
+          <li><b>Attendance Info:</b> "my attendance in algorithms"</li>
+        </ul>
+        <b>4. Tasks & Materials</b>
+        <ul>
+          <li><b>All Remaining Tasks:</b> "what tasks do i have"</li>
+          <li><b>Tasks per Course:</b> "algorithms tasks"</li>
+          <li><b>Urgent Task:</b> "most urgent task"</li>
+          <li><b>Count Remaining Tasks:</b> "how many tasks are left"</li>
+          <li><b>Tasks by Status:</b> "what tasks are late"</li>
+          <li><b>Task Description:</b> "description for software task"</li>
+          <li><b>Material List:</b> "database materials"</li>
+        </ul>
+        <b>5. Specific Course Info</b>
+        <ul>
+          <li><b>List All Courses:</b> "list my courses"</li>
+          <li><b>Course Details:</b> "tell me about algorithms"</li>
+          <li><b>Lecturer Info:</b> "who is the lecturer for algorithms"</li>
+          <li><b>Room Info:</b> "where is the algorithms class"</li>
+          <li><b>Credits per Course:</b> "how many credits is algorithms"</li>
+          <li><b>Grades per Course:</b> "my grades in algorithms"</li>
+          <li><b>Topics This Week:</b> "topics for this week"</li>
+        </ul>
+        <b>6. Reports & Updates</b>
+        <ul>
+          <li><b>Missed Items:</b> "what did i miss"</li>
+          <li><b>Latest Updates:</b> "what's the latest update"</li>
+        </ul>`,
+    "chat.gpa": "Your current GPA is <b>{gpa}</b>.",
+    "chat.credits": "You are taking <b>{sks} credits</b> this semester.",
     "chat.whoami":
-      "You are Kharis, a hardworking student enrolled in Informatics.",
-    "lecturer.prompt": "Please mention the course to find the lecturer info.",
-    "lecturer.info": "Lecturer for {courseName}: {lecturer}.",
-    "lecturer.room": "{courseName} is held in room {room}.",
-    "lecturer.not_found": "Lecturer for {courseName} not found.",
-    "chat.task_count.item": "{courseName} has {count} pending tasks.",
-    "chat.task_count.none": "No pending tasks for {courseName}.",
-    "chat.task_count.all": "You have {count} pending tasks in total.",
-    "chat.task_count.all_none": "All tasks are completed!",
-    "urgent.header": "<b>Most Urgent Task:</b>",
-    "urgent.item": "{courseName}: {title} (Deadline: {deadline})",
-    "urgent.none": "No urgent tasks at the moment.",
-    "tasks_status.header": "<b>Tasks with status {status}:</b><ul>",
+      "You are <b>Kharis Destian Maulana</b> (NIM: 2023001) from the Informatics Engineering program.",
+    "chat.fallback":
+      "Sorry, I don't understand that question. Try asking 'help' to see what I can do.",
+    "chat.schedule.today_off":
+      "Looks like there are no classes scheduled for today. Enjoy your day!",
+    "chat.schedule.not_found": "The schedule for that day wasn't found.",
+    "chat.schedule.header": "Schedule for <b>{dayName}</b>:<ul>",
+    "chat.schedule.item": "<li><b>{time}</b>: {course} (at {room})</li>",
+    "chat.schedule.prompt":
+      "Which day's schedule would you like to know? (e.g., 'schedule for monday')",
+    "chat.courselist.header": "You are enrolled in the following courses:<ul>",
+    "chat.coursedetails.info":
+      "Info for <b>{name}</b> ({code}):<ul><li>Credits: {credits}</li><li>Total Meetings: {meetings}</li><li>Total Tasks: {tasks}</li><li>Total Materials: {materials}</li></ul>",
+    "chat.coursedetails.prompt":
+      "You can ask more specific questions like 'tasks for {courseKey}' or 'grades for {courseKey}'.",
+    "chat.tasks.none_specific":
+      "Great! There are no pending tasks for <b>{courseName}</b>.",
+    "chat.tasks.none_all":
+      "Excellent! All your tasks are complete or there are no new tasks.",
+    "chat.tasks.header": "Here are your upcoming or unfinished tasks:<ul>",
+    "chat.tasks.item":
+      "<li><b>{courseName}</b>: {title} (Deadline: {deadline})</li>",
+    "chat.grades.prompt":
+      "Which course's grades would you like to know? (e.g., 'webdev grades')",
+    "chat.grades.none":
+      "There are no grades entered yet for <b>{courseName}</b>.",
+    "chat.grades.header":
+      "List of grades for <b>{courseName}</b> that have been assessed:<ul>",
+    "chat.grades.item": "<li><b>{title}</b>: {score} / {maxScore}</li>",
+    "chat.grades.item_pending": "<li><b>{title}</b>: (Being graded)</li>",
+    "chat.attendance.overall":
+      "Your overall attendance is <b>{attendance}%</b>.",
+    "chat.attendance.specific":
+      "Attendance stats for <b>{name}</b>:<ul><li>Present: {present}</li><li>Absent: {absent}</li><li>Late: {late}</li></ul>Total attendance rate: <b>{rate}%</b>",
+    "chat.perf.no_scores":
+      "No grades have been entered yet. I can't calculate your performance.",
+    "chat.perf.summary":
+      "Your performance summary so far (based on task averages):<ul><li>Overall Average: <b>{avg}%</b></li><li>Best Performance: <b>{bestCourse}</b> ({bestScore}%)</li><li>Needs Improvement: <b>{worstCourse}</b> ({worstScore}%)</li></ul>",
+    "chat.missed.header": "Report of missed items: <br>",
+    "chat.missed.tasks_header": "<b>Tasks Not Submitted:</b><ul>",
+    "chat.missed.task_item":
+      "<li><b>{courseName}</b>: {title} (Deadline: {deadline})</li>",
+    "chat.missed.tasks_none": "<p>👍 Great! No tasks missed.</p>",
+    "chat.missed.meetings_header": "<b>Meetings You Missed (Absent):</b><ul>",
+    "chat.missed.meeting_item":
+      "<li><b>{courseName}</b>: Meeting {id} - {topic}</li>",
+    "chat.missed.meetings_none":
+      "<p>👍 Your attendance is 100% (or no absences recorded).</p>",
+    "chat.updates.header": "Latest updates for you:<ul>",
+    "chat.updates.next_task": "<b>Closest Task:</b> {task}",
+    "chat.updates.no_task": "<b>Closest Task:</b> No new tasks.",
+    "chat.updates.latest_material": "<b>Latest Material:</b> {material}",
+    "chat.updates.no_material": "<b>Latest Material:</b> No new materials.",
+    "chat.desc.prompt":
+      "Please specify the course. (e.g., 'description for latest algorithms task')",
+    "chat.desc.none": "There are no tasks I can describe for {courseName}.",
+    "chat.desc.response":
+      'Description for task <b>{title}</b> ({courseName}):<br><p>"<i>{description}</i>"</p>',
+    "chat.topics.header": "Topics for this week:<ul>",
+    "chat.topics.item": "<li><b>{courseName}</b>: {topic} (Meeting {id})</li>",
+    "chat.topics.none":
+      "It seems the 'current week' data isn't set. But you can ask for the schedule by day.",
+    "lecturer.info":
+      "The lecturer for <b>{courseName}</b> is <b>{lecturer}</b>.",
+    "lecturer.room": "The <b>{courseName}</b> class is held in <b>{room}</b>.",
+    "lecturer.not_found":
+      "Sorry, I couldn't find the lecturer or room info for {courseName} in the schedule.",
+    "lecturer.prompt":
+      "Which course's lecturer or room do you want to know about?",
+    "credits.info":
+      "The course <b>{courseName}</b> is worth <b>{credits} credits</b>.",
+    "credits.prompt":
+      "Please specify which course you're asking about, e.g., 'how many credits for algorithms?'",
+    "urgent.header": "Here is your most urgent upcoming task:",
+    "urgent.item": "<b>{courseName}</b>: {title} (Deadline: {deadline})",
+    "urgent.none":
+      "👍 Great job! You have no urgent tasks with an upcoming deadline.",
+    "tasks_status.header":
+      "Here are the tasks with the status '<b>{status}</b>':<ul>",
     "tasks_status.item":
-      "<li>{courseName}: {title} (Deadline: {deadline})</li>",
-    "tasks_status.none": "No tasks with status {status}.",
-    "tasks_status.prompt": "Specify task status: late or pending review.",
-    "chat.topics.header": "<b>This Week’s Topics:</b><ul>",
-    "chat.topics.item": "<li>{courseName}: {topic} (Meeting {id})</li>",
-    "chat.topics.none": "No topics available for this week.",
+      "<li><b>{courseName}</b>: {title} (Deadline: {deadline})</li>",
+    "tasks_status.none": "You have no tasks with the status '<b>{status}</b>'.",
+    "motivation.response":
+      "Your best performance is in <b>{bestCourse}</b>, keep it up! You might want to focus a bit more on <b>{worstCourse}</b>. You can do it!",
+    "chat.briefing.header":
+      "Here's your daily briefing for <b>{dayName}, {date}</b>:<ul>",
+    "chat.briefing.no_class": "<li>You have no classes scheduled today.</li>",
+    "chat.briefing.class_item": "<li><b>{time}</b>: {course} ({topic})</li>",
+    "chat.briefing.deadline_header": "<b>Deadlines Today:</b>",
+    "chat.briefing.deadline_item":
+      "<li>Watch out! The task '<b>{taskTitle}</b>' ({courseName}) is due today.</li>",
+    "chat.briefing.deadline_none": "<li>👍 No tasks are due today.</li></ul>",
+    "chat.attendance_warn.header":
+      "I've checked your attendance. Here's the warning list:<ul>",
+    "chat.attendance_warn.item":
+      "<li><b>{courseName}</b>: You have <b>{absentCount}</b> absences. Be careful.</li></ul>",
+    "chat.attendance_warn.none":
+      "👍 Your attendance is looking great. No courses are at risk right now.",
+    "chat.task_count.item":
+      "You have <b>{count}</b> tasks remaining for <b>{courseName}</b>.",
+    "chat.task_count.none":
+      "You have <b>0</b> tasks remaining for <b>{courseName}</b>. Great job!",
+    "chat.task_count.all":
+      "Across all courses, you have a total of <b>{count}</b> remaining tasks.",
+    "chat.task_count.all_none":
+      "You have <b>0</b> remaining tasks in total. You're all caught up!",
+    "chat.task_count.prompt": "Which course do you want me to count tasks for?",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -1135,92 +1210,171 @@ const translations = {
     "chat.greeting":
       "Halo Kharis! Tanya saya seputar dashboard Anda. Coba ketik 'bantuan'.",
 
-    "chat.greeting":
-      "Halo Kharis! Tanya saya seputar dashboard Anda. Coba ketik 'bantuan'.",
-    "chat.help":
-      "Anda bisa bertanya tentang jadwal, tugas, kehadiran, atau info dosen.",
-    "chat.welcome": "Sama-sama! Ada yang bisa saya bantu lagi?",
-    "chat.hello": "Hai! Ada yang bisa saya bantu?",
-    "chat.fallback": "Maaf, saya belum paham maksud pertanyaan Anda.",
-    "chat.schedule.header": "Jadwal untuk hari {dayName}: <ul>",
-    "chat.schedule.item": "<li>{time} - {course} ({room})</li>",
-    "chat.schedule.not_found": "Jadwal untuk hari tersebut tidak ditemukan.",
-    "chat.schedule.prompt": "Sebutkan hari yang ingin Anda cek.",
-    "chat.schedule.today_off": "Hari ini tidak ada kelas. Nikmati waktu luang!",
-    "chat.briefing.header": "Rangkuman hari {dayName}, {date}: <ul>",
-    "chat.briefing.class_item": "<li>{time} - {course}: {topic}</li>",
-    "chat.briefing.no_class": "Tidak ada kelas hari ini.",
-    "chat.briefing.deadline_header":
-      "<br><b>Tugas dengan deadline hari ini:</b>",
-    "chat.briefing.deadline_item": "<li>{taskTitle} - {courseName}</li>",
-    "chat.briefing.deadline_none": "Tidak ada tugas yang jatuh tempo hari ini.",
-    "chat.tasks.header": "<b>Tugas yang belum selesai:</b><ul>",
-    "chat.tasks.item": "<li>{courseName}: {title} (Deadline: {deadline})</li>",
-    "chat.tasks.none_all": "Semua tugas sudah selesai!",
-    "chat.tasks.none_specific": "Tidak ada tugas untuk {courseName}.",
-    "chat.grades.prompt": "Sebutkan mata kuliah untuk melihat nilainya.",
-    "chat.grades.header": "<b>Nilai untuk {courseName}:</b><ul>",
-    "chat.grades.item": "<li>{title}: {score}/{maxScore}</li>",
-    "chat.grades.item_pending": "<li>{title}: Menunggu penilaian</li>",
-    "chat.grades.none": "Belum ada nilai untuk {courseName}.",
-    "chat.missed.header": "<b>Yang terlewat:</b><ul>",
-    "chat.missed.tasks_header": "<b>Tugas belum dikumpulkan:</b><ul>",
-    "chat.missed.meetings_header": "<b>Pertemuan yang terlewat:</b><ul>",
-    "chat.missed.tasks_none": "Tidak ada tugas yang terlewat.",
-    "chat.missed.meetings_none": "Tidak ada pertemuan yang terlewat.",
-    "chat.missed.task_item":
-      "<li>{courseName}: {title} (Deadline: {deadline})</li>",
-    "chat.missed.meeting_item": "<li>{courseName}: {id} - {topic}</li>",
-    "chat.updates.header": "<b>Pembaruan Terbaru:</b><ul>",
-    "chat.updates.next_task": "<li>Tugas berikutnya: {task}</li>",
-    "chat.updates.no_task": "Belum ada tugas baru.",
-    "chat.updates.latest_material": "<li>Materi terbaru: {material}</li>",
-    "chat.updates.no_material": "Belum ada materi baru.",
-    "chat.perf.summary":
-      "Rata-rata nilai Anda {avg}%. Mata kuliah terbaik: {bestCourse} ({bestScore}%), terendah: {worstCourse} ({worstScore}%).",
-    "chat.perf.no_scores": "Belum ada nilai untuk menghitung performa.",
-    "motivation.response":
-      "Pertahankan performa di {bestCourse}! Tingkatkan hasil di {worstCourse}.",
-    "chat.attendance.overall":
-      "Tingkat kehadiran keseluruhan Anda {attendance}.",
-    "chat.attendance.specific":
-      "Kehadiran untuk {name}: Hadir {present}, Absen {absent}, Terlambat {late} ({rate}% kehadiran).",
-    "chat.attendance_warn.header": "<b>Peringatan Kehadiran:</b><ul>",
-    "chat.attendance_warn.item":
-      "<li>{courseName}: {absentCount} kali absen</li>",
-    "chat.attendance_warn.none": "Tidak ada peringatan kehadiran.",
-    "chat.courselist.header": "<b>Daftar Mata Kuliah:</b><ul>",
+    "chat.hello":
+      "Halo, Kharis! Ada yang bisa saya bantu terkait dashboard Anda?",
+    "chat.welcome": "Sama-sama! Senang bisa membantu.",
+    "chat.help": `Saya bisa menjawab banyak hal! Ini adalah daftar lengkap yang bisa Anda tanyakan:
+        <br><br>
+        <b>1. Umum & Bantuan</b>
+        <ul>
+          <li><b>Sapaan:</b> "halo", "hai"</li>
+          <li><b>Bantuan:</b> "bantuan", "bisa apa saja"</li>
+          <li><b>Profil:</b> "siapa saya", "NIM saya"</li>
+          <li><b>Terima Kasih:</b> "makasih"</li>
+        </ul>
+        <b>2. Rangkuman & Performa</b>
+        <ul>
+          <li><b>Rangkuman Harian:</b> "agenda hari ini"</li>
+          <li><b>Performa Nilai:</b> "gimana performa saya"</li>
+          <li><b>IPK:</b> "IPK saya berapa"</li>
+          <li><b>Total SKS:</b> "berapa sks saya"</li>
+        </ul>
+        <b>3. Jadwal & Kehadiran</b>
+        <ul>
+          <li><b>Jadwal per Hari:</b> "jadwal hari ini", "jadwal selasa"</li>
+          <li><b>Peringatan Absen:</b> "absen yang rawan"</li>
+          <li><b>Info Absen:</b> "absen saya di algoritma"</li>
+        </ul>
+        <b>4. Tugas & Materi</b>
+        <ul>
+          <li><b>Semua Sisa Tugas:</b> "ada tugas apa saja", "sisa tugas"</li>
+          <li><b>Tugas per Matkul:</b> "tugas algoritma"</li>
+          <li><b>Tugas Mendesak:</b> "deadline terdekat"</li>
+          <li><b>Hitung Sisa Tugas:</b> "berapa sisa tugas saya"</li>
+          <li><b>Tugas per Status:</b> "tugas yang terlambat"</li>
+          <li><b>Deskripsi Tugas:</b> "deskripsi tugas software"</li>
+          <li><b>Daftar Materi:</b> "materi database"</li>
+        </ul>
+        <b>5. Info Spesifik Mata Kuliah</b>
+        <ul>
+          <li><b>Daftar Matkul:</b> "daftar mata kuliah"</li>
+          <li><b>Detail Matkul:</b> "info algoritma"</li>
+          <li><b>Info Dosen:</b> "dosen algoritma siapa"</li>
+          <li><b>Info Ruangan:</b> "ruangan algoritma dimana"</li>
+          <li><b>SKS per Matkul:</b> "berapa sks algoritma"</li>
+          <li><b>Nilai per Matkul:</b> "nilai saya di algoritma"</li>
+          <li><b>Topik Minggu Ini:</b> "topik minggu ini"</li>
+        </ul>
+        <b>6. Laporan & Update</b>
+        <ul>
+          <li><b>Item Terlewat:</b> "saya kelewat apa aja"</li>
+          <li><b>Update Terbaru:</b> "ada info terbaru"</li>
+        </ul>`,
+    "chat.gpa": "IPK (GPA) Anda saat ini adalah <b>{gpa}</b>.",
+    "chat.credits": "Anda mengambil <b>{sks} SKS</b> semester ini.",
+    "chat.whoami":
+      "Anda adalah <b>Kharis Destian Maulana</b> (NIM: 2023001) dari program Teknik Informatika.",
+    "chat.fallback":
+      "Maaf, saya tidak mengerti pertanyaan itu. Coba tanya 'bantuan' untuk melihat apa yang bisa saya lakukan.",
+    "chat.schedule.today_off":
+      "Sepertinya tidak ada jadwal kelas untuk hari ini. Selamat berlibur!",
+    "chat.schedule.not_found": "Jadwal untuk hari itu tidak ditemukan.",
+    "chat.schedule.header": "Jadwal untuk <b>{dayName}</b>:<ul>",
+    "chat.schedule.item": "<li><b>{time}</b>: {course} (di {room})</li>",
+    "chat.schedule.prompt":
+      "Jadwal hari apa yang ingin Anda tahu? (Contoh: 'jadwal hari senin')",
+    "chat.courselist.header": "Anda terdaftar di mata kuliah berikut:<ul>",
     "chat.coursedetails.info":
-      "<b>{name}</b> ({code}) - {credits} SKS. {meetings} pertemuan, {tasks} tugas, {materials} materi tersedia.",
+      "Info <b>{name}</b> ({code}):<ul><li>SKS: {credits}</li><li>Total Pertemuan: {meetings}</li><li>Total Tugas: {tasks}</li><li>Total Materi: {materials}</li></ul>",
     "chat.coursedetails.prompt":
-      "<br>Anda bisa tanya tugas atau materi dari {courseKey}.",
-    "chat.desc.prompt": "Tugas mata kuliah mana yang ingin dijelaskan?",
-    "chat.desc.none": "Tidak ada tugas aktif untuk {courseName}.",
-    "chat.desc.response": "<b>{title}</b> ({courseName}): {description}",
-    "chat.gpa": "IPK Anda saat ini adalah {gpa}.",
-    "chat.credits": "Total SKS yang diambil semester ini: {sks}.",
-    "chat.whoami": "Anda adalah Kharis, mahasiswa Informatika yang rajin.",
-    "lecturer.prompt": "Sebutkan mata kuliahnya untuk melihat info dosen.",
-    "lecturer.info": "Dosen pengampu {courseName}: {lecturer}.",
-    "lecturer.room": "{courseName} diadakan di ruang {room}.",
-    "lecturer.not_found": "Dosen untuk {courseName} tidak ditemukan.",
-    "chat.task_count.item":
-      "{courseName} memiliki {count} tugas belum dikumpulkan.",
-    "chat.task_count.none": "Tidak ada tugas untuk {courseName}.",
-    "chat.task_count.all": "Total {count} tugas yang belum dikumpulkan.",
-    "chat.task_count.all_none": "Semua tugas sudah dikumpulkan!",
-    "urgent.header": "<b>Tugas Paling Mendesak:</b>",
-    "urgent.item": "{courseName}: {title} (Deadline: {deadline})",
-    "urgent.none": "Tidak ada tugas mendesak saat ini.",
-    "tasks_status.header": "<b>Tugas dengan status {status}:</b><ul>",
+      "Anda bisa tanya lebih spesifik seperti 'tugas {courseKey}' atau 'nilai {courseKey}'.",
+    "chat.tasks.none_specific":
+      "Selamat! Tidak ada tugas yang tertunda untuk <b>{courseName}</b>.",
+    "chat.tasks.none_all":
+      "Luar biasa! Semua tugas Anda sudah selesai atau belum ada tugas baru.",
+    "chat.tasks.header":
+      "Berikut adalah tugas yang akan datang atau belum selesai:<ul>",
+    "chat.tasks.item":
+      "<li><b>{courseName}</b>: {title} (Deadline: {deadline})</li>",
+    "chat.grades.prompt":
+      "Nilai mata kuliah apa yang ingin Anda tahu? (Contoh: 'nilai webdev')",
+    "chat.grades.none": "Belum ada nilai yang masuk untuk <b>{courseName}</b>.",
+    "chat.grades.header":
+      "Daftar nilai <b>{courseName}</b> yang sudah dinilai:<ul>",
+    "chat.grades.item": "<li><b>{title}</b>: {score} / {maxScore}</li>",
+    "chat.grades.item_pending": "<li><b>{title}</b>: (Sedang dinilai)</li>",
+    "chat.attendance.overall":
+      "Kehadiran total Anda (Overall) adalah <b>{attendance}%</b>.",
+    "chat.attendance.specific":
+      "Statistik kehadiran <b>{name}</b>:<ul><li>Hadir: {present}</li><li>Tidak Hadir: {absent}</li><li>Terlambat: {late}</li></ul>Total tingkat kehadiran: <b>{rate}%</b>",
+    "chat.perf.no_scores":
+      "Belum ada nilai yang dimasukkan. Saya belum bisa menghitung performa Anda.",
+    "chat.perf.summary":
+      "Ringkasan performa Anda sejauh ini (berdasarkan rata-rata nilai tugas):<ul><li>Rata-rata keseluruhan: <b>{avg}%</b></li><li>Performa terbaik: <b>{bestCourse}</b> ({bestScore}%)</li><li>Perlu ditingkatkan: <b>{worstCourse}</b> ({worstScore}%)</li></ul>",
+    "chat.missed.header": "Laporan item yang terlewat: <br>",
+    "chat.missed.tasks_header": "<b>Tugas yang Belum Dikumpulkan:</b><ul>",
+    "chat.missed.task_item":
+      "<li><b>{courseName}</b>: {title} (Deadline: {deadline})</li>",
+    "chat.missed.tasks_none": "<p>👍 Bagus! Tidak ada tugas yang terlewat.</p>",
+    "chat.missed.meetings_header":
+      "<b>Pertemuan yang Anda Lewatkan (Alpa):</b><ul>",
+    "chat.missed.meeting_item":
+      "<li><b>{courseName}</b>: Pertemuan {id} - {topic}</li>",
+    "chat.missed.meetings_none":
+      "<p>👍 Kehadiran Anda 100% (atau tidak ada alpa).</p>",
+    "chat.updates.header": "Update terbaru untuk Anda:<ul>",
+    "chat.updates.next_task": "<b>Tugas Terdekat:</b> {task}",
+    "chat.updates.no_task": "<b>Tugas Terdekat:</b> Tidak ada tugas baru.",
+    "chat.updates.latest_material": "<b>Materi Terbaru:</b> {material}",
+    "chat.updates.no_material": "<b>Materi Terbaru:</b> Tidak ada materi baru.",
+    "chat.desc.prompt":
+      "Tolong sebutkan mata kuliahnya. (Contoh: 'deskripsi tugas terbaru algoritma')",
+    "chat.desc.none":
+      "Tidak ada tugas yang bisa saya deskripsikan untuk {courseName}.",
+    "chat.desc.response":
+      'Deskripsi untuk tugas <b>{title}</b> ({courseName}):<br><p>"<i>{description}</i>"</p>',
+    "chat.topics.header": "Topik yang sedang berjalan (Minggu ini):<ul>",
+    "chat.topics.item":
+      "<li><b>{courseName}</b>: {topic} (Pertemuan {id})</li>",
+    "chat.topics.none":
+      "Sepertinya data 'minggu ini' belum di-set. Tapi Anda bisa tanya jadwal per hari.",
+    "lecturer.info":
+      "Dosen untuk <b>{courseName}</b> adalah <b>{lecturer}</b>.",
+    "lecturer.room": "Kelas <b>{courseName}</b> diadakan di <b>{room}</b>.",
+    "lecturer.not_found":
+      "Maaf, saya tidak dapat menemukan info dosen atau ruangan untuk {courseName} di jadwal.",
+    "lecturer.prompt":
+      "Dosen atau ruangan mata kuliah apa yang ingin Anda ketahui?",
+    "credits.info":
+      "Mata kuliah <b>{courseName}</b> memiliki <b>{credits} SKS</b>.",
+    "credits.prompt":
+      "Tolong sebutkan mata kuliahnya, cth: 'berapa sks algoritma?'",
+    "urgent.header": "Ini adalah tugas Anda yang paling mendesak:",
+    "urgent.item": "<b>{courseName}</b>: {title} (Deadline: {deadline})",
+    "urgent.none": "👍 Kerja bagus! Tidak ada tugas mendesak yang akan datang.",
+    "tasks_status.header":
+      "Berikut adalah tugas-tugas dengan status '<b>{status}</b>':<ul>",
     "tasks_status.item":
-      "<li>{courseName}: {title} (Deadline: {deadline})</li>",
-    "tasks_status.none": "Tidak ada tugas dengan status {status}.",
-    "tasks_status.prompt":
-      "Tentukan status tugas: terlambat atau sedang dinilai.",
-    "chat.topics.header": "<b>Topik Minggu Ini:</b><ul>",
-    "chat.topics.item": "<li>{courseName}: {topic} (Pertemuan {id})</li>",
-    "chat.topics.none": "Belum ada topik untuk minggu ini.",
+      "<li><b>{courseName}</b>: {title} (Deadline: {deadline})</li>",
+    "tasks_status.none":
+      "Anda tidak memiliki tugas dengan status '<b>{status}</b>'.",
+    "motivation.response":
+      "Performa terbaik Anda ada di <b>{bestCourse}</b>, pertahankan! Anda mungkin perlu sedikit lebih fokus pada <b>{worstCourse}</b>. Anda pasti bisa!",
+    "chat.briefing.header":
+      "Ini rangkuman harian Anda untuk <b>{dayName}, {date}</b>:<ul>",
+    "chat.briefing.no_class": "<li>Anda tidak ada jadwal kelas hari ini.</li>",
+    "chat.briefing.class_item": "<li><b>{time}</b>: {course} ({topic})</li>",
+    "chat.briefing.deadline_header": "<b>Deadline Hari Ini:</b>",
+    "chat.briefing.deadline_item":
+      "<li>Awas! Tugas '<b>{taskTitle}</b>' ({courseName}) harus dikumpulkan hari ini.</li>",
+    "chat.briefing.deadline_none":
+      "<li>👍 Tidak ada tugas yang deadline-nya hari ini.</li></ul>",
+    "chat.attendance_warn.header":
+      "Saya sudah periksa absensi Anda. Berikut daftar peringatannya:<ul>",
+    "chat.attendance_warn.item":
+      "<li><b>{courseName}</b>: Anda memiliki <b>{absentCount}</b> alpa. Harap berhati-hati.</li></ul>",
+    "chat.attendance_warn.none":
+      "👍 Absensi Anda terlihat bagus. Tidak ada mata kuliah yang rawan saat ini.",
+    "chat.task_count.item":
+      "Anda memiliki <b>{count}</b> sisa tugas di <b>{courseName}</b>.",
+    "chat.task_count.none":
+      "Anda memiliki <b>0</b> sisa tugas di <b>{courseName}</b>. Kerja bagus!",
+    "chat.task_count.all":
+      "Di semua mata kuliah, Anda memiliki total <b>{count}</b> sisa tugas.",
+    "chat.task_count.all_none":
+      "Anda memiliki <b>0</b> sisa tugas. Semuanya sudah beres!",
+    "chat.task_count.prompt":
+      "Mata kuliah mana yang ingin Anda hitung sisa tugasnya?",
   },
 };
 
