@@ -4038,7 +4038,107 @@ function getContextForAI(query) {
 
 // ===== STUDY ROOM SYSTEM (HTTP Version) =====
 
-// Study Room dengan Real WebRTC
+// ===== MODAL FUNCTIONS - TAMBAHKAN INI =====
+function showCreateRoomModal() {
+  console.log("Membuka modal buat room");
+  const modal = document.getElementById("createRoomModal");
+  if (modal) {
+    modal.style.display = "flex";
+    // Focus ke input
+    setTimeout(() => {
+      const input = document.getElementById("roomNameInput");
+      if (input) input.focus();
+    }, 100);
+  } else {
+    console.error("Modal create room tidak ditemukan");
+    // Fallback
+    const roomName = prompt("Masukkan nama room:");
+    if (roomName) {
+      createRoomDirect(roomName);
+    }
+  }
+}
+
+function showJoinRoomModal() {
+  console.log("Membuka modal join room");
+  const modal = document.getElementById("joinRoomModal");
+  if (modal) {
+    modal.style.display = "flex";
+    // Focus ke input
+    setTimeout(() => {
+      const input = document.getElementById("roomCodeInput");
+      if (input) input.focus();
+    }, 100);
+  } else {
+    console.error("Modal join room tidak ditemukan");
+    // Fallback
+    const roomCode = prompt("Masukkan kode room:");
+    if (roomCode) {
+      joinRoomDirect(roomCode);
+    }
+  }
+}
+
+function closeModal() {
+  console.log("Menutup modal");
+  // Tutup semua modal
+  const modals = document.querySelectorAll(".modal");
+  modals.forEach((modal) => {
+    modal.style.display = "none";
+  });
+  // Reset input
+  const roomNameInput = document.getElementById("roomNameInput");
+  const roomCodeInput = document.getElementById("roomCodeInput");
+  if (roomNameInput) roomNameInput.value = "";
+  if (roomCodeInput) roomCodeInput.value = "";
+}
+
+// Fallback functions
+function createRoomDirect(roomName) {
+  currentUserId = generateUserId();
+  const roomCode = generateRoomCode();
+  alert(
+    `Room "${roomName}" berhasil dibuat!\nKode: ${roomCode}\n\nShare kode ini ke teman-teman.`
+  );
+  currentRoomId = roomCode;
+  startVideoCall(roomCode, roomName);
+}
+
+function joinRoomDirect(roomCode) {
+  currentUserId = generateUserId();
+  if (!roomCode || roomCode.length !== 6) {
+    alert("Kode room harus 6 karakter");
+    return;
+  }
+  alert(`Bergabung ke room: ${roomCode}`);
+  currentRoomId = roomCode.toUpperCase();
+  startVideoCall(currentRoomId, "Study Room");
+}
+
+function generateRoomCode() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
+  for (let i = 0; i < 6; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
+// Event listeners untuk close modal
+document.addEventListener("click", function (event) {
+  // Close modal ketika klik di luar content
+  if (event.target.classList.contains("modal")) {
+    closeModal();
+  }
+});
+
+document.addEventListener("keydown", function (event) {
+  // Close modal dengan ESC key
+  if (event.key === "Escape") {
+    closeModal();
+  }
+}); // Study Room dengan Real WebRTC
+
 let localStream = null;
 let peerConnections = {};
 let currentRoomId = null;
