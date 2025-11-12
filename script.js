@@ -4043,6 +4043,7 @@ let localStream = null;
 let peers = {};
 
 // Room Functions
+// Study Room Simple Functions
 function showCreateRoomModal() {
   document.getElementById("createRoomModal").style.display = "flex";
 }
@@ -4058,223 +4059,19 @@ function closeModal() {
   document.getElementById("roomCodeInput").value = "";
 }
 
-async function createRoom() {
-  const roomName = document.getElementById("roomNameInput").value;
-  if (!roomName) {
-    alert("Masukkan nama room");
-    return;
-  }
-
-  try {
-    const response = await fetch("/api/study-rooms", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        action: "create-room",
-        roomName: roomName,
-        userId: "user-" + Date.now(), // Simple user ID
-      }),
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      closeModal();
-      currentRoomId = data.room.id;
-      alert(
-        `Room berhasil dibuat!\nKode: ${data.room.id}\nShare kode ini ke teman-teman.`
-      );
-      startVideoCall(data.room.id);
-    } else {
-      alert("Error: " + data.error);
-    }
-  } catch (error) {
-    alert("Error creating room: " + error.message);
-  }
-}
-
-async function joinRoom() {
-  const roomCode = document.getElementById("roomCodeInput").value.toUpperCase();
-  if (!roomCode || roomCode.length !== 6) {
-    alert("Masukkan kode room 6 karakter");
-    return;
-  }
-
-  try {
-    const response = await fetch("/api/study-rooms", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        action: "join-room",
-        roomCode: roomCode,
-        userId: "user-" + Date.now(), // Simple user ID
-      }),
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      closeModal();
-      currentRoomId = roomCode;
-      alert(`Berhasil join room: ${data.room.name}`);
-      startVideoCall(roomCode);
-    } else {
-      alert("Error: " + data.error);
-    }
-  } catch (error) {
-    alert("Error joining room: " + error.message);
-  }
-}
-
-// WebRTC Functions (Simple P2P)
-async function startVideoCall(roomId) {
-  try {
-    // Get user media
-    localStream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true,
-    });
-
-    // Show local video
-    const localVideo = document.getElementById("localVideo");
-    if (localVideo) {
-      localVideo.srcObject = localStream;
-    }
-
-    // Show video call UI
-    document.getElementById("videoCallContainer").style.display = "block";
-
-    // Simulate another participant (for demo)
-    setTimeout(() => {
-      simulateRemoteParticipant();
-    }, 2000);
-  } catch (error) {
-    console.error("Error accessing media devices:", error);
-    alert(
-      "Tidak bisa mengakses kamera/mikrofon. Pastikan Anda memberikan izin."
-    );
-  }
-}
-
-function simulateRemoteParticipant() {
-  // Untuk demo, buat video placeholder
-  const remoteVideo = document.createElement("video");
-  remoteVideo.autoplay = true;
-  remoteVideo.playsInline = true;
-  remoteVideo.style.background = "#000";
-  remoteVideo.style.borderRadius = "10px";
-
-  // Tambah text overlay untuk demo
-  const overlay = document.createElement("div");
-  overlay.style.position = "absolute";
-  overlay.style.top = "50%";
-  overlay.style.left = "50%";
-  overlay.style.transform = "translate(-50%, -50%)";
-  overlay.style.color = "white";
-  overlay.style.textAlign = "center";
-  overlay.innerHTML = "Teman Study<br><small>Bergabung nanti</small>";
-
-  const videoContainer = document.createElement("div");
-  videoContainer.style.position = "relative";
-  videoContainer.style.background = "#333";
-  videoContainer.style.borderRadius = "10px";
-  videoContainer.style.display = "flex";
-  videoContainer.style.alignItems = "center";
-  videoContainer.style.justifyContent = "center";
-  videoContainer.style.minHeight = "200px";
-
-  videoContainer.appendChild(remoteVideo);
-  videoContainer.appendChild(overlay);
-  document.getElementById("remoteVideos").appendChild(videoContainer);
-}
-
-// Call Controls
-function toggleMute() {
-  if (localStream) {
-    const audioTrack = localStream.getAudioTracks()[0];
-    if (audioTrack) {
-      audioTrack.enabled = !audioTrack.enabled;
-      alert("Audio " + (audioTrack.enabled ? "diaktifkan" : "dimute"));
-    }
-  }
-}
-
-function toggleVideo() {
-  if (localStream) {
-    const videoTrack = localStream.getVideoTracks()[0];
-    if (videoTrack) {
-      videoTrack.enabled = !videoTrack.enabled;
-      alert("Video " + (videoTrack.enabled ? "diaktifkan" : "dimatikan"));
-    }
-  }
-}
-
-async function shareScreen() {
-  try {
-    const screenStream = await navigator.mediaDevices.getDisplayMedia({
-      video: true,
-    });
-
-    const localVideo = document.getElementById("localVideo");
-    if (localVideo) {
-      localVideo.srcObject = screenStream;
-    }
-
-    alert("Screen sharing started");
-  } catch (error) {
-    alert("Error sharing screen: " + error.message);
-  }
-}
-
-function leaveCall() {
-  if (localStream) {
-    localStream.getTracks().forEach((track) => track.stop());
-  }
-  document.getElementById("videoCallContainer").style.display = "none";
-  document.getElementById("remoteVideos").innerHTML = "";
-  currentRoomId = null;
-  alert("Left the study room");
-}
-
-// Initialize study room system
-function initStudyRoomSystem() {
-  console.log("Study room system initialized");
-  // System sudah siap, tinggal tunggu user action
-}
-
-// Add to existing DOMContentLoaded
-document.addEventListener("DOMContentLoaded", function () {
-  // ... kode yang sudah ada ...
-
-  // Initialize study room system
-  initStudyRoomSystem();
-});
-
-function showCreateRoomModal() {
-  document.getElementById("createRoomModal").style.display = "flex";
-}
-
-function showJoinRoomModal() {
-  document.getElementById("joinRoomModal").style.display = "flex";
-}
-
-function closeModal() {
-  document.getElementById("createRoomModal").style.display = "none";
-  document.getElementById("joinRoomModal").style.display = "none";
-}
-
 function createRoom() {
   const roomName = document.getElementById("roomNameInput").value;
   if (!roomName) {
     alert("Masukkan nama room");
     return;
   }
-  alert(`Room "${roomName}" berhasil dibuat!`);
+
+  const roomCode = generateRoomCode();
+  alert(
+    `Room "${roomName}" berhasil dibuat!\nKode Room: ${roomCode}\n\nShare kode ini ke teman-teman.`
+  );
   closeModal();
+  startVideoCall(roomCode, roomName);
 }
 
 function joinRoom() {
@@ -4285,8 +4082,83 @@ function joinRoom() {
   }
   alert(`Bergabung ke room: ${roomCode}`);
   closeModal();
+  startVideoCall(roomCode, "Study Room");
 }
 
-function showInviteModal() {
-  alert("Fitur invite teman akan datang soon!");
+function generateRoomCode() {
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  let result = "";
+  for (let i = 0; i < 6; i++) {
+    result += chars.charAt(Math.floor(Math.random() * chars.length));
+  }
+  return result;
+}
+
+async function startVideoCall(roomCode, roomName) {
+  try {
+    // Hide empty state, show video area
+    document.querySelector(".empty-state").style.display = "none";
+    document.getElementById("videoCallArea").style.display = "flex";
+
+    // Update header
+    document.querySelector(
+      ".study-room-simple-header h2"
+    ).textContent = `🎓 ${roomName} (${roomCode})`;
+
+    // Get user media
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: true,
+      audio: true,
+    });
+
+    const localVideo = document.getElementById("localVideo");
+    localVideo.srcObject = stream;
+
+    // Simulate remote participant after 3 seconds
+    setTimeout(() => {
+      simulateRemoteParticipant();
+    }, 3000);
+  } catch (error) {
+    console.error("Error accessing media:", error);
+    alert("Tidak bisa mengakses kamera/mikrofon");
+  }
+}
+
+function simulateRemoteParticipant() {
+  const videoGrid = document.querySelector(".video-grid");
+  const remoteVideo = document.createElement("div");
+  remoteVideo.className = "video-container";
+  remoteVideo.innerHTML = `
+        <div style="background: #374151; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; color: white; font-size: 18px;">
+            Teman Study<br><small style="font-size: 14px; opacity: 0.7;">Bergabung nanti</small>
+        </div>
+        <div class="video-label">Teman</div>
+    `;
+  videoGrid.appendChild(remoteVideo);
+}
+
+function toggleMute() {
+  alert("Audio toggled");
+}
+
+function toggleVideo() {
+  alert("Video toggled");
+}
+
+function shareScreen() {
+  alert("Screen sharing started");
+}
+
+function leaveCall() {
+  document.getElementById("videoCallArea").style.display = "none";
+  document.querySelector(".empty-state").style.display = "block";
+  document.querySelector(".study-room-simple-header h2").textContent =
+    "🎓 Virtual Study Rooms";
+  document.querySelector(".video-grid").innerHTML = `
+        <div class="video-container local-video">
+            <video id="localVideo" autoplay muted playsinline></video>
+            <div class="video-label">Anda</div>
+        </div>
+    `;
+  alert("Left the study room");
 }
