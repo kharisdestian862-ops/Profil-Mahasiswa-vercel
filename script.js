@@ -4036,10 +4036,16 @@ function getContextForAI(query) {
   return null;
 }
 
-// ===== STUDY ROOM SYSTEM (HTTP Version) =====
-
-// ===== MODAL FUNCTIONS - TAMBAHKAN INI =====
-// ===== STUDY ROOM SYSTEM - COMPLETE FIXED VERSION =====
+// Utility Functions
+// Study Room Core Variables
+let localStream = null;
+let screenStream = null;
+let peerConnections = {};
+let currentRoomId = null;
+let currentUserId = null;
+let participantsInterval = null;
+let offerCheckInterval = null;
+let candidatesInterval = null;
 
 // Utility Functions
 function generateUserId() {
@@ -4057,39 +4063,16 @@ function generateRoomCode() {
 
 // Modal Functions
 function showCreateRoomModal() {
-  console.log("Membuka modal buat room");
   const modal = document.getElementById("createRoomModal");
-  if (modal) {
-    modal.style.display = "flex";
-    console.log("Modal create room seharusnya terlihat sekarang");
-
-    setTimeout(() => {
-      const input = document.getElementById("roomNameInput");
-      if (input) input.focus();
-    }, 100);
-  } else {
-    console.error("Modal create room tidak ditemukan");
-  }
+  if (modal) modal.style.display = "flex";
 }
 
 function showJoinRoomModal() {
-  console.log("Membuka modal join room");
   const modal = document.getElementById("joinRoomModal");
-  if (modal) {
-    modal.style.display = "flex";
-    console.log("Modal join room seharusnya terlihat sekarang");
-
-    setTimeout(() => {
-      const input = document.getElementById("roomCodeInput");
-      if (input) input.focus();
-    }, 100);
-  } else {
-    console.error("Modal join room tidak ditemukan");
-  }
+  if (modal) modal.style.display = "flex";
 }
 
 function closeModal() {
-  console.log("Menutup modal");
   const modals = document.querySelectorAll(".modal");
   modals.forEach((modal) => {
     modal.style.display = "none";
@@ -4104,9 +4087,7 @@ function closeModal() {
 function createRoomDirect(roomName) {
   currentUserId = generateUserId();
   const roomCode = generateRoomCode();
-  alert(
-    `Room "${roomName}" berhasil dibuat!\nKode: ${roomCode}\n\nShare kode ini ke teman-teman.`
-  );
+  alert(`[Fallback] Room "${roomName}" berhasil dibuat!\nKode: ${roomCode}`);
   currentRoomId = roomCode;
   initializeVideoCall(roomCode, roomName);
 }
@@ -4117,44 +4098,17 @@ function joinRoomDirect(roomCode) {
     alert("Kode room harus 6 karakter");
     return;
   }
-  alert(`Bergabung ke room: ${roomCode}`);
+  alert(`[Fallback] Bergabung ke room: ${roomCode}`);
   currentRoomId = roomCode.toUpperCase();
   initializeVideoCall(currentRoomId, "Study Room");
 }
 
-// Event listeners untuk close modal
-document.addEventListener("click", function (event) {
-  if (event.target.classList.contains("modal")) {
-    closeModal();
-  }
-});
-
-document.addEventListener("keydown", function (event) {
-  if (event.key === "Escape") {
-    closeModal();
-  }
-});
-
-// Study Room Core Variables
-let localStream = null;
-let screenStream = null;
-let peerConnections = {};
-let currentRoomId = null;
-let currentUserId = null;
-let participantsInterval = null;
-let offerCheckInterval = null;
-let candidatesInterval = null;
-
 // Main Room Functions
 async function createRoom() {
   const roomName = document.getElementById("roomNameInput").value;
-  if (!roomName) {
-    alert("Masukkan nama room");
-    return;
-  }
+  if (!roomName) return alert("Masukkan nama room");
 
   currentUserId = generateUserId();
-  console.log("Creating room with user:", currentUserId);
 
   try {
     const response = await fetch("/api/study-rooms", {
@@ -4168,35 +4122,26 @@ async function createRoom() {
     });
 
     const data = await response.json();
-    console.log("Create room response:", data);
 
     if (data.success) {
       currentRoomId = data.room.id;
-      alert(
-        `Room "${roomName}" berhasil dibuat!\nKode: ${currentRoomId}\n\nShare kode ini ke teman-teman.`
-      );
       closeModal();
       await initializeVideoCall(currentRoomId, roomName);
     } else {
       alert("Error: " + data.error);
-      createRoomDirect(roomName);
     }
   } catch (error) {
     console.error("Error creating room:", error);
-    alert("Error creating room. Using fallback method.");
     createRoomDirect(roomName);
   }
 }
 
 async function joinRoom() {
   const roomCode = document.getElementById("roomCodeInput").value.toUpperCase();
-  if (!roomCode || roomCode.length !== 6) {
-    alert("Masukkan kode room 6 karakter");
-    return;
-  }
+  if (!roomCode || roomCode.length !== 6)
+    return alert("Masukkan kode room 6 karakter");
 
   currentUserId = generateUserId();
-  console.log("Joining room with user:", currentUserId);
 
   try {
     const response = await fetch("/api/study-rooms", {
@@ -4210,20 +4155,17 @@ async function joinRoom() {
     });
 
     const data = await response.json();
-    console.log("Join room response:", data);
 
     if (data.success) {
       currentRoomId = roomCode;
-      alert(`Berhasil join room: ${data.room.name}`);
       closeModal();
       await initializeVideoCall(roomCode, data.room.name || "Study Room");
+      await handleParticipants(data.participants);
     } else {
       alert("Error: " + data.error);
-      joinRoomDirect(roomCode);
     }
   } catch (error) {
     console.error("Error joining room:", error);
-    alert("Error joining room. Using fallback method.");
     joinRoomDirect(roomCode);
   }
 }
@@ -4231,25 +4173,20 @@ async function joinRoom() {
 // Video Call Functions
 async function initializeVideoCall(roomCode, roomName) {
   try {
-    // Setup UI
     document.querySelector(".empty-state").style.display = "none";
     document.getElementById("videoCallArea").style.display = "flex";
     document.querySelector(
       ".study-room-simple-header h2"
     ).textContent = `🎓 ${roomName} (${roomCode})`;
 
-    // Get user media
     localStream = await navigator.mediaDevices.getUserMedia({
       video: { width: 1280, height: 720 },
       audio: true,
     });
 
     const localVideo = document.getElementById("localVideo");
-    if (localVideo) {
-      localVideo.srcObject = localStream;
-    }
+    if (localVideo) localVideo.srcObject = localStream;
 
-    console.log("Video call initialized for room:", roomCode);
     startSignalingProcess();
   } catch (error) {
     console.error("Error accessing media:", error);
@@ -4260,24 +4197,18 @@ async function initializeVideoCall(roomCode, roomName) {
 }
 
 function startSignalingProcess() {
-  // Clear existing intervals
   if (participantsInterval) clearInterval(participantsInterval);
   if (candidatesInterval) clearInterval(candidatesInterval);
-
-  // Tambahkan interval untuk cek tawaran masuk
   if (offerCheckInterval) clearInterval(offerCheckInterval);
 
-  // Poll untuk participants setiap 2 detik
   participantsInterval = setInterval(async () => {
     await checkParticipants();
   }, 2000);
 
-  // Poll untuk tawaran masuk setiap 3 detik (ini yang baru!)
   offerCheckInterval = setInterval(async () => {
     await checkForOffersAndAnswer();
   }, 3000);
 
-  // Poll untuk ICE candidates setiap 1 detik
   candidatesInterval = setInterval(async () => {
     await checkIceCandidates();
   }, 1000);
@@ -4317,7 +4248,8 @@ async function handleParticipants(participants) {
   });
 }
 
-async function createPeerConnection(participantId) {
+// FUNGSI UTAMA WEBRTC
+async function createPeerConnection(participantId, shouldSendOffer = true) {
   console.log(`Creating peer connection for ${participantId}`);
 
   try {
@@ -4330,20 +4262,17 @@ async function createPeerConnection(participantId) {
 
     peerConnections[participantId] = peerConnection;
 
-    // Add local stream tracks
     if (localStream) {
       localStream.getTracks().forEach((track) => {
         peerConnection.addTrack(track, localStream);
       });
     }
 
-    // Handle incoming stream
     peerConnection.ontrack = (event) => {
       console.log(`Received remote stream from ${participantId}`);
       createRemoteVideoElement(participantId, event.streams[0]);
     };
 
-    // Handle ICE candidates
     peerConnection.onicecandidate = (event) => {
       if (event.candidate) {
         fetch("/api/study-rooms", {
@@ -4360,40 +4289,17 @@ async function createPeerConnection(participantId) {
       }
     };
 
-    // Create and send offer
-    await createAndSendOffer(participantId, peerConnection);
+    if (shouldSendOffer) {
+      await createAndSendOffer(participantId, peerConnection);
+    }
+
+    return peerConnection;
   } catch (error) {
     console.error("Error creating peer connection:", error);
   }
 }
 
-function createRemoteVideoElement(participantId, stream) {
-  const videoGrid = document.querySelector(".video-grid");
-  if (!videoGrid) return;
-
-  // Remove existing video for this participant
-  const existingVideo = document.getElementById(`video-${participantId}`);
-  if (existingVideo) {
-    existingVideo.remove();
-  }
-
-  // Create new video element
-  const remoteVideo = document.createElement("div");
-  remoteVideo.className = "video-container remote-video";
-  remoteVideo.id = `video-${participantId}`;
-  remoteVideo.innerHTML = `
-        <video id="remoteVideo-${participantId}" autoplay playsinline></video>
-        <div class="video-label">Participant</div>
-    `;
-  videoGrid.appendChild(remoteVideo);
-
-  const videoElement = document.getElementById(`remoteVideo-${participantId}`);
-  if (videoElement && stream) {
-    videoElement.srcObject = stream;
-    console.log(`Remote video element created for ${participantId}`);
-  }
-}
-
+// Fungsi untuk Mengirim Offer (Panggilan Keluar)
 async function createAndSendOffer(participantId, peerConnection) {
   try {
     const offer = await peerConnection.createOffer();
@@ -4418,6 +4324,7 @@ async function createAndSendOffer(participantId, peerConnection) {
   }
 }
 
+// Fungsi untuk Mengecek dan Menerima Answer (Sinyal Balik dari Panggilan Keluar)
 async function checkForAnswer(participantId, peerConnection) {
   try {
     const response = await fetch("/api/study-rooms", {
@@ -4437,7 +4344,6 @@ async function checkForAnswer(participantId, peerConnection) {
       await peerConnection.setRemoteDescription(
         new RTCSessionDescription(data.answer)
       );
-      // Setelah mendapat answer, kita perlu cek candidates yang dikirimkan bersamaan
       checkCandidatesImmediately(participantId, peerConnection);
     } else {
       setTimeout(() => checkForAnswer(participantId, peerConnection), 1000);
@@ -4447,11 +4353,106 @@ async function checkForAnswer(participantId, peerConnection) {
   }
 }
 
+// Fungsi untuk Mengecek dan Menerima Offer (Panggilan Masuk)
+async function checkForOffersAndAnswer() {
+  if (!currentRoomId || !currentUserId) return;
+
+  try {
+    const response = await fetch("/api/study-rooms", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "get-offer",
+        roomCode: currentRoomId,
+        userId: currentUserId,
+        targetUserId: currentUserId,
+      }),
+    });
+
+    const data = await response.json();
+    const offerData = data.offer;
+
+    if (
+      data.success &&
+      offerData &&
+      offerData.sdp &&
+      offerData.type &&
+      offerData.userId &&
+      !peerConnections[offerData.userId]
+    ) {
+      const remoteUserId = offerData.userId;
+      console.log(`Received new offer from: ${remoteUserId}`);
+
+      const peerConnection = await createPeerConnection(remoteUserId, false);
+
+      await peerConnection.setRemoteDescription(
+        new RTCSessionDescription({ type: offerData.type, sdp: offerData.sdp })
+      );
+      const answer = await peerConnection.createAnswer();
+      await peerConnection.setLocalDescription(answer);
+
+      await fetch("/api/study-rooms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "store-answer",
+          roomCode: currentRoomId,
+          userId: currentUserId,
+          answer: answer,
+          targetUserId: remoteUserId,
+        }),
+      });
+      console.log(`Answer sent to ${remoteUserId}`);
+
+      checkCandidatesImmediately(remoteUserId, peerConnection);
+    }
+  } catch (error) {
+    console.error("Error checking for offers:", error);
+  }
+}
+
+// Fungsi untuk menerima dan menambahkan ICE Candidates secara instan
+async function checkCandidatesImmediately(participantId, peerConnection) {
+  console.log(`Checking candidates immediately for ${participantId}`);
+  try {
+    const response = await fetch("/api/study-rooms", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        action: "get-candidates",
+        roomCode: currentRoomId,
+        userId: currentUserId,
+        targetUserId: participantId,
+      }),
+    });
+
+    const data = await response.json();
+    if (data.success && data.candidates.length > 0) {
+      console.log(
+        `Adding ${data.candidates.length} immediate ICE candidates for ${participantId}`
+      );
+      for (const candidate of data.candidates) {
+        await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
+      }
+    }
+  } catch (error) {
+    console.error("Error checking immediate ICE candidates:", error);
+  }
+}
+
+// Fungsi untuk menerima dan menambahkan ICE Candidates secara Polling
 async function checkIceCandidates() {
   for (const [participantId, peerConnection] of Object.entries(
     peerConnections
   )) {
     try {
+      if (
+        !peerConnection.remoteDescription ||
+        peerConnection.signalingState !== "stable"
+      ) {
+        continue;
+      }
+
       const response = await fetch("/api/study-rooms", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -4574,6 +4575,7 @@ function leaveCall() {
   // Clear intervals
   if (participantsInterval) clearInterval(participantsInterval);
   if (candidatesInterval) clearInterval(candidatesInterval);
+  if (offerCheckInterval) clearInterval(offerCheckInterval);
 
   // Notify server kita leave
   if (currentRoomId && currentUserId) {
@@ -4609,157 +4611,6 @@ function leaveCall() {
   currentUserId = null;
 
   alert("Left the study room");
-}
-
-// TAMBAHKAN INI DI BAGIAN BAWAH FILE SCRIPT.JS (DI LUAR FUNGSI LAIN)
-
-async function checkForOffersAndAnswer() {
-  if (!currentRoomId || !currentUserId) return;
-
-  try {
-    const response = await fetch("/api/study-rooms", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        action: "get-offer",
-        roomCode: currentRoomId,
-        userId: currentUserId,
-        targetUserId: currentUserId,
-      }),
-    });
-
-    const data = await response.json();
-    const offer = data.offer;
-    if (data.success && offer && !peerConnections[offer.userId]) {
-      console.log(`Received new offer from: ${offer.userId}`);
-      const peerConnection = await createPeerConnection(offer.userId, false);
-
-      await peerConnection.setRemoteDescription(
-        new RTCSessionDescription(offer.sdp)
-      );
-      const answer = await peerConnection.createAnswer();
-      await peerConnection.setLocalDescription(answer);
-
-      await fetch("/api/study-rooms", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "store-answer",
-          roomCode: currentRoomId,
-          userId: currentUserId,
-          answer: answer,
-          targetUserId: offer.userId,
-        }),
-      });
-      console.log(`Answer sent to ${offer.userId}`);
-    }
-  } catch (error) {
-    console.error("Error checking for offers:", error);
-  }
-}
-
-// Fungsi duplikat yang salah harus diganti dengan fungsi yang sudah dimodifikasi ini
-async function createPeerConnection(participantId, shouldSendOffer = true) {
-  console.log(`Creating peer connection for ${participantId}`);
-
-  try {
-    const peerConnection = new RTCPeerConnection({
-      iceServers: [
-        { urls: "stun:stun.l.google.com:19302" },
-        { urls: "stun:stun1.l.google.com:19302" },
-      ],
-    });
-
-    peerConnections[participantId] = peerConnection;
-
-    if (localStream) {
-      localStream.getTracks().forEach((track) => {
-        peerConnection.addTrack(track, localStream);
-      });
-    }
-
-    peerConnection.ontrack = (event) => {
-      console.log(`Received remote stream from ${participantId}`);
-      createRemoteVideoElement(participantId, event.streams[0]);
-    };
-
-    peerConnection.onicecandidate = (event) => {
-      if (event.candidate) {
-        fetch("/api/study-rooms", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "store-candidate",
-            roomCode: currentRoomId,
-            userId: currentUserId,
-            candidate: event.candidate,
-            targetUserId: participantId,
-          }),
-        }).catch((err) => console.error("Error sending candidate:", err));
-      }
-    };
-
-    if (shouldSendOffer) {
-      await createAndSendOffer(participantId, peerConnection);
-    }
-
-    return peerConnection;
-  } catch (error) {
-    console.error("Error creating peer connection:", error);
-  }
-}
-
-// Fungsi tambahan untuk performa
-async function checkCandidatesImmediately(participantId, peerConnection) {
-  console.log(`Checking candidates immediately for ${participantId}`);
-  try {
-    const response = await fetch("/api/study-rooms", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        action: "get-candidates",
-        roomCode: currentRoomId,
-        userId: currentUserId,
-        targetUserId: participantId,
-      }),
-    });
-
-    const data = await response.json();
-    if (data.success && data.candidates.length > 0) {
-      console.log(
-        `Adding ${data.candidates.length} immediate ICE candidates for ${participantId}`
-      );
-      for (const candidate of data.candidates) {
-        await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
-      }
-    }
-  } catch (error) {
-    console.error("Error checking immediate ICE candidates:", error);
-  }
-}
-
-// GANTI DEKLARASI startSignalingProcess() ANDA
-function startSignalingProcess() {
-  if (participantsInterval) clearInterval(participantsInterval);
-  if (candidatesInterval) clearInterval(candidatesInterval);
-  if (offerCheckInterval) clearInterval(offerCheckInterval);
-
-  // Poll untuk participants setiap 2 detik
-  participantsInterval = setInterval(async () => {
-    await checkParticipants();
-  }, 2000);
-
-  // Poll untuk tawaran masuk setiap 3 detik
-  offerCheckInterval = setInterval(async () => {
-    await checkForOffersAndAnswer();
-  }, 3000);
-
-  // Poll untuk ICE candidates setiap 1 detik
-  candidatesInterval = setInterval(async () => {
-    await checkIceCandidates();
-  }, 1000);
-
-  console.log("Signaling process started");
 }
 
 // Initialize study room system when page loads
