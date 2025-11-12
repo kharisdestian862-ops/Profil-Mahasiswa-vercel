@@ -1141,6 +1141,27 @@ const translations = {
     "chat.task_count.all_none":
       "You have <b>0</b> remaining tasks in total. You're all caught up!",
     "chat.task_count.prompt": "Which course do you want me to count tasks for?",
+
+    "nav.codeplayground": "Code Editor",
+    "playground.title": "Code Playground",
+    "playground.run": "Run Code",
+    "playground.save": "Save",
+    "playground.load": "Load",
+    "playground.clear": "Clear",
+    "playground.dark_theme": "Dark Theme",
+    "playground.output_title": "Output",
+    "playground.welcome_h3": "Welcome to Code Playground!",
+    "playground.welcome_p":
+      'Write your code and click "Run Code" to see the output here.',
+    "playground.html_preview": "Live Preview",
+    "playground.execution_success": "Code executed successfully (no output)",
+    "playground.execution_api_simulation": "Execution service",
+    "playground.simulation_notes":
+      "This would normally execute your code via a backend service. This is currently a simulation.",
+    "playground.loaded_file": "File loaded successfully!",
+    "playground.no_saved": "No saved code found for this language",
+    "playground.saved": "Code saved successfully!",
+    "playground.loaded": "Saved code loaded!",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -1443,6 +1464,27 @@ const translations = {
       "Anda memiliki <b>0</b> sisa tugas. Semuanya sudah beres!",
     "chat.task_count.prompt":
       "Mata kuliah mana yang ingin Anda hitung sisa tugasnya?",
+
+    "nav.codeplayground": "Kode Editor",
+    "playground.title": "Code Playground",
+    "playground.run": "Jalankan Kode",
+    "playground.save": "Simpan",
+    "playground.load": "Muat",
+    "playground.clear": "Bersihkan",
+    "playground.dark_theme": "Tema Gelap",
+    "playground.output_title": "Hasil",
+    "playground.welcome_h3": "Selamat Datang di Code Playground!",
+    "playground.welcome_p":
+      'Tulis kode Anda dan klik "Jalankan Kode" untuk melihat hasilnya di sini.',
+    "playground.html_preview": "Pratinjau Langsung",
+    "playground.execution_success": "Kode berhasil dieksekusi (tanpa output)",
+    "playground.execution_api_simulation": "Layanan Eksekusi",
+    "playground.simulation_notes":
+      "Ini biasanya akan mengeksekusi kode Anda melalui layanan backend. Saat ini, ini adalah simulasi.",
+    "playground.loaded_file": "File berhasil dimuat!",
+    "playground.no_saved": "Tidak ada kode tersimpan untuk bahasa ini",
+    "playground.saved": "Kode berhasil disimpan!",
+    "playground.loaded": "Kode tersimpan dimuat!",
   },
 };
 
