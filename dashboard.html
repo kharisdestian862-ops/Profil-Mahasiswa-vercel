@@ -1163,11 +1163,12 @@
 
           <section id="codeplayground" class="section" style="display: none">
             <div class="breadcrumb">
-              <span class="breadcrumb-item active">Code Playground</span>
+              <span class="breadcrumb-item active" data-i18n="playground.title"
+                >Code Playground</span
+              >
             </div>
 
             <div class="playground-container">
-              <!-- Toolbar -->
               <div class="playground-toolbar">
                 <select id="languageSelect" class="language-select">
                   <option value="python">Python 3</option>
@@ -1178,27 +1179,18 @@
                   <option value="csharp">C#</option>
                 </select>
 
-                <button id="runCode" class="run-btn">
-                  <span>▶️ Run Code</span>
-                </button>
-
-                <button id="saveCode" class="save-btn">
-                  <span>💾 Save</span>
-                </button>
-
-                <button onclick="loadSavedCode()" class="share-btn">
-                  <span>📂 Load</span>
+                <button id="runCode" class="run-btn" data-i18n="playground.run">
+                  <span>▶Run Code</span>
                 </button>
 
                 <div class="theme-toggle">
                   <label>
                     <input type="checkbox" id="editorTheme" />
-                    <span>Dark Theme</span>
+                    <span data-i18n="playground.dark_theme">Dark Theme</span>
                   </label>
                 </div>
               </div>
 
-              <!-- Editor and Output -->
               <div class="playground-content">
                 <div class="editor-container">
                   <div id="codeEditor" class="code-editor"></div>
@@ -1206,27 +1198,38 @@
 
                 <div class="output-container">
                   <div class="output-header">
-                    <h4>Output</h4>
-                    <button id="clearOutput" class="clear-btn">Clear</button>
+                    <h4 data-i18n="playground.output_title">Output</h4>
+                    <button
+                      id="clearOutput"
+                      class="clear-btn"
+                      data-i18n="playground.clear"
+                    >
+                      Clear
+                    </button>
                   </div>
                   <div id="outputResult" class="output-result">
                     <div class="welcome-message">
-                      <h3>🚀 Welcome to Code Playground!</h3>
-                      <p>
+                      <h3 data-i18n="playground.welcome_h3">
+                        🚀 Welcome to Code Playground!
+                      </h3>
+                      <p data-i18n="playground.welcome_p">
                         Write your code and click "Run Code" to see the output
                         here.
                       </p>
                     </div>
                   </div>
                 </div>
-              </div>
 
-              <!-- For HTML/CSS/JS Live Preview -->
-              <div id="livePreview" class="live-preview" style="display: none">
-                <div class="preview-header">
-                  <h4>Live Preview</h4>
+                <div
+                  id="livePreview"
+                  class="live-preview"
+                  style="display: none"
+                >
+                  <div class="preview-header">
+                    <h4 data-i18n="playground.html_preview">Live Preview</h4>
+                  </div>
+                  <iframe id="previewFrame" class="preview-frame"></iframe>
                 </div>
-                <iframe id="previewFrame" class="preview-frame"></iframe>
               </div>
             </div>
           </section>
