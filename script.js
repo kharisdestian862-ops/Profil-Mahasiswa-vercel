@@ -768,6 +768,41 @@ let attendanceData = {
   },
 };
 
+const videoMaterials = {
+  algorithms: [
+    {
+      id: "video-1",
+      title: "01. Pengantar Analisis Algoritma",
+      url: "dQw4w9WgXcQ",
+      description:
+        "Video pengantar tentang notasi Big O dan kompleksitas waktu.",
+    },
+    {
+      id: "video-2",
+      title: "02. Visualisasi Sorting",
+      url: "sort-visualization-id",
+      description:
+        "Visualisasi bagaimana algoritma Bubble Sort dan Merge Sort bekerja.",
+    },
+  ],
+  databases: [
+    {
+      id: "video-3",
+      title: "01. Dasar-Dasar SQL CRUD",
+      url: "sql-basics-id",
+      description:
+        "Cara menggunakan perintah SELECT, INSERT, UPDATE, dan DELETE.",
+    },
+    {
+      id: "video-4",
+      title: "02. Penjelasan Normalisasi Database",
+      url: "normalization-theory-id",
+      description: "Penjelasan rinci mengenai 1NF, 2NF, dan 3NF.",
+    },
+  ],
+  // ... tambahkan webdev dan softwareeng jika ada
+};
+
 // Valid attendance codes for each course (simulated)
 const validCodes = {
   algorithms: "ALG123",
@@ -1619,6 +1654,17 @@ function switchSection(sectionId) {
       setTimeout(() => {
         chart.resize();
       }, 100);
+    }
+    if (sectionId === "studyroom") {
+      // <-- TAMBAHKAN INI
+      loadVideoLearningCenter();
+      document.getElementById("studyRoomVideoDetailView").style.display =
+        "none";
+      document.getElementById("studyRoomCourseListView").style.display =
+        "block";
+      updateBreadcrumb([
+        translations[currentLanguage]["nav.studyroom"] || "Study Room",
+      ]);
     }
   }
 }
@@ -3035,6 +3081,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const initialGreeting = translations[currentLanguage]["chat.greeting"];
     messagesContainer.innerHTML = "";
     addMessage(initialGreeting, "bot");
+
+    const backToStudyRoomList = document.getElementById("backToStudyRoomList");
+    if (backToStudyRoomList) {
+      backToStudyRoomList.addEventListener("click", function () {
+        switchSection("studyroom");
+      });
+    }
   }
 });
 
@@ -4036,623 +4089,94 @@ function getContextForAI(query) {
   return null;
 }
 
-// Utility Functions
-// Study Room Core Variables
-let localStream = null;
-let screenStream = null;
-let peerConnections = {};
-let currentRoomId = null;
-let currentUserId = null;
-let participantsInterval = null;
-let offerCheckInterval = null;
-let candidatesInterval = null;
-
-// Utility Functions
-function generateUserId() {
-  return "user-" + Math.random().toString(36).substr(2, 9);
-}
-
-function generateRoomCode() {
-  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-  let result = "";
-  for (let i = 0; i < 6; i++) {
-    result += chars.charAt(Math.floor(Math.random() * chars.length));
-  }
-  return result;
-}
-
-function createRemoteVideoElement(participantId, stream) {
-  const videoGrid = document.getElementById("videoGrid");
-  if (!videoGrid) return;
-
-  // 1. Hapus video lama untuk ID ini (mencegah duplikasi saat refresh)
-  const existingContainer = document.getElementById(`video-${participantId}`);
-  if (existingContainer) {
-    existingContainer.remove();
-  }
-
-  // 2. Buat container video baru
-  const remoteContainer = document.createElement("div");
-  remoteContainer.className = "video-container remote-video";
-  remoteContainer.id = `video-${participantId}`;
-
-  // 3. Tambahkan elemen video dan label
-  remoteContainer.innerHTML = `
-    <video id="remoteVideo-${participantId}" autoplay playsinline></video>
-    <div class="video-label">User ${participantId.substring(5, 9)}</div>
-  `;
-
-  // 4. Masukkan container ke grid
-  videoGrid.appendChild(remoteContainer);
-
-  const videoElement = document.getElementById(`remoteVideo-${participantId}`);
-  if (videoElement && stream) {
-    videoElement.srcObject = stream;
-    console.log(`Remote video element created for ${participantId}`);
-  }
-}
-
-// Modal Functions
-function showCreateRoomModal() {
-  const modal = document.getElementById("createRoomModal");
-  if (modal) modal.style.display = "flex";
-}
-
-function showJoinRoomModal() {
-  const modal = document.getElementById("joinRoomModal");
-  if (modal) modal.style.display = "flex";
-}
-
-function closeModal() {
-  const modals = document.querySelectorAll(".modal");
-  modals.forEach((modal) => {
-    modal.style.display = "none";
-  });
-  const roomNameInput = document.getElementById("roomNameInput");
-  const roomCodeInput = document.getElementById("roomCodeInput");
-  if (roomNameInput) roomNameInput.value = "";
-  if (roomCodeInput) roomCodeInput.value = "";
-}
-
-// Fallback functions
-function createRoomDirect(roomName) {
-  currentUserId = generateUserId();
-  const roomCode = generateRoomCode();
-  alert(`[Fallback] Room "${roomName}" berhasil dibuat!\nKode: ${roomCode}`);
-  currentRoomId = roomCode;
-  initializeVideoCall(roomCode, roomName);
-}
-
-function joinRoomDirect(roomCode) {
-  currentUserId = generateUserId();
-  if (!roomCode || roomCode.length !== 6) {
-    alert("Kode room harus 6 karakter");
-    return;
-  }
-  alert(`[Fallback] Bergabung ke room: ${roomCode}`);
-  currentRoomId = roomCode.toUpperCase();
-  initializeVideoCall(currentRoomId, "Study Room");
-}
-
-// Main Room Functions
-async function createRoom() {
-  const roomName = document.getElementById("roomNameInput").value;
-  if (!roomName) return alert("Masukkan nama room");
-
-  currentUserId = generateUserId();
-
-  try {
-    const response = await fetch("/api/study-rooms", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        action: "create-room",
-        roomName: roomName,
-        userId: currentUserId,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      currentRoomId = data.room.id;
-      closeModal();
-      await initializeVideoCall(currentRoomId, roomName);
-    } else {
-      alert("Error: " + data.error);
-    }
-  } catch (error) {
-    console.error("Error creating room:", error);
-    createRoomDirect(roomName);
-  }
-}
-
-async function joinRoom() {
-  const roomCode = document.getElementById("roomCodeInput").value.toUpperCase();
-  if (!roomCode || roomCode.length !== 6)
-    return alert("Masukkan kode room 6 karakter");
-
-  currentUserId = generateUserId();
-
-  try {
-    const response = await fetch("/api/study-rooms", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        action: "join-room",
-        roomCode: roomCode,
-        userId: currentUserId,
-      }),
-    });
-
-    const data = await response.json();
-
-    if (data.success) {
-      currentRoomId = roomCode;
-      closeModal();
-      await initializeVideoCall(roomCode, data.room.name || "Study Room");
-      await handleParticipants(data.participants);
-    } else {
-      alert("Error: " + data.error);
-    }
-  } catch (error) {
-    console.error("Error joining room:", error);
-    joinRoomDirect(roomCode);
-  }
-}
-
-// Video Call Functions
-async function initializeVideoCall(roomCode, roomName) {
-  try {
-    document.querySelector(".empty-state").style.display = "none";
-    document.getElementById("videoCallArea").style.display = "flex";
-    document.querySelector(
-      ".study-room-simple-header h2"
-    ).textContent = `🎓 ${roomName} (${roomCode})`;
-
-    localStream = await navigator.mediaDevices.getUserMedia({
-      video: { width: 1280, height: 720 },
-      audio: true,
-    });
-
-    const localVideo = document.getElementById("localVideo");
-    if (localVideo) localVideo.srcObject = localStream;
-
-    startSignalingProcess();
-  } catch (error) {
-    console.error("Error accessing media:", error);
-    alert(
-      "Tidak bisa mengakses kamera/mikrofon. Pastikan Anda memberikan izin."
-    );
-  }
-}
-
-function startSignalingProcess() {
-  if (participantsInterval) clearInterval(participantsInterval);
-  if (candidatesInterval) clearInterval(candidatesInterval);
-  if (offerCheckInterval) clearInterval(offerCheckInterval);
-
-  participantsInterval = setInterval(async () => {
-    await checkParticipants();
-  }, 2000);
-
-  offerCheckInterval = setInterval(async () => {
-    await checkForOffersAndAnswer();
-  }, 3000);
-
-  candidatesInterval = setInterval(async () => {
-    await checkIceCandidates();
-  }, 1000);
-
-  console.log("Signaling process started");
-}
-
-async function checkParticipants() {
-  if (!currentRoomId || !currentUserId) return;
-
-  try {
-    const response = await fetch("/api/study-rooms", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        action: "get-participants",
-        roomCode: currentRoomId,
-        userId: currentUserId,
-      }),
-    });
-
-    const data = await response.json();
-    if (data.success) {
-      await handleParticipants(data.participants);
-    }
-  } catch (error) {
-    console.error("Error checking participants:", error);
-  }
-}
-
-async function handleParticipants(participants) {
-  participants.forEach(async (participantId) => {
-    if (participantId !== currentUserId && !peerConnections[participantId]) {
-      console.log(`New participant detected: ${participantId}`);
-      await createPeerConnection(participantId);
-    }
-  });
-}
-
-// FUNGSI UTAMA WEBRTC
-async function createPeerConnection(participantId, shouldSendOffer = true) {
-  console.log(`Creating peer connection for ${participantId}`);
-
-  try {
-    const peerConnection = new RTCPeerConnection({
-      iceServers: [
-        { urls: "stun:stun.l.google.com:19302" },
-        { urls: "stun:stun1.l.google.com:19302" },
-      ],
-    });
-
-    peerConnections[participantId] = peerConnection;
-
-    if (localStream) {
-      localStream.getTracks().forEach((track) => {
-        peerConnection.addTrack(track, localStream);
-      });
-    }
-
-    peerConnection.ontrack = (event) => {
-      console.log(`Received remote stream from ${participantId}`);
-      createRemoteVideoElement(participantId, event.streams[0]);
-    };
-
-    peerConnection.onicecandidate = (event) => {
-      if (event.candidate) {
-        fetch("/api/study-rooms", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            action: "store-candidate",
-            roomCode: currentRoomId,
-            userId: currentUserId,
-            candidate: event.candidate,
-            targetUserId: participantId,
-          }),
-        }).catch((err) => console.error("Error sending candidate:", err));
-      }
-    };
-
-    if (shouldSendOffer) {
-      await createAndSendOffer(participantId, peerConnection);
-    }
-
-    return peerConnection;
-  } catch (error) {
-    console.error("Error creating peer connection:", error);
-  }
-}
-
-// Fungsi untuk Mengirim Offer (Panggilan Keluar)
-async function createAndSendOffer(participantId, peerConnection) {
-  try {
-    const offer = await peerConnection.createOffer();
-    await peerConnection.setLocalDescription(offer);
-
-    await fetch("/api/study-rooms", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        action: "store-offer",
-        roomCode: currentRoomId,
-        userId: currentUserId,
-        offer: offer,
-        targetUserId: participantId,
-      }),
-    });
-
-    console.log(`Offer sent to ${participantId}`);
-    checkForAnswer(participantId, peerConnection);
-  } catch (error) {
-    console.error("Error creating offer:", error);
-  }
-}
-
-// Fungsi untuk Mengecek dan Menerima Answer (Sinyal Balik dari Panggilan Keluar)
-async function checkForAnswer(participantId, peerConnection) {
-  try {
-    const response = await fetch("/api/study-rooms", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        action: "get-answer",
-        roomCode: currentRoomId,
-        userId: currentUserId,
-        targetUserId: participantId,
-      }),
-    });
-
-    const data = await response.json();
-    if (data.success && data.answer) {
-      console.log(`Received answer from ${participantId}`);
-      await peerConnection.setRemoteDescription(
-        new RTCSessionDescription(data.answer)
-      );
-      checkCandidatesImmediately(participantId, peerConnection);
-    } else {
-      setTimeout(() => checkForAnswer(participantId, peerConnection), 1000);
-    }
-  } catch (error) {
-    console.error("Error checking for answer:", error);
-  }
-}
-
-// Fungsi untuk Mengecek dan Menerima Offer (Panggilan Masuk)
-async function checkForOffersAndAnswer() {
-  if (!currentRoomId || !currentUserId) return;
-
-  try {
-    const response = await fetch("/api/study-rooms", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        action: "get-offer",
-        roomCode: currentRoomId,
-        userId: currentUserId,
-        targetUserId: currentUserId,
-      }),
-    });
-
-    const data = await response.json();
-    const offerData = data.offer;
-
-    if (
-      data.success &&
-      offerData &&
-      offerData.sdp &&
-      offerData.type &&
-      offerData.userId &&
-      !peerConnections[offerData.userId]
-    ) {
-      const remoteUserId = offerData.userId;
-      console.log(`Received new offer from: ${remoteUserId}`);
-
-      const peerConnection = await createPeerConnection(remoteUserId, false);
-
-      await peerConnection.setRemoteDescription(
-        new RTCSessionDescription({ type: offerData.type, sdp: offerData.sdp })
-      );
-      const answer = await peerConnection.createAnswer();
-      await peerConnection.setLocalDescription(answer);
-
-      await fetch("/api/study-rooms", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "store-answer",
-          roomCode: currentRoomId,
-          userId: currentUserId,
-          answer: answer,
-          targetUserId: remoteUserId,
-        }),
-      });
-      console.log(`Answer sent to ${remoteUserId}`);
-
-      checkCandidatesImmediately(remoteUserId, peerConnection);
-    }
-  } catch (error) {
-    console.error("Error checking for offers:", error);
-  }
-}
-
-// Fungsi untuk menerima dan menambahkan ICE Candidates secara instan
-async function checkCandidatesImmediately(participantId, peerConnection) {
-  console.log(`Checking candidates immediately for ${participantId}`);
-  try {
-    const response = await fetch("/api/study-rooms", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        action: "get-candidates",
-        roomCode: currentRoomId,
-        userId: currentUserId,
-        targetUserId: participantId,
-      }),
-    });
-
-    const data = await response.json();
-    if (data.success && data.candidates.length > 0) {
-      console.log(
-        `Adding ${data.candidates.length} immediate ICE candidates for ${participantId}`
-      );
-      for (const candidate of data.candidates) {
-        await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
-      }
-    }
-  } catch (error) {
-    console.error("Error checking immediate ICE candidates:", error);
-  }
-}
-
-// Fungsi untuk menerima dan menambahkan ICE Candidates secara Polling
-async function checkIceCandidates() {
-  for (const [participantId, peerConnection] of Object.entries(
-    peerConnections
-  )) {
-    try {
-      if (
-        !peerConnection.remoteDescription ||
-        peerConnection.signalingState !== "stable"
-      ) {
-        continue;
-      }
-
-      const response = await fetch("/api/study-rooms", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "get-candidates",
-          roomCode: currentRoomId,
-          userId: currentUserId,
-          targetUserId: participantId,
-        }),
-      });
-
-      const data = await response.json();
-      if (data.success && data.candidates.length > 0) {
-        console.log(
-          `Adding ${data.candidates.length} ICE candidates for ${participantId}`
-        );
-        for (const candidate of data.candidates) {
-          await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
-        }
-      }
-    } catch (error) {
-      console.error("Error checking ICE candidates:", error);
-    }
-  }
-}
-
-// Control Functions
-function toggleMute() {
-  if (localStream) {
-    const audioTrack = localStream.getAudioTracks()[0];
-    if (audioTrack) {
-      audioTrack.enabled = !audioTrack.enabled;
-      const status = audioTrack.enabled ? "diaktifkan" : "dimute";
-      alert(`Audio ${status}`);
-    }
-  }
-}
-
-function toggleVideo() {
-  if (localStream) {
-    const videoTrack = localStream.getVideoTracks()[0];
-    if (videoTrack) {
-      videoTrack.enabled = !videoTrack.enabled;
-      const status = videoTrack.enabled ? "diaktifkan" : "dimatikan";
-      alert(`Video ${status}`);
-    }
-  }
-}
-
-async function shareScreen() {
-  try {
-    screenStream = await navigator.mediaDevices.getDisplayMedia({
-      video: { cursor: "always" },
-      audio: true,
-    });
-
-    const localVideo = document.getElementById("localVideo");
-    if (localVideo) {
-      localVideo.srcObject = screenStream;
-    }
-
-    // Replace video track in all peer connections
-    const videoTrack = screenStream.getVideoTracks()[0];
-    Object.values(peerConnections).forEach((peer) => {
-      const sender = peer.getSenders().find((s) => s.track?.kind === "video");
-      if (sender) {
-        sender.replaceTrack(videoTrack);
-      }
-    });
-
-    // Handle when screen sharing is stopped
-    videoTrack.onended = () => {
-      switchBackToCamera();
-    };
-
-    alert("Screen sharing started");
-  } catch (error) {
-    console.error("Error sharing screen:", error);
-    if (error.name !== "NotAllowedError") {
-      alert("Error sharing screen: " + error.message);
-    }
-  }
-}
-
-function switchBackToCamera() {
-  if (localStream) {
-    const localVideo = document.getElementById("localVideo");
-    if (localVideo) {
-      localVideo.srcObject = localStream;
-    }
-
-    const videoTrack = localStream.getVideoTracks()[0];
-    Object.values(peerConnections).forEach((peer) => {
-      const sender = peer.getSenders().find((s) => s.track?.kind === "video");
-      if (sender) {
-        sender.replaceTrack(videoTrack);
-      }
-    });
-
-    if (screenStream) {
-      screenStream.getTracks().forEach((track) => track.stop());
-      screenStream = null;
-    }
-  }
-}
-
-function leaveCall() {
-  // Stop semua streams
-  if (localStream) {
-    localStream.getTracks().forEach((track) => track.stop());
-  }
-  if (screenStream) {
-    screenStream.getTracks().forEach((track) => track.stop());
-  }
-
-  // Close semua peer connections
-  Object.values(peerConnections).forEach((peer) => peer.close());
-  peerConnections = {};
-
-  // Clear intervals
-  if (participantsInterval) clearInterval(participantsInterval);
-  if (candidatesInterval) clearInterval(candidatesInterval);
-  if (offerCheckInterval) clearInterval(offerCheckInterval);
-
-  // Notify server kita leave
-  if (currentRoomId && currentUserId) {
-    fetch("/api/study-rooms", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        action: "leave-room",
-        roomCode: currentRoomId,
-        userId: currentUserId,
-      }),
-    }).catch(console.error);
-  }
-
-  // Reset UI
-  document.getElementById("videoCallArea").style.display = "none";
-  document.querySelector(".empty-state").style.display = "block";
-  document.querySelector(".study-room-simple-header h2").textContent =
-    "🎓 Virtual Study Rooms";
-
-  // Reset video grid
-  const videoGrid = document.querySelector(".video-grid");
-  if (videoGrid) {
-    videoGrid.innerHTML = `
-            <div class="video-container local-video">
-                <video id="localVideo" autoplay muted playsinline></video>
-                <div class="video-label">Anda</div>
+function loadVideoLearningCenter() {
+  const grid = document.getElementById("studyRoomCoursesGrid");
+  if (!grid) return;
+
+  grid.innerHTML = ""; // Kosongkan grid
+
+  // Buat Course Card dari attendanceData yang sudah ada
+  Object.entries(attendanceData).forEach(([key, course]) => {
+    const card = document.createElement("div");
+    card.className = "course-card";
+    card.dataset.course = key;
+    card.addEventListener("click", () => showVideoDetailView(key));
+
+    const videoCount = videoMaterials[key] ? videoMaterials[key].length : 0;
+
+    card.innerHTML = `
+            <div class="course-icon">📺</div>
+            <h3 data-i18n="courses.${key}">${course.name}</h3>
+            <p class="course-code">${course.code} • ${course.credits} SKS</p>
+            <div class="course-stats">
+                <span class="stat-badge">${videoCount} Video</span>
             </div>
         `;
+    grid.appendChild(card);
+  });
+  applyTranslations(); // Terapkan terjemahan ke kartu baru
+}
+
+function showVideoDetailView(courseKey) {
+  const course = attendanceData[courseKey];
+  const videos = videoMaterials[courseKey] || [];
+
+  document.getElementById("studyRoomCourseListView").style.display = "none";
+  document.getElementById("studyRoomVideoDetailView").style.display = "flex";
+
+  document.getElementById("studyRoomCurrentCourseName").textContent =
+    course.name;
+  document.getElementById(
+    "studyRoomCurrentVideoCount"
+  ).textContent = `${videos.length} video tersedia`;
+
+  updateBreadcrumb(["Study Room", course.name]);
+
+  // Muat daftar video di sidebar
+  populateVideoList(courseKey, videos);
+
+  // Muat video pertama secara default
+  if (videos.length > 0) {
+    playVideo(videos[0]);
+  } else {
+    document.getElementById("currentVideoTitle").textContent =
+      "Tidak ada video";
+    document.getElementById("youtubePlayer").src = "";
   }
-
-  currentRoomId = null;
-  currentUserId = null;
-
-  alert("Left the study room");
 }
 
-// Initialize study room system when page loads
-function initStudyRoomSystem() {
-  console.log("Study Room System Initialized");
-  // System sudah siap
+function populateVideoList(courseKey, videos) {
+  const sidebar = document.getElementById("videoListSidebar");
+  if (!sidebar) return;
+
+  sidebar.innerHTML = `<h3>Video Materi</h3>`;
+
+  videos.forEach((video) => {
+    const item = document.createElement("div");
+    item.className = "video-item";
+    item.textContent = video.title;
+    item.dataset.videoId = video.id;
+    item.addEventListener("click", () => {
+      playVideo(video);
+      // Hapus active dari semua, tambahkan ke yang diklik
+      document
+        .querySelectorAll(".video-item")
+        .forEach((v) => v.classList.remove("active"));
+      item.classList.add("active");
+    });
+    sidebar.appendChild(item);
+  });
+
+  // Otomatis tandai video pertama sebagai aktif
+  if (videos.length > 0) {
+    sidebar.querySelector(".video-item").classList.add("active");
+  }
 }
 
-// Panggil init ketika DOM ready
-if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initStudyRoomSystem);
-} else {
-  initStudyRoomSystem();
+function playVideo(video) {
+  const embedUrl = `https://www.youtube.com/embed/${video.url}?autoplay=1&rel=0`;
+  document.getElementById("youtubePlayer").src = embedUrl;
+  document.getElementById("currentVideoTitle").textContent = video.title;
+  document.getElementById("currentVideoDescription").textContent =
+    video.description;
 }
