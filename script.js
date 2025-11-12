@@ -4043,7 +4043,20 @@ function showCreateRoomModal() {
   console.log("Membuka modal buat room");
   const modal = document.getElementById("createRoomModal");
   if (modal) {
+    // Force set styles untuk memastikan modal terlihat
     modal.style.display = "flex";
+    modal.style.position = "fixed";
+    modal.style.top = "0";
+    modal.style.left = "0";
+    modal.style.width = "100%";
+    modal.style.height = "100%";
+    modal.style.background = "rgba(0, 0, 0, 0.8)";
+    modal.style.zIndex = "10000";
+    modal.style.justifyContent = "center";
+    modal.style.alignItems = "center";
+
+    console.log("Modal create room seharusnya terlihat sekarang");
+
     // Focus ke input
     setTimeout(() => {
       const input = document.getElementById("roomNameInput");
@@ -4051,11 +4064,6 @@ function showCreateRoomModal() {
     }, 100);
   } else {
     console.error("Modal create room tidak ditemukan");
-    // Fallback
-    const roomName = prompt("Masukkan nama room:");
-    if (roomName) {
-      createRoomDirect(roomName);
-    }
   }
 }
 
@@ -4063,7 +4071,20 @@ function showJoinRoomModal() {
   console.log("Membuka modal join room");
   const modal = document.getElementById("joinRoomModal");
   if (modal) {
+    // Force set styles
     modal.style.display = "flex";
+    modal.style.position = "fixed";
+    modal.style.top = "0";
+    modal.style.left = "0";
+    modal.style.width = "100%";
+    modal.style.height = "100%";
+    modal.style.background = "rgba(0, 0, 0, 0.8)";
+    modal.style.zIndex = "10000";
+    modal.style.justifyContent = "center";
+    modal.style.alignItems = "center";
+
+    console.log("Modal join room seharusnya terlihat sekarang");
+
     // Focus ke input
     setTimeout(() => {
       const input = document.getElementById("roomCodeInput");
@@ -4071,11 +4092,6 @@ function showJoinRoomModal() {
     }, 100);
   } else {
     console.error("Modal join room tidak ditemukan");
-    // Fallback
-    const roomCode = prompt("Masukkan kode room:");
-    if (roomCode) {
-      joinRoomDirect(roomCode);
-    }
   }
 }
 
