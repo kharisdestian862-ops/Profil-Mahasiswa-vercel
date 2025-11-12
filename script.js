@@ -4122,108 +4122,517 @@ function getContextForAI(query) {
   return null;
 }
 
-function loadVideoLearningCenter() {
-  const grid = document.getElementById("studyRoomCoursesGrid");
-  if (!grid) return;
+// ===== CODE PLAYGROUND SYSTEM =====
+let currentEditor = null;
 
-  grid.innerHTML = ""; // Kosongkan grid
+// Default code templates
+const codeTemplates = {
+  python: `# Welcome to Python Playground!
+print("Hello, World!")
 
-  // Buat Course Card dari attendanceData yang sudah ada
-  Object.entries(attendanceData).forEach(([key, course]) => {
-    const card = document.createElement("div");
-    card.className = "course-card";
-    card.dataset.course = key;
-    card.addEventListener("click", () => showVideoDetailView(key));
+# Write your Python code here
+def factorial(n):
+    if n == 0:
+        return 1
+    else:
+        return n * factorial(n-1)
 
-    const videoCount = videoMaterials[key] ? videoMaterials[key].length : 0;
+print(f"Factorial of 5 is: {factorial(5)}")`,
 
-    card.innerHTML = `
-            <div class="course-icon">📺</div>
-            <h3 data-i18n="courses.${key}">${course.name}</h3>
-            <p class="course-code">${course.code} • ${course.credits} SKS</p>
-            <div class="course-stats">
-                <span class="stat-badge">${videoCount} Video</span>
-            </div>
-        `;
-    grid.appendChild(card);
-  });
-  applyTranslations(); // Terapkan terjemahan ke kartu baru
+  javascript: `// Welcome to JavaScript Playground!
+console.log("Hello, World!");
+
+// Write your JavaScript code here
+function fibonacci(n) {
+    if (n <= 1) return n;
+    return fibonacci(n-1) + fibonacci(n-2);
 }
 
-function showVideoDetailView(courseKey) {
-  const course = attendanceData[courseKey];
-  const videos = videoMaterials[courseKey] || [];
+console.log("Fibonacci of 10 is:", fibonacci(10));`,
 
-  document.getElementById("studyRoomCourseListView").style.display = "none";
-  document.getElementById("studyRoomVideoDetailView").style.display = "flex";
+  html: `<!DOCTYPE html>
+<html>
+<head>
+    <title>My Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-align: center;
+            padding: 50px;
+        }
+        .container {
+            background: rgba(255,255,255,0.1);
+            padding: 30px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Hello, World! 🌍</h1>
+        <p>Welcome to HTML/CSS/JS Playground</p>
+        <button onclick="alert('Button clicked!')">Click Me</button>
+    </div>
+    
+    <script>
+        // JavaScript code here
+        console.log("Page loaded successfully!");
+    </script>
+</body>
+</html>`,
 
-  document.getElementById("studyRoomCurrentCourseName").textContent =
-    course.name;
-  document.getElementById(
-    "studyRoomCurrentVideoCount"
-  ).textContent = `${videos.length} video tersedia`;
+  cpp: `#include <iostream>
+using namespace std;
 
-  updateBreadcrumb(["Study Room", course.name]);
+int main() {
+    cout << "Hello, World!" << endl;
+    
+    // Write your C++ code here
+    int n = 10;
+    int sum = 0;
+    
+    for(int i = 1; i <= n; i++) {
+        sum += i;
+    }
+    
+    cout << "Sum of first " << n << " numbers is: " << sum << endl;
+    return 0;
+}`,
 
-  // Muat daftar video di sidebar
-  populateVideoList(courseKey, videos);
+  java: `public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+        
+        // Write your Java code here
+        int number = 12345;
+        int reversed = 0;
+        
+        while(number != 0) {
+            int digit = number % 10;
+            reversed = reversed * 10 + digit;
+            number /= 10;
+        }
+        
+        System.out.println("Reversed number: " + reversed);
+    }
+}`,
 
-  // Muat video pertama secara default
-  if (videos.length > 0) {
-    playVideo(videos[0]);
-  } else {
-    document.getElementById("currentVideoTitle").textContent =
-      "Tidak ada video";
-    document.getElementById("youtubePlayer").src = "";
-    // Menambahkan reset deskripsi
-    document.getElementById("currentVideoDescription").textContent =
-      "Tidak ada materi video tersedia.";
+  csharp: `using System;
+
+class Program {
+    static void Main() {
+        Console.WriteLine("Hello, World!");
+        
+        // Write your C# code here
+        int[] numbers = {1, 2, 3, 4, 5};
+        int sum = 0;
+        
+        foreach(int num in numbers) {
+            sum += num;
+        }
+        
+        Console.WriteLine("Sum of array: " + sum);
+    }
+}`,
+};
+
+// Initialize Code Playground
+function initCodePlayground() {
+  // Load Monaco Editor
+  loadMonacoEditor();
+
+  // Setup event listeners
+  setupPlaygroundEvents();
+}
+
+// Load Monaco Editor dynamically
+function loadMonacoEditor() {
+  if (window.monaco) {
+    initializeEditor();
+    return;
   }
-}
 
-function populateVideoList(courseKey, videos) {
-  const sidebar = document.getElementById("videoListSidebar");
-  if (!sidebar) return;
-
-  sidebar.innerHTML = `<h3>Video Materi</h3>`;
-
-  videos.forEach((video) => {
-    const item = document.createElement("div");
-    item.className = "video-item";
-    item.textContent = video.title;
-    item.dataset.videoId = video.id;
-    item.addEventListener("click", () => {
-      playVideo(video);
-      // Hapus active dari semua, tambahkan ke yang diklik
-      document
-        .querySelectorAll(".video-item")
-        .forEach((v) => v.classList.remove("active"));
-      item.classList.add("active");
+  const script = document.createElement("script");
+  script.src =
+    "https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js";
+  script.onload = () => {
+    require.config({
+      paths: { vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs" },
     });
-    sidebar.appendChild(item);
+    require(["vs/editor/editor.main"], () => {
+      initializeEditor();
+    });
+  };
+  document.head.appendChild(script);
+}
+
+// Initialize Monaco Editor
+function initializeEditor() {
+  const editorContainer = document.getElementById("codeEditor");
+  if (!editorContainer) return;
+
+  try {
+    currentEditor = monaco.editor.create(editorContainer, {
+      value: codeTemplates.python,
+      language: "python",
+      theme: "vs-dark",
+      fontSize: 14,
+      minimap: { enabled: false },
+      automaticLayout: true,
+      scrollBeyondLastLine: false,
+      roundedSelection: true,
+      scrollbar: {
+        vertical: "visible",
+        horizontal: "visible",
+        useShadows: false,
+      },
+      lineNumbers: "on",
+      renderLineHighlight: "all",
+      suggestOnTriggerCharacters: true,
+      wordBasedSuggestions: true,
+      parameterHints: { enabled: true },
+    });
+
+    console.log("Monaco Editor initialized successfully");
+  } catch (error) {
+    console.error("Failed to initialize Monaco Editor:", error);
+    // Fallback to textarea
+    setupFallbackEditor();
+  }
+}
+
+// Fallback to simple textarea if Monaco fails
+function setupFallbackEditor() {
+  const editorContainer = document.getElementById("codeEditor");
+  if (!editorContainer) return;
+
+  editorContainer.innerHTML = `
+        <textarea id="fallbackEditor" style="width:100%; height:100%; border:none; padding:10px; font-family: 'Courier New', monospace; background:#1e1e1e; color:#d4d4d4; resize:none;">
+${codeTemplates.python}
+        </textarea>
+    `;
+
+  console.log("Fallback editor initialized");
+}
+
+// Setup playground event listeners
+function setupPlaygroundEvents() {
+  // Language selector
+  const languageSelect = document.getElementById("languageSelect");
+  if (languageSelect) {
+    languageSelect.addEventListener("change", handleLanguageChange);
+  }
+
+  // Run button
+  const runButton = document.getElementById("runCode");
+  if (runButton) {
+    runButton.addEventListener("click", executeCode);
+  }
+
+  // Theme toggle
+  const themeToggle = document.getElementById("editorTheme");
+  if (themeToggle) {
+    themeToggle.addEventListener("change", handleThemeChange);
+  }
+
+  // Save button
+  const saveButton = document.getElementById("saveCode");
+  if (saveButton) {
+    saveButton.addEventListener("click", saveCode);
+  }
+
+  // Clear output button
+  const clearButton = document.getElementById("clearOutput");
+  if (clearButton) {
+    clearButton.addEventListener("click", clearOutput);
+  }
+}
+
+// Handle language change
+function handleLanguageChange(e) {
+  const lang = e.target.value;
+
+  if (currentEditor && codeTemplates[lang]) {
+    currentEditor.setValue(codeTemplates[lang]);
+    monaco.editor.setModelLanguage(currentEditor.getModel(), lang);
+
+    // Show/hide live preview for HTML
+    const preview = document.getElementById("livePreview");
+    if (preview) {
+      preview.style.display = lang === "html" ? "flex" : "none";
+    }
+  } else if (document.getElementById("fallbackEditor")) {
+    // Handle fallback editor
+    const fallbackEditor = document.getElementById("fallbackEditor");
+    if (fallbackEditor && codeTemplates[lang]) {
+      fallbackEditor.value = codeTemplates[lang];
+    }
+  }
+}
+
+// Handle theme change
+function handleThemeChange(e) {
+  if (currentEditor) {
+    const theme = e.target.checked ? "vs-dark" : "vs";
+    monaco.editor.setTheme(theme);
+  }
+}
+
+// Execute code based on language
+async function executeCode() {
+  const language = document.getElementById("languageSelect").value;
+  const code = currentEditor
+    ? currentEditor.getValue()
+    : document.getElementById("fallbackEditor")?.value || "";
+  const output = document.getElementById("outputResult");
+
+  if (!output) return;
+
+  output.innerHTML = '<div class="loading-spinner"></div>';
+  output.classList.add("loading");
+
+  try {
+    let result;
+
+    switch (language) {
+      case "javascript":
+        result = await executeJavaScript(code);
+        break;
+      case "html":
+        result = await executeHTML(code);
+        break;
+      case "python":
+        result = await executePython(code);
+        break;
+      case "cpp":
+        result = await executeCpp(code);
+        break;
+      case "java":
+        result = await executeJava(code);
+        break;
+      case "csharp":
+        result = await executeCSharp(code);
+        break;
+      default:
+        result = "Language not supported yet";
+    }
+
+    output.innerHTML = `<pre>${escapeHtml(result)}</pre>`;
+  } catch (error) {
+    output.innerHTML = `<pre style="color: #ff6b6b;">Error: ${escapeHtml(
+      error.message
+    )}</pre>`;
+  } finally {
+    output.classList.remove("loading");
+  }
+}
+
+// JavaScript execution (in-browser)
+function executeJavaScript(code) {
+  return new Promise((resolve) => {
+    const originalLog = console.log;
+    const originalError = console.error;
+    let output = "";
+
+    // Override console.log to capture output
+    console.log = (...args) => {
+      output +=
+        args
+          .map((arg) =>
+            typeof arg === "object" ? JSON.stringify(arg, null, 2) : String(arg)
+          )
+          .join(" ") + "\n";
+    };
+
+    console.error = (...args) => {
+      output += "ERROR: " + args.join(" ") + "\n";
+    };
+
+    try {
+      // Create a safe execution environment
+      const result = Function('"use strict";\n' + code)();
+      if (result !== undefined) {
+        output += String(result);
+      }
+      resolve(output || "Code executed successfully (no output)");
+    } catch (error) {
+      resolve(`Runtime Error: ${error.message}`);
+    } finally {
+      // Restore original console methods
+      console.log = originalLog;
+      console.error = originalError;
+    }
   });
+}
 
-  // Otomatis tandai video pertama sebagai aktif
-  if (videos.length > 0) {
-    sidebar.querySelector(".video-item").classList.add("active");
+// HTML execution (in-browser)
+function executeHTML(code) {
+  return new Promise((resolve) => {
+    const previewFrame = document.getElementById("previewFrame");
+    if (previewFrame) {
+      const blob = new Blob([code], { type: "text/html" });
+      previewFrame.src = URL.createObjectURL(blob);
+      resolve(
+        "✅ HTML rendered in preview panel\nCheck the Live Preview section below"
+      );
+    } else {
+      resolve("❌ Preview frame not available");
+    }
+  });
+}
+
+// Python execution (using WebAssembly fallback)
+async function executePython(code) {
+  // Try to use Pyodide if available
+  if (window.pyodide) {
+    try {
+      await window.pyodide.loadPackage(["micropip"]);
+      return await window.pyodide.runPythonAsync(code);
+    } catch (error) {
+      return `Python Error: ${error.message}`;
+    }
+  } else {
+    // Fallback to API or simulation
+    return await executeWithAPI("python", code);
   }
 }
 
-function playVideo(video) {
-  const embedUrl = `https://www.youtube.com/embed/${video.url}?autoplay=1&rel=0&modestbranding=1&showinfo=0`;
-  document.getElementById("youtubePlayer").src = embedUrl;
-  document.getElementById("currentVideoTitle").textContent = video.title;
-  document.getElementById("currentVideoDescription").textContent =
-    video.description;
+// C++ execution
+async function executeCpp(code) {
+  return await executeWithAPI("cpp", code);
+}
 
-  // Update active state di sidebar
-  document
-    .querySelectorAll(".video-item")
-    .forEach((v) => v.classList.remove("active"));
-  const activeItem = document.querySelector(
-    `.video-item[data-video-id="${video.id}"]`
-  );
-  if (activeItem) {
-    activeItem.classList.add("active");
+// Java execution
+async function executeJava(code) {
+  return await executeWithAPI("java", code);
+}
+
+// C# execution
+async function executeCSharp(code) {
+  return await executeWithAPI("csharp", code);
+}
+
+// API-based code execution (simulated)
+async function executeWithAPI(language, code) {
+  // Simulate API call - in real implementation, you'd call an actual code execution API
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(
+        `🔧 ${language.toUpperCase()} execution service\n\nThis would normally execute your ${language} code via a backend service.\n\nFor now, this is a simulation. To implement real execution, you would need:\n\n1. A code execution API (like JDoodle, Piston, or custom Docker setup)\n2. Backend service to handle compilation/execution\n3. Proper security sandboxing\n\nYour ${language} code:\n${
+          "```" + language
+        }\n${code}\n${"```"}`
+      );
+    }, 1000);
+  });
+}
+
+// Save code to localStorage
+function saveCode() {
+  const language = document.getElementById("languageSelect").value;
+  const code = currentEditor
+    ? currentEditor.getValue()
+    : document.getElementById("fallbackEditor")?.value || "";
+
+  const savedCode = JSON.parse(localStorage.getItem("savedCode") || "{}");
+  savedCode[language] = code;
+  localStorage.setItem("savedCode", JSON.stringify(savedCode));
+
+  showNotification("Code saved successfully!", "success");
+}
+
+// Load saved code
+function loadSavedCode() {
+  const savedCode = JSON.parse(localStorage.getItem("savedCode") || "{}");
+  const language = document.getElementById("languageSelect").value;
+
+  if (savedCode[language]) {
+    if (currentEditor) {
+      currentEditor.setValue(savedCode[language]);
+    } else if (document.getElementById("fallbackEditor")) {
+      document.getElementById("fallbackEditor").value = savedCode[language];
+    }
+    showNotification("Saved code loaded!", "success");
+  } else {
+    showNotification("No saved code found for this language", "info");
   }
 }
+
+// Clear output
+function clearOutput() {
+  const output = document.getElementById("outputResult");
+  if (output) {
+    output.innerHTML =
+      '<div class="welcome-message"><h3>🚀 Welcome to Code Playground!</h3><p>Write your code and click "Run Code" to see the output here.</p></div>';
+  }
+}
+
+// Utility function to escape HTML
+function escapeHtml(unsafe) {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+// Show notification
+function showNotification(message, type = "info") {
+  const notification = document.createElement("div");
+  notification.className = `ai-notification ${type}`;
+  notification.innerHTML = `
+        <span class="notification-message">${message}</span>
+        <button class="notification-close" onclick="this.parentElement.remove()">×</button>
+    `;
+  document.body.appendChild(notification);
+
+  setTimeout(() => {
+    if (notification.parentElement) {
+      notification.remove();
+    }
+  }, 3000);
+}
+
+// Load saved code when switching to codeplayground section
+function loadCodePlayground() {
+  const savedCode = JSON.parse(localStorage.getItem("savedCode") || "{}");
+  const language = document.getElementById("languageSelect")?.value || "python";
+
+  if (savedCode[language] && currentEditor) {
+    currentEditor.setValue(savedCode[language]);
+  }
+}
+
+// Add to your main initialization
+document.addEventListener("DOMContentLoaded", function () {
+  // Initialize code playground when the section is accessed
+  const codePlaygroundSection = document.getElementById("codeplayground");
+  if (codePlaygroundSection) {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (
+          mutation.type === "attributes" &&
+          mutation.attributeName === "style" &&
+          !codePlaygroundSection.style.display
+        ) {
+          // Code playground section is now visible
+          setTimeout(initCodePlayground, 100);
+        }
+      });
+    });
+
+    observer.observe(codePlaygroundSection, {
+      attributes: true,
+      attributeFilter: ["style"],
+    });
+  }
+});
+
+// Global functions for HTML access
+window.executeCode = executeCode;
+window.saveCode = saveCode;
+window.clearOutput = clearOutput;
+window.loadSavedCode = loadSavedCode;
