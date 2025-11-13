@@ -6413,3 +6413,163 @@ body.dark-mode .kanban-fab {
     bottom: 15rem;
   }
 }
+
+.fab-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+  gap: 1rem;
+}
+
+/* Tombol Utama (Trigger) */
+.fab-trigger {
+  width: 60px;
+  height: 60px;
+  background: var(--primary);
+  color: white;
+  border-radius: 50%;
+  border: none;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s;
+  position: relative;
+}
+
+.fab-trigger:hover {
+  background: var(--primary-dark);
+  transform: scale(1.05);
+}
+
+.fab-trigger svg {
+  width: 28px;
+  height: 28px;
+  position: absolute;
+  transition: transform 0.3s, opacity 0.3s;
+}
+
+/* Animasi Ikon Buka/Tutup */
+.fab-icon-close {
+  opacity: 0;
+  transform: rotate(-45deg);
+}
+
+.fab-container.active .fab-icon-open {
+  opacity: 0;
+  transform: rotate(45deg);
+}
+
+.fab-container.active .fab-icon-close {
+  opacity: 1;
+  transform: rotate(0deg);
+}
+
+/* Container Item Anak */
+.fab-items {
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+/* Item Anak (Default Tersembunyi) */
+.fab-item {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(20px) scale(0.8);
+  pointer-events: none;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.fab-item svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Label Teks di Sebelah Kiri */
+.fab-label {
+  position: absolute;
+  right: 60px;
+  background: var(--surface);
+  color: var(--text-primary);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  opacity: 0;
+  transform: translateX(10px);
+  transition: all 0.3s;
+  pointer-events: none;
+}
+
+/* State Aktif (Saat menu dibuka) */
+.fab-container.active .fab-item {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.fab-container.active .fab-item:hover .fab-label {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Delay Animasi Agar Muncul Berurutan */
+.fab-container.active .fab-item:nth-child(1) {
+  transition-delay: 0.05s;
+} /* Chat */
+.fab-container.active .fab-item:nth-child(2) {
+  transition-delay: 0.1s;
+} /* Code */
+.fab-container.active .fab-item:nth-child(3) {
+  transition-delay: 0.15s;
+} /* Notes */
+.fab-container.active .fab-item:nth-child(4) {
+  transition-delay: 0.2s;
+} /* Kanban */
+
+/* Warna-warna Item */
+#chatbotFab {
+  background: #2563eb;
+}
+#codeFab {
+  background: #06b6d4;
+}
+#notesFab {
+  background: #10b981;
+}
+#kanbanFab {
+  background: #f59e0b;
+}
+
+/* Sembunyikan saat mode full layout aktif */
+body.full-layout-active .fab-container {
+  display: none !important;
+}
+
+/* Responsif Mobile */
+@media (max-width: 768px) {
+  .fab-container {
+    bottom: 1.5rem;
+    right: 1.5rem;
+  }
+}
