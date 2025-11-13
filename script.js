@@ -4666,21 +4666,16 @@ function getContextForAI(query) {
 }
 
 function loadUserProfile() {
-  // 1. Ambil data user yang sedang login
   const userJson = localStorage.getItem("currentUser");
-
   if (!userJson) {
-    // Kalau tidak ada yang login, tendang ke halaman login
     window.location.href = "index.html";
     return;
   }
 
   const user = JSON.parse(userJson);
-
-  // Ambil nama depan untuk sapaan (misal "Kharis" dari "Kharis Destian")
   const firstName = user.fullName.split(" ")[0];
 
-  // Buat inisial avatar (misal KD)
+  // Buat inisial
   const initials = user.fullName
     .split(" ")
     .slice(0, 2)
@@ -4688,57 +4683,53 @@ function loadUserProfile() {
     .join("")
     .toUpperCase();
 
-  // --- UPDATE UI ---
-
-  // 1. Header Dashboard & Sapaan Chatbot
+  // 1. Update Header Dashboard
   updateDashboardHeader(firstName);
-  updateChatbotGreeting(firstName);
 
-  // 2. Sidebar Kiri (Desktop & Mobile)
-  // Nama
-  document
-    .querySelectorAll(".profile .name, .mobile-profile .mobile-name")
-    .forEach((el) => {
-      el.textContent = user.fullName;
-    });
-  // Prodi & Tahun
-  document.querySelectorAll(".profile .program").forEach((el) => {
-    el.textContent = `${user.programStudi} • ${user.year}`;
+  // 2. Update Sidebar Kiri (Desktop & Mobile)
+  // Menggunakan element ID agar spesifik
+  const targets = {
+    name: [
+      document.getElementById("desktopNameDisplay"),
+      document.getElementById("mobileNameDisplay"),
+    ],
+    avatar: [
+      document.getElementById("desktopAvatarDisplay"),
+      document.getElementById("mobileAvatarDisplay"),
+    ],
+    program: [document.getElementById("desktopProgramDisplay")],
+  };
+
+  targets.name.forEach((el) => {
+    if (el) el.textContent = user.fullName;
   });
-  // Avatar
-  document
-    .querySelectorAll(".profile .avatar, .mobile-profile .mobile-avatar")
-    .forEach((el) => {
-      el.textContent = initials;
-    });
+  targets.avatar.forEach((el) => {
+    if (el) el.textContent = initials;
+  });
+  targets.program.forEach((el) => {
+    if (el) el.textContent = user.programStudi + " • 2023";
+  });
 
-  // 3. Halaman Profil (Section #profile)
-  // Kita gunakan querySelector yang spesifik untuk setiap baris
-  const infoItems = document.querySelectorAll(".profile-info .info-item");
-  if (infoItems.length >= 6) {
-    // Urutan sesuai HTML dashboard.html Anda:
-    // 0: Nama, 1: NIM, 2: Program, 3: Tahun, 4: Semester, 5: Email
-    infoItems[0].querySelector(".info-value").textContent = user.fullName;
-    infoItems[1].querySelector(".info-value").textContent = user.nim;
-    infoItems[2].querySelector(".info-value").textContent = user.programStudi;
-    infoItems[3].querySelector(".info-value").textContent = user.year;
-    infoItems[4].querySelector(".info-value").textContent =
-      user.semester || "4"; // Default semester 4 jika kosong
-    infoItems[5].querySelector(".info-value").textContent = user.email;
-  }
+  // 3. Update Halaman Profil Detail (Menggunakan ID baru)
+  const setText = (id, text) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  };
 
-  // 4. Sidebar Kanan (Quick Info)
-  const rightSidebar = document.querySelector(".sidebar-right");
-  if (rightSidebar) {
-    rightSidebar.querySelector(".student-info h3").textContent = user.fullName;
+  setText("profileDetailName", user.fullName);
+  setText("profileDetailNim", user.nim);
+  setText("profileDetailProgram", user.programStudi);
+  setText("profileDetailYear", user.year || "2023");
+  setText("profileDetailSemester", user.semester || "4");
+  setText("profileDetailEmail", user.email);
 
-    // Update paragraf di dalam student-info (NIM dan Prodi)
-    const pTags = rightSidebar.querySelectorAll(".student-info p");
-    if (pTags.length >= 2) {
-      pTags[0].textContent = `NIM: ${user.nim}`;
-      pTags[1].textContent = user.programStudi;
-    }
-  }
+  // 4. Update Sidebar Kanan (Kotak Biru)
+  setText("rightSidebarName", user.fullName);
+  setText("rightSidebarNim", `NIM: ${user.nim}`);
+  setText("rightSidebarProgram", user.programStudi);
+
+  // 5. Update Chatbot
+  updateChatbotGreeting(firstName);
 }
 
 function updateDashboardHeader(firstName) {
