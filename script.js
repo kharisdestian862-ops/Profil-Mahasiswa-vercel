@@ -6558,10 +6558,10 @@ const groupChat = {
   },
 };
 
+// Inisialisasi Fitur Grup Chat (Real-Time dengan Pusher)
 function initGroupChat() {
   console.log("Initializing Group Chat...");
 
-  // === PERBAIKAN ID DI SINI (SESUAI DASHBOARD.HTML ANDA) ===
   const chatMessages = document.getElementById("groupMessages");
   const chatInput = document.getElementById("groupMessageInput");
   const sendBtn = document.getElementById("sendGroupMessageBtn");
@@ -6587,7 +6587,7 @@ function initGroupChat() {
     const welcomeMsg = chatMessages.querySelector(".welcome-message");
     if (welcomeMsg) welcomeMsg.remove();
 
-    // Render pesan lama (hindari duplikasi dengan mengosongkan dulu jika perlu)
+    // Render pesan lama
     chatMessages.innerHTML = "";
     savedHistory.forEach((chat) => renderMessage(chat));
 
@@ -6596,21 +6596,23 @@ function initGroupChat() {
 
   // 2. KONEKSI KE PUSHER
   if (typeof Pusher !== "undefined") {
-    // Ganti 'APP_KEY_ANDA' dengan key Pusher Anda
-    const pusher = new Pusher("APP_KEY_ANDA", {
-      cluster: "ap1",
+    // GANTI 'KEY_ANDA' DENGAN KEY DARI DASHBOARD PUSHER (contoh: 'a1b2c3...')
+    const pusher = new Pusher("MASUKKAN_KEY_PUSHER_ANDA_DISINI", {
+      cluster: "ap1", // Sesuaikan jika cluster Anda bukan ap1
     });
 
     const channel = pusher.subscribe("campus-chat");
 
+    // Mendengarkan pesan masuk dari orang lain
     channel.bind("new-message", function (data) {
+      // Hanya tampilkan jika pesan BUKAN dari diri sendiri
       if (data.username !== myName) {
         renderMessage(data);
         saveMessage(data);
       }
     });
   } else {
-    console.warn("Library Pusher tidak ditemukan.");
+    console.warn("Library Pusher tidak ditemukan. Chat hanya berjalan lokal.");
   }
 
   // 3. FUNGSI KIRIM PESAN
@@ -6627,15 +6629,16 @@ function initGroupChat() {
       }),
     };
 
-    // Render langsung
+    // Render langsung (agar terasa cepat)
     renderMessage(msgData);
     saveMessage(msgData);
     chatInput.value = "";
 
-    // Hapus welcome message
+    // Hapus welcome message jika ada
     const welcomeMsg = chatMessages.querySelector(".welcome-message");
     if (welcomeMsg) welcomeMsg.remove();
 
+    // Kirim ke Backend (untuk disebar ke orang lain)
     try {
       await fetch("/api/send-chat", {
         method: "POST",
@@ -6647,16 +6650,15 @@ function initGroupChat() {
     }
   }
 
-  // Helper Render (Sesuai struktur HTML Chat Bubble Anda)
+  // Helper Render
   function renderMessage(data) {
     const isMe = data.username === myName;
     const div = document.createElement("div");
-    // Sesuaikan class dengan CSS Anda
     div.className = `chat-bubble ${isMe ? "me" : "others"}`;
 
     div.innerHTML = `
           ${!isMe ? `<span class="sender-name">${data.username}</span>` : ""}
-          ${data.message}
+          <span class="message-content">${data.message}</span>
           <span class="timestamp">${data.timestamp}</span>
       `;
 
@@ -6674,14 +6676,14 @@ function initGroupChat() {
     localStorage.setItem("groupChatHistory", JSON.stringify(history));
   }
 
-  // Event Listeners (Cloning untuk menghapus listener lama)
-  const newBtn = sendBtn.cloneNode(true);
-  sendBtn.parentNode.replaceChild(newBtn, sendBtn);
-  newBtn.addEventListener("click", sendChatMessage);
+  const newSendBtn = sendBtn.cloneNode(true);
+  sendBtn.parentNode.replaceChild(newSendBtn, sendBtn);
 
-  const newInput = chatInput.cloneNode(true);
-  chatInput.parentNode.replaceChild(newInput, chatInput);
-  newInput.addEventListener("keypress", (e) => {
+  const newChatInput = chatInput.cloneNode(true);
+  chatInput.parentNode.replaceChild(newChatInput, chatInput);
+
+  newSendBtn.addEventListener("click", sendChatMessage);
+  newChatInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") sendChatMessage();
   });
 }
