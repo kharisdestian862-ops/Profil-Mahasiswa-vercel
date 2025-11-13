@@ -2967,6 +2967,7 @@ document.addEventListener("DOMContentLoaded", function () {
   initScheduleFilter();
   initQuickActions();
   initGpaCalculator();
+  loadUserProfile();
 
   window.addEventListener("resize", function () {
     if (chart) {
@@ -4160,6 +4161,87 @@ function getContextForAI(query) {
   }
 
   return null;
+}
+
+function loadUserProfile() {
+  const userJson = localStorage.getItem("currentUser");
+  if (!userJson) {
+    window.location.href = "index.html";
+    return;
+  }
+
+  const user = JSON.parse(userJson);
+
+  document.querySelector(
+    ".profile-info .info-item:nth-child(1) .info-value"
+  ).textContent = user.fullName;
+  document.querySelector(
+    ".profile-info .info-item:nth-child(2) .info-value"
+  ).textContent = user.nim;
+  document.querySelector(
+    ".profile-info .info-item:nth-child(3) .info-value"
+  ).textContent = user.programStudi;
+  document.querySelector(
+    ".profile-info .info-item:nth-child(6) .info-value"
+  ).textContent = user.email;
+
+  const firstName = user.fullName.split(" ")[0];
+
+  const dashboardTitleElement = document.querySelector(
+    'h1[data-i18n="dashboard.title"]'
+  );
+  if (dashboardTitleElement) {
+    dashboardTitleElement.textContent = `${
+      dashboardTitleElement.textContent.split(" ")[0]
+    } ${firstName}`;
+  }
+
+  const welcomeElement = document.querySelector(
+    'div[data-i18n="dashboard.welcome"]'
+  );
+  if (welcomeElement) {
+    welcomeElement.textContent = `${
+      welcomeElement.textContent.split(",")[0]
+    }, ${firstName}`;
+  }
+
+  document
+    .querySelectorAll(".profile .name")
+    .forEach((el) => (el.textContent = user.fullName));
+  document
+    .querySelectorAll(".profile .program")
+    .forEach((el) => (el.textContent = `${user.programStudi} • 2023`));
+
+  document.querySelector(".sidebar-right .student-info h3").textContent =
+    user.fullName;
+  document.querySelector(
+    ".sidebar-right .student-info p:nth-child(2)"
+  ).textContent = `NIM: ${user.nim}`;
+  document.querySelector(
+    ".sidebar-right .student-info p:nth-child(3)"
+  ).textContent = user.programStudi;
+}
+
+function initLogout() {
+  const logoutBtn = document.getElementById("logoutBtn");
+  const logoutBtnMobile = document.getElementById("logoutBtnMobile");
+
+  function handleLogout() {
+    if (confirm("Are you sure you want to logout?")) {
+      localStorage.removeItem("isLoggedIn");
+      localStorage.removeItem("currentUser");
+
+      window.location.href = "index.html";
+    }
+  }
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", handleLogout);
+  }
+
+  if (logoutBtnMobile) {
+    logoutBtnMobile.addEventListener("click", handleLogout);
+  }
 }
 
 // ===== CODE PLAYGROUND SYSTEM =====
