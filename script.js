@@ -4443,7 +4443,7 @@ ${codeTemplates.python}
 // Setup playground event listeners
 function setupPlaygroundEvents() {
   // Language selector
-  const languageSelect = document.getElementById("languageSelect");
+  const languageSelect = document.getElementById("codeLanguageSelect"); // <-- DIUBAH
   if (languageSelect) {
     languageSelect.addEventListener("change", handleLanguageChange);
   }
@@ -4505,7 +4505,7 @@ function handleThemeChange(e) {
 
 // Execute code based on language
 async function executeCode() {
-  const language = document.getElementById("languageSelect").value;
+  const language = document.getElementById("codeLanguageSelect").value; // <-- DIUBAH
   const code = currentEditor
     ? currentEditor.getValue()
     : document.getElementById("fallbackEditor")?.value || "";
