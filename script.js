@@ -3263,6 +3263,22 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
+    const chatSection = document.getElementById("chat");
+    if (chatSection) {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          if (
+            mutation.type === "attributes" &&
+            mutation.attributeName === "style" &&
+            !chatSection.style.display
+          ) {
+            dmSystem.init();
+          }
+        });
+      });
+      observer.observe(chatSection, { attributes: true });
+    }
+
     const sendMessage = () => {
       const query = inputField.value;
       if (query.trim() === "") return;
@@ -5687,3 +5703,431 @@ window.processPayment = processPayment;
 window.viewReceipt = viewReceipt;
 window.downloadReceipt = downloadReceipt;
 window.selectPaymentMethod = selectPaymentMethod;
+
+const dmSystem = {
+  currentUser: null,
+  currentChat: null,
+  contacts: [],
+  messages: new Map(),
+
+  init() {
+    this.setCurrentUser();
+    this.loadContacts();
+    this.loadAllMessages();
+    this.setupWebSocket();
+    this.renderContacts();
+    this.setupEventListeners();
+    this.startMessagePolling();
+  },
+
+  setCurrentUser() {
+    const userData = JSON.parse(localStorage.getItem("currentUser") || "{}");
+    this.currentUser = {
+      id: userData.nim || "user_" + Date.now(),
+      name: userData.fullName || "Student",
+      avatar: "👤",
+      status: "online",
+    };
+  },
+
+  loadContacts() {
+    const savedContacts = localStorage.getItem("dm_contacts");
+    if (savedContacts) {
+      this.contacts = JSON.parse(savedContacts);
+    } else {
+      this.contacts = [
+        {
+          id: "user_001",
+          name: "Andi Pratama",
+          avatar: "👨‍💻",
+          status: "online",
+          lastSeen: null,
+        },
+        {
+          id: "user_002",
+          name: "Siti Rahayu",
+          avatar: "👩‍🎓",
+          status: "online",
+          lastSeen: null,
+        },
+        {
+          id: "user_003",
+          name: "Budi Santoso",
+          avatar: "👨‍🔬",
+          status: "away",
+          lastSeen: new Date().toISOString(),
+        },
+        {
+          id: "user_004",
+          name: "Dewi Anggraini",
+          avatar: "👩‍💼",
+          status: "offline",
+          lastSeen: new Date(Date.now() - 3600000).toISOString(),
+        },
+      ];
+      this.saveContacts();
+    }
+  },
+
+  saveContacts() {
+    localStorage.setItem("dm_contacts", JSON.stringify(this.contacts));
+  },
+
+  loadAllMessages() {
+    const allMessages = JSON.parse(localStorage.getItem("dm_messages") || "{}");
+    Object.keys(allMessages).forEach((chatId) => {
+      this.messages.set(chatId, allMessages[chatId]);
+    });
+  },
+
+  saveMessages(chatId) {
+    const allMessages = {};
+    this.messages.forEach((msgs, id) => {
+      allMessages[id] = msgs;
+    });
+    localStorage.setItem("dm_messages", JSON.stringify(allMessages));
+  },
+
+  setupWebSocket() {
+    try {
+      this.ws = new WebSocket("wss://echo.websocket.org");
+      this.ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.type === "dm_message") {
+          this.handleIncomingMessage(data);
+        }
+      };
+    } catch (error) {
+      console.log("WebSocket not available");
+    }
+  },
+
+  startMessagePolling() {
+    setInterval(() => {
+      this.checkForNewMessages();
+    }, 1500);
+  },
+
+  checkForNewMessages() {
+    const allMessages = JSON.parse(localStorage.getItem("dm_messages") || "{}");
+
+    this.messages.forEach((msgs, chatId) => {
+      const storedMsgs = allMessages[chatId] || [];
+      if (storedMsgs.length > msgs.length) {
+        this.messages.set(chatId, storedMsgs);
+        if (this.currentChat === chatId) {
+          this.renderMessages();
+        }
+      }
+    });
+  },
+
+  renderContacts() {
+    const container = document.getElementById("contactsList");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    this.contacts.forEach((contact) => {
+      const contactEl = this.createContactElement(contact);
+      container.appendChild(contactEl);
+    });
+  },
+
+  createContactElement(contact) {
+    const div = document.createElement("div");
+    div.className = `contact-item ${
+      this.currentChat === contact.id ? "active" : ""
+    }`;
+
+    const lastMessage = this.getLastMessage(contact.id);
+    const unreadCount = this.getUnreadCount(contact.id);
+
+    div.innerHTML = `
+            <div class="contact-avatar">${contact.avatar}</div>
+            <div class="contact-info">
+                <div class="contact-name">${contact.name}</div>
+                <div class="contact-last-message">${
+                  lastMessage || "No messages yet"
+                }</div>
+            </div>
+            <div class="contact-meta">
+                <div class="contact-time">${this.getLastMessageTime(
+                  contact.id
+                )}</div>
+                ${
+                  unreadCount > 0
+                    ? `<div class="unread-badge">${unreadCount}</div>`
+                    : ""
+                }
+            </div>
+        `;
+
+    div.addEventListener("click", () => this.openChat(contact));
+    return div;
+  },
+
+  getLastMessage(contactId) {
+    const messages = this.messages.get(contactId) || [];
+    return messages.length > 0 ? messages[messages.length - 1].text : null;
+  },
+
+  getLastMessageTime(contactId) {
+    const messages = this.messages.get(contactId) || [];
+    if (messages.length === 0) return "";
+
+    const lastMsg = messages[messages.length - 1];
+    return this.formatTime(lastMsg.timestamp);
+  },
+
+  getUnreadCount(contactId) {
+    const messages = this.messages.get(contactId) || [];
+    return messages.filter((msg) => !msg.read && msg.senderId === contactId)
+      .length;
+  },
+
+  openChat(contact) {
+    this.currentChat = contact.id;
+    this.updateChatHeader(contact);
+    this.renderMessages();
+    this.showMessageInput();
+    this.markMessagesAsRead(contact.id);
+    this.renderContacts();
+  },
+
+  updateChatHeader(contact) {
+    const header = document.getElementById("chatHeader");
+    if (!header) return;
+
+    header.innerHTML = `
+            <div class="chat-partner">
+                <div class="partner-avatar">${contact.avatar}</div>
+                <div class="partner-info">
+                    <div class="partner-name">${contact.name}</div>
+                    <div class="partner-status">
+                        <span class="status-dot ${contact.status}"></span>
+                        ${
+                          contact.status === "online"
+                            ? "Online"
+                            : contact.status === "away"
+                            ? "Away"
+                            : "Offline"
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="chat-actions">
+                <button class="action-btn" title="Call">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>
+                    </svg>
+                </button>
+                <button class="action-btn" title="Video call">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M23 7l-7 5 7 5V7z"/>
+                        <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                    </svg>
+                </button>
+            </div>
+        `;
+  },
+
+  renderMessages() {
+    const container = document.getElementById("messagesArea");
+    if (!container || !this.currentChat) return;
+
+    const messages = this.messages.get(this.currentChat) || [];
+
+    if (messages.length === 0) {
+      container.innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-icon">💬</div>
+                    <h3>No messages yet</h3>
+                    <p>Send a message to start the conversation</p>
+                </div>
+            `;
+      return;
+    }
+
+    container.innerHTML = "";
+    messages.forEach((msg) => {
+      const messageEl = this.createMessageElement(msg);
+      container.appendChild(messageEl);
+    });
+
+    container.scrollTop = container.scrollHeight;
+  },
+
+  createMessageElement(msg) {
+    const div = document.createElement("div");
+    const isCurrentUser = msg.senderId === this.currentUser.id;
+
+    div.className = `message ${isCurrentUser ? "sent" : "received"}`;
+    div.innerHTML = `
+            <div class="message-bubble">
+                <div class="message-text">${this.escapeHtml(msg.text)}</div>
+                <div class="message-time">${this.formatTime(
+                  msg.timestamp
+                )}</div>
+            </div>
+        `;
+
+    return div;
+  },
+
+  showMessageInput() {
+    const inputArea = document.getElementById("messageInputArea");
+    if (inputArea) {
+      inputArea.style.display = "block";
+    }
+  },
+
+  sendMessage(text) {
+    if (!text.trim() || !this.currentChat) return;
+
+    const message = {
+      id: "msg_" + Date.now(),
+      text: text.trim(),
+      senderId: this.currentUser.id,
+      senderName: this.currentUser.name,
+      timestamp: new Date().toISOString(),
+      read: false,
+    };
+
+    this.saveMessage(message);
+    this.broadcastMessage(message);
+    this.renderNewMessage(message);
+  },
+
+  saveMessage(message) {
+    const chatId = this.currentChat;
+    if (!this.messages.has(chatId)) {
+      this.messages.set(chatId, []);
+    }
+
+    this.messages.get(chatId).push(message);
+    this.saveMessages(chatId);
+  },
+
+  broadcastMessage(message) {
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      this.ws.send(
+        JSON.stringify({
+          type: "dm_message",
+          chatId: this.currentChat,
+          ...message,
+        })
+      );
+    }
+  },
+
+  handleIncomingMessage(data) {
+    if (data.chatId && data.senderId !== this.currentUser.id) {
+      if (!this.messages.has(data.chatId)) {
+        this.messages.set(data.chatId, []);
+      }
+
+      this.messages.get(data.chatId).push(data);
+      this.saveMessages(data.chatId);
+
+      if (this.currentChat === data.chatId) {
+        this.renderNewMessage(data);
+        this.markMessagesAsRead(data.chatId);
+      }
+
+      this.renderContacts();
+    }
+  },
+
+  renderNewMessage(message) {
+    const container = document.getElementById("messagesArea");
+    if (!container) return;
+
+    const messageEl = this.createMessageElement(message);
+
+    if (container.querySelector(".empty-state")) {
+      container.innerHTML = "";
+    }
+
+    container.appendChild(messageEl);
+    container.scrollTop = container.scrollHeight;
+  },
+
+  markMessagesAsRead(chatId) {
+    const messages = this.messages.get(chatId) || [];
+    messages.forEach((msg) => {
+      if (msg.senderId !== this.currentUser.id) {
+        msg.read = true;
+      }
+    });
+    this.saveMessages(chatId);
+    this.renderContacts();
+  },
+
+  setupEventListeners() {
+    const sendBtn = document.getElementById("sendMessageBtn");
+    const input = document.getElementById("messageInput");
+    const searchInput = document.getElementById("contactSearch");
+
+    if (sendBtn && input) {
+      sendBtn.addEventListener("click", () => {
+        this.sendMessage(input.value);
+        input.value = "";
+      });
+
+      input.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          this.sendMessage(input.value);
+          input.value = "";
+        }
+      });
+    }
+
+    if (searchInput) {
+      searchInput.addEventListener("input", (e) => {
+        this.filterContacts(e.target.value);
+      });
+    }
+  },
+
+  filterContacts(query) {
+    const filtered = this.contacts.filter((contact) =>
+      contact.name.toLowerCase().includes(query.toLowerCase())
+    );
+
+    const container = document.getElementById("contactsList");
+    if (!container) return;
+
+    container.innerHTML = "";
+    filtered.forEach((contact) => {
+      const contactEl = this.createContactElement(contact);
+      container.appendChild(contactEl);
+    });
+  },
+
+  escapeHtml(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+  },
+
+  formatTime(timestamp) {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diff = now - date;
+
+    if (diff < 60000) return "now";
+    if (diff < 3600000) return Math.floor(diff / 60000) + "m";
+    if (diff < 86400000)
+      return date.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      });
+
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+  },
+};
