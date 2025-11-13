@@ -6982,11 +6982,25 @@ function updateTaskStatus(id, newStatusCol) {
 
 // Add New Task Logic
 function openAddTaskModal() {
-  document.getElementById("addTaskModal").style.display = "flex";
+  const modal = document.getElementById("addTaskModal");
+  if (modal) {
+    modal.style.display = "flex";
+
+    setTimeout(() => {
+      modal.classList.add("active");
+    }, 10);
+  }
 }
 
 function closeAddTaskModal() {
-  document.getElementById("addTaskModal").style.display = "none";
+  const modal = document.getElementById("addTaskModal");
+  if (modal) {
+    modal.classList.remove("active");
+
+    setTimeout(() => {
+      modal.style.display = "none";
+    }, 300);
+  }
 }
 
 function addNewKanbanTask() {
