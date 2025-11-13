@@ -4666,29 +4666,42 @@ function getContextForAI(query) {
 }
 
 function loadUserProfile() {
+  console.log("🚀 loadUserProfile() dipanggil");
+
   const userJson = localStorage.getItem("currentUser");
+  console.log("📦 User data dari localStorage:", userJson);
+
   if (!userJson) {
+    console.error("❌ Tidak ada data user, redirect ke login");
     window.location.href = "index.html";
     return;
   }
 
   const user = JSON.parse(userJson);
+  console.log("👤 User object:", user);
+
   const firstName = user.fullName.split(" ")[0];
+  console.log("🎯 First name:", firstName);
 
-  // 1. Update Header Dashboard
+  // Test setiap fungsi update
+  console.log("🔄 Memulai update semua bagian...");
+
   updateDashboardHeader(firstName, user);
+  console.log("✅ Dashboard header updated");
 
-  // 2. Update Sidebar Kiri (Desktop & Mobile)
   updateSidebarProfiles(user, firstName);
+  console.log("✅ Sidebar profiles updated");
 
-  // 3. Update Halaman Profil Detail
   updateProfileDetails(user);
+  console.log("✅ Profile details updated");
 
-  // 4. Update Sidebar Kanan (Kotak Biru)
   updateRightSidebar(user);
+  console.log("✅ Right sidebar updated");
 
-  // 5. Update Chatbot Greeting
   updateChatbotGreeting(firstName);
+  console.log("✅ Chatbot greeting updated");
+
+  console.log("🎉 Semua update selesai");
 }
 
 function updateDashboardHeader(firstName, user) {
