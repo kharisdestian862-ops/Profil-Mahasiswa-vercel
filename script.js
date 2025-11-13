@@ -1,4 +1,4 @@
-  // Complete Data Structure with Attendance, Tasks, and Materials
+// Complete Data Structure with Attendance, Tasks, and Materials
 let attendanceData = {
   algorithms: {
     name: "Algorithms",
@@ -6558,13 +6558,13 @@ const groupChat = {
   },
 };
 
-// Inisialisasi Fitur Grup Chat
 function initGroupChat() {
-  console.log("Initializing Group Chat..."); // Debugging log
+  console.log("Initializing Group Chat...");
 
-  const chatMessages = document.getElementById("groupChatMessages");
-  const chatInput = document.getElementById("groupChatInput");
-  const sendBtn = document.getElementById("groupChatSendBtn");
+  // === PERBAIKAN ID DI SINI (SESUAI DASHBOARD.HTML ANDA) ===
+  const chatMessages = document.getElementById("groupMessages");
+  const chatInput = document.getElementById("groupMessageInput");
+  const sendBtn = document.getElementById("sendGroupMessageBtn");
 
   if (!chatMessages || !chatInput || !sendBtn) {
     console.error("Chat elements not found!");
@@ -6582,13 +6582,12 @@ function initGroupChat() {
     localStorage.getItem("groupChatHistory") || "[]"
   );
 
-  // Bersihkan pesan default (welcome message) jika ada riwayat
   if (savedHistory.length > 0) {
+    // Bersihkan pesan default
     const welcomeMsg = chatMessages.querySelector(".welcome-message");
     if (welcomeMsg) welcomeMsg.remove();
 
-    // Render pesan lama tapi jangan duplikat
-    // Kita kosongkan dulu agar bersih
+    // Render pesan lama (hindari duplikasi dengan mengosongkan dulu jika perlu)
     chatMessages.innerHTML = "";
     savedHistory.forEach((chat) => renderMessage(chat));
 
@@ -6596,16 +6595,14 @@ function initGroupChat() {
   }
 
   // 2. KONEKSI KE PUSHER
-  // Pastikan library Pusher sudah dimuat di HTML
   if (typeof Pusher !== "undefined") {
-    // Ganti dengan key Pusher Anda yang sebenarnya
+    // Ganti 'APP_KEY_ANDA' dengan key Pusher Anda
     const pusher = new Pusher("APP_KEY_ANDA", {
-      cluster: "ap1", // Sesuaikan cluster
+      cluster: "ap1",
     });
 
     const channel = pusher.subscribe("campus-chat");
 
-    // Terima pesan dari orang lain
     channel.bind("new-message", function (data) {
       if (data.username !== myName) {
         renderMessage(data);
@@ -6613,7 +6610,7 @@ function initGroupChat() {
       }
     });
   } else {
-    console.warn("Library Pusher tidak ditemukan. Chat hanya berjalan lokal.");
+    console.warn("Library Pusher tidak ditemukan.");
   }
 
   // 3. FUNGSI KIRIM PESAN
@@ -6630,18 +6627,15 @@ function initGroupChat() {
       }),
     };
 
-    console.log("Sending message:", msgData); // Debugging log
-
-    // Render langsung (Optimistic UI)
+    // Render langsung
     renderMessage(msgData);
     saveMessage(msgData);
     chatInput.value = "";
 
-    // Hapus welcome message jika ada
+    // Hapus welcome message
     const welcomeMsg = chatMessages.querySelector(".welcome-message");
     if (welcomeMsg) welcomeMsg.remove();
 
-    // Kirim ke Backend (untuk disebar ke orang lain)
     try {
       await fetch("/api/send-chat", {
         method: "POST",
@@ -6653,16 +6647,19 @@ function initGroupChat() {
     }
   }
 
-  // Helper Render
+  // Helper Render (Sesuai struktur HTML Chat Bubble Anda)
   function renderMessage(data) {
     const isMe = data.username === myName;
     const div = document.createElement("div");
+    // Sesuaikan class dengan CSS Anda
     div.className = `chat-bubble ${isMe ? "me" : "others"}`;
+
     div.innerHTML = `
           ${!isMe ? `<span class="sender-name">${data.username}</span>` : ""}
-          <span class="message-content">${data.message}</span>
+          ${data.message}
           <span class="timestamp">${data.timestamp}</span>
       `;
+
     chatMessages.appendChild(div);
     chatMessages.scrollTop = chatMessages.scrollHeight;
   }
@@ -6673,11 +6670,11 @@ function initGroupChat() {
       localStorage.getItem("groupChatHistory") || "[]"
     );
     history.push(data);
-    if (history.length > 50) history.shift(); // Simpan 50 pesan terakhir
+    if (history.length > 50) history.shift();
     localStorage.setItem("groupChatHistory", JSON.stringify(history));
   }
 
-  // Event Listeners (Hapus listener lama agar tidak duplikat saat switch tab)
+  // Event Listeners (Cloning untuk menghapus listener lama)
   const newBtn = sendBtn.cloneNode(true);
   sendBtn.parentNode.replaceChild(newBtn, sendBtn);
   newBtn.addEventListener("click", sendChatMessage);
