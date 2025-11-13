@@ -4175,11 +4175,12 @@ body.dark-mode .scroll-to-bottom-btn:hover {
 }
 
 body.full-layout-active .sidebar-right {
-  display: none;
+  display: none !important;
 }
 
 body.full-layout-active .main-wrapper {
-  grid-template-columns: 1fr;
+  grid-template-columns: 1fr !important;
+  max-width: 100% !important;
 }
 
 body.full-layout-active .chatbot-fab {
@@ -5370,7 +5371,7 @@ body.dark-mode #finance .section-header {
 /* Sembunyikan kedua tombol saat mode layar penuh (Chat/Code) aktif */
 body.full-layout-active .chatbot-fab,
 body.full-layout-active .code-fab {
-  display: none;
+  display: none !important;
 }
 
 /* Responsif Mobile */
