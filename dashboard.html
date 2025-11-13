@@ -20,8 +20,8 @@
       <div class="mobile-header">
         <div class="mobile-nav">
           <div class="mobile-profile">
-            <div class="mobile-avatar" id="mobileAvatarDisplay">KD</div>
-            <div class="mobile-name" id="mobileNameDisplay">Loading...</div>
+            <div class="mobile-avatar">KD</div>
+            <div class="mobile-name">Loading...</div>
           </div>
           <button class="hamburger" aria-label="Buka Menu">
             <span></span>
@@ -38,7 +38,7 @@
           <div class="profile">
             <div class="avatar">KD</div>
             <div>
-              <div class="name">User Mobile</div>
+              <div class="name">Loading...</div>
               <div class="program">Informatics Engineering • 2023</div>
             </div>
           </div>
@@ -84,12 +84,10 @@
 
       <aside class="sidebar">
         <div class="profile">
-          <div class="avatar" id="desktopAvatarDisplay">KD</div>
+          <div class="avatar">KD</div>
           <div>
-            <div class="name" id="desktopNameDisplay">Loading...</div>
-            <div class="program" id="desktopProgramDisplay">
-              Informatics Engineering • 2023
-            </div>
+            <div class="name">Loading...</div>
+            <div class="program">Informatics Engineering • 2023</div>
           </div>
         </div>
         <nav>
@@ -148,6 +146,7 @@
               <path d="M9 14l2 2 4-4"></path>
             </svg>
           </button>
+
           <button
             class="fab-item"
             id="notesFab"
@@ -173,6 +172,7 @@
               <polyline points="10 9 9 9 8 9"></polyline>
             </svg>
           </button>
+
           <button
             class="fab-item"
             id="codeFab"
@@ -193,6 +193,7 @@
               <polyline points="8 6 2 12 8 18"></polyline>
             </svg>
           </button>
+
           <button
             class="fab-item"
             id="chatbotFab"
@@ -213,6 +214,7 @@
             </svg>
           </button>
         </div>
+
         <button class="fab-trigger" id="fabTrigger" aria-label="Menu Pintas">
           <svg
             class="fab-icon-open"
@@ -247,7 +249,7 @@
         <main class="main-content">
           <section class="section" id="dashboard">
             <header class="main-header">
-              <h1 data-i18n="dashboard.title">Dashboard</h1>
+              <h1 data-i18n="dashboard.title">Kharis Dashboard</h1>
               <div data-i18n="dashboard.welcome">Welcome back,</div>
             </header>
 
@@ -383,43 +385,38 @@
             <div class="profile-info">
               <div class="info-item">
                 <span class="info-label" data-i18n="profile.name">Name:</span>
-                <span class="info-value" id="profileDetailName"
-                  >Loading...</span
-                >
+                <span class="info-value">Kharis Destian Maulana</span>
               </div>
               <div class="info-item">
                 <span class="info-label" data-i18n="profile.nim">NIM:</span>
-                <span class="info-value" id="profileDetailNim">-</span>
+                <span class="info-value">2023001</span>
               </div>
               <div class="info-item">
                 <span class="info-label" data-i18n="profile.program"
                   >Program:</span
                 >
-                <span class="info-value" id="profileDetailProgram"
-                  >Informatics Engineering</span
-                >
+                <span class="info-value">Informatics Engineering</span>
               </div>
               <div class="info-item">
                 <span class="info-label" data-i18n="profile.year">Year:</span>
-                <span class="info-value" id="profileDetailYear">2023</span>
+                <span class="info-value">2023</span>
               </div>
               <div class="info-item">
                 <span class="info-label" data-i18n="profile.semester"
                   >Semester:</span
                 >
-                <span class="info-value" id="profileDetailSemester">4</span>
+                <span class="info-value">4</span>
               </div>
               <div class="info-item">
                 <span class="info-label" data-i18n="profile.email">Email:</span>
-                <span class="info-value" id="profileDetailEmail"
-                  >loading@example.ac.id</span
-                >
+                <span class="info-value">kharis.destian@example.ac.id</span>
               </div>
             </div>
           </section>
 
           <section class="section" id="grades" style="display: none">
             <h2 data-i18n="grades.title">Grades</h2>
+
             <div class="gpa-calculator-results" id="gpaResultsContainer">
               <h3>Hasil Perhitungan (Estimasi)</h3>
               <div class="gpa-stats">
@@ -438,6 +435,7 @@
               </div>
               <p>IPK Semester Lalu (Contoh): 3.42</p>
             </div>
+
             <button
               class="submit-code-btn"
               id="calculateGpaBtn"
@@ -445,6 +443,7 @@
             >
               Hitung IPK/IPS
             </button>
+
             <div class="grades-list" id="dynamicGradesList"></div>
           </section>
 
@@ -454,6 +453,7 @@
                 >Attendance</span
               >
             </div>
+
             <div id="courseListView">
               <h2 data-i18n="attendance.select_course">Select Course</h2>
               <p
@@ -463,6 +463,7 @@
                 Choose a course to view attendance records, tasks, and learning
                 materials
               </p>
+
               <div class="courses-grid">
                 <div class="course-card" data-course="algorithms">
                   <div class="course-icon">📊</div>
@@ -486,6 +487,7 @@
                     >
                   </div>
                 </div>
+
                 <div class="course-card" data-course="databases">
                   <div class="course-icon">🗄️</div>
                   <h3 data-i18n="courses.databases">Databases</h3>
@@ -508,6 +510,7 @@
                     >
                   </div>
                 </div>
+
                 <div class="course-card" data-course="webdev">
                   <div class="course-icon">🌐</div>
                   <h3 data-i18n="courses.web_development">Web Development</h3>
@@ -530,6 +533,7 @@
                     >
                   </div>
                 </div>
+
                 <div class="course-card" data-course="softwareeng">
                   <div class="course-icon">⚙️</div>
                   <h3 data-i18n="courses.software_engineering">
@@ -560,14 +564,18 @@
             <div id="courseDetailView" style="display: none">
               <div class="detail-header">
                 <button class="back-btn" id="backToCourseList">
-                  <span>←</span
-                  ><span data-i18n="common.back_to_courses"
+                  <span>←</span>
+                  <span data-i18n="common.back_to_courses"
                     >Back to Courses</span
                   >
                 </button>
                 <div class="course-title">
-                  <h2 id="currentCourseName">Algorithms</h2>
-                  <p id="currentCourseCode">GL303 • 4 Credits</p>
+                  <h2 id="currentCourseName" data-i18n="courses.algorithms">
+                    Algorithms
+                  </h2>
+                  <p id="currentCourseCode">
+                    GL303 • 4 <span data-i18n="common.credits">Credits</span>
+                  </p>
                 </div>
                 <div class="course-tabs">
                   <button
@@ -593,70 +601,135 @@
                   </button>
                 </div>
               </div>
+
               <div class="tab-content active" id="attendanceTab">
                 <div class="attendance-summary">
                   <div class="summary-card">
                     <div class="summary-value" id="detailAttendanceRate">
                       85%
                     </div>
-                    <div class="summary-label">Attendance Rate</div>
+                    <div
+                      class="summary-label"
+                      data-i18n="attendance.attendance_rate"
+                    >
+                      Attendance Rate
+                    </div>
                   </div>
                   <div class="summary-card">
                     <div class="summary-value" id="detailPresentCount">12</div>
-                    <div class="summary-label">Present</div>
+                    <div class="summary-label" data-i18n="attendance.present">
+                      Present
+                    </div>
                   </div>
                   <div class="summary-card">
                     <div class="summary-value" id="detailAbsentCount">2</div>
-                    <div class="summary-label">Absent</div>
+                    <div class="summary-label" data-i18n="attendance.absent">
+                      Absent
+                    </div>
                   </div>
                   <div class="summary-card">
                     <div class="summary-value" id="detailLateCount">0</div>
-                    <div class="summary-label">Late</div>
+                    <div class="summary-label" data-i18n="attendance.late">
+                      Late
+                    </div>
                   </div>
                 </div>
+
                 <div class="attendance-details">
-                  <h3>Meeting History</h3>
+                  <h3 data-i18n="attendance.meeting_history">
+                    Meeting History
+                  </h3>
                   <div class="attendance-table">
                     <div class="table-header">
-                      <div class="col-meeting">Meeting</div>
-                      <div class="col-date">Date</div>
-                      <div class="col-topic">Topic</div>
-                      <div class="col-status">Status</div>
-                      <div class="col-action">Action</div>
+                      <div class="col-meeting" data-i18n="attendance.meeting">
+                        Meeting
+                      </div>
+                      <div class="col-date" data-i18n="attendance.date">
+                        Date
+                      </div>
+                      <div class="col-topic" data-i18n="attendance.topic">
+                        Topic
+                      </div>
+                      <div class="col-status" data-i18n="attendance.status">
+                        Status
+                      </div>
+                      <div class="col-action" data-i18n="attendance.action">
+                        Action
+                      </div>
                     </div>
                     <div class="table-body" id="attendanceTableBody"></div>
                   </div>
                 </div>
+
+                <div class="attendance-legend">
+                  <div class="legend-item">
+                    <span class="legend-color present"></span
+                    ><span class="legend-text" data-i18n="attendance.present"
+                      >Present</span
+                    >
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-color absent"></span
+                    ><span class="legend-text" data-i18n="attendance.absent"
+                      >Absent</span
+                    >
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-color late"></span
+                    ><span class="legend-text" data-i18n="attendance.late"
+                      >Late</span
+                    >
+                  </div>
+                  <div class="legend-item">
+                    <span class="legend-color pending"></span
+                    ><span
+                      class="legend-text"
+                      data-i18n="attendance.not_started"
+                      >Not Yet Started</span
+                    >
+                  </div>
+                </div>
               </div>
+
               <div class="tab-content" id="tasksTab">
                 <div class="attendance-summary">
                   <div class="summary-card">
                     <div class="summary-value" id="detailTaskCompletion">
-                      0%
+                      67%
                     </div>
-                    <div class="summary-label">Completed</div>
+                    <div class="summary-label" data-i18n="tasks.completion">
+                      Tasks Completed
+                    </div>
                   </div>
                   <div class="summary-card">
-                    <div class="summary-value" id="detailSubmittedCount">0</div>
-                    <div class="summary-label">Submitted</div>
+                    <div class="summary-value" id="detailSubmittedCount">4</div>
+                    <div class="summary-label" data-i18n="tasks.submitted">
+                      Submitted
+                    </div>
                   </div>
                   <div class="summary-card">
-                    <div class="summary-value" id="detailPendingCount">0</div>
-                    <div class="summary-label">Pending</div>
+                    <div class="summary-value" id="detailPendingCount">1</div>
+                    <div class="summary-label" data-i18n="tasks.pending">
+                      Pending
+                    </div>
                   </div>
                   <div class="summary-card">
-                    <div class="summary-value" id="detailLateTaskCount">0</div>
-                    <div class="summary-label">Late</div>
+                    <div class="summary-value" id="detailLateTaskCount">1</div>
+                    <div class="summary-label" data-i18n="tasks.late">Late</div>
                   </div>
                 </div>
+
                 <div class="tasks-section">
-                  <h3>Course Tasks</h3>
+                  <h3 data-i18n="tasks.course_tasks">Course Tasks</h3>
                   <div class="tasks-list" id="tasksList"></div>
                 </div>
               </div>
+
               <div class="tab-content" id="materialsTab">
                 <div class="materials-section">
-                  <h3>Learning Materials</h3>
+                  <h3 data-i18n="materials.learning_materials">
+                    Learning Materials
+                  </h3>
                   <div class="materials-list" id="materialsList"></div>
                 </div>
               </div>
@@ -665,24 +738,61 @@
             <div id="codeInputView" style="display: none">
               <div class="detail-header">
                 <button class="back-btn" id="backToDetail">
-                  <span>←</span><span>Back</span>
+                  <span>←</span>
+                  <span data-i18n="common.back_to_course">Back to Course</span>
                 </button>
                 <div class="course-title">
-                  <h2 id="codeInputCourseName">Course</h2>
-                  <p id="codeInputMeeting">Meeting</p>
+                  <h2 id="codeInputCourseName" data-i18n="courses.algorithms">
+                    Algorithms
+                  </h2>
+                  <p id="codeInputMeeting">Meeting 6</p>
                 </div>
               </div>
+
               <div class="code-input-container">
                 <div class="code-card">
-                  <h3 data-i18n="attendance.enter_code">Enter Code</h3>
+                  <div class="code-icon">🔐</div>
+                  <h3 data-i18n="attendance.enter_code">
+                    Enter Attendance Code
+                  </h3>
+                  <p
+                    class="code-description"
+                    data-i18n="attendance.code_description"
+                  >
+                    Please enter the unique code provided by your lecturer
+                  </p>
+
                   <div class="code-form">
                     <input
                       type="text"
                       id="attendanceCode"
-                      placeholder="Enter code"
-                    /><button class="submit-code-btn" id="submitCodeBtn">
-                      Submit
+                      placeholder="Enter code here"
+                      maxlength="6"
+                      autocomplete="off"
+                    />
+                    <button
+                      class="submit-code-btn"
+                      id="submitCodeBtn"
+                      data-i18n="attendance.submit_attendance"
+                    >
+                      Submit Attendance
                     </button>
+                  </div>
+
+                  <div class="code-info">
+                    <p>
+                      💡
+                      <span data-i18n="attendance.code_case_sensitive"
+                        >The attendance code is case-sensitive</span
+                      >
+                    </p>
+                    <p>
+                      ⏰
+                      <span data-i18n="attendance.code_expires"
+                        >The code expires after 4 hours from the time the code
+                        was created.</span
+                      >
+                    </p>
                   </div>
                   <div
                     class="code-message"
@@ -696,33 +806,98 @@
             <div id="taskSubmissionView" style="display: none">
               <div class="detail-header">
                 <button class="back-btn" id="backToDetailFromTask">
-                  <span>←</span><span>Back</span>
+                  <span>←</span>
+                  <span data-i18n="common.back_to_course">Back to Course</span>
                 </button>
                 <div class="course-title">
-                  <h2 id="taskCourseName">Course</h2>
-                  <p id="taskTitle">Submission</p>
+                  <h2 id="taskCourseName" data-i18n="courses.algorithms">
+                    Algorithms
+                  </h2>
+                  <p id="taskTitle" data-i18n="tasks.task_submission">
+                    Task Submission
+                  </p>
                 </div>
               </div>
+
               <div class="task-submission-container">
                 <div class="task-submission-card">
-                  <h3 id="submissionTaskTitle">Title</h3>
-                  <p id="submissionDeadline">Deadline</p>
-                  <p id="submissionPoints">Points</p>
-                  <p id="submissionDescription">Desc</p>
+                  <div class="task-header">
+                    <h3 id="submissionTaskTitle">Task Title</h3>
+                    <div class="task-meta">
+                      <span
+                        class="task-deadline"
+                        id="submissionDeadline"
+                        data-i18n="tasks.due"
+                        >Deadline: -</span
+                      >
+                      <span
+                        class="task-points"
+                        id="submissionPoints"
+                        data-i18n="tasks.points"
+                        >Points: -</span
+                      >
+                    </div>
+                  </div>
+
+                  <div class="task-description">
+                    <h4 data-i18n="tasks.description">Description</h4>
+                    <p
+                      id="submissionDescription"
+                      data-i18n="tasks.no_description"
+                    >
+                      No description available.
+                    </p>
+                  </div>
+
                   <div class="submission-form">
-                    <input type="file" id="submissionFile" /><textarea
-                      id="submissionNotes"
-                      placeholder="Notes"
-                    ></textarea>
+                    <h4 data-i18n="tasks.submit_work">Submit Your Work</h4>
+                    <div class="form-group">
+                      <label for="submissionFile" data-i18n="tasks.upload_file"
+                        >Upload File</label
+                      >
+                      <input
+                        type="file"
+                        id="submissionFile"
+                        accept=".pdf,.doc,.docx,.zip,.rar"
+                      />
+                      <small data-i18n="tasks.accepted_formats"
+                        >Accepted formats: PDF, DOC, DOCX, ZIP, RAR (Max:
+                        10MB)</small
+                      >
+                    </div>
+
+                    <div class="form-group">
+                      <label
+                        for="submissionNotes"
+                        data-i18n="tasks.additional_notes"
+                        >Additional Notes (Optional)</label
+                      >
+                      <textarea
+                        id="submissionNotes"
+                        placeholder="Add any comments or notes about your submission..."
+                        rows="4"
+                      ></textarea>
+                    </div>
+
                     <div class="submission-actions">
-                      <button class="submit-task-btn" id="submitTaskBtn">
-                        Submit</button
-                      ><button class="cancel-btn" id="cancelSubmissionBtn">
+                      <button
+                        class="submit-task-btn"
+                        id="submitTaskBtn"
+                        data-i18n="tasks.submit_task"
+                      >
+                        Submit Task
+                      </button>
+                      <button
+                        class="cancel-btn"
+                        id="cancelSubmissionBtn"
+                        data-i18n="tasks.cancel"
+                      >
                         Cancel
                       </button>
                     </div>
                   </div>
-                  <div id="submissionStatus"></div>
+
+                  <div class="submission-status" id="submissionStatus"></div>
                 </div>
               </div>
             </div>
@@ -731,181 +906,500 @@
           <section class="section" id="schedule" style="display: none">
             <header class="main-header">
               <h1 data-i18n="schedule.title">Class Schedule</h1>
+              <div data-i18n="schedule.subtitle">
+                Your weekly class schedule for Semester 4
+              </div>
             </header>
+
             <div class="schedule-filters">
               <div class="filter-group">
-                <label>Filter by Day:</label
-                ><select id="dayFilter">
-                  <option value="all">All Days</option>
-                  <option value="monday">Monday</option>
-                  <option value="tuesday">Tuesday</option>
-                  <option value="wednesday">Wednesday</option>
-                  <option value="thursday">Thursday</option>
-                  <option value="friday">Friday</option>
+                <label data-i18n="schedule.filter_by_day">Filter by Day:</label>
+                <select id="dayFilter">
+                  <option value="all" data-i18n="schedule.all_days">
+                    All Days
+                  </option>
+                  <option value="monday" data-i18n="schedule.monday">
+                    Monday
+                  </option>
+                  <option value="tuesday" data-i18n="schedule.tuesday">
+                    Tuesday
+                  </option>
+                  <option value="wednesday" data-i18n="schedule.wednesday">
+                    Wednesday
+                  </option>
+                  <option value="thursday" data-i18n="schedule.thursday">
+                    Thursday
+                  </option>
+                  <option value="friday" data-i18n="schedule.friday">
+                    Friday
+                  </option>
                 </select>
               </div>
+              <div class="filter-group">
+                <label data-i18n="schedule.current_week">Current Week:</label>
+                <span class="week-indicator">Week 6</span>
+              </div>
             </div>
+
             <div class="weekly-schedule">
               <div class="schedule-day" data-day="monday">
                 <div class="day-header">
-                  <h3>Monday</h3>
-                  <span>Feb 19</span>
+                  <h3 data-i18n="schedule.monday">Monday</h3>
+                  <span class="day-date">Feb 19, 2024</span>
                 </div>
                 <div class="class-list">
                   <div class="class-item">
                     <div class="class-time">
-                      <span class="time-start">08:00</span>-<span
-                        class="time-end"
-                        >10:30</span
-                      >
+                      <span class="time-start">08:00</span>
+                      <span class="time-separator">-</span>
+                      <span class="time-end">10:30</span>
                     </div>
                     <div class="class-info">
-                      <h4 class="class-name">Algorithms</h4>
+                      <h4 class="class-name" data-i18n="courses.algorithms">
+                        Algorithms
+                      </h4>
                       <div class="class-details">
-                        <span class="class-room">A-301</span>
+                        <span class="class-room">Room: A-301</span>
+                        <span class="class-lecturer"
+                          >Dr. Ahmad Santoso, M.Kom.</span
+                        >
+                        <span class="class-code">GL303</span>
                       </div>
+                    </div>
+                    <div
+                      class="class-status ongoing"
+                      data-i18n="schedule.ongoing"
+                    >
+                      Ongoing
+                    </div>
+                  </div>
+
+                  <div class="class-item">
+                    <div class="class-time">
+                      <span class="time-start">13:00</span>
+                      <span class="time-separator">-</span>
+                      <span class="time-end">15:30</span>
+                    </div>
+                    <div class="class-info">
+                      <h4
+                        class="class-name"
+                        data-i18n="courses.software_engineering"
+                      >
+                        Software Engineering
+                      </h4>
+                      <div class="class-details">
+                        <span class="class-room">Room: B-205</span>
+                        <span class="class-lecturer"
+                          >Prof. Siti Rahayu, M.T.</span
+                        >
+                        <span class="class-code">SE401</span>
+                      </div>
+                    </div>
+                    <div
+                      class="class-status upcoming"
+                      data-i18n="schedule.upcoming"
+                    >
+                      Upcoming
                     </div>
                   </div>
                 </div>
               </div>
+
               <div class="schedule-day" data-day="tuesday">
                 <div class="day-header">
-                  <h3>Tuesday</h3>
-                  <span>Feb 20</span>
+                  <h3 data-i18n="schedule.tuesday">Tuesday</h3>
+                  <span class="day-date">Feb 20, 2024</span>
                 </div>
                 <div class="class-list">
                   <div class="class-item">
                     <div class="class-time">
-                      <span class="time-start">10:00</span>-<span
-                        class="time-end"
-                        >12:30</span
-                      >
+                      <span class="time-start">10:00</span>
+                      <span class="time-separator">-</span>
+                      <span class="time-end">12:30</span>
                     </div>
                     <div class="class-info">
-                      <h4 class="class-name">Databases</h4>
+                      <h4 class="class-name" data-i18n="courses.databases">
+                        Databases
+                      </h4>
                       <div class="class-details">
-                        <span class="class-room">C-102</span>
+                        <span class="class-room">Room: C-102</span>
+                        <span class="class-lecturer"
+                          >Dr. Budi Prasetyo, M.Sc.</span
+                        >
+                        <span class="class-code">DB204</span>
                       </div>
                     </div>
+                    <div
+                      class="class-status finished"
+                      data-i18n="schedule.finished"
+                    >
+                      Finished
+                    </div>
                   </div>
+                </div>
+              </div>
+
+              <div class="schedule-day" data-day="wednesday">
+                <div class="day-header">
+                  <h3 data-i18n="schedule.wednesday">Wednesday</h3>
+                  <span class="day-date">Feb 21, 2024</span>
+                </div>
+                <div class="class-list">
+                  <div class="class-item">
+                    <div class="class-time">
+                      <span class="time-start">09:00</span>
+                      <span class="time-separator">-</span>
+                      <span class="time-end">11:30</span>
+                    </div>
+                    <div class="class-info">
+                      <h4
+                        class="class-name"
+                        data-i18n="courses.web_development"
+                      >
+                        Web Development
+                      </h4>
+                      <div class="class-details">
+                        <span class="class-room">Room: Lab. Komputer 3</span>
+                        <span class="class-lecturer">Dian Purnama, M.Kom.</span>
+                        <span class="class-code">WD305</span>
+                      </div>
+                    </div>
+                    <div
+                      class="class-status upcoming"
+                      data-i18n="schedule.upcoming"
+                    >
+                      Upcoming
+                    </div>
+                  </div>
+
+                  <div class="class-item">
+                    <div class="class-time">
+                      <span class="time-start">14:00</span>
+                      <span class="time-separator">-</span>
+                      <span class="time-end">16:30</span>
+                    </div>
+                    <div class="class-info">
+                      <h4 class="class-name" data-i18n="courses.algorithms">
+                        Algorithms
+                      </h4>
+                      <div class="class-details">
+                        <span class="class-room">Room: A-301</span>
+                        <span class="class-lecturer"
+                          >Dr. Ahmad Santoso, M.Kom.</span
+                        >
+                        <span class="class-code">GL303</span>
+                      </div>
+                    </div>
+                    <div
+                      class="class-status upcoming"
+                      data-i18n="schedule.upcoming"
+                    >
+                      Upcoming
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="schedule-day" data-day="thursday">
+                <div class="day-header">
+                  <h3 data-i18n="schedule.thursday">Thursday</h3>
+                  <span class="day-date">Feb 22, 2024</span>
+                </div>
+                <div class="class-list">
+                  <div class="class-item">
+                    <div class="class-time">
+                      <span class="time-start">08:30</span>
+                      <span class="time-separator">-</span>
+                      <span class="time-end">11:00</span>
+                    </div>
+                    <div class="class-info">
+                      <h4
+                        class="class-name"
+                        data-i18n="courses.software_engineering"
+                      >
+                        Software Engineering
+                      </h4>
+                      <div class="class-details">
+                        <span class="class-room">Room: B-205</span>
+                        <span class="class-lecturer"
+                          >Prof. Siti Rahayu, M.T.</span
+                        >
+                        <span class="class-code">SE401</span>
+                      </div>
+                    </div>
+                    <div
+                      class="class-status upcoming"
+                      data-i18n="schedule.upcoming"
+                    >
+                      Upcoming
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="schedule-day" data-day="friday">
+                <div class="day-header">
+                  <h3 data-i18n="schedule.friday">Friday</h3>
+                  <span class="day-date">Feb 23, 2024</span>
+                </div>
+                <div class="class-list">
+                  <div class="class-item">
+                    <div class="class-time">
+                      <span class="time-start">13:00</span>
+                      <span class="time-separator">-</span>
+                      <span class="time-end">15:30</span>
+                    </div>
+                    <div class="class-info">
+                      <h4 class="class-name" data-i18n="courses.databases">
+                        Databases
+                      </h4>
+                      <div class="class-details">
+                        <span class="class-room">Room: C-102</span>
+                        <span class="class-lecturer"
+                          >Dr. Budi Prasetyo, M.Sc.</span
+                        >
+                        <span class="class-code">DB204</span>
+                      </div>
+                    </div>
+                    <div
+                      class="class-status upcoming"
+                      data-i18n="schedule.upcoming"
+                    >
+                      Upcoming
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="schedule-summary">
+              <div class="summary-card">
+                <div class="summary-value" id="totalClasses">12</div>
+                <div class="summary-label" data-i18n="schedule.total_classes">
+                  Total Classes This Week
+                </div>
+              </div>
+              <div class="summary-card">
+                <div class="summary-value" id="completedClasses">4</div>
+                <div class="summary-label" data-i18n="schedule.completed">
+                  Completed
+                </div>
+              </div>
+              <div class="summary-card">
+                <div class="summary-value" id="upcomingClasses">8</div>
+                <div class="summary-label" data-i18n="schedule.upcoming">
+                  Upcoming
+                </div>
+              </div>
+              <div class="summary-card">
+                <div class="summary-value" id="classHours">18</div>
+                <div class="summary-label" data-i18n="schedule.hours_week">
+                  Hours/Week
                 </div>
               </div>
             </div>
           </section>
 
           <section id="finance" class="section" style="display: none">
-            <div class="section-header"><h1>Keuangan</h1></div>
+            <div class="section-header">
+              <div>
+                <h1 data-i18n="finance.title">Keuangan</h1>
+                <p data-i18n="finance.subtitle">
+                  Kelola informasi pembayaran dan tagihan Anda
+                </p>
+              </div>
+            </div>
+
             <div class="finance-summary">
               <div class="summary-card total-bill">
                 <div class="summary-icon">💰</div>
                 <div class="summary-info">
-                  <div class="summary-label">Total Tagihan</div>
+                  <div class="summary-label" data-i18n="finance.total_bill">
+                    Total Tagihan
+                  </div>
                   <div class="summary-value" id="totalBill">Rp 12.500.000</div>
                 </div>
               </div>
+
               <div class="summary-card total-paid">
                 <div class="summary-icon">✅</div>
                 <div class="summary-info">
-                  <div class="summary-label">Total Dibayar</div>
+                  <div class="summary-label" data-i18n="finance.total_paid">
+                    Total Dibayar
+                  </div>
                   <div class="summary-value" id="totalPaid">Rp 8.500.000</div>
                 </div>
               </div>
+
               <div class="summary-card remaining-bill">
                 <div class="summary-icon">⏳</div>
                 <div class="summary-info">
-                  <div class="summary-label">Sisa Tagihan</div>
+                  <div class="summary-label" data-i18n="finance.remaining_bill">
+                    Sisa Tagihan
+                  </div>
                   <div class="summary-value" id="remainingBill">
                     Rp 4.000.000
                   </div>
                 </div>
               </div>
+
               <div class="summary-card payment-status">
                 <div class="summary-icon">📊</div>
                 <div class="summary-info">
-                  <div class="summary-label">Status</div>
+                  <div class="summary-label" data-i18n="finance.payment_status">
+                    Status Pembayaran
+                  </div>
                   <div class="summary-value">
-                    <span class="status-badge partially-paid" id="paymentStatus"
+                    <span
+                      class="status-badge partially-paid"
+                      id="paymentStatus"
+                      data-i18n="finance.status.partially_paid"
                       >Sebagian Lunas</span
                     >
                   </div>
                 </div>
               </div>
             </div>
+
             <div class="finance-tabs">
               <button
                 class="finance-tab-btn active"
                 data-tab="bills"
                 onclick="switchFinanceTab('bills')"
               >
-                Tagihan</button
-              ><button
+                <span data-i18n="finance.tuition_fees">Tagihan & Biaya</span>
+              </button>
+              <button
                 class="finance-tab-btn"
                 data-tab="history"
                 onclick="switchFinanceTab('history')"
               >
-                Riwayat</button
-              ><button
+                <span data-i18n="finance.payment_history"
+                  >Riwayat Pembayaran</span
+                >
+              </button>
+              <button
                 class="finance-tab-btn"
                 data-tab="methods"
                 onclick="switchFinanceTab('methods')"
               >
-                Metode</button
-              ><button
+                <span data-i18n="finance.payment_methods"
+                  >Metode Pembayaran</span
+                >
+              </button>
+              <button
                 class="finance-tab-btn"
                 data-tab="scholarships"
                 onclick="switchFinanceTab('scholarships')"
               >
-                Beasiswa
+                <span data-i18n="finance.scholarships">Beasiswa</span>
               </button>
             </div>
+
             <div id="billsTab" class="finance-tab-content active">
               <div class="finance-table">
+                <div class="table-header">
+                  <div class="col-semester" data-i18n="finance.semester">
+                    Semester
+                  </div>
+                  <div class="col-type" data-i18n="finance.type">Jenis</div>
+                  <div class="col-amount" data-i18n="finance.amount">
+                    Jumlah
+                  </div>
+                  <div class="col-due" data-i18n="finance.due_date">
+                    Jatuh Tempo
+                  </div>
+                  <div class="col-status" data-i18n="finance.status">
+                    Status
+                  </div>
+                  <div class="col-action" data-i18n="finance.action">Aksi</div>
+                </div>
                 <div id="billsTableBody" class="table-body"></div>
               </div>
             </div>
+
             <div id="historyTab" class="finance-tab-content">
               <div class="finance-table">
+                <div class="table-header">
+                  <div class="col-date" data-i18n="finance.date">Tanggal</div>
+                  <div class="col-description" data-i18n="finance.description">
+                    Deskripsi
+                  </div>
+                  <div class="col-amount" data-i18n="finance.amount">
+                    Jumlah
+                  </div>
+                  <div class="col-method" data-i18n="finance.method">
+                    Metode
+                  </div>
+                  <div class="col-receipt" data-i18n="finance.receipt_number">
+                    No. Bukti
+                  </div>
+                  <div class="col-action" data-i18n="finance.action">Aksi</div>
+                </div>
                 <div id="historyTableBody" class="table-body"></div>
               </div>
             </div>
+
             <div id="methodsTab" class="finance-tab-content">
-              <div id="paymentMethodsGrid" class="payment-methods-grid"></div>
+              <div class="payment-methods-grid" id="paymentMethodsGrid"></div>
             </div>
+
             <div id="scholarshipsTab" class="finance-tab-content">
               <div
-                id="scholarshipsContainer"
                 class="scholarships-container"
+                id="scholarshipsContainer"
               ></div>
             </div>
           </section>
 
           <section class="section" id="notes" style="display: none">
-            <header class="main-header"><h1>Catatan Kuliah</h1></header>
+            <header class="main-header">
+              <h1 data-i18n="notes.title">Catatan Kuliah</h1>
+              <div data-i18n="notes.subtitle">
+                Catat poin penting perkuliahan di sini (tersimpan otomatis).
+              </div>
+            </header>
+
             <div class="notes-container">
               <div class="notes-sidebar">
                 <button class="new-note-btn" onclick="createNewNote()">
-                  + Baru
+                  + Catatan Baru
                 </button>
-                <div id="notesList"></div>
+                <div id="notesList" class="notes-list"></div>
               </div>
               <div class="notes-editor">
-                <input id="noteTitle" placeholder="Judul" /><textarea
-                  id="noteContent"
-                ></textarea>
+                <input
+                  type="text"
+                  id="noteTitle"
+                  placeholder="Judul Catatan..."
+                  autocomplete="off"
+                />
                 <div class="note-meta">
-                  <span id="noteDate"></span><span id="saveStatus"></span>
+                  <span id="noteDate"></span>
+                  <span id="saveStatus">Tersimpan</span>
                 </div>
+                <textarea
+                  id="noteContent"
+                  placeholder="Mulai mengetik catatan Anda di sini..."
+                ></textarea>
               </div>
             </div>
           </section>
 
           <section class="section" id="kanban" style="display: none">
-            <header class="main-header"><h1>Tugas Pribadi</h1></header>
+            <header class="main-header">
+              <h1 data-i18n="kanban.title">Papan Tugas Pribadi</h1>
+              <div data-i18n="kanban.subtitle">
+                Kelola tugas pribadi Anda agar tetap terorganisir.
+              </div>
+            </header>
+
             <div class="kanban-controls">
               <button class="add-task-btn" onclick="openAddTaskModal()">
-                + Tambah
+                + Tambah Tugas
               </button>
             </div>
+
             <div class="kanban-board">
               <div
                 class="kanban-column"
@@ -914,10 +1408,12 @@
                 ondragover="allowDrop(event)"
               >
                 <div class="column-header todo">
-                  Todo <span id="count-todo">0</span>
+                  <span data-i18n="kanban.todo">Akan Dikerjakan</span>
+                  <span class="task-count" id="count-todo">0</span>
                 </div>
                 <div class="task-list" id="list-todo"></div>
               </div>
+
               <div
                 class="kanban-column"
                 id="col-progress"
@@ -925,10 +1421,12 @@
                 ondragover="allowDrop(event)"
               >
                 <div class="column-header progress">
-                  Progress <span id="count-progress">0</span>
+                  <span data-i18n="kanban.progress">Sedang Dikerjakan</span>
+                  <span class="task-count" id="count-progress">0</span>
                 </div>
                 <div class="task-list" id="list-progress"></div>
               </div>
+
               <div
                 class="kanban-column"
                 id="col-done"
@@ -936,7 +1434,8 @@
                 ondragover="allowDrop(event)"
               >
                 <div class="column-header done">
-                  Done <span id="count-done">0</span>
+                  <span data-i18n="kanban.done">Selesai</span>
+                  <span class="task-count" id="count-done">0</span>
                 </div>
                 <div class="task-list" id="list-done"></div>
               </div>
@@ -944,61 +1443,155 @@
           </section>
 
           <section class="section" id="chatbot" style="display: none">
-            <header class="main-header"><h1>Asisten AI</h1></header>
+            <header class="main-header">
+              <h1 data-i18n="nav.ai_assistant">Asisten Chatbot</h1>
+              <div data-i18n="chat.greeting">
+                Halo Kharis! Tanya saya seputar dashboard Anda.
+              </div>
+            </header>
+
             <div class="chatbot-fullpage-wrapper">
               <div class="chatbot-messages" id="chatbotMessages"></div>
-              <div class="chatbot-input">
+
+              <button
+                class="scroll-to-bottom-btn"
+                id="scrollToBottomBtn"
+                title="Scroll ke Bawah"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  width="20"
+                  height="20"
+                >
+                  <path
+                    d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6-1.41-1.41z"
+                  />
+                </svg>
+              </button>
+              <div class="chatbot-input" id="chatbotInputArea">
                 <input
+                  type="text"
                   id="chatbotInput"
-                  placeholder="Tanya sesuatu..."
-                /><button id="chatbotSendBtn">Send</button>
+                  placeholder="Ketik pesan Anda..."
+                  autocomplete="off"
+                />
+                <button id="chatbotSendBtn" title="Kirim Pesan">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    width="20"
+                    height="20"
+                  >
+                    <path d="M2.01 21L23 12 2.01 3 2 10L17 12 2 14L2.01 21Z" />
+                  </svg>
+                </button>
               </div>
-              <button id="scrollToBottomBtn">⬇</button>
             </div>
           </section>
 
           <section id="codeplayground" class="section" style="display: none">
             <div class="breadcrumb">
-              <span class="breadcrumb-item active">Code Playground</span>
+              <span class="breadcrumb-item active" data-i18n="playground.title"
+                >Code Playground</span
+              >
             </div>
+
             <div class="playground-container">
               <div class="playground-toolbar">
-                <select id="codeLanguageSelect">
-                  <option value="python">Python</option>
-                  <option value="javascript">JS</option>
-                  <option value="html">HTML</option></select
-                ><button id="runCode">Run</button
-                ><label><input type="checkbox" id="editorTheme" /> Dark</label>
+                <select id="codeLanguageSelect" class="language-select">
+                  <option value="python">Python 3</option>
+                  <option value="javascript">JavaScript</option>
+                  <option value="html">HTML/CSS/JS</option>
+                  <option value="cpp">C++</option>
+                  <option value="java">Java</option>
+                  <option value="csharp">C#</option>
+                </select>
+
+                <button id="runCode" class="run-btn" data-i18n="playground.run">
+                  <span>▶Run Code</span>
+                </button>
+
+                <div class="theme-toggle">
+                  <label>
+                    <input type="checkbox" id="editorTheme" />
+                    <span data-i18n="playground.dark_theme">Dark Theme</span>
+                  </label>
+                </div>
               </div>
+
               <div class="playground-content">
-                <div class="editor-container"><div id="codeEditor"></div></div>
+                <div class="editor-container">
+                  <div id="codeEditor" class="code-editor"></div>
+                </div>
+
                 <div class="output-container">
                   <div class="output-header">
-                    <h4>Output</h4>
-                    <button id="clearOutput">Clear</button>
+                    <h4 data-i18n="playground.output_title">Output</h4>
+                    <button
+                      id="clearOutput"
+                      class="clear-btn"
+                      data-i18n="playground.clear"
+                    >
+                      Clear
+                    </button>
                   </div>
-                  <div id="outputResult"></div>
+                  <div id="outputResult" class="output-result">
+                    <div class="welcome-message">
+                      <h3 data-i18n="playground.welcome_h3">
+                        🚀 Welcome to Code Playground!
+                      </h3>
+                      <p data-i18n="playground.welcome_p">
+                        Write your code and click "Run Code" to see the output
+                        here.
+                      </p>
+                    </div>
+                  </div>
                 </div>
+
                 <div
                   id="livePreview"
                   class="live-preview"
                   style="display: none"
                 >
-                  <iframe id="previewFrame"></iframe>
+                  <div class="preview-header">
+                    <h4 data-i18n="playground.html_preview">Live Preview</h4>
+                  </div>
+                  <iframe id="previewFrame" class="preview-frame"></iframe>
                 </div>
               </div>
             </div>
           </section>
 
           <section class="section" id="chat" style="display: none">
-            <header class="main-header"><h1>Chat Grup</h1></header>
+            <header class="main-header">
+              <h1>Chat Grup</h1>
+              <div>Chat dengan semua siswa yang online</div>
+            </header>
+
             <div class="chat-container-full">
-              <div id="groupMessages" class="chat-messages-area"></div>
+              <div id="groupMessages" class="chat-messages-area">
+                <div class="system-msg welcome-message">
+                  Selamat datang di grup chat angkatan! Pesan tidak disimpan di
+                  server (hilang saat refresh).
+                </div>
+              </div>
+
               <div class="chat-input-area">
-                <input id="groupMessageInput" placeholder="Pesan..." /><button
-                  id="sendGroupMessageBtn"
-                >
-                  Send
+                <input
+                  type="text"
+                  id="groupMessageInput"
+                  placeholder="Ketik pesan untuk semua orang..."
+                  autocomplete="off"
+                />
+                <button id="sendGroupMessageBtn">
+                  <svg viewBox="0 0 24 24" width="24" height="24" fill="white">
+                    <path
+                      d="M2.01 21L23 12 2.01 3 2 10L17 12 2 14L2.01 21Z"
+                    ></path>
+                  </svg>
                 </button>
               </div>
             </div>
@@ -1008,47 +1601,76 @@
             <h2 data-i18n="settings.title">Settings</h2>
             <div class="settings-content">
               <div class="setting-group">
-                <h3>Account</h3>
+                <h3 data-i18n="settings.account">Account Settings</h3>
                 <div class="setting-item">
-                  <label for="emailNotifications">Email Notifications</label
-                  ><input type="checkbox" id="emailNotifications" checked />
+                  <label
+                    for="emailNotifications"
+                    data-i18n="settings.email_notifications"
+                    >Email Notifications</label
+                  >
+                  <input type="checkbox" id="emailNotifications" checked />
                 </div>
                 <div class="setting-item">
-                  <label for="darkMode">Dark Mode</label
-                  ><input type="checkbox" id="darkMode" />
+                  <label for="darkMode" data-i18n="settings.dark_mode"
+                    >Dark Mode</label
+                  >
+                  <input type="checkbox" id="darkMode" />
                 </div>
               </div>
+
               <div class="setting-group">
-                <h3>Language</h3>
+                <h3 data-i18n="settings.language">Language Settings</h3>
                 <div class="setting-item">
-                  <label>Select Language</label
-                  ><select id="languageSelect">
-                    <option value="en">English</option>
-                    <option value="id">Indonesian</option>
+                  <label
+                    for="languageSelect"
+                    data-i18n="settings.select_language"
+                    >Select Language</label
+                  >
+                  <select id="languageSelect">
+                    <option value="en" data-i18n="settings.english">
+                      English
+                    </option>
+                    <option value="id" data-i18n="settings.indonesian">
+                      Indonesian
+                    </option>
                   </select>
                 </div>
               </div>
+
               <div class="setting-group">
-                <h3>Privacy</h3>
+                <h3 data-i18n="settings.privacy">Privacy Settings</h3>
                 <div class="setting-item">
-                  <label for="profileVisibility">Profile Visibility</label
-                  ><select id="profileVisibility">
-                    <option value="public">Public</option>
-                    <option value="students">Students Only</option>
-                    <option value="private">Private</option>
+                  <label
+                    for="profileVisibility"
+                    data-i18n="settings.profile_visibility"
+                    >Profile Visibility</label
+                  >
+                  <select id="profileVisibility">
+                    <option value="public" data-i18n="settings.public">
+                      Public
+                    </option>
+                    <option value="students" data-i18n="settings.students_only">
+                      Students Only
+                    </option>
+                    <option value="private" data-i18n="settings.private">
+                      Private
+                    </option>
                   </select>
                 </div>
               </div>
-              <button class="save-settings">Save Settings</button>
+
+              <button class="save-settings" data-i18n="settings.save">
+                Save Settings
+              </button>
             </div>
           </section>
         </main>
 
         <aside class="sidebar-right">
           <div class="student-info">
-            <h3 id="rightSidebarName">Loading...</h3>
-            <p id="rightSidebarNim">NIM: -</p>
-            <p id="rightSidebarProgram">Informatics Engineering</p>
+            <h3>Kharis Destian Maulana</h3>
+            <p>NIM: 2023001</p>
+            <p>Informatics Engineering</p>
             <p data-i18n="dashboard.semester_progress">Semester Progress</p>
             <div class="progress-bg">
               <div class="progress-bar" style="width: 72%"></div>
@@ -1059,41 +1681,58 @@
           </div>
 
           <div class="attendance">
-            <h3 data-i18n="dashboard.quick_attendance">Quick Attendance</h3>
+            <h3 data-i18n="dashboard.quick_attendance">
+              Quick Attendance Overview
+            </h3>
             <div class="attendance-stats">
               <div class="stat-item">
-                <span class="stat-value">85%</span
-                ><span class="stat-label">This Semester</span>
+                <span class="stat-value">85%</span>
+                <span class="stat-label" data-i18n="dashboard.this_semester"
+                  >This Semester</span
+                >
               </div>
               <div class="stat-item">
-                <span class="stat-value">47/56</span
-                ><span class="stat-label">Attended</span>
+                <span class="stat-value">47/56</span>
+                <span
+                  class="stat-label"
+                  data-i18n="attendance.meetings_attended"
+                  >Meetings Attended</span
+                >
               </div>
             </div>
             <div class="attendance-warning">
-              <span class="warning-icon">⚠️</span
-              ><span>9 absences remaining</span>
+              <span class="warning-icon">⚠️</span>
+              <span
+                >9
+                <span data-i18n="attendance.absences_remaining"
+                  >absences remaining</span
+                ></span
+              >
             </div>
           </div>
 
           <div class="quick-actions">
             <h3 data-i18n="quick.quick_actions">Quick Actions</h3>
             <div class="actions">
-              <button>Download Transcript</button>
-              <button>Request Leave</button>
-              <button>Contact Advisor</button>
-              <button>View Schedule</button>
+              <button data-i18n="quick.download_transcript">
+                Download Transcript
+              </button>
+              <button data-i18n="quick.request_leave">Request Leave</button>
+              <button data-i18n="quick.contact_advisor">Contact Advisor</button>
+              <button data-i18n="quick.view_schedule">View Schedule</button>
             </div>
           </div>
+
           <div class="quick-settings">
-            <h3>Quick Settings</h3>
+            <h3 data-i18n="settings.quick_settings">Quick Settings</h3>
             <div class="dark-mode-toggle">
-              <label class="toggle-label"
-                ><input type="checkbox" id="quickDarkMode" /><span
-                  class="toggle-slider"
-                ></span
-                ><span class="toggle-text">Dark Mode</span></label
-              >
+              <label class="toggle-label">
+                <input type="checkbox" id="quickDarkMode" />
+                <span class="toggle-slider"></span>
+                <span class="toggle-text" data-i18n="settings.dark_mode"
+                  >Dark Mode</span
+                >
+              </label>
             </div>
           </div>
         </aside>
@@ -1102,39 +1741,67 @@
 
     <div id="leaveModal" class="modal-overlay" style="display: none">
       <div class="modal-content">
-        <h3>Request Leave</h3>
+        <h3 data-i18n="leave.title">Request Leave of Absence</h3>
         <form id="leaveForm">
           <div class="form-group">
-            <label>Date</label><input type="date" id="leaveDate" />
+            <label for="leaveDate" data-i18n="leave.date">Date</label>
+            <input type="date" id="leaveDate" required />
           </div>
           <div class="form-group">
-            <label>Reason</label><textarea id="leaveReason"></textarea>
+            <label for="leaveReason" data-i18n="leave.reason">Reason</label>
+            <textarea
+              id="leaveReason"
+              rows="4"
+              placeholder="Please state your reason..."
+              data-i18n-placeholder="leave.reason_placeholder"
+              required
+            ></textarea>
           </div>
           <div class="modal-actions">
-            <button type="button" class="cancel-btn" id="cancelLeaveBtn">
-              Cancel</button
-            ><button type="submit" class="submit-task-btn">Submit</button>
+            <button
+              type="button"
+              class="cancel-btn"
+              id="cancelLeaveBtn"
+              data-i18n="leave.cancel"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              class="submit-task-btn"
+              data-i18n="leave.submit"
+            >
+              Submit Request
+            </button>
           </div>
         </form>
       </div>
     </div>
+
     <div id="addTaskModal" class="modal-overlay" style="display: none">
       <div class="modal-content">
-        <h3>Tambah Tugas</h3>
+        <h3>Tambah Tugas Baru</h3>
         <div class="form-group">
-          <label>Judul</label><input type="text" id="newTaskTitle" />
+          <label for="newTaskTitle">Judul Tugas</label>
+          <input
+            type="text"
+            id="newTaskTitle"
+            placeholder="Contoh: Belajar React Hook"
+          />
         </div>
         <div class="form-group">
-          <label>Tag</label
-          ><select id="newTaskTag">
-            <option>Penting</option>
-            <option>Kuliah</option>
-            <option>Pribadi</option>
+          <label for="newTaskTag">Label/Tag</label>
+          <select id="newTaskTag">
+            <option value="Penting">Penting</option>
+            <option value="Kuliah">Kuliah</option>
+            <option value="Pribadi">Pribadi</option>
           </select>
         </div>
         <div class="modal-actions">
-          <button class="cancel-btn" onclick="closeAddTaskModal()">Batal</button
-          ><button class="submit-task-btn" onclick="addNewKanbanTask()">
+          <button class="cancel-btn" onclick="closeAddTaskModal()">
+            Batal
+          </button>
+          <button class="submit-task-btn" onclick="addNewKanbanTask()">
             Simpan
           </button>
         </div>
