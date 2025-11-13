@@ -6547,15 +6547,12 @@ const groupChat = {
 };
 
 function initGroupChat() {
-  console.log("Initializing Group Chat...");
-
   const chatMessages = document.getElementById("groupMessages");
   const chatInput = document.getElementById("groupMessageInput");
   const sendBtn = document.getElementById("sendGroupMessageBtn");
 
   if (!chatMessages || !chatInput || !sendBtn) return;
 
-  // Cloning elements untuk reset listener
   const newSendBtn = sendBtn.cloneNode(true);
   sendBtn.parentNode.replaceChild(newSendBtn, sendBtn);
 
@@ -6566,44 +6563,63 @@ function initGroupChat() {
     fullName: "Anonim",
   };
   const myName = user.fullName;
-  let socketId = null; // Variabel untuk menyimpan ID koneksi
 
-  // 1. MUAT RIWAYAT DARI LOCALSTORAGE
-  const savedHistory = JSON.parse(
-    localStorage.getItem("groupChatHistory") || "[]"
-  );
-  if (savedHistory.length > 0) {
-    const welcomeMsg = chatMessages.querySelector(".welcome-message");
-    if (welcomeMsg) welcomeMsg.remove();
-    chatMessages.innerHTML = "";
-    savedHistory.forEach((chat) => renderMessage(chat));
-    setTimeout(() => (chatMessages.scrollTop = chatMessages.scrollHeight), 100);
+  if (chatMessages.children.length <= 1) {
+    const savedHistory = JSON.parse(
+      localStorage.getItem("groupChatHistory") || "[]"
+    );
+    if (savedHistory.length > 0) {
+      const welcomeMsg = chatMessages.querySelector(".welcome-message");
+      if (welcomeMsg) welcomeMsg.remove();
+
+      chatMessages.innerHTML = "";
+      savedHistory.forEach((chat) => renderMessage(chat));
+      setTimeout(
+        () => (chatMessages.scrollTop = chatMessages.scrollHeight),
+        100
+      );
+    }
   }
 
-  // 2. KONEKSI KE PUSHER
-  if (typeof Pusher !== "undefined") {
-    // PASTIKAN KEY INI BENAR
-    const pusher = new Pusher("f13ff92cbbe2788163f8", {
-      cluster: "ap1",
-    });
+  if (!window.pusherInstance) {
+    if (typeof Pusher !== "undefined") {
+      window.pusherInstance = new Pusher("f13ff92cbbe2788163f8", {
+        cluster: "ap1",
+      });
 
-    // Simpan socket_id setelah koneksi berhasil
-    pusher.connection.bind("connected", () => {
-      socketId = pusher.connection.socket_id;
-    });
+      window.pusherInstance.connection.bind("connected", () => {
+        window.myPusherSocketId = window.pusherInstance.connection.socket_id;
+      });
 
-    const channel = pusher.subscribe("campus-chat");
+      const channel = window.pusherInstance.subscribe("campus-chat");
 
-    channel.bind("new-message", function (data) {
-      // PENTING: Hanya proses pesan jika pengirimnya BUKAN saya sendiri
-      if (data.username !== myName) {
-        renderMessage(data);
-        saveMessage(data);
-      }
-    });
+      channel.bind("new-message", function (data) {
+        const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+        const currentName = currentUser ? currentUser.fullName : "Anonim";
+
+        if (data.username !== currentName) {
+          const activeContainer = document.getElementById("groupMessages");
+          if (activeContainer) {
+            const welcome = activeContainer.querySelector(".welcome-message");
+            if (welcome) welcome.remove();
+
+            const div = document.createElement("div");
+            div.className = "chat-bubble others";
+            div.innerHTML = `
+                          <span class="sender-name">${data.username}</span>
+                          <span class="message-content">${data.message}</span>
+                          <span class="timestamp">${data.timestamp}</span>
+                      `;
+            activeContainer.appendChild(div);
+            activeContainer.scrollTop = activeContainer.scrollHeight;
+
+            saveMessageToLocal(data);
+          }
+        }
+      });
+    }
   }
 
-  // 3. KIRIM PESAN
   async function sendChatMessage() {
     const text = newChatInput.value.trim();
     if (!text) return;
@@ -6617,30 +6633,32 @@ function initGroupChat() {
       }),
     };
 
-    // Tampilkan di layar sendiri
     renderMessage(msgData);
-    saveMessage(msgData);
+    saveMessageToLocal(msgData);
     newChatInput.value = "";
 
     const welcomeMsg = chatMessages.querySelector(".welcome-message");
     if (welcomeMsg) welcomeMsg.remove();
 
     try {
-      // Kirim socketId juga ke backend
+      const currentSocketId = window.pusherInstance?.connection?.socket_id;
+
       await fetch("/api/send-chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...msgData, socketId: socketId }),
+        body: JSON.stringify({
+          ...msgData,
+          socketId: currentSocketId,
+        }),
       });
     } catch (err) {
-      console.error("Gagal kirim pesan", err);
+      console.error(err);
     }
   }
 
   function renderMessage(data) {
     const isMe = data.username === myName;
     const div = document.createElement("div");
-    // Tentukan posisi: Kanan jika user sama, Kiri jika beda
     div.className = `chat-bubble ${isMe ? "me" : "others"}`;
 
     div.innerHTML = `
@@ -6653,7 +6671,7 @@ function initGroupChat() {
     chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 
-  function saveMessage(data) {
+  function saveMessageToLocal(data) {
     const history = JSON.parse(
       localStorage.getItem("groupChatHistory") || "[]"
     );
