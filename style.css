@@ -5966,7 +5966,7 @@ body.dark-mode .code-fab {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 12px;
-  height: 70vh; /* Tinggi area chat */
+  height: 70vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -5979,73 +5979,88 @@ body.dark-mode .code-fab {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 0.8rem; /* Jarak antar bubble */
-  background-color: #efe7dd; /* Warna background ala WA */
-  background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png"); /* Pattern WhatsApp */
-  background-size: contain;
+  gap: 1rem; /* Jarak antar pesan lebih lega */
+  background-color: var(--background); /* Gunakan background dashboard biasa */
+  /* Hapus background image pattern WA */
+  background-image: none;
 }
 
-body.dark-mode .chat-messages-area {
-  background-color: #0b141a;
-  background-image: none; /* Hilangkan pattern di dark mode */
-}
-
-/* Chat Bubble Styling */
+/* Chat Bubble Styling (Mengikuti gaya Chatbot AI) */
 .chat-bubble {
-  max-width: 75%; /* Lebar maksimal bubble */
-  padding: 0.6rem 0.8rem;
-  border-radius: 8px;
+  max-width: 75%;
+  padding: 0.75rem 1.25rem; /* Padding lebih besar seperti chatbot */
+  border-radius: 12px;
   position: relative;
   font-size: 0.95rem;
-  line-height: 1.4;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  word-wrap: break-word; /* Pastikan teks panjang tidak keluar bubble */
+  line-height: 1.5;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  word-wrap: break-word;
 }
 
-/* Pesan Sendiri (Di kanan) */
+/* Pesan Sendiri (Kanan - Biru) */
 .chat-bubble.me {
-  align-self: flex-end; /* Pindahkan ke kanan */
-  background-color: #dcf8c6; /* Hijau WhatsApp */
-  color: black;
-  border-top-right-radius: 0; /* Bentuk sudut khas WA */
+  align-self: flex-end;
+  background-color: var(--primary); /* Warna Biru Utama */
+  color: white;
+  border-bottom-right-radius: 2px; /* Sudut lancip di kanan bawah */
 }
 
-/* Pesan Orang Lain (Di kiri) */
+/* Pesan Orang Lain (Kiri - Abu/Putih) */
 .chat-bubble.others {
-  align-self: flex-start; /* Pindahkan ke kiri */
-  background-color: white;
-  color: black;
-  border-top-left-radius: 0; /* Bentuk sudut khas WA */
+  align-self: flex-start;
+  background-color: var(--surface);
+  border: 1px solid var(--border); /* Tambah border tipis agar jelas */
+  color: var(--text-primary);
+  border-bottom-left-radius: 2px; /* Sudut lancip di kiri bawah */
 }
 
-/* Dark Mode untuk bubble */
-body.dark-mode .chat-bubble.me {
-  background-color: #005c4b; /* Hijau gelap */
-  color: white;
+/* Dark Mode Adjustments */
+body.dark-mode .chat-messages-area {
+  background-color: var(--background); /* Gelap */
 }
+
 body.dark-mode .chat-bubble.others {
-  background-color: #202c33; /* Abu-abu gelap */
-  color: white;
+  background-color: #1e293b; /* Surface dark mode */
+  border-color: #334155;
+  color: var(--text-primary);
 }
 
+/* Nama Pengirim */
 .chat-bubble .sender-name {
   font-size: 0.75rem;
-  font-weight: bold;
-  color: #d63384; /* Warna nama (bisa diubah) */
-  display: block;
+  font-weight: 700;
   margin-bottom: 4px;
+  display: block;
+}
+
+/* Warna nama user lain (agar kontras di background putih/gelap) */
+.chat-bubble.others .sender-name {
+  color: var(--primary);
+}
+
+/* Nama sendiri tidak perlu ditampilkan atau warnanya putih pudar */
+.chat-bubble.me .sender-name {
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .chat-bubble .message-content {
-  display: block; /* Pastikan teks pesan di baris baru setelah nama */
+  display: block;
 }
 
 .chat-bubble .timestamp {
   font-size: 0.65rem;
-  color: #999;
-  float: right; /* Pindahkan timestamp ke kanan bawah bubble */
-  margin-left: 8px;
+  float: right;
+  margin-left: 10px;
   margin-top: 4px;
+  opacity: 0.7;
+}
+
+.chat-bubble.me .timestamp {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.chat-bubble.others .timestamp {
+  color: var(--text-secondary);
 }
 
 /* Input Area */
@@ -6061,11 +6076,17 @@ body.dark-mode .chat-bubble.others {
 .chat-input-area input {
   flex: 1;
   padding: 0.8rem 1.2rem;
-  border-radius: 24px;
+  border-radius: 12px; /* Radius lebih kotak agar modern */
   border: 1px solid var(--border);
   background: var(--background);
   color: var(--text-primary);
   font-size: 1rem;
+}
+
+.chat-input-area input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
 .chat-input-area button {
@@ -6074,7 +6095,7 @@ body.dark-mode .chat-bubble.others {
   border: none;
   width: 48px;
   height: 48px;
-  border-radius: 50%;
+  border-radius: 12px; /* Tombol kotak dengan sudut tumpul */
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -6089,10 +6110,11 @@ body.dark-mode .chat-bubble.others {
 .system-msg {
   text-align: center;
   font-size: 0.8rem;
-  color: gray;
+  color: var(--text-secondary);
   margin: 1rem 0;
-  background: rgba(0, 0, 0, 0.05);
+  background: var(--surface);
+  border: 1px solid var(--border);
   padding: 4px 12px;
   border-radius: 12px;
-  align-self: center; /* Agar di tengah */
+  align-self: center;
 }
