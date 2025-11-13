@@ -62,6 +62,11 @@
               <span data-i18n="nav.finance">Finance</span>
             </a>
 
+            <a href="#" data-section="notes" data-i18n="nav.notes">Catatan</a>
+            <a href="#" data-section="kanban" data-i18n="nav.kanban"
+              >Tugas Saya</a
+            >
+
             <a href="#" data-section="chat">
               <span data-i18n="nav.messages">Messages</span>
             </a>
@@ -110,6 +115,11 @@
           <a href="#" data-section="finance">
             <span data-i18n="nav.finance">Finance</span>
           </a>
+
+          <a href="#" data-section="notes" data-i18n="nav.notes">Catatan</a>
+          <a href="#" data-section="kanban" data-i18n="nav.kanban"
+            >Tugas Saya</a
+          >
 
           <a href="#" data-section="chat">
             <span data-i18n="nav.messages">Messages</span>
@@ -1306,6 +1316,96 @@
             </div>
           </section>
 
+          <section class="section" id="notes" style="display: none">
+            <header class="main-header">
+              <h1 data-i18n="notes.title">Catatan Kuliah</h1>
+              <div data-i18n="notes.subtitle">
+                Catat poin penting perkuliahan di sini (tersimpan otomatis).
+              </div>
+            </header>
+
+            <div class="notes-container">
+              <div class="notes-sidebar">
+                <button class="new-note-btn" onclick="createNewNote()">
+                  + Catatan Baru
+                </button>
+                <div id="notesList" class="notes-list"></div>
+              </div>
+              <div class="notes-editor">
+                <input
+                  type="text"
+                  id="noteTitle"
+                  placeholder="Judul Catatan..."
+                  autocomplete="off"
+                />
+                <div class="note-meta">
+                  <span id="noteDate"></span>
+                  <span id="saveStatus">Tersimpan</span>
+                </div>
+                <textarea
+                  id="noteContent"
+                  placeholder="Mulai mengetik catatan Anda di sini..."
+                ></textarea>
+              </div>
+            </div>
+          </section>
+
+          <section class="section" id="kanban" style="display: none">
+            <header class="main-header">
+              <h1 data-i18n="kanban.title">Papan Tugas Pribadi</h1>
+              <div data-i18n="kanban.subtitle">
+                Kelola tugas pribadi Anda agar tetap terorganisir.
+              </div>
+            </header>
+
+            <div class="kanban-controls">
+              <button class="add-task-btn" onclick="openAddTaskModal()">
+                + Tambah Tugas
+              </button>
+            </div>
+
+            <div class="kanban-board">
+              <div
+                class="kanban-column"
+                id="col-todo"
+                ondrop="drop(event)"
+                ondragover="allowDrop(event)"
+              >
+                <div class="column-header todo">
+                  <span data-i18n="kanban.todo">Akan Dikerjakan</span>
+                  <span class="task-count" id="count-todo">0</span>
+                </div>
+                <div class="task-list" id="list-todo"></div>
+              </div>
+
+              <div
+                class="kanban-column"
+                id="col-progress"
+                ondrop="drop(event)"
+                ondragover="allowDrop(event)"
+              >
+                <div class="column-header progress">
+                  <span data-i18n="kanban.progress">Sedang Dikerjakan</span>
+                  <span class="task-count" id="count-progress">0</span>
+                </div>
+                <div class="task-list" id="list-progress"></div>
+              </div>
+
+              <div
+                class="kanban-column"
+                id="col-done"
+                ondrop="drop(event)"
+                ondragover="allowDrop(event)"
+              >
+                <div class="column-header done">
+                  <span data-i18n="kanban.done">Selesai</span>
+                  <span class="task-count" id="count-done">0</span>
+                </div>
+                <div class="task-list" id="list-done"></div>
+              </div>
+            </div>
+          </section>
+
           <section class="section" id="chatbot" style="display: none">
             <header class="main-header">
               <h1 data-i18n="nav.ai_assistant">Asisten Chatbot</h1>
@@ -1641,6 +1741,36 @@
             </button>
           </div>
         </form>
+      </div>
+    </div>
+
+    <div id="addTaskModal" class="modal-overlay" style="display: none">
+      <div class="modal-content">
+        <h3>Tambah Tugas Baru</h3>
+        <div class="form-group">
+          <label>Judul Tugas</label>
+          <input
+            type="text"
+            id="newTaskTitle"
+            placeholder="Contoh: Belajar React Hook"
+          />
+        </div>
+        <div class="form-group">
+          <label>Label/Tag</label>
+          <select id="newTaskTag">
+            <option value="Penting">Penting</option>
+            <option value="Kuliah">Kuliah</option>
+            <option value="Pribadi">Pribadi</option>
+          </select>
+        </div>
+        <div class="modal-actions">
+          <button class="cancel-btn" onclick="closeAddTaskModal()">
+            Batal
+          </button>
+          <button class="submit-task-btn" onclick="addNewKanbanTask()">
+            Simpan
+          </button>
+        </div>
       </div>
     </div>
 
