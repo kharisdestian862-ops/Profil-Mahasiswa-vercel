@@ -6590,13 +6590,12 @@ function initGroupChat() {
 
     const channel = pusher.subscribe("campus-chat");
 
-    // TERIMA PESAN
     channel.bind("new-message", function (data) {
-      // KITA HAPUS IF (username !== myName)
-      // Karena backend sudah memfilter pengirim asli via socketId.
-      // Jadi apapun yang masuk ke sini adalah pesan untuk dirender.
-      renderMessage(data);
-      saveMessage(data);
+      // PENTING: Hanya proses pesan jika pengirimnya BUKAN saya sendiri
+      if (data.username !== myName) {
+        renderMessage(data);
+        saveMessage(data);
+      }
     });
   }
 
