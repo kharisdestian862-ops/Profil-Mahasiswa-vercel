@@ -6605,7 +6605,7 @@ function initGroupChat() {
   // 5. Koneksi Pusher
   if (typeof Pusher !== "undefined") {
     // GANTI KEY PUSHER ANDA DI SINI
-    const pusher = new Pusher("MASUKKAN_KEY_PUSHER_ANDA_DISINI", {
+    const pusher = new Pusher("f13ff92cbbe2788163f8", {
       cluster: "ap1",
     });
 
