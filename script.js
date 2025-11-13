@@ -2012,7 +2012,9 @@ function switchSection(sectionId) {
     ".sidebar nav a, .mobile-sidebar nav a"
   );
   const sections = document.querySelectorAll(".section");
+  const mainWrapper = document.querySelector(".main-wrapper");
 
+  // 1. Update Navigasi Aktif
   links.forEach((link) => link.classList.remove("active"));
 
   const desktopLink = document.querySelector(
@@ -2025,52 +2027,62 @@ function switchSection(sectionId) {
   if (desktopLink) desktopLink.classList.add("active");
   if (mobileLink) mobileLink.classList.add("active");
 
+  // 2. Sembunyikan Semua Section
   sections.forEach((sec) => (sec.style.display = "none"));
 
-  // === LOGIKA PENANDA LAYOUT BARU ===
-  if (
-    sectionId === "chatbot" ||
-    sectionId === "codeplayground" ||
-    sectionId === "chat"
-  ) {
+  // 3. Atur Layout (Full Width untuk Chat/Code)
+  const fullWidthSections = ["chatbot", "codeplayground", "chat"];
+  if (fullWidthSections.includes(sectionId)) {
     document.body.classList.add("full-layout-active");
   } else {
     document.body.classList.remove("full-layout-active");
   }
-  // === AKHIR LOGIKA PENANDA LAYOUT BARU ===
 
+  // 4. Tampilkan Section yang Dipilih
   const activeSection = document.getElementById(sectionId);
   if (activeSection) {
     activeSection.style.display = "flex";
 
-    if (sectionId === "attendance") {
-      showCourseListView();
-    }
-    if (sectionId === "grades") {
-      populateGradesPage();
-    }
-    if (sectionId === "finance") {
-      initFinanceSection();
-    }
+    // Inisialisasi Fitur Khusus
+    if (sectionId === "attendance") showCourseListView();
+    if (sectionId === "grades") populateGradesPage();
+    if (sectionId === "finance") initFinanceSection();
     if (sectionId === "notes") initNotesSection();
     if (sectionId === "kanban") initKanbanBoard();
+
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
         chart.resize();
       }, 100);
     }
+
     if (sectionId === "codeplayground") {
-      // Panggil initCodePlayground saat section diakses
       setTimeout(() => {
         initCodePlayground();
         loadCodePlayground();
       }, 50);
     }
+
     if (sectionId === "chat") {
-      // Tunggu sebentar agar elemen DOM siap
       setTimeout(initGroupChat, 100);
     }
+
+    if (sectionId === "studyroom") {
+      // Pastikan Study Room kembali ke list awal
+      loadVideoLearningCenter();
+      document.getElementById("studyRoomVideoDetailView").style.display =
+        "none";
+      document.getElementById("studyRoomCourseListView").style.display =
+        "block";
+      updateBreadcrumb([
+        translations[currentLanguage]["nav.studyroom"] || "Study Room",
+      ]);
+    }
   }
+
+  // 5. PENTING: Pastikan Profil Selalu Ter-Update Saat Pindah Menu
+  // Ini akan memperbaiki masalah nama hilang saat ganti section
+  loadUserProfile();
 }
 
 // Initialize sidebar navigation
