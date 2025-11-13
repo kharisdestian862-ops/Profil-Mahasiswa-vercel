@@ -5343,3 +5343,52 @@ body.dark-mode #finance .section-header {
     font-size: 0.8125rem;
   }
 }
+
+.code-fab {
+  position: fixed;
+  bottom: 100px; /* Posisi di atas tombol chat (2rem + 60px + jarak) */
+  right: 2rem;
+  width: 60px;
+  height: 60px;
+  background: var(--primary); /* Gunakan warna aksen agar beda dengan chat */
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  z-index: 900;
+  transition: all 0.2s ease-in-out;
+}
+
+.code-fab:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+/* Sembunyikan kedua tombol saat mode layar penuh (Chat/Code) aktif */
+body.full-layout-active .chatbot-fab,
+body.full-layout-active .code-fab {
+  display: none;
+}
+
+/* Responsif Mobile */
+@media (max-width: 768px) {
+  .code-fab {
+    width: 50px;
+    height: 50px;
+    bottom: 6rem; /* Sesuaikan jarak vertikal di mobile */
+    right: 1.5rem;
+  }
+
+  .code-fab svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* Dark Mode support */
+body.dark-mode .code-fab {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
