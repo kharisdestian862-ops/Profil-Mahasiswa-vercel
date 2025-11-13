@@ -6424,12 +6424,6 @@ body.dark-mode .kanban-fab {
   bottom: 30px;
   right: 30px;
   z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 60px;
-  height: auto;
-  min-height: 300px;
 }
 
 .fab-trigger {
@@ -6477,23 +6471,6 @@ body.dark-mode .kanban-fab {
   transform: translate(-50%, -50%) rotate(0deg);
 }
 
-.fab-items {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 15px;
-  margin-bottom: 15px;
-
-  position: absolute;
-  bottom: 70px; /* Diubah dari 60px ke 70px */
-  left: 50%;
-  transform: translateX(-50%);
-
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
 .fab-item {
   width: 50px;
   height: 50px;
@@ -6506,15 +6483,12 @@ body.dark-mode .kanban-fab {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   position: relative;
-
-  opacity: 0;
-  transform: translateY(20px) scale(0.5);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .fab-container.active .fab-items {
-  pointer-events: auto;
   opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 .fab-container.active .fab-item {
@@ -6530,7 +6504,7 @@ body.dark-mode .kanban-fab {
 /* Labels (Tooltip) */
 .fab-label {
   position: absolute;
-  right: 60px; /* Posisi label di kiri item */
+  right: 60px;
   background: white;
   color: #333;
   padding: 6px 12px;
@@ -6539,11 +6513,14 @@ body.dark-mode .kanban-fab {
   font-weight: 600;
   white-space: nowrap;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-
   opacity: 0;
-  transform: translateX(10px);
   transition: all 0.2s;
   pointer-events: none;
+}
+
+.fab-item:hover .fab-label {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 /* Dark Mode Labels */
@@ -6551,11 +6528,6 @@ body.dark-mode .fab-label {
   background: #1e293b;
   color: white;
   border: 1px solid #334155;
-}
-
-.fab-item:hover .fab-label {
-  opacity: 1;
-  transform: translateX(0);
 }
 
 /* Delay Animasi Berurutan (Dari Bawah ke Atas) */
