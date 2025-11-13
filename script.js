@@ -4675,42 +4675,102 @@ function loadUserProfile() {
   const user = JSON.parse(userJson);
   const firstName = user.fullName.split(" ")[0];
 
-  // Buat inisial
-  const initials = user.fullName
-    .split(" ")
-    .slice(0, 2)
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase();
-
   // 1. Update Header Dashboard
-  updateDashboardHeader(firstName);
+  updateDashboardHeader(firstName, user);
 
   // 2. Update Sidebar Kiri (Desktop & Mobile)
-  // Menggunakan element ID agar spesifik
-  const targets = {
-    name: [
-      document.getElementById("desktopNameDisplay"),
-      document.getElementById("mobileNameDisplay"),
-    ],
-    avatar: [
-      document.getElementById("desktopAvatarDisplay"),
-      document.getElementById("mobileAvatarDisplay"),
-    ],
-    program: [document.getElementById("desktopProgramDisplay")],
-  };
+  updateSidebarProfiles(user, firstName);
 
-  targets.name.forEach((el) => {
-    if (el) el.textContent = user.fullName;
-  });
-  targets.avatar.forEach((el) => {
-    if (el) el.textContent = initials;
-  });
-  targets.program.forEach((el) => {
-    if (el) el.textContent = user.programStudi + " • 2023";
-  });
+  // 3. Update Halaman Profil Detail
+  updateProfileDetails(user);
 
-  // 3. Update Halaman Profil Detail (Menggunakan ID baru)
+  // 4. Update Sidebar Kanan (Kotak Biru)
+  updateRightSidebar(user);
+
+  // 5. Update Chatbot Greeting
+  updateChatbotGreeting(firstName);
+}
+
+function updateDashboardHeader(firstName, user) {
+  const titleEl = document.querySelector('h1[data-i18n="dashboard.title"]');
+  const welcomeEl = document.querySelector(
+    'div[data-i18n="dashboard.welcome"]'
+  );
+
+  // Ambil teks dasar dari kamus bahasa saat ini
+  const baseTitle = translations[currentLanguage]["dashboard.title"];
+  const baseWelcome = translations[currentLanguage]["dashboard.welcome"];
+
+  // Atur format sesuai bahasa
+  if (titleEl) {
+    if (currentLanguage === "en") {
+      titleEl.textContent = `${firstName}'s ${baseTitle}`;
+    } else {
+      titleEl.textContent = `${baseTitle} ${firstName}`;
+    }
+  }
+
+  if (welcomeEl) {
+    welcomeEl.textContent = `${baseWelcome} ${firstName}`;
+  }
+
+  // Update Mobile Header
+  const mobileNameElement = document.querySelector(".mobile-name");
+  if (mobileNameElement) {
+    mobileNameElement.textContent = user.fullName;
+  }
+
+  const mobileAvatarElement = document.querySelector(".mobile-avatar");
+  if (mobileAvatarElement) {
+    const initials = user.fullName
+      .split(" ")
+      .slice(0, 2)
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase();
+    mobileAvatarElement.textContent = initials;
+  }
+}
+
+function updateSidebarProfiles(user, firstName) {
+  // Update Desktop Sidebar
+  const desktopName = document.getElementById("desktopNameDisplay");
+  const desktopAvatar = document.getElementById("desktopAvatarDisplay");
+  const desktopProgram = document.getElementById("desktopProgramDisplay");
+
+  if (desktopName) desktopName.textContent = user.fullName;
+  if (desktopAvatar) {
+    const initials = user.fullName
+      .split(" ")
+      .slice(0, 2)
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase();
+    desktopAvatar.textContent = initials;
+  }
+  if (desktopProgram) {
+    desktopProgram.textContent = `${user.programStudi} • ${
+      user.year || "2023"
+    }`;
+  }
+
+  // Update Mobile Sidebar
+  const mobileName = document.getElementById("mobileNameDisplay");
+  const mobileAvatar = document.getElementById("mobileAvatarDisplay");
+
+  if (mobileName) mobileName.textContent = user.fullName;
+  if (mobileAvatar) {
+    const initials = user.fullName
+      .split(" ")
+      .slice(0, 2)
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase();
+    mobileAvatar.textContent = initials;
+  }
+}
+
+function updateProfileDetails(user) {
   const setText = (id, text) => {
     const el = document.getElementById(id);
     if (el) el.textContent = text;
@@ -4722,14 +4782,17 @@ function loadUserProfile() {
   setText("profileDetailYear", user.year || "2023");
   setText("profileDetailSemester", user.semester || "4");
   setText("profileDetailEmail", user.email);
+}
 
-  // 4. Update Sidebar Kanan (Kotak Biru)
+function updateRightSidebar(user) {
+  const setText = (id, text) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text;
+  };
+
   setText("rightSidebarName", user.fullName);
   setText("rightSidebarNim", `NIM: ${user.nim}`);
   setText("rightSidebarProgram", user.programStudi);
-
-  // 5. Update Chatbot
-  updateChatbotGreeting(firstName);
 }
 
 function updateDashboardHeader(firstName) {
@@ -4802,8 +4865,10 @@ function initLogout() {
 
 function updateChatbotGreeting(name) {
   const messagesContainer = document.getElementById("chatbotMessages");
+  if (!messagesContainer) return;
+
   // Cek apakah pesan pertama adalah greeting default
-  if (messagesContainer && messagesContainer.children.length <= 1) {
+  if (messagesContainer.children.length <= 1) {
     const greetingKey =
       currentLanguage === "id"
         ? `Halo ${name}! Ada yang bisa saya bantu?`
@@ -4811,7 +4876,7 @@ function updateChatbotGreeting(name) {
 
     // Update pesan jika elemen sudah ada
     const botMsg = messagesContainer.querySelector(".chat-message.bot");
-    if (botMsg) {
+    if (botMsg && botMsg.querySelector(".chat-text")) {
       botMsg.querySelector(".chat-text").textContent = greetingKey;
     } else {
       // Buat baru jika belum ada
@@ -4823,7 +4888,6 @@ function updateChatbotGreeting(name) {
     }
   }
 }
-
 // ===== CODE PLAYGROUND SYSTEM =====
 let currentEditor = null;
 
