@@ -6119,3 +6119,237 @@ body.dark-mode .chat-bubble.others {
   border-radius: 12px;
   align-self: center;
 }
+
+.notes-container {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 1.5rem;
+  height: 70vh;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.notes-sidebar {
+  border-right: 1px solid var(--border);
+  background: var(--background);
+  display: flex;
+  flex-direction: column;
+}
+
+.new-note-btn {
+  margin: 1rem;
+  padding: 0.8rem;
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.notes-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.note-list-item {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.note-list-item:hover,
+.note-list-item.active {
+  background: var(--surface);
+  border-left: 4px solid var(--primary);
+}
+
+.note-list-item h4 {
+  font-size: 0.9rem;
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.note-list-item p {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.notes-editor {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+}
+
+#noteTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
+
+#noteTitle:focus {
+  outline: none;
+}
+
+.note-meta {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+}
+
+#noteContent {
+  flex: 1;
+  border: none;
+  resize: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 1rem;
+  line-height: 1.6;
+  font-family: inherit;
+}
+
+#noteContent:focus {
+  outline: none;
+}
+
+/* ===== KANBAN BOARD STYLES ===== */
+.kanban-controls {
+  margin-bottom: 1.5rem;
+}
+
+.add-task-btn {
+  background: var(--success);
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.kanban-board {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  min-height: 60vh;
+}
+
+.kanban-column {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+
+.column-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid;
+  font-weight: 700;
+}
+
+.column-header.todo {
+  border-color: var(--secondary);
+  color: var(--secondary);
+}
+.column-header.progress {
+  border-color: var(--warning);
+  color: var(--warning);
+}
+.column-header.done {
+  border-color: var(--success);
+  color: var(--success);
+}
+
+.task-count {
+  background: var(--background);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+}
+
+.task-list {
+  flex: 1;
+  min-height: 100px; /* Area drop */
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.kanban-card {
+  background: var(--background);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  cursor: grab;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  position: relative;
+}
+
+.kanban-card:active {
+  cursor: grabbing;
+}
+
+.card-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+  background: var(--primary);
+  color: white;
+}
+
+.card-title {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.delete-task {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  color: var(--error);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.kanban-card:hover .delete-task {
+  opacity: 1;
+}
+
+/* Responsif untuk Notes & Kanban */
+@media (max-width: 768px) {
+  .notes-container {
+    grid-template-columns: 1fr;
+    height: auto;
+  }
+  .notes-sidebar {
+    height: 200px;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+  .notes-editor {
+    height: 500px;
+  }
+}
