@@ -3310,22 +3310,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-    const chatSection = document.getElementById("chat");
-    if (chatSection) {
-      const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-          if (
-            mutation.type === "attributes" &&
-            mutation.attributeName === "style" &&
-            !chatSection.style.display
-          ) {
-            groupChat.init();
-          }
-        });
-      });
-      observer.observe(chatSection, { attributes: true });
-    }
-
     const sendMessage = () => {
       const query = inputField.value;
       if (query.trim() === "") return;
@@ -6558,71 +6542,67 @@ const groupChat = {
   },
 };
 
-// Inisialisasi Fitur Grup Chat (Real-Time dengan Pusher)
-// Inisialisasi Fitur Grup Chat (PERBAIKAN LOGIKA CLONING)
 function initGroupChat() {
   console.log("Initializing Group Chat...");
 
-  // 1. Ambil elemen lama
-  const oldMessages = document.getElementById("groupMessages");
-  const oldInput = document.getElementById("groupMessageInput");
-  const oldBtn = document.getElementById("sendGroupMessageBtn");
+  const chatMessages = document.getElementById("groupMessages");
+  const chatInput = document.getElementById("groupMessageInput");
+  const sendBtn = document.getElementById("sendGroupMessageBtn");
 
-  if (!oldMessages || !oldInput || !oldBtn) {
-    console.error("Chat elements not found!");
-    return;
-  }
+  if (!chatMessages || !chatInput || !sendBtn) return;
 
-  // 2. LAKUKAN CLONING & REPLACE DI AWAL
-  // Ini penting agar kita bekerja dengan elemen yang "fresh" dan bersih dari event listener lama
-  const chatMessages = oldMessages; // Div pesan tidak perlu diclone, cukup referensi
-  const chatInput = oldInput.cloneNode(true);
-  const sendBtn = oldBtn.cloneNode(true);
+  // Cloning elements untuk reset listener
+  const newSendBtn = sendBtn.cloneNode(true);
+  sendBtn.parentNode.replaceChild(newSendBtn, sendBtn);
 
-  oldInput.parentNode.replaceChild(chatInput, oldInput);
-  oldBtn.parentNode.replaceChild(sendBtn, oldBtn);
+  const newChatInput = chatInput.cloneNode(true);
+  chatInput.parentNode.replaceChild(newChatInput, chatInput);
 
-  // 3. Ambil data user
   const user = JSON.parse(localStorage.getItem("currentUser")) || {
     fullName: "Anonim",
   };
   const myName = user.fullName;
+  let socketId = null; // Variabel untuk menyimpan ID koneksi
 
-  // 4. Muat Riwayat
+  // 1. MUAT RIWAYAT DARI LOCALSTORAGE
   const savedHistory = JSON.parse(
     localStorage.getItem("groupChatHistory") || "[]"
   );
-
   if (savedHistory.length > 0) {
     const welcomeMsg = chatMessages.querySelector(".welcome-message");
     if (welcomeMsg) welcomeMsg.remove();
-
     chatMessages.innerHTML = "";
     savedHistory.forEach((chat) => renderMessage(chat));
     setTimeout(() => (chatMessages.scrollTop = chatMessages.scrollHeight), 100);
   }
 
-  // 5. Koneksi Pusher
+  // 2. KONEKSI KE PUSHER
   if (typeof Pusher !== "undefined") {
-    // GANTI KEY PUSHER ANDA DI SINI
+    // PASTIKAN KEY INI BENAR
     const pusher = new Pusher("f13ff92cbbe2788163f8", {
       cluster: "ap1",
     });
 
+    // Simpan socket_id setelah koneksi berhasil
+    pusher.connection.bind("connected", () => {
+      socketId = pusher.connection.socket_id;
+    });
+
     const channel = pusher.subscribe("campus-chat");
 
+    // TERIMA PESAN
     channel.bind("new-message", function (data) {
-      if (data.username !== myName) {
-        renderMessage(data);
-        saveMessage(data);
-      }
+      // KITA HAPUS IF (username !== myName)
+      // Karena backend sudah memfilter pengirim asli via socketId.
+      // Jadi apapun yang masuk ke sini adalah pesan untuk dirender.
+      renderMessage(data);
+      saveMessage(data);
     });
   }
 
-  // 6. Fungsi Kirim Pesan (Menggunakan variabel chatInput yang BARU)
+  // 3. KIRIM PESAN
   async function sendChatMessage() {
-    const text = chatInput.value.trim(); // Sekarang ini membaca elemen yang benar!
-
+    const text = newChatInput.value.trim();
     if (!text) return;
 
     const msgData = {
@@ -6634,38 +6614,37 @@ function initGroupChat() {
       }),
     };
 
-    // Optimistic UI Update
+    // Tampilkan di layar sendiri
     renderMessage(msgData);
     saveMessage(msgData);
-    chatInput.value = ""; // Kosongkan input
+    newChatInput.value = "";
 
-    // Hapus welcome message jika ada
     const welcomeMsg = chatMessages.querySelector(".welcome-message");
     if (welcomeMsg) welcomeMsg.remove();
 
-    // Kirim ke Backend
     try {
+      // Kirim socketId juga ke backend
       await fetch("/api/send-chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(msgData),
+        body: JSON.stringify({ ...msgData, socketId: socketId }),
       });
     } catch (err) {
-      console.error("Gagal kirim pesan ke backend", err);
+      console.error("Gagal kirim pesan", err);
     }
   }
 
-  // 7. Helper Functions
   function renderMessage(data) {
     const isMe = data.username === myName;
     const div = document.createElement("div");
+    // Tentukan posisi: Kanan jika user sama, Kiri jika beda
     div.className = `chat-bubble ${isMe ? "me" : "others"}`;
 
     div.innerHTML = `
-        ${!isMe ? `<span class="sender-name">${data.username}</span>` : ""}
-        <span class="message-content">${data.message}</span>
-        <span class="timestamp">${data.timestamp}</span>
-    `;
+          ${!isMe ? `<span class="sender-name">${data.username}</span>` : ""}
+          <span class="message-content">${data.message}</span>
+          <span class="timestamp">${data.timestamp}</span>
+      `;
 
     chatMessages.appendChild(div);
     chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -6680,13 +6659,8 @@ function initGroupChat() {
     localStorage.setItem("groupChatHistory", JSON.stringify(history));
   }
 
-  // 8. Pasang Event Listener pada elemen yang BARU
-  sendBtn.addEventListener("click", sendChatMessage);
-
-  chatInput.addEventListener("keypress", (e) => {
+  newSendBtn.addEventListener("click", sendChatMessage);
+  newChatInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") sendChatMessage();
   });
-
-  // Fokus ke input saat dibuka
-  chatInput.focus();
 }
