@@ -5393,261 +5393,135 @@ body.dark-mode .code-fab {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
 
-.dm-container {
+.group-chat-container {
   display: flex;
   height: calc(100vh - 200px);
   background: white;
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
-.contacts-sidebar {
-  width: 350px;
-  background: #f8fafc;
-  border-right: 1px solid #e2e8f0;
-  display: flex;
-  flex-direction: column;
-}
-
-.sidebar-header {
+.group-chat-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   padding: 20px;
+  background: white;
   border-bottom: 1px solid #e2e8f0;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  z-index: 10;
 }
 
-.user-profile {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.user-avatar {
-  font-size: 1.5rem;
-}
-
-.user-info .user-name {
-  font-weight: 600;
-  color: #1e293b;
-  margin-bottom: 2px;
-}
-
-.user-status {
-  font-size: 0.875rem;
-  color: #10b981;
-}
-
-.new-chat-btn {
-  background: #2b26b9;
-  color: white;
-  border: none;
-  border-radius: 50%;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.new-chat-btn:hover {
-  background: #1e1a8a;
-}
-
-.search-container {
-  padding: 15px 20px;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-#contactSearch {
-  width: 100%;
-  padding: 10px 15px;
-  border: 1px solid #d1d5db;
-  border-radius: 20px;
-  outline: none;
-  font-size: 14px;
-}
-
-#contactSearch:focus {
-  border-color: #2b26b9;
-}
-
-.contacts-list {
-  flex: 1;
-  overflow-y: auto;
-}
-
-.contact-item {
+.group-info {
   display: flex;
   align-items: center;
   gap: 15px;
-  padding: 15px 20px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  border-bottom: 1px solid #f1f5f9;
 }
 
-.contact-item:hover {
-  background: #f1f5f9;
+.group-avatar {
+  font-size: 2rem;
 }
 
-.contact-item.active {
-  background: #2b26b9;
-  color: white;
-}
-
-.contact-avatar {
-  font-size: 1.3rem;
-}
-
-.contact-info {
-  flex: 1;
-}
-
-.contact-name {
-  font-weight: 600;
-  margin-bottom: 4px;
-}
-
-.contact-last-message {
-  font-size: 0.875rem;
-  opacity: 0.7;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 200px;
-}
-
-.contact-meta {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
-}
-
-.contact-time {
-  font-size: 0.75rem;
-  opacity: 0.7;
-}
-
-.unread-badge {
-  background: #ef4444;
-  color: white;
-  border-radius: 10px;
-  padding: 2px 8px;
-  font-size: 0.75rem;
-  min-width: 18px;
-  text-align: center;
-}
-
-.chat-area {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.chat-header {
-  padding: 20px;
-  border-bottom: 1px solid #e2e8f0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.default-message {
-  text-align: center;
-  width: 100%;
-  color: #64748b;
-}
-
-.default-message h3 {
-  margin: 0 0 8px 0;
-  color: #374151;
-}
-
-.chat-partner {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.partner-avatar {
-  font-size: 1.5rem;
-}
-
-.partner-name {
-  font-weight: 600;
+.group-details h3 {
+  margin: 0 0 5px 0;
   color: #1e293b;
-  margin-bottom: 2px;
 }
 
-.partner-status {
+.online-count {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   font-size: 0.875rem;
   color: #64748b;
 }
 
-.status-dot {
+.online-dot {
   width: 8px;
   height: 8px;
   border-radius: 50%;
-}
-
-.status-dot.online {
   background: #10b981;
+  animation: pulse 2s infinite;
 }
 
-.status-dot.away {
-  background: #f59e0b;
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
-.status-dot.offline {
-  background: #64748b;
-}
-
-.chat-actions {
+.group-actions {
   display: flex;
   gap: 10px;
 }
 
-.messages-area {
+.group-messages {
   flex: 1;
+  padding: 100px 20px 100px 20px;
   overflow-y: auto;
-  padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  background: #fafafa;
 }
 
-.empty-state {
+.welcome-message {
   text-align: center;
   margin: auto;
   color: #64748b;
 }
 
-.empty-icon {
+.welcome-icon {
   font-size: 4rem;
   margin-bottom: 20px;
   opacity: 0.5;
 }
 
-.message {
+.group-message {
   display: flex;
+  gap: 12px;
   max-width: 70%;
 }
 
-.message.sent {
-  align-self: flex-end;
+.other-message {
+  align-self: flex-start;
 }
 
-.message.received {
-  align-self: flex-start;
+.own-message {
+  align-self: flex-end;
+  flex-direction: row-reverse;
+}
+
+.message-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  background: #e2e8f0;
+  flex-shrink: 0;
+  margin-top: auto;
+}
+
+.message-content {
+  max-width: 100%;
+}
+
+.sender-name {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #475569;
+  margin-bottom: 4px;
+  margin-left: 8px;
 }
 
 .message-bubble {
@@ -5657,16 +5531,16 @@ body.dark-mode .code-fab {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-.message.sent .message-bubble {
-  background: #2b26b9;
-  color: white;
-  border-bottom-right-radius: 6px;
-}
-
-.message.received .message-bubble {
+.other-message .message-bubble {
   background: white;
   border: 1px solid #e2e8f0;
   border-bottom-left-radius: 6px;
+}
+
+.own-message .message-bubble {
+  background: #2b26b9;
+  color: white;
+  border-bottom-right-radius: 6px;
 }
 
 .message-text {
@@ -5681,22 +5555,44 @@ body.dark-mode .code-fab {
   text-align: right;
 }
 
-.message.received .message-time {
+.other-message .message-time {
   text-align: left;
 }
 
-.message-input-area {
-  padding: 20px;
-  border-top: 1px solid #e2e8f0;
+.system-message {
+  text-align: center;
+  margin: 10px 0;
 }
 
-.input-container {
+.system-text {
+  display: inline-block;
+  background: #f1f5f9;
+  color: #64748b;
+  padding: 8px 16px;
+  border-radius: 16px;
+  font-size: 0.875rem;
+  font-style: italic;
+}
+
+.group-input-container {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 20px;
+  background: white;
+  border-top: 1px solid #e2e8f0;
   display: flex;
   gap: 12px;
   align-items: center;
 }
 
-#messageInput {
+.input-actions {
+  display: flex;
+  gap: 8px;
+}
+
+#groupMessageInput {
   flex: 1;
   padding: 12px 20px;
   border: 1px solid #d1d5db;
@@ -5705,50 +5601,363 @@ body.dark-mode .code-fab {
   font-size: 14px;
 }
 
-#messageInput:focus {
+#groupMessageInput:focus {
   border-color: #2b26b9;
 }
 
-.send-btn {
-  background: #2b26b9;
-  color: white;
+.online-sidebar {
+  width: 280px;
+  background: #f8fafc;
+  border-left: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-header {
+  padding: 20px;
+  border-bottom: 1px solid #e2e8f0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sidebar-header h4 {
+  margin: 0;
+  color: #1e293b;
+}
+
+.refresh-btn {
+  background: none;
   border: none;
-  border-radius: 50%;
-  width: 44px;
-  height: 44px;
+  padding: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #64748b;
+  transition: all 0.2s;
+}
+
+.refresh-btn:hover {
+  background: #e2e8f0;
+  color: #374151;
+}
+
+.online-users-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px 0;
+}
+
+.online-user {
   display: flex;
   align-items: center;
-  justify-content: center;
-  cursor: pointer;
+  gap: 12px;
+  padding: 12px 20px;
   transition: background-color 0.2s;
 }
 
-.send-btn:hover {
-  background: #1e1a8a;
+.online-user:hover {
+  background: #f1f5f9;
 }
 
-.dark-mode .dm-container {
+.online-user .user-avatar {
+  font-size: 1.2rem;
+}
+
+.user-info {
+  flex: 1;
+}
+
+.user-name {
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 2px;
+}
+
+.user-status {
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-indicator.online {
+  background: #10b981;
+}
+
+/* Dark Mode Fixes untuk Group Chat */
+.dark-mode .group-chat-container {
+  background: #1e293b;
+  color: #e2e8f0;
+}
+
+.dark-mode .group-chat-header {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+.dark-mode .group-details h3 {
+  color: #e2e8f0;
+}
+
+.dark-mode .online-count {
+  color: #94a3b8;
+}
+
+.dark-mode .action-btn {
+  color: #94a3b8;
+}
+
+.dark-mode .action-btn:hover {
+  background: #334155;
+  color: #e2e8f0;
+}
+
+.dark-mode .group-messages {
   background: #1e293b;
 }
 
-.dark-mode .contacts-sidebar {
+.dark-mode .welcome-message {
+  color: #94a3b8;
+}
+
+.dark-mode .other-message .message-bubble {
+  background: #334155;
+  border-color: #475569;
+  color: #e2e8f0;
+}
+
+.dark-mode .sender-name {
+  color: #cbd5e1;
+}
+
+.dark-mode .message-avatar {
+  background: #475569;
+  color: #e2e8f0;
+}
+
+.dark-mode .system-text {
+  background: #334155;
+  color: #94a3b8;
+}
+
+.dark-mode .group-input-container {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+.dark-mode #groupMessageInput {
+  background: #334155;
+  border-color: #475569;
+  color: #e2e8f0;
+}
+
+.dark-mode #groupMessageInput::placeholder {
+  color: #94a3b8;
+}
+
+.dark-mode .online-sidebar {
   background: #0f172a;
   border-color: #334155;
 }
 
-.dark-mode .messages-area {
+.dark-mode .sidebar-header h4 {
+  color: #e2e8f0;
+}
+
+.dark-mode .refresh-btn {
+  color: #94a3b8;
+}
+
+.dark-mode .refresh-btn:hover {
+  background: #334155;
+  color: #e2e8f0;
+}
+
+.dark-mode .online-user:hover {
   background: #1e293b;
 }
 
-.dark-mode .message.received .message-bubble {
-  background: #334155;
-  border-color: #475569;
+.dark-mode .online-user .user-name {
   color: #e2e8f0;
 }
 
-.dark-mode #contactSearch,
-.dark-mode #messageInput {
-  background: #334155;
-  border-color: #475569;
+.dark-mode .online-user .user-status {
+  color: #94a3b8;
+}
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .group-chat-container {
+    flex-direction: column;
+    height: calc(100vh - 120px);
+  }
+
+  .online-sidebar {
+    width: 100%;
+    height: 200px;
+    border-left: none;
+    border-top: 1px solid #e2e8f0;
+  }
+
+  .dark-mode .online-sidebar {
+    border-color: #334155;
+  }
+
+  .group-messages {
+    padding: 80px 15px 120px 15px;
+  }
+
+  .group-chat-header {
+    padding: 15px;
+  }
+
+  .group-input-container {
+    padding: 15px;
+  }
+
+  .group-message {
+    max-width: 85%;
+  }
+
+  .group-avatar {
+    font-size: 1.5rem;
+  }
+
+  .group-details h3 {
+    font-size: 1.1rem;
+  }
+
+  .online-count {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .group-messages {
+    padding: 70px 10px 110px 10px;
+  }
+
+  .group-chat-header {
+    padding: 12px;
+  }
+
+  .group-info {
+    gap: 10px;
+  }
+
+  .group-avatar {
+    font-size: 1.3rem;
+  }
+
+  .group-details h3 {
+    font-size: 1rem;
+    margin-bottom: 3px;
+  }
+
+  .message-bubble {
+    padding: 10px 14px;
+  }
+
+  .message-text {
+    font-size: 0.9rem;
+  }
+
+  .group-input-container {
+    padding: 12px;
+    gap: 8px;
+  }
+
+  #groupMessageInput {
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+
+  .input-actions {
+    gap: 6px;
+  }
+
+  .action-btn {
+    padding: 6px;
+  }
+
+  .send-btn {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+/* Pastikan text warna putih di dark mode untuk semua elemen */
+.dark-mode .group-chat-container,
+.dark-mode .group-chat-header,
+.dark-mode .group-messages,
+.dark-mode .online-sidebar {
   color: #e2e8f0;
+}
+
+.dark-mode .message-text,
+.dark-mode .sender-name,
+.dark-mode .user-name {
+  color: inherit;
+}
+
+/* Fix untuk text hitam yang masih muncul */
+.dark-mode .other-message .message-bubble .message-text,
+.dark-mode .own-message .message-bubble .message-text,
+.dark-mode .system-text {
+  color: inherit;
+}
+
+/* Pastikan placeholder text juga visible di dark mode */
+.dark-mode #groupMessageInput::placeholder {
+  color: #94a3b8;
+  opacity: 1;
+}
+
+.mobile-toggle-btn {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile-toggle-btn {
+    display: block;
+  }
+
+  .online-sidebar {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    z-index: 20;
+    background: #f8fafc;
+  }
+
+  .dark-mode .online-sidebar {
+    background: #0f172a;
+  }
+
+  .online-sidebar.show {
+    display: flex;
+  }
+}
+
+/* Pastikan scroll behavior baik di mobile */
+.group-messages {
+  -webkit-overflow-scrolling: touch;
+}
+
+.online-users-list {
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Fix untuk input di mobile */
+#groupMessageInput {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
