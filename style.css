@@ -6421,11 +6421,10 @@ body.dark-mode .kanban-fab {
   z-index: 1000;
   display: flex;
   flex-direction: column-reverse;
-  align-items: flex-end;
+  align-items: center;
   gap: 1rem;
 }
 
-/* Tombol Utama (Trigger) */
 .fab-trigger {
   width: 60px;
   height: 60px;
@@ -6440,6 +6439,7 @@ body.dark-mode .kanban-fab {
   justify-content: center;
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s;
   position: relative;
+  z-index: 1002;
 }
 
 .fab-trigger:hover {
@@ -6454,7 +6454,6 @@ body.dark-mode .kanban-fab {
   transition: transform 0.3s, opacity 0.3s;
 }
 
-/* Animasi Ikon Buka/Tutup */
 .fab-icon-close {
   opacity: 0;
   transform: rotate(-45deg);
@@ -6470,16 +6469,15 @@ body.dark-mode .kanban-fab {
   transform: rotate(0deg);
 }
 
-/* Container Item Anak */
 .fab-items {
   display: flex;
   flex-direction: column-reverse;
-  align-items: flex-end;
+  align-items: center;
   gap: 1rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0;
+  pointer-events: none;
 }
 
-/* Item Anak (Default Tersembunyi) */
 .fab-item {
   width: 50px;
   height: 50px;
@@ -6493,17 +6491,16 @@ body.dark-mode .kanban-fab {
   cursor: pointer;
   opacity: 0;
   transform: translateY(20px) scale(0.8);
-  pointer-events: none;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
+  pointer-events: auto;
 }
 
-.fab-item svg {
-  width: 24px;
-  height: 24px;
+.fab-container.active .fab-item {
+  opacity: 1;
+  transform: translateY(0) scale(1);
 }
 
-/* Label Teks di Sebelah Kiri */
 .fab-label {
   position: absolute;
   right: 60px;
@@ -6521,33 +6518,24 @@ body.dark-mode .kanban-fab {
   pointer-events: none;
 }
 
-/* State Aktif (Saat menu dibuka) */
-.fab-container.active .fab-item {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-  pointer-events: auto;
-}
-
 .fab-container.active .fab-item:hover .fab-label {
   opacity: 1;
   transform: translateX(0);
 }
 
-/* Delay Animasi Agar Muncul Berurutan */
 .fab-container.active .fab-item:nth-child(1) {
   transition-delay: 0.05s;
-} /* Chat */
+}
 .fab-container.active .fab-item:nth-child(2) {
   transition-delay: 0.1s;
-} /* Code */
+}
 .fab-container.active .fab-item:nth-child(3) {
   transition-delay: 0.15s;
-} /* Notes */
+}
 .fab-container.active .fab-item:nth-child(4) {
   transition-delay: 0.2s;
-} /* Kanban */
+}
 
-/* Warna-warna Item */
 #chatbotFab {
   background: #2563eb;
 }
@@ -6561,12 +6549,10 @@ body.dark-mode .kanban-fab {
   background: #f59e0b;
 }
 
-/* Sembunyikan saat mode full layout aktif */
 body.full-layout-active .fab-container {
   display: none !important;
 }
 
-/* Responsif Mobile */
 @media (max-width: 768px) {
   .fab-container {
     bottom: 1.5rem;
