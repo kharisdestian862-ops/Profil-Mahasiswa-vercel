@@ -3038,7 +3038,7 @@ function initQuickActions() {
     actionsContainer.querySelectorAll("button");
 
   // 1. Tombol Download Transcript
-  transcriptBtn.addEventListener("click", showTranscript);
+  transcriptBtn.addEventListener("click", downloadTranscriptPDF);
 
   // 2. Tombol Request Leave
   const leaveModal = document.getElementById("leaveModal");
@@ -3187,6 +3187,106 @@ function calculateGPA() {
       "Perhitungan IPK/IPS selesai!",
     "success"
   );
+}
+
+function downloadTranscriptPDF() {
+  // 1. Ambil data user
+  const user = JSON.parse(localStorage.getItem("currentUser")) || {
+    fullName: "Mahasiswa",
+    nim: "000000",
+    programStudi: "Umum",
+  };
+
+  // 2. Buat elemen HTML sementara untuk PDF
+  const element = document.createElement("div");
+  element.style.padding = "40px";
+  element.style.fontFamily = "Arial, sans-serif";
+  element.style.color = "#333";
+
+  // Header Transkrip
+  let htmlContent = `
+    <div style="text-align: center; border-bottom: 3px solid #333; padding-bottom: 20px; margin-bottom: 30px;">
+      <h1 style="margin: 0; font-size: 24px;">TRANSKRIP NILAI SEMENTARA</h1>
+      <p style="margin: 5px 0 0; font-size: 14px;">Universitas Catur Insan Cendekia (UCIC)</p>
+    </div>
+    
+    <table style="width: 100%; margin-bottom: 30px; font-size: 14px;">
+      <tr><td style="width: 150px; font-weight: bold;">Nama Mahasiswa</td><td>: ${user.fullName}</td></tr>
+      <tr><td style="font-weight: bold;">NIM</td><td>: ${user.nim}</td></tr>
+      <tr><td style="font-weight: bold;">Program Studi</td><td>: ${user.programStudi}</td></tr>
+      <tr><td style="font-weight: bold;">Tahun Akademik</td><td>: 2024/2025</td></tr>
+    </table>
+
+    <h3 style="border-bottom: 1px solid #ccc; padding-bottom: 10px;">Hasil Studi Semester 4</h3>
+    <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px;">
+      <thead>
+        <tr style="background-color: #f2f2f2;">
+          <th style="border: 1px solid #999; padding: 10px; text-align: left;">Kode</th>
+          <th style="border: 1px solid #999; padding: 10px; text-align: left;">Mata Kuliah</th>
+          <th style="border: 1px solid #999; padding: 10px; text-align: center;">SKS</th>
+          <th style="border: 1px solid #999; padding: 10px; text-align: center;">Nilai</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  // Loop data mata kuliah dari attendanceData
+  // (Karena ini simulasi, kita gunakan data statis yang ada di script.js)
+  // Di sistem nyata, ini akan mengambil nilai sebenarnya
+  Object.values(attendanceData).forEach((course) => {
+    // Simulasi nilai huruf acak (karena data nilai asli belum disimpan di DB nilai)
+    const grade = ["A", "A-", "B+", "B"][Math.floor(Math.random() * 4)];
+
+    htmlContent += `
+      <tr>
+        <td style="border: 1px solid #999; padding: 8px;">${course.code}</td>
+        <td style="border: 1px solid #999; padding: 8px;">${course.name}</td>
+        <td style="border: 1px solid #999; padding: 8px; text-align: center;">${course.credits}</td>
+        <td style="border: 1px solid #999; padding: 8px; text-align: center;">${grade}</td>
+      </tr>
+    `;
+  });
+
+  htmlContent += `
+      </tbody>
+    </table>
+
+    <div style="margin-top: 40px; text-align: right;">
+      <p>Cirebon, ${new Date().toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "long",
+        year: "numeric",
+      })}</p>
+      <p style="margin-top: 60px; font-weight: bold;">( Tanda Tangan Dosen Wali )</p>
+    </div>
+  `;
+
+  element.innerHTML = htmlContent;
+
+  // 3. Konfigurasi PDF
+  const opt = {
+    margin: [10, 10, 10, 10], // top, left, bottom, right
+    filename: `Transkrip_${user.nim}.pdf`,
+    image: { type: "jpeg", quality: 0.98 },
+    html2canvas: { scale: 2 }, // Resolusi lebih tinggi
+    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+  };
+
+  // 4. Proses Download (Menampilkan notifikasi dulu)
+  showNotification("Sedang membuat PDF...", "info");
+
+  // Menggunakan worker html2pdf
+  html2pdf()
+    .set(opt)
+    .from(element)
+    .save()
+    .then(() => {
+      showNotification("Transkrip berhasil diunduh!", "success");
+    })
+    .catch((err) => {
+      console.error(err);
+      showNotification("Gagal membuat PDF", "error");
+    });
 }
 
 // Inisialisasi Kalkulator
