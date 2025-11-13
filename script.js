@@ -4681,26 +4681,108 @@ function loadUserProfile() {
   const firstName = user.fullName.split(" ")[0];
   console.log("🎯 First name:", firstName);
 
-  // Test setiap fungsi update
-  console.log("🔄 Memulai update semua bagian...");
+  try {
+    // 1. Update Dashboard Header - SIMPLIFIED VERSION
+    const titleEl = document.querySelector('h1[data-i18n="dashboard.title"]');
+    const welcomeEl = document.querySelector(
+      'div[data-i18n="dashboard.welcome"]'
+    );
 
-  // PERBAIKAN: Pass both firstName AND user
-  updateDashboardHeader(firstName, user);
-  console.log("✅ Dashboard header updated");
+    if (titleEl) {
+      if (currentLanguage === "en") {
+        titleEl.textContent = `${firstName}'s Dashboard`;
+      } else {
+        titleEl.textContent = `Dashboard ${firstName}`;
+      }
+    }
 
-  updateSidebarProfiles(user, firstName);
-  console.log("✅ Sidebar profiles updated");
+    if (welcomeEl) {
+      welcomeEl.textContent =
+        currentLanguage === "en"
+          ? `Welcome back, ${firstName}`
+          : `Selamat datang kembali, ${firstName}`;
+    }
 
-  updateProfileDetails(user);
-  console.log("✅ Profile details updated");
+    // Update mobile header
+    const mobileNameElement = document.querySelector(".mobile-name");
+    const mobileAvatarElement = document.querySelector(".mobile-avatar");
+    if (mobileNameElement) mobileNameElement.textContent = user.fullName;
+    if (mobileAvatarElement) {
+      const initials = user.fullName
+        .split(" ")
+        .slice(0, 2)
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase();
+      mobileAvatarElement.textContent = initials;
+    }
+    console.log("✅ Dashboard header updated");
 
-  updateRightSidebar(user);
-  console.log("✅ Right sidebar updated");
+    // 2. Update Sidebars - SIMPLIFIED
+    const desktopName = document.getElementById("desktopNameDisplay");
+    const mobileName = document.getElementById("mobileNameDisplay");
+    const desktopAvatar = document.getElementById("desktopAvatarDisplay");
+    const mobileAvatar = document.getElementById("mobileAvatarDisplay");
 
-  updateChatbotGreeting(firstName);
-  console.log("✅ Chatbot greeting updated");
+    if (desktopName) desktopName.textContent = user.fullName;
+    if (mobileName) mobileName.textContent = user.fullName;
+    if (desktopAvatar) {
+      const initials = user.fullName
+        .split(" ")
+        .slice(0, 2)
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase();
+      desktopAvatar.textContent = initials;
+    }
+    if (mobileAvatar) {
+      const initials = user.fullName
+        .split(" ")
+        .slice(0, 2)
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase();
+      mobileAvatar.textContent = initials;
+    }
+    console.log("✅ Sidebar profiles updated");
 
-  console.log("🎉 Semua update selesai");
+    // 3. Update Profile Details
+    document.getElementById("profileDetailName").textContent = user.fullName;
+    document.getElementById("profileDetailNim").textContent = user.nim;
+    document.getElementById("profileDetailProgram").textContent =
+      user.programStudi;
+    document.getElementById("profileDetailYear").textContent = user.year;
+    document.getElementById("profileDetailSemester").textContent =
+      user.semester;
+    document.getElementById("profileDetailEmail").textContent = user.email;
+    console.log("✅ Profile details updated");
+
+    // 4. Update Right Sidebar
+    document.getElementById("rightSidebarName").textContent = user.fullName;
+    document.getElementById("rightSidebarNim").textContent = `NIM: ${user.nim}`;
+    document.getElementById("rightSidebarProgram").textContent =
+      user.programStudi;
+    console.log("✅ Right sidebar updated");
+
+    // 5. Update Chatbot
+    const messagesContainer = document.getElementById("chatbotMessages");
+    if (messagesContainer && messagesContainer.children.length <= 1) {
+      const greeting =
+        currentLanguage === "id"
+          ? `Halo ${firstName}! Ada yang bisa saya bantu?`
+          : `Hello ${firstName}! How can I help you?`;
+
+      const botMsg = messagesContainer.querySelector(".chat-message.bot");
+      if (botMsg && botMsg.querySelector(".chat-text")) {
+        botMsg.querySelector(".chat-text").textContent = greeting;
+      }
+    }
+    console.log("✅ Chatbot greeting updated");
+
+    console.log("🎉 Semua update selesai");
+  } catch (error) {
+    console.error("❌ Error dalam loadUserProfile:", error);
+  }
 }
 
 function updateDashboardHeader(firstName, user) {
