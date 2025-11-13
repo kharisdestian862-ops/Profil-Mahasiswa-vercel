@@ -2005,7 +2005,7 @@ function switchSection(sectionId) {
   if (
     sectionId === "chatbot" ||
     sectionId === "codeplayground" ||
-    sections === "chat"
+    sectionId === "chat"
   ) {
     document.body.classList.add("full-layout-active");
   } else {
