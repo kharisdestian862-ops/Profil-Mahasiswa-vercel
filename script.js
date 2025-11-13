@@ -1105,8 +1105,7 @@ const translations = {
     "gpa.your_ipk": "Cumulative GPA (Est.)",
     "gpa.select_grade": "-- Predict --",
     "gpa.calculated": "GPA/IPS calculation complete!",
-    "chat.greeting":
-      "Hello Kharis! Ask me about your dashboard. Try typing 'help'.",
+    "chat.greeting": "Hello! Ask me about your dashboard. Try typing 'help'.",
 
     "chat.hello": "Hello, Kharis! How can I help you with your dashboard?",
     "chat.welcome": "You're welcome! Happy to help.",
@@ -1504,7 +1503,7 @@ const translations = {
     "gpa.select_grade": "-- Prediksi --",
     "gpa.calculated": "Perhitungan IPK/IPS selesai!",
     "chat.greeting":
-      "Halo Kharis! Tanya saya seputar dashboard Anda. Coba ketik 'bantuan'.",
+      "Halo! Tanya saya seputar dashboard Anda. Coba ketik 'bantuan'.",
 
     "chat.hello":
       "Halo, Kharis! Ada yang bisa saya bantu terkait dashboard Anda?",
@@ -4662,42 +4661,69 @@ function loadUserProfile() {
   }
 
   const user = JSON.parse(userJson);
-
-  // Update Profile Info (pastikan selector sesuai)
-  document.querySelector(
-    ".profile-info .info-item:nth-child(1) .info-value"
-  ).textContent = user.fullName;
-  document.querySelector(
-    ".profile-info .info-item:nth-child(2) .info-value"
-  ).textContent = user.nim;
-  document.querySelector(
-    ".profile-info .info-item:nth-child(3) .info-value"
-  ).textContent = user.programStudi;
-  document.querySelector(
-    ".profile-info .info-item:nth-child(6) .info-value"
-  ).textContent = user.email;
-
   const firstName = user.fullName.split(" ")[0];
 
-  // PANGGIL FUNGSI BARU
+  // Buat inisial avatar (misal: Kharis Destian -> KD)
+  const initials = user.fullName
+    .split(" ")
+    .slice(0, 2)
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase();
+
+  // 1. Update Header Dashboard
   updateDashboardHeader(firstName);
 
-  // Update Sidebar Info
+  // 2. Update Sidebar & Mobile Profile
   document
-    .querySelectorAll(".profile .name")
+    .querySelectorAll(".name, .mobile-name")
     .forEach((el) => (el.textContent = user.fullName));
   document
-    .querySelectorAll(".profile .program")
-    .forEach((el) => (el.textContent = `${user.programStudi} • 2023`));
+    .querySelectorAll(".program")
+    .forEach((el) => (el.textContent = user.programStudi + " • 2023"));
+  document
+    .querySelectorAll(".avatar, .mobile-avatar")
+    .forEach((el) => (el.textContent = initials));
 
-  document.querySelector(".sidebar-right .student-info h3").textContent =
-    user.fullName;
-  document.querySelector(
+  // 3. Update Halaman Profil Detail
+  const profileName = document.querySelector(
+    ".profile-info .info-item:nth-child(1) .info-value"
+  );
+  if (profileName) profileName.textContent = user.fullName;
+
+  const profileNim = document.querySelector(
+    ".profile-info .info-item:nth-child(2) .info-value"
+  );
+  if (profileNim) profileNim.textContent = user.nim;
+
+  const profileProdi = document.querySelector(
+    ".profile-info .info-item:nth-child(3) .info-value"
+  );
+  if (profileProdi) profileProdi.textContent = user.programStudi;
+
+  const profileEmail = document.querySelector(
+    ".profile-info .info-item:nth-child(6) .info-value"
+  );
+  if (profileEmail) profileEmail.textContent = user.email;
+
+  // 4. Update Sidebar Kanan (Info Mahasiswa)
+  const sideInfoName = document.querySelector(
+    ".sidebar-right .student-info h3"
+  );
+  if (sideInfoName) sideInfoName.textContent = user.fullName;
+
+  const sideInfoNim = document.querySelector(
     ".sidebar-right .student-info p:nth-child(2)"
-  ).textContent = `NIM: ${user.nim}`;
-  document.querySelector(
+  );
+  if (sideInfoNim) sideInfoNim.textContent = `NIM: ${user.nim}`;
+
+  const sideInfoProdi = document.querySelector(
     ".sidebar-right .student-info p:nth-child(3)"
-  ).textContent = user.programStudi;
+  );
+  if (sideInfoProdi) sideInfoProdi.textContent = user.programStudi;
+
+  // 5. Update Chatbot Greeting (PENTING!)
+  updateChatbotGreeting(firstName);
 }
 
 function updateDashboardHeader(firstName) {
@@ -4765,6 +4791,30 @@ function initLogout() {
 
   if (logoutBtnMobile) {
     logoutBtnMobile.addEventListener("click", handleLogout);
+  }
+}
+
+function updateChatbotGreeting(name) {
+  const messagesContainer = document.getElementById("chatbotMessages");
+  // Cek apakah pesan pertama adalah greeting default
+  if (messagesContainer && messagesContainer.children.length <= 1) {
+    const greetingKey =
+      currentLanguage === "id"
+        ? `Halo ${name}! Ada yang bisa saya bantu?`
+        : `Hello ${name}! How can I help you?`;
+
+    // Update pesan jika elemen sudah ada
+    const botMsg = messagesContainer.querySelector(".chat-message.bot");
+    if (botMsg) {
+      botMsg.querySelector(".chat-text").textContent = greetingKey;
+    } else {
+      // Buat baru jika belum ada
+      const msgDiv = document.createElement("div");
+      msgDiv.className = "chat-message bot";
+      msgDiv.innerHTML = `<span class="chat-text">${greetingKey}</span>`;
+      messagesContainer.innerHTML = "";
+      messagesContainer.appendChild(msgDiv);
+    }
   }
 }
 
