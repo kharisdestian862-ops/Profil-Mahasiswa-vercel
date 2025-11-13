@@ -51,9 +51,17 @@
             </div>
 
             <button type="submit" data-i18n="login.button">Masuk</button>
+            <div class="login-footer-desktop">
+              <p>
+                <span data-i18n="login.no_account">Belum punya akun?</span>
+                <a href="register.html" data-i18n="login.register_now"
+                  >Daftar sekarang</a
+                >
+              </p>
+            </div>
           </form>
 
-          <div class="login-footer-mobile">
+          <div class="login-footer-mobile" id="login-footer-mobile">
             <p>
               <span data-i18n="login.no_account">Belum punya akun?</span>
               <a href="register.html" data-i18n="login.register_now"
@@ -66,6 +74,17 @@
     </div>
 
     <script>
+      // Fungsi untuk HASH password (Wajib untuk verifikasi yang aman)
+      async function hashPassword(password) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(password);
+        const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+        const hashHex = Array.from(new Uint8Array(hashBuffer))
+          .map((b) => b.toString(16).padStart(2, "0"))
+          .join("");
+        return hashHex;
+      }
+
       // === LOGIKA LOGIN & TRANSLATION ===
       const translations = {
         en: {
@@ -80,8 +99,6 @@
           "login.password": "Password",
           "login.forgot": "Forgot password?",
           "login.button": "Sign In",
-          "login.or": "or",
-          "login.google": "Continue with Google",
         },
         id: {
           "login.page_title": "Masuk - Dashboard Mahasiswa",
@@ -95,8 +112,6 @@
           "login.password": "Password",
           "login.forgot": "Lupa password?",
           "login.button": "Masuk",
-          "login.or": "atau",
-          "login.google": "Lanjutkan dengan Google",
         },
       };
 
@@ -114,21 +129,64 @@
       }
 
       document.addEventListener("DOMContentLoaded", function () {
-        // 1. Cek bahasa dari dashboard
+        // 1. Cek apakah user sudah login. Jika iya, langsung redirect
+        if (localStorage.getItem("isLoggedIn") === "true") {
+          window.location.href = "dashboard.html";
+          return;
+        }
+
+        // 2. Cek bahasa dari dashboard
         const savedLanguage = localStorage.getItem("preferredLanguage");
         if (savedLanguage && translations[savedLanguage]) {
           currentLanguage = savedLanguage;
         }
         applyTranslations();
 
-        // 2. Logika submit form (seperti kode Anda sebelumnya)
+        // 3. Logika submit form: Verifikasi dan Login
         document
           .getElementById("loginForm")
-          .addEventListener("submit", function (e) {
+          .addEventListener("submit", async function (e) {
             e.preventDefault();
-            // Simpan bahasa saat login (opsional, tapi bagus)
-            localStorage.setItem("preferredLanguage", currentLanguage);
-            window.location.href = "dashboard.html";
+
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            let users = JSON.parse(localStorage.getItem("users") || "[]");
+            const user = users.find((u) => u.email === email);
+
+            if (!user) {
+              alert(
+                currentLanguage === "id"
+                  ? "Email tidak terdaftar."
+                  : "Email not found."
+              );
+              return;
+            }
+
+            // Hash password yang dimasukkan dan bandingkan
+            const inputHash = await hashPassword(password);
+
+            if (inputHash === user.passwordHash) {
+              // LOGIN BERHASIL: Simpan status login dan data user ke localStorage
+              localStorage.setItem("isLoggedIn", "true");
+              localStorage.setItem("currentUser", JSON.stringify(user));
+
+              // Simpan bahasa saat login
+              localStorage.setItem("preferredLanguage", currentLanguage);
+
+              alert(
+                currentLanguage === "id"
+                  ? "Login berhasil!"
+                  : "Login successful!"
+              );
+              window.location.href = "dashboard.html";
+            } else {
+              alert(
+                currentLanguage === "id"
+                  ? "Password salah."
+                  : "Incorrect password."
+              );
+            }
           });
       });
     </script>
