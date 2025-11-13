@@ -4531,7 +4531,7 @@ console.log("Fibonacci of 10 is:", fibonacci(10));`,
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #667eea 0%, #2b26b9 100%);
             color: white;
             text-align: center;
             padding: 50px;
@@ -4654,6 +4654,7 @@ function initializeEditor() {
       language: "python",
       theme: "vs-dark",
       fontSize: 14,
+      mouseWheelZoom: true,
       minimap: { enabled: false },
       automaticLayout: true,
       scrollBeyondLastLine: false,
@@ -5497,8 +5498,8 @@ function payBill(billId) {
             align-items: center;
             gap: 1rem;
             transition: all 0.2s;
-          " onmouseover="this.style.borderColor='#6366f1'" onmouseout="this.style.borderColor='#e2e8f0'">
-            <span style="color: #6366f1;">${iconMap[method.icon]}</span>
+          " onmouseover="this.style.borderColor='#2b26b9'" onmouseout="this.style.borderColor='#e2e8f0'">
+            <span style="color: #2b26b9;">${iconMap[method.icon]}</span>
             <span style="font-weight: 600;">${method.name}</span>
           </button>
         `
@@ -5587,7 +5588,7 @@ function viewReceipt(receiptNumber) {
           .receipt-amount {
             font-size: 2rem;
             font-weight: bold;
-            color: #6366f1;
+            color: #2b26b9;
             text-align: center;
             margin: 2rem 0;
           }
@@ -5637,7 +5638,7 @@ function viewReceipt(receiptNumber) {
         <div style="text-align: center; margin-top: 2rem;">
           <button onclick="window.print()" style="
             padding: 0.75rem 2rem;
-            background: #6366f1;
+            background: #2b26b9;
             color: white;
             border: none;
             border-radius: 8px;
