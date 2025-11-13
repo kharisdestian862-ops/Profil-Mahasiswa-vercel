@@ -769,69 +769,195 @@ let attendanceData = {
 };
 
 // Tambahkan objek ini di dekat attendanceData, atau di global scope:
-const videoMaterials = {
-  algorithms: [
+// Financial Data
+const financialData = {
+  studentInfo: {
+    name: "Kharis Destian Maulana",
+    nim: "2023001",
+    semester: 4,
+    academicYear: "2024/2025",
+  },
+
+  summary: {
+    totalTagihan: 12500000,
+    totalBayar: 8500000,
+    sisaTagihan: 4000000,
+    status: "partially_paid", // paid, partially_paid, unpaid
+  },
+
+  tuitionFees: [
     {
-      id: "v1-alg",
-      title: "01. Pengantar Analisis Algoritma",
-      url: "dQw4w9WgXcQ",
-      description:
-        "Video pengantar yang menjelaskan konsep notasi Big O dan bagaimana menganalisis efisiensi waktu.",
+      id: 1,
+      semester: "Semester 4 (2024/2025)",
+      type: "Uang Kuliah Semester",
+      amount: 6500000,
+      dueDate: "2025-01-15",
+      status: "paid",
+      paidDate: "2025-01-10",
+      paymentMethod: "Transfer Bank",
+      receiptNumber: "RCP2025010001",
     },
     {
-      id: "v2-alg",
-      title: "02. Visualisasi Sorting Algorithms",
-      url: "sort-visualization-id",
-      description:
-        "Demonstrasi visual interaktif mengenai cara kerja algoritma Bubble Sort, Merge Sort, dan Quick Sort.",
+      id: 2,
+      semester: "Semester 4 (2024/2025)",
+      type: "Biaya Praktikum",
+      amount: 1500000,
+      dueDate: "2025-02-01",
+      status: "paid",
+      paidDate: "2025-01-28",
+      paymentMethod: "Virtual Account",
+      receiptNumber: "RCP2025010002",
     },
     {
-      id: "v3-alg",
-      title: "03. Konsep Dynamic Programming",
-      url: "dynamic-intro-id",
-      description:
-        "Materi dasar mengenai Dynamic Programming (DP) dan aplikasinya pada masalah Fibonacci.",
+      id: 3,
+      semester: "Semester 4 (2024/2025)",
+      type: "Biaya SKS Tambahan",
+      amount: 500000,
+      dueDate: "2025-02-15",
+      status: "overdue",
+      paidDate: null,
+      paymentMethod: null,
+      receiptNumber: null,
+    },
+    {
+      id: 4,
+      semester: "Semester 4 (2024/2025)",
+      type: "Biaya Kegiatan Mahasiswa",
+      amount: 750000,
+      dueDate: "2025-03-01",
+      status: "pending",
+      paidDate: null,
+      paymentMethod: null,
+      receiptNumber: null,
+    },
+    {
+      id: 5,
+      semester: "Semester 4 (2024/2025)",
+      type: "Biaya Wisuda (Cicilan)",
+      amount: 2750000,
+      dueDate: "2025-06-15",
+      status: "pending",
+      paidDate: null,
+      paymentMethod: null,
+      receiptNumber: null,
     },
   ],
-  databases: [
+
+  paymentHistory: [
     {
-      id: "v1-db",
-      title: "01. Dasar-Dasar SQL CRUD",
-      url: "sql-basics-id",
-      description:
-        "Panduan lengkap cara menggunakan perintah SELECT, INSERT, UPDATE, dan DELETE di SQL.",
+      id: 1,
+      date: "2025-01-10",
+      description: "Uang Kuliah Semester 4",
+      amount: 6500000,
+      method: "Transfer Bank",
+      receiptNumber: "RCP2025010001",
+      status: "verified",
     },
     {
-      id: "v2-db",
-      title: "02. Penjelasan Normalisasi Database (3NF)",
-      url: "normalization-theory-id",
-      description:
-        "Teori Normalisasi database (1NF, 2NF, dan 3NF) untuk menghindari redundansi data.",
+      id: 2,
+      date: "2025-01-28",
+      description: "Biaya Praktikum Semester 4",
+      amount: 1500000,
+      method: "Virtual Account",
+      receiptNumber: "RCP2025010002",
+      status: "verified",
+    },
+    {
+      id: 3,
+      date: "2024-08-15",
+      description: "Uang Kuliah Semester 3",
+      amount: 6500000,
+      method: "Transfer Bank",
+      receiptNumber: "RCP2024080001",
+      status: "verified",
+    },
+    {
+      id: 4,
+      date: "2024-08-20",
+      description: "Biaya Praktikum Semester 3",
+      amount: 1500000,
+      method: "Virtual Account",
+      receiptNumber: "RCP2024080002",
+      status: "verified",
     },
   ],
-  webdev: [
+
+  paymentMethods: [
     {
-      id: "v1-web",
-      title: "01. Responsive Design dengan Flexbox",
-      url: "flexbox-tutorial-id",
-      description:
-        "Tutorial membuat layout website yang responsif menggunakan Flexbox.",
+      id: 1,
+      type: "bank_transfer",
+      name: "Transfer Bank",
+      bank: "Bank Mandiri",
+      accountNumber: "1234567890",
+      accountName: "Universitas XYZ",
+      icon: "bank", // Ganti dari emoji
     },
     {
-      id: "v2-web",
-      title: "02. Pengenalan ReactJS untuk Frontend",
-      url: "react-basics-id",
-      description:
-        "Video pengantar mengenai library ReactJS dan konsep dasar komponen.",
+      id: 2,
+      type: "virtual_account",
+      name: "Virtual Account",
+      bank: "Bank BCA",
+      accountNumber: "8012023001",
+      accountName: "Kharis Destian Maulana",
+      icon: "card", // Ganti dari emoji
+    },
+    {
+      id: 3,
+      type: "e_wallet",
+      name: "E-Wallet",
+      providers: ["GoPay", "OVO", "Dana"],
+      icon: "wallet", // Ganti dari emoji
+    },
+    {
+      id: 4,
+      type: "credit_card",
+      name: "Kartu Kredit/Debit",
+      icon: "credit", // Ganti dari emoji
     },
   ],
-  softwareeng: [
+
+  scholarships: [
     {
-      id: "v1-se",
-      title: "01. Metodologi Agile dan Scrum",
-      url: "agile-scrum-id",
-      description:
-        "Penjelasan mengenai Agile dan Scrum untuk manajemen proyek pengembangan perangkat lunak.",
+      id: 1,
+      name: "Beasiswa Prestasi Akademik",
+      type: "Full Tuition",
+      amount: 6500000,
+      semester: "Semester 3",
+      status: "received",
+      date: "2024-08-01",
+    },
+  ],
+
+  installmentPlans: [
+    {
+      id: 1,
+      description: "Cicilan UKS Semester 4",
+      totalAmount: 6500000,
+      paidAmount: 6500000,
+      remainingAmount: 0,
+      installments: [
+        {
+          number: 1,
+          amount: 2166667,
+          dueDate: "2025-01-10",
+          status: "paid",
+          paidDate: "2025-01-10",
+        },
+        {
+          number: 2,
+          amount: 2166667,
+          dueDate: "2025-02-10",
+          status: "paid",
+          paidDate: "2025-02-08",
+        },
+        {
+          number: 3,
+          amount: 2166666,
+          dueDate: "2025-03-10",
+          status: "paid",
+          paidDate: "2025-03-05",
+        },
+      ],
     },
   ],
 };
@@ -1162,6 +1288,56 @@ const translations = {
     "playground.no_saved": "No saved code found for this language",
     "playground.saved": "Code saved successfully!",
     "playground.loaded": "Saved code loaded!",
+
+    // Tambahkan di translations.en
+    "nav.finance": "Finance",
+    "finance.title": "Finance",
+    "finance.subtitle": "Manage your tuition and payment information",
+    "finance.summary": "Payment Summary",
+    "finance.total_bill": "Total Bill",
+    "finance.total_paid": "Total Paid",
+    "finance.remaining_bill": "Remaining Bill",
+    "finance.payment_status": "Payment Status",
+    "finance.status.paid": "Paid Off",
+    "finance.status.partially_paid": "Partially Paid",
+    "finance.status.unpaid": "Unpaid",
+    "finance.tuition_fees": "Tuition & Fees",
+    "finance.payment_history": "Payment History",
+    "finance.payment_methods": "Payment Methods",
+    "finance.scholarships": "Scholarships",
+    "finance.semester": "Semester",
+    "finance.type": "Type",
+    "finance.amount": "Amount",
+    "finance.due_date": "Due Date",
+    "finance.status": "Status",
+    "finance.action": "Action",
+    "finance.pay_now": "Pay Now",
+    "finance.view_receipt": "View Receipt",
+    "finance.download_receipt": "Download Receipt",
+    "finance.date": "Date",
+    "finance.description": "Description",
+    "finance.method": "Payment Method",
+    "finance.receipt_number": "Receipt Number",
+    "finance.verified": "Verified",
+    "finance.pending": "Pending",
+    "finance.overdue": "Overdue",
+    "finance.bank_transfer": "Bank Transfer",
+    "finance.virtual_account": "Virtual Account",
+    "finance.e_wallet": "E-Wallet",
+    "finance.credit_card": "Credit/Debit Card",
+    "finance.scholarship_name": "Scholarship Name",
+    "finance.scholarship_type": "Type",
+    "finance.scholarship_amount": "Amount",
+    "finance.scholarship_status": "Status",
+    "finance.received": "Received",
+    "finance.total": "Total",
+    "finance.installment_plan": "Installment Plan",
+    "finance.paid_amount": "Paid Amount",
+    "finance.remaining_amount": "Remaining Amount",
+    "finance.installment": "Installment",
+    "finance.quick_pay": "Quick Pay",
+    "finance.upcoming_bills": "Upcoming Bills",
+    "finance.no_bills": "No upcoming bills",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -1485,6 +1661,56 @@ const translations = {
     "playground.no_saved": "Tidak ada kode tersimpan untuk bahasa ini",
     "playground.saved": "Kode berhasil disimpan!",
     "playground.loaded": "Kode tersimpan dimuat!",
+
+    // Tambahkan di translations.id
+    "nav.finance": "Keuangan",
+    "finance.title": "Keuangan",
+    "finance.subtitle": "Kelola informasi pembayaran dan tagihan Anda",
+    "finance.summary": "Ringkasan Pembayaran",
+    "finance.total_bill": "Total Tagihan",
+    "finance.total_paid": "Total Dibayar",
+    "finance.remaining_bill": "Sisa Tagihan",
+    "finance.payment_status": "Status Pembayaran",
+    "finance.status.paid": "Lunas",
+    "finance.status.partially_paid": "Sebagian Lunas",
+    "finance.status.unpaid": "Belum Dibayar",
+    "finance.tuition_fees": "Tagihan & Biaya",
+    "finance.payment_history": "Riwayat Pembayaran",
+    "finance.payment_methods": "Metode Pembayaran",
+    "finance.scholarships": "Beasiswa",
+    "finance.semester": "Semester",
+    "finance.type": "Jenis",
+    "finance.amount": "Jumlah",
+    "finance.due_date": "Jatuh Tempo",
+    "finance.status": "Status",
+    "finance.action": "Aksi",
+    "finance.pay_now": "Bayar Sekarang",
+    "finance.view_receipt": "Lihat Bukti",
+    "finance.download_receipt": "Unduh Bukti",
+    "finance.date": "Tanggal",
+    "finance.description": "Deskripsi",
+    "finance.method": "Metode Pembayaran",
+    "finance.receipt_number": "No. Bukti",
+    "finance.verified": "Terverifikasi",
+    "finance.pending": "Tertunda",
+    "finance.overdue": "Terlambat",
+    "finance.bank_transfer": "Transfer Bank",
+    "finance.virtual_account": "Virtual Account",
+    "finance.e_wallet": "E-Wallet",
+    "finance.credit_card": "Kartu Kredit/Debit",
+    "finance.scholarship_name": "Nama Beasiswa",
+    "finance.scholarship_type": "Jenis",
+    "finance.scholarship_amount": "Nominal",
+    "finance.scholarship_status": "Status",
+    "finance.received": "Diterima",
+    "finance.total": "Total",
+    "finance.installment_plan": "Rencana Cicilan",
+    "finance.paid_amount": "Jumlah Dibayar",
+    "finance.remaining_amount": "Sisa Tagihan",
+    "finance.installment": "Cicilan",
+    "finance.quick_pay": "Bayar Cepat",
+    "finance.upcoming_bills": "Tagihan Mendatang",
+    "finance.no_bills": "Tidak ada tagihan mendatang",
   },
 };
 
@@ -1749,6 +1975,9 @@ function switchSection(sectionId) {
     }
     if (sectionId === "grades") {
       populateGradesPage();
+    }
+    if (sectionId === "finance") {
+      initFinanceSection();
     }
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
@@ -4791,3 +5020,581 @@ window.executeCode = executeCode;
 window.saveCode = saveCode;
 window.clearOutput = clearOutput;
 window.loadSavedCode = loadSavedCode;
+
+// Initialize Finance Section
+function initFinanceSection() {
+  populateFinanceSummary();
+  populateBillsTable();
+  populatePaymentHistory();
+  populatePaymentMethods();
+  populateScholarships();
+}
+
+// Populate Finance Summary Cards
+function populateFinanceSummary() {
+  const summary = financialData.summary;
+
+  // Update HTML untuk summary cards, ganti icon
+  document.querySelector(".total-bill .summary-icon").innerHTML =
+    '<i class="icon-bill"></i>';
+  document.querySelector(".total-paid .summary-icon").innerHTML =
+    '<i class="icon-check"></i>';
+  document.querySelector(".remaining-bill .summary-icon").innerHTML =
+    '<i class="icon-clock"></i>';
+  document.querySelector(".payment-status .summary-icon").innerHTML =
+    '<i class="icon-chart"></i>';
+
+  document.getElementById("totalBill").textContent = formatCurrency(
+    summary.totalTagihan
+  );
+  document.getElementById("totalPaid").textContent = formatCurrency(
+    summary.totalBayar
+  );
+  document.getElementById("remainingBill").textContent = formatCurrency(
+    summary.sisaTagihan
+  );
+
+  const statusElement = document.getElementById("paymentStatus");
+  statusElement.className = `status-badge ${summary.status.replace("_", "-")}`;
+
+  const statusKey = `finance.status.${summary.status}`;
+  statusElement.setAttribute("data-i18n", statusKey);
+  statusElement.textContent = translations[currentLanguage][statusKey];
+}
+
+// Populate Bills Table
+function populateBillsTable() {
+  const tableBody = document.getElementById("billsTableBody");
+  if (!tableBody) return;
+
+  tableBody.innerHTML = "";
+
+  financialData.tuitionFees.forEach((bill) => {
+    const row = document.createElement("div");
+    row.className = "table-row";
+
+    let statusBadge = "";
+    let actionButton = "";
+
+    if (bill.status === "paid") {
+      statusBadge = `<span class="status-badge paid" data-i18n="finance.status.paid">Lunas</span>`;
+      actionButton = `<button class="receipt-btn" onclick="viewReceipt('${bill.receiptNumber}')">
+        <span data-i18n="finance.view_receipt">Lihat Bukti</span>
+      </button>`;
+    } else if (bill.status === "overdue") {
+      statusBadge = `<span class="status-badge overdue" data-i18n="finance.overdue">Terlambat</span>`;
+      actionButton = `<button class="pay-btn" onclick="payBill(${bill.id})">
+        <span data-i18n="finance.pay_now">Bayar Sekarang</span>
+      </button>`;
+    } else if (bill.status === "pending") {
+      statusBadge = `<span class="status-badge pending" data-i18n="finance.pending">Tertunda</span>`;
+      actionButton = `<button class="pay-btn" onclick="payBill(${bill.id})">
+        <span data-i18n="finance.pay_now">Bayar Sekarang</span>
+      </button>`;
+    }
+
+    // Get translated labels
+    const semesterLabel =
+      translations[currentLanguage]["finance.semester"] || "Semester";
+    const typeLabel = translations[currentLanguage]["finance.type"] || "Jenis";
+    const amountLabel =
+      translations[currentLanguage]["finance.amount"] || "Jumlah";
+    const dueLabel =
+      translations[currentLanguage]["finance.due_date"] || "Jatuh Tempo";
+    const statusLabel =
+      translations[currentLanguage]["finance.status"] || "Status";
+    const actionLabel =
+      translations[currentLanguage]["finance.action"] || "Aksi";
+
+    row.innerHTML = `
+      <div class="col-semester" data-label="${semesterLabel}">${
+      bill.semester
+    }</div>
+      <div class="col-type" data-label="${typeLabel}">${bill.type}</div>
+      <div class="col-amount" data-label="${amountLabel}">${formatCurrency(
+      bill.amount
+    )}</div>
+      <div class="col-due" data-label="${dueLabel}">${formatDate(
+      bill.dueDate
+    )}</div>
+      <div class="col-status" data-label="${statusLabel}">${statusBadge}</div>
+      <div class="col-action" data-label="${actionLabel}">${actionButton}</div>
+    `;
+
+    tableBody.appendChild(row);
+  });
+
+  applyTranslations();
+}
+
+// Populate Payment History Table
+function populatePaymentHistory() {
+  const tableBody = document.getElementById("historyTableBody");
+  if (!tableBody) return;
+
+  tableBody.innerHTML = "";
+
+  financialData.paymentHistory.forEach((payment) => {
+    const row = document.createElement("div");
+    row.className = "table-row";
+
+    // Get translated labels
+    const dateLabel =
+      translations[currentLanguage]["finance.date"] || "Tanggal";
+    const descLabel =
+      translations[currentLanguage]["finance.description"] || "Deskripsi";
+    const amountLabel =
+      translations[currentLanguage]["finance.amount"] || "Jumlah";
+    const methodLabel =
+      translations[currentLanguage]["finance.method"] || "Metode";
+    const receiptLabel =
+      translations[currentLanguage]["finance.receipt_number"] || "No. Bukti";
+    const actionLabel =
+      translations[currentLanguage]["finance.action"] || "Aksi";
+
+    row.innerHTML = `
+      <div class="col-date" data-label="${dateLabel}">${formatDate(
+      payment.date
+    )}</div>
+      <div class="col-description" data-label="${descLabel}">${
+      payment.description
+    }</div>
+      <div class="col-amount" data-label="${amountLabel}">${formatCurrency(
+      payment.amount
+    )}</div>
+      <div class="col-method" data-label="${methodLabel}">${
+      payment.method
+    }</div>
+      <div class="col-receipt" data-label="${receiptLabel}">${
+      payment.receiptNumber
+    }</div>
+      <div class="col-action" data-label="${actionLabel}">
+        <button class="download-btn" onclick="downloadReceipt('${
+          payment.receiptNumber
+        }')">
+          <span data-i18n="finance.download_receipt">Unduh</span>
+        </button>
+      </div>
+    `;
+
+    tableBody.appendChild(row);
+  });
+
+  applyTranslations();
+}
+
+// Populate Payment Methods
+function populatePaymentMethods() {
+  const grid = document.getElementById("paymentMethodsGrid");
+  if (!grid) return;
+
+  grid.innerHTML = "";
+
+  const iconMap = {
+    bank: '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/></svg>',
+    card: '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>',
+    wallet:
+      '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/></svg>',
+    credit:
+      '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M7 15h.01M11 15h2"/></svg>',
+  };
+
+  financialData.paymentMethods.forEach((method) => {
+    const card = document.createElement("div");
+    card.className = "payment-method-card";
+
+    let detailsHTML = "";
+
+    if (method.bank) {
+      detailsHTML = `
+        <div class="method-details">
+          <p><strong>Bank:</strong> ${method.bank}</p>
+          <p><strong>No. Rekening:</strong> ${method.accountNumber}</p>
+          <p><strong>Atas Nama:</strong> ${method.accountName}</p>
+        </div>
+      `;
+    } else if (method.providers) {
+      detailsHTML = `
+        <div class="method-details">
+          <p><strong>Tersedia:</strong> ${method.providers.join(", ")}</p>
+        </div>
+      `;
+    }
+
+    card.innerHTML = `
+      <div class="method-icon">${iconMap[method.icon]}</div>
+      <div class="method-name">${method.name}</div>
+      <p style="color: #64748b; font-size: 0.875rem;">
+        ${
+          method.type === "bank_transfer"
+            ? "Transfer melalui ATM, Mobile Banking, atau Internet Banking"
+            : method.type === "virtual_account"
+            ? "Nomor Virtual Account khusus untuk Anda"
+            : method.type === "e_wallet"
+            ? "Pembayaran melalui dompet digital"
+            : "Pembayaran dengan kartu"
+        }
+      </p>
+      ${detailsHTML}
+      <button class="pay-btn" onclick="selectPaymentMethod('${
+        method.type
+      }')" style="width: 100%; margin-top: 1rem;">
+        Pilih Metode Ini
+      </button>
+    `;
+
+    grid.appendChild(card);
+  });
+}
+
+// Populate Scholarships
+function populateScholarships() {
+  const container = document.getElementById("scholarshipsContainer");
+  if (!container) return;
+
+  if (financialData.scholarships.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 3rem; color: #64748b;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin: 0 auto;">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+        </div>
+        <p>Belum ada riwayat beasiswa</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = "";
+
+  financialData.scholarships.forEach((scholarship) => {
+    const card = document.createElement("div");
+    card.className = "scholarship-card";
+
+    card.innerHTML = `
+      <div class="scholarship-info">
+        <h3>${scholarship.name}</h3>
+        <div class="scholarship-detail">
+          <span data-i18n="finance.scholarship_type">Jenis</span>
+          <span>${scholarship.type}</span>
+        </div>
+        <div class="scholarship-detail">
+          <span data-i18n="finance.scholarship_amount">Nominal</span>
+          <span>${formatCurrency(scholarship.amount)}</span>
+        </div>
+        <div class="scholarship-detail">
+          <span data-i18n="finance.semester">Semester</span>
+          <span>${scholarship.semester}</span>
+        </div>
+        <div class="scholarship-detail">
+          <span data-i18n="finance.scholarship_status">Status</span>
+          <span class="status-badge ${
+            scholarship.status === "received" ? "verified" : "pending"
+          }" data-i18n="finance.${scholarship.status}">
+            ${scholarship.status === "received" ? "Diterima" : "Pending"}
+          </span>
+        </div>
+        <div class="scholarship-detail">
+          <span data-i18n="finance.date">Tanggal</span>
+          <span>${formatDate(scholarship.date)}</span>
+        </div>
+      </div>
+      <div class="scholarship-visual" style="display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 12px; color: white; padding: 2rem;">
+        <div style="text-align: center;">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom: 1rem;">
+            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+            <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+            <path d="M4 22h16"/>
+            <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+            <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+            <path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/>
+          </svg>
+          <div style="font-size: 1.5rem; font-weight: 700;">${formatCurrency(
+            scholarship.amount
+          )}</div>
+          <div style="font-size: 0.875rem; opacity: 0.9; margin-top: 0.5rem;">Total Bantuan</div>
+        </div>
+      </div>
+    `;
+
+    container.appendChild(card);
+  });
+
+  applyTranslations();
+}
+
+// Switch Finance Tabs
+function switchFinanceTab(tabName) {
+  // Update tab buttons
+  document.querySelectorAll(".finance-tab-btn").forEach((btn) => {
+    btn.classList.remove("active");
+    if (btn.dataset.tab === tabName) {
+      btn.classList.add("active");
+    }
+  });
+
+  // Update tab content
+  document.querySelectorAll(".finance-tab-content").forEach((content) => {
+    content.classList.remove("active");
+  });
+
+  const activeTab = document.getElementById(`${tabName}Tab`);
+  if (activeTab) {
+    activeTab.classList.add("active");
+  }
+}
+
+// Utility Functions
+function formatCurrency(amount) {
+  return "Rp " + amount.toLocaleString("id-ID");
+}
+
+function formatDate(dateString) {
+  const date = new Date(dateString);
+  return date.toLocaleDateString(currentLanguage === "id" ? "id-ID" : "en-US", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+// Action Functions
+function payBill(billId) {
+  const bill = financialData.tuitionFees.find((b) => b.id === billId);
+  if (!bill) return;
+
+  const iconMap = {
+    bank: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/></svg>',
+    card: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>',
+    wallet:
+      '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/></svg>',
+    credit:
+      '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M7 15h.01M11 15h2"/></svg>',
+  };
+
+  const modal = document.createElement("div");
+  modal.className = "payment-modal";
+  modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+  `;
+
+  modal.innerHTML = `
+    <div style="background: white; border-radius: 16px; padding: 2rem; max-width: 500px; width: 90%;">
+      <h2 style="margin-bottom: 1rem;">Pembayaran Tagihan</h2>
+      <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+        <p style="margin: 0.5rem 0;"><strong>Jenis:</strong> ${bill.type}</p>
+        <p style="margin: 0.5rem 0;"><strong>Jumlah:</strong> ${formatCurrency(
+          bill.amount
+        )}</p>
+        <p style="margin: 0.5rem 0;"><strong>Jatuh Tempo:</strong> ${formatDate(
+          bill.dueDate
+        )}</p>
+      </div>
+      <p style="color: #64748b; margin-bottom: 1.5rem;">Pilih metode pembayaran yang Anda inginkan:</p>
+      <div style="display: grid; gap: 0.75rem; margin-bottom: 1.5rem;">
+        ${financialData.paymentMethods
+          .map(
+            (method) => `
+          <button onclick="processPayment(${bill.id}, '${method.type}')" style="
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.2s;
+          " onmouseover="this.style.borderColor='#6366f1'" onmouseout="this.style.borderColor='#e2e8f0'">
+            <span style="color: #6366f1;">${iconMap[method.icon]}</span>
+            <span style="font-weight: 600;">${method.name}</span>
+          </button>
+        `
+          )
+          .join("")}
+      </div>
+      <button onclick="this.closest('.payment-modal').remove()" style="
+        width: 100%;
+        padding: 0.75rem;
+        background: #e2e8f0;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 600;
+      ">Batal</button>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+}
+
+function processPayment(billId, method) {
+  // Close modal
+  document.querySelector(".payment-modal")?.remove();
+
+  // Simulate payment processing
+  showNotification("Memproses pembayaran...", "info");
+
+  setTimeout(() => {
+    showNotification("Pembayaran berhasil! Menunggu verifikasi.", "success");
+
+    // Update bill status (simulation)
+    const bill = financialData.tuitionFees.find((b) => b.id === billId);
+    if (bill) {
+      bill.status = "pending";
+      populateBillsTable();
+    }
+  }, 2000);
+}
+
+function viewReceipt(receiptNumber) {
+  const payment = financialData.paymentHistory.find(
+    (p) => p.receiptNumber === receiptNumber
+  );
+  if (!payment) return;
+
+  const receiptWindow = window.open("", "Receipt", "width=600,height=700");
+  receiptWindow.document.write(`
+    <html>
+      <head>
+        <title>Bukti Pembayaran - ${receiptNumber}</title>
+        <style>
+          body {
+            font-family: Arial, sans-serif;
+            padding: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+          }
+          .receipt-header {
+            text-align: center;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+          }
+          .receipt-header h1 {
+            color: #1e293b;
+            margin: 0;
+          }
+          .receipt-header svg {
+            margin-bottom: 1rem;
+          }
+          .receipt-info {
+            background: #f8fafc;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+          }
+          .receipt-info p {
+            display: flex;
+            justify-content: space-between;
+            margin: 0.75rem 0;
+          }
+          .receipt-info strong {
+            color: #475569;
+          }
+          .receipt-amount {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #6366f1;
+            text-align: center;
+            margin: 2rem 0;
+          }
+          .receipt-footer {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.875rem;
+            margin-top: 2rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+          }
+          @media print {
+            body { padding: 1rem; }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="receipt-header">
+          <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" style="margin: 0 auto; display: block;">
+            <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+            <path d="M6 12v5c3 3 9 3 12 0v-5"/>
+          </svg>
+          <h1>Universitas XYZ</h1>
+          <p>Bukti Pembayaran</p>
+        </div>
+        <div class="receipt-info">
+          <p><strong>No. Bukti:</strong> <span>${
+            payment.receiptNumber
+          }</span></p>
+          <p><strong>Tanggal:</strong> <span>${formatDate(
+            payment.date
+          )}</span></p>
+          <p><strong>Nama:</strong> <span>${
+            financialData.studentInfo.name
+          }</span></p>
+          <p><strong>NIM:</strong> <span>${
+            financialData.studentInfo.nim
+          }</span></p>
+          <p><strong>Deskripsi:</strong> <span>${payment.description}</span></p>
+          <p><strong>Metode:</strong> <span>${payment.method}</span></p>
+        </div>
+        <div class="receipt-amount">${formatCurrency(payment.amount)}</div>
+        <div class="receipt-footer">
+          <p>Dokumen ini sah dan diproses secara elektronik</p>
+          <p>Dicetak pada: ${new Date().toLocaleString("id-ID")}</p>
+        </div>
+        <div style="text-align: center; margin-top: 2rem;">
+          <button onclick="window.print()" style="
+            padding: 0.75rem 2rem;
+            background: #6366f1;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+          ">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 6 2 18 2 18 9"/>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+              <rect x="6" y="14" width="12" height="8"/>
+            </svg>
+            Cetak Bukti
+          </button>
+        </div>
+      </body>
+    </html>
+  `);
+  receiptWindow.document.close();
+}
+
+function downloadReceipt(receiptNumber) {
+  showNotification("Mengunduh bukti pembayaran...", "info");
+  setTimeout(() => {
+    showNotification("Bukti pembayaran berhasil diunduh!", "success");
+  }, 1000);
+}
+
+function selectPaymentMethod(methodType) {
+  showNotification(`Metode pembayaran ${methodType} dipilih`, "success");
+}
+
+// Global functions
+window.switchFinanceTab = switchFinanceTab;
+window.payBill = payBill;
+window.processPayment = processPayment;
+window.viewReceipt = viewReceipt;
+window.downloadReceipt = downloadReceipt;
+window.selectPaymentMethod = selectPaymentMethod;
