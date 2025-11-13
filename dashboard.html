@@ -32,9 +32,9 @@
         <div class="mobile-sidebar-content">
           <!-- Profile Section -->
           <div class="profile">
-            <div class="avatar">KD</div>
+            <div class="avatar" id="mobileAvatarDisplay">KD</div>
             <div>
-              <div class="name">Loading...</div>
+              <div class="name" id="mobileNameDisplay">Loading...</div>
               <div class="program">Informatics Engineering • 2023</div>
             </div>
           </div>
@@ -85,10 +85,12 @@
       <!-- Desktop Sidebar -->
       <aside class="sidebar">
         <div class="profile">
-          <div class="avatar">KD</div>
+          <div class="avatar" id="desktopAvatarDisplay">KD</div>
           <div>
-            <div class="name">Loading...</div>
-            <div class="program">Informatics Engineering • 2023</div>
+            <div class="name" id="desktopNameDisplay">Loading...</div>
+            <div class="program" id="desktopProgramDisplay">
+              Informatics Engineering • 2023
+            </div>
           </div>
         </div>
         <nav>
@@ -369,36 +371,43 @@
           </section>
 
           <!-- Profile Section -->
+          <!-- Profile Section - TAMBAHKAN ID -->
           <section class="section" id="profile" style="display: none">
             <h2 data-i18n="profile.title">Profile</h2>
             <div class="profile-info">
               <div class="info-item">
                 <span class="info-label" data-i18n="profile.name">Name:</span>
-                <span class="info-value">Kharis Destian Maulana</span>
+                <span class="info-value" id="profileDetailName"
+                  >Kharis Destian Maulana</span
+                >
               </div>
               <div class="info-item">
                 <span class="info-label" data-i18n="profile.nim">NIM:</span>
-                <span class="info-value">2023001</span>
+                <span class="info-value" id="profileDetailNim">2023001</span>
               </div>
               <div class="info-item">
                 <span class="info-label" data-i18n="profile.program"
                   >Program:</span
                 >
-                <span class="info-value">Informatics Engineering</span>
+                <span class="info-value" id="profileDetailProgram"
+                  >Informatics Engineering</span
+                >
               </div>
               <div class="info-item">
                 <span class="info-label" data-i18n="profile.year">Year:</span>
-                <span class="info-value">2023</span>
+                <span class="info-value" id="profileDetailYear">2023</span>
               </div>
               <div class="info-item">
                 <span class="info-label" data-i18n="profile.semester"
                   >Semester:</span
                 >
-                <span class="info-value">4</span>
+                <span class="info-value" id="profileDetailSemester">4</span>
               </div>
               <div class="info-item">
                 <span class="info-label" data-i18n="profile.email">Email:</span>
-                <span class="info-value">kharis.destian@example.ac.id</span>
+                <span class="info-value" id="profileDetailEmail"
+                  >kharis.destian@example.ac.id</span
+                >
               </div>
             </div>
           </section>
@@ -1695,9 +1704,9 @@
         <!-- Right Sidebar -->
         <aside class="sidebar-right">
           <div class="student-info">
-            <h3>Kharis Destian Maulana</h3>
-            <p>NIM: 2023001</p>
-            <p>Informatics Engineering</p>
+            <h3 id="rightSidebarName">Kharis Destian Maulana</h3>
+            <p id="rightSidebarNim">NIM: 2023001</p>
+            <p id="rightSidebarProgram">Informatics Engineering</p>
             <p data-i18n="dashboard.semester_progress">Semester Progress</p>
             <div class="progress-bg">
               <div class="progress-bar" style="width: 72%"></div>
