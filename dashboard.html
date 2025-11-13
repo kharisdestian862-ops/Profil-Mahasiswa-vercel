@@ -1421,6 +1421,98 @@
             </div>
           </section>
 
+          <section class="section" id="chat" style="display: none">
+            <header class="main-header">
+              <h1>Direct Messages</h1>
+              <div>Chat with your classmates</div>
+            </header>
+
+            <div class="dm-container">
+              <!-- Contacts Sidebar -->
+              <div class="contacts-sidebar">
+                <div class="sidebar-header">
+                  <div class="user-profile">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-info">
+                      <div class="user-name" id="currentUserName">
+                        Kharis D. Maulana
+                      </div>
+                      <div class="user-status">Online</div>
+                    </div>
+                  </div>
+                  <button class="new-chat-btn" id="newChatBtn" title="New Chat">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                    >
+                      <path d="M12 5v14M5 12h14" />
+                    </svg>
+                  </button>
+                </div>
+
+                <div class="search-container">
+                  <input
+                    type="text"
+                    id="contactSearch"
+                    placeholder="Search contacts..."
+                  />
+                </div>
+
+                <div class="contacts-list" id="contactsList">
+                  <!-- Contacts will be populated by JavaScript -->
+                </div>
+              </div>
+
+              <!-- Chat Area -->
+              <div class="chat-area">
+                <div class="chat-header" id="chatHeader">
+                  <div class="default-message">
+                    <h3>Select a contact to start chatting</h3>
+                    <p>
+                      Choose from your contacts list to begin a conversation
+                    </p>
+                  </div>
+                </div>
+
+                <div class="messages-area" id="messagesArea">
+                  <div class="empty-state">
+                    <div class="empty-icon">💬</div>
+                    <h3>No messages yet</h3>
+                    <p>Send a message to start the conversation</p>
+                  </div>
+                </div>
+
+                <div
+                  class="message-input-area"
+                  id="messageInputArea"
+                  style="display: none"
+                >
+                  <div class="input-container">
+                    <input
+                      type="text"
+                      id="messageInput"
+                      placeholder="Type a message..."
+                      autocomplete="off"
+                    />
+                    <button id="sendMessageBtn" class="send-btn">
+                      <svg
+                        width="24"
+                        height="24"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
           <!-- Settings Section -->
           <section class="section" id="settings" style="display: none">
             <h2 data-i18n="settings.title">Settings</h2>
