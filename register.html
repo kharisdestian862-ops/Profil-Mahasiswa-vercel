@@ -29,12 +29,12 @@
 
           <form class="login-form" id="registerForm">
             <div class="form-group">
-              <label for="fullname" data-i18n="register.fullname"
+              <label for="fullName" data-i18n="register.fullname"
                 >Nama Lengkap</label
               >
               <input
                 type="text"
-                id="fullname"
+                id="fullName"
                 placeholder="Masukan Nama Lengkap"
                 required
               />
@@ -60,21 +60,29 @@
               />
             </div>
             <div class="form-group">
-              <label for="confirm-password" data-i18n="register.confirm"
+              <label for="confirmPassword" data-i18n="register.confirm"
                 >Konfirmasi Password</label
               >
               <input
                 type="password"
-                id="confirm-password"
+                id="confirmPassword"
                 placeholder="••••••••"
                 required
               />
             </div>
 
             <button type="submit" data-i18n="register.button">Buat Akun</button>
+            <div class="regis-footer-desktop">
+              <p class="form-subtext">
+                <span data-i18n="register.have_account">Sudah punya akun?</span>
+                <a href="index.html" data-i18n="register.login_now"
+                  >Masuk di sini</a
+                >
+              </p>
+            </div>
           </form>
 
-          <div class="login-footer-mobile">
+          <div class="regis-footer-mobile">
             <p class="form-subtext">
               <span data-i18n="register.have_account">Sudah punya akun?</span>
               <a href="index.html" data-i18n="register.login_now"
@@ -87,6 +95,17 @@
     </div>
 
     <script>
+      // Fungsi untuk HASH password
+      async function hashPassword(password) {
+        const encoder = new TextEncoder();
+        const data = encoder.encode(password);
+        const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+        const hashHex = Array.from(new Uint8Array(hashBuffer))
+          .map((b) => b.toString(16).padStart(2, "0"))
+          .join("");
+        return hashHex;
+      }
+
       // === LOGIKA REGISTER & TRANSLATION ===
       const translations = {
         en: {
@@ -102,8 +121,6 @@
           "register.password": "Password",
           "register.confirm": "Confirm Password",
           "register.button": "Create Account",
-          "register.or": "or",
-          "register.google": "Sign up with Google",
         },
         id: {
           "register.page_title": "Daftar - Dashboard Mahasiswa",
@@ -118,8 +135,6 @@
           "register.password": "Password",
           "register.confirm": "Konfirmasi Password",
           "register.button": "Buat Akun",
-          "register.or": "atau",
-          "register.google": "Daftar dengan Google",
         },
       };
 
@@ -144,14 +159,63 @@
         }
         applyTranslations();
 
-        // 2. Logika submit form (seperti kode Anda sebelumnya)
+        // 2. Logika submit form: Menyimpan data ke localStorage
         document
           .getElementById("registerForm")
-          .addEventListener("submit", function (e) {
+          .addEventListener("submit", async function (e) {
             e.preventDefault();
-            // Simpan bahasa saat daftar (opsional)
-            localStorage.setItem("preferredLanguage", currentLanguage);
-            alert("Registrasi berhasil! Silakan login.");
+
+            const fullName = document.getElementById("fullName").value;
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+            const confirmPassword =
+              document.getElementById("confirmPassword").value;
+
+            if (password.length < 6) {
+              alert("Password minimal 6 karakter.");
+              return;
+            }
+            if (password !== confirmPassword) {
+              alert(
+                currentLanguage === "id"
+                  ? "Password dan konfirmasi password tidak sama!"
+                  : "Password and confirmation do not match!"
+              );
+              return;
+            }
+
+            // A. Cek apakah user sudah ada
+            let users = JSON.parse(localStorage.getItem("users") || "[]");
+            if (users.some((user) => user.email === email)) {
+              alert(
+                currentLanguage === "id"
+                  ? "Email ini sudah terdaftar. Silakan login."
+                  : "This email is already registered. Please log in."
+              );
+              return;
+            }
+
+            // B. Hash password
+            const hashedPassword = await hashPassword(password);
+
+            // C. Simpan data user baru dengan data profil dummy
+            const newUser = {
+              id: Date.now(),
+              fullName: fullName,
+              email: email,
+              passwordHash: hashedPassword,
+              programStudi: "Informatics Engineering",
+              nim: "2023001",
+            };
+
+            users.push(newUser);
+            localStorage.setItem("users", JSON.stringify(users));
+
+            alert(
+              currentLanguage === "id"
+                ? "Registrasi berhasil! Silakan Login."
+                : "Registration successful! Please login."
+            );
             window.location.href = "index.html";
           });
       });
