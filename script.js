@@ -2034,6 +2034,10 @@ function switchSection(sectionId) {
         loadCodePlayground();
       }, 50);
     }
+    if (sectionId === "chat") {
+      // Tunggu sebentar agar elemen DOM siap
+      setTimeout(initGroupChat, 100);
+    }
   }
 }
 
@@ -6553,3 +6557,134 @@ const groupChat = {
     });
   },
 };
+
+// Inisialisasi Fitur Grup Chat
+function initGroupChat() {
+  console.log("Initializing Group Chat..."); // Debugging log
+
+  const chatMessages = document.getElementById("groupChatMessages");
+  const chatInput = document.getElementById("groupChatInput");
+  const sendBtn = document.getElementById("groupChatSendBtn");
+
+  if (!chatMessages || !chatInput || !sendBtn) {
+    console.error("Chat elements not found!");
+    return;
+  }
+
+  // Ambil nama user yang login
+  const user = JSON.parse(localStorage.getItem("currentUser")) || {
+    fullName: "Anonim",
+  };
+  const myName = user.fullName;
+
+  // 1. MUAT RIWAYAT DARI LOCALSTORAGE
+  const savedHistory = JSON.parse(
+    localStorage.getItem("groupChatHistory") || "[]"
+  );
+
+  // Bersihkan pesan default (welcome message) jika ada riwayat
+  if (savedHistory.length > 0) {
+    const welcomeMsg = chatMessages.querySelector(".welcome-message");
+    if (welcomeMsg) welcomeMsg.remove();
+
+    // Render pesan lama tapi jangan duplikat
+    // Kita kosongkan dulu agar bersih
+    chatMessages.innerHTML = "";
+    savedHistory.forEach((chat) => renderMessage(chat));
+
+    setTimeout(() => (chatMessages.scrollTop = chatMessages.scrollHeight), 100);
+  }
+
+  // 2. KONEKSI KE PUSHER
+  // Pastikan library Pusher sudah dimuat di HTML
+  if (typeof Pusher !== "undefined") {
+    // Ganti dengan key Pusher Anda yang sebenarnya
+    const pusher = new Pusher("APP_KEY_ANDA", {
+      cluster: "ap1", // Sesuaikan cluster
+    });
+
+    const channel = pusher.subscribe("campus-chat");
+
+    // Terima pesan dari orang lain
+    channel.bind("new-message", function (data) {
+      if (data.username !== myName) {
+        renderMessage(data);
+        saveMessage(data);
+      }
+    });
+  } else {
+    console.warn("Library Pusher tidak ditemukan. Chat hanya berjalan lokal.");
+  }
+
+  // 3. FUNGSI KIRIM PESAN
+  async function sendChatMessage() {
+    const text = chatInput.value.trim();
+    if (!text) return;
+
+    const msgData = {
+      username: myName,
+      message: text,
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
+
+    console.log("Sending message:", msgData); // Debugging log
+
+    // Render langsung (Optimistic UI)
+    renderMessage(msgData);
+    saveMessage(msgData);
+    chatInput.value = "";
+
+    // Hapus welcome message jika ada
+    const welcomeMsg = chatMessages.querySelector(".welcome-message");
+    if (welcomeMsg) welcomeMsg.remove();
+
+    // Kirim ke Backend (untuk disebar ke orang lain)
+    try {
+      await fetch("/api/send-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(msgData),
+      });
+    } catch (err) {
+      console.error("Gagal kirim pesan ke backend", err);
+    }
+  }
+
+  // Helper Render
+  function renderMessage(data) {
+    const isMe = data.username === myName;
+    const div = document.createElement("div");
+    div.className = `chat-bubble ${isMe ? "me" : "others"}`;
+    div.innerHTML = `
+          ${!isMe ? `<span class="sender-name">${data.username}</span>` : ""}
+          <span class="message-content">${data.message}</span>
+          <span class="timestamp">${data.timestamp}</span>
+      `;
+    chatMessages.appendChild(div);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  // Helper Save
+  function saveMessage(data) {
+    const history = JSON.parse(
+      localStorage.getItem("groupChatHistory") || "[]"
+    );
+    history.push(data);
+    if (history.length > 50) history.shift(); // Simpan 50 pesan terakhir
+    localStorage.setItem("groupChatHistory", JSON.stringify(history));
+  }
+
+  // Event Listeners (Hapus listener lama agar tidak duplikat saat switch tab)
+  const newBtn = sendBtn.cloneNode(true);
+  sendBtn.parentNode.replaceChild(newBtn, sendBtn);
+  newBtn.addEventListener("click", sendChatMessage);
+
+  const newInput = chatInput.cloneNode(true);
+  chatInput.parentNode.replaceChild(newInput, chatInput);
+  newInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") sendChatMessage();
+  });
+}
