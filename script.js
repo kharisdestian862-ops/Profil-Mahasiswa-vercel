@@ -3580,6 +3580,22 @@ document.addEventListener("DOMContentLoaded", function () {
         switchSection("studyroom");
       });
     }
+
+    // Inisialisasi Notes FAB
+    const notesFab = document.getElementById("notesFab");
+    if (notesFab) {
+      notesFab.addEventListener("click", () => {
+        switchSection("notes");
+      });
+    }
+
+    // Inisialisasi Kanban FAB
+    const kanbanFab = document.getElementById("kanbanFab");
+    if (kanbanFab) {
+      kanbanFab.addEventListener("click", () => {
+        switchSection("kanban");
+      });
+    }
   }
 });
 
