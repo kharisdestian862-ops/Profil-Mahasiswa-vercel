@@ -1,4 +1,4 @@
-// Complete Data Structure with Attendance, Tasks, and Materials
+  // Complete Data Structure with Attendance, Tasks, and Materials
 let attendanceData = {
   algorithms: {
     name: "Algorithms",
