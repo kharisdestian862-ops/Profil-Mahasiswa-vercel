@@ -1359,6 +1359,16 @@ const translations = {
 
     // Navigation
     "nav.messages": "Messages",
+
+    "nav.notes": "Notes",
+    "nav.kanban": "My Tasks",
+    "notes.title": "Lecture Notes",
+    "notes.subtitle": "Write down key points here (auto-saved).",
+    "kanban.title": "Personal Task Board",
+    "kanban.subtitle": "Manage your personal tasks to stay organized.",
+    "kanban.todo": "To Do",
+    "kanban.progress": "In Progress",
+    "kanban.done": "Done",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -1754,6 +1764,17 @@ const translations = {
 
     // Navigation
     "nav.messages": "Pesan",
+
+    "nav.notes": "Catatan",
+    "nav.kanban": "Tugas Saya",
+    "notes.title": "Catatan Kuliah",
+    "notes.subtitle":
+      "Catat poin penting perkuliahan di sini (tersimpan otomatis).",
+    "kanban.title": "Papan Tugas Pribadi",
+    "kanban.subtitle": "Kelola tugas pribadi Anda agar tetap terorganisir.",
+    "kanban.todo": "Akan Dikerjakan",
+    "kanban.progress": "Sedang Dikerjakan",
+    "kanban.done": "Selesai",
   },
 };
 
@@ -2026,6 +2047,8 @@ function switchSection(sectionId) {
     if (sectionId === "finance") {
       initFinanceSection();
     }
+    if (sectionId === "notes") initNotesSection();
+    if (sectionId === "kanban") initKanbanBoard();
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
         chart.resize();
@@ -6777,3 +6800,231 @@ function initGroupChat() {
     if (e.key === "Enter") sendChatMessage();
   });
 }
+
+let notesData = JSON.parse(localStorage.getItem("quickNotes") || "[]");
+let currentNoteId = null;
+
+function initNotesSection() {
+  renderNotesList();
+
+  // Setup Auto-save listeners
+  document.getElementById("noteTitle").addEventListener("input", autoSaveNote);
+  document
+    .getElementById("noteContent")
+    .addEventListener("input", autoSaveNote);
+
+  // Load catatan pertama jika ada
+  if (notesData.length > 0 && !currentNoteId) {
+    loadNote(notesData[0].id);
+  } else if (notesData.length === 0) {
+    createNewNote(); // Buat baru jika kosong
+  }
+}
+
+function createNewNote() {
+  const newNote = {
+    id: Date.now(),
+    title: "",
+    content: "",
+    date: new Date().toLocaleDateString(),
+  };
+
+  notesData.unshift(newNote); // Tambah ke awal
+  saveNotesToStorage();
+  renderNotesList();
+  loadNote(newNote.id);
+}
+
+function loadNote(id) {
+  const note = notesData.find((n) => n.id === id);
+  if (!note) return;
+
+  currentNoteId = id;
+  document.getElementById("noteTitle").value = note.title;
+  document.getElementById("noteContent").value = note.content;
+  document.getElementById("noteDate").textContent = note.date;
+  document.getElementById("saveStatus").textContent = "Tersimpan";
+
+  // Highlight active in list
+  document
+    .querySelectorAll(".note-list-item")
+    .forEach((el) => el.classList.remove("active"));
+  const activeItem = document.querySelector(
+    `.note-list-item[onclick="loadNote(${id})"]`
+  );
+  if (activeItem) activeItem.classList.add("active");
+}
+
+function autoSaveNote() {
+  if (!currentNoteId) return;
+
+  const noteIndex = notesData.findIndex((n) => n.id === currentNoteId);
+  if (noteIndex > -1) {
+    notesData[noteIndex].title =
+      document.getElementById("noteTitle").value || "Tanpa Judul";
+    notesData[noteIndex].content = document.getElementById("noteContent").value;
+    notesData[noteIndex].date = new Date().toLocaleDateString();
+
+    document.getElementById("saveStatus").textContent = "Menyimpan...";
+    saveNotesToStorage();
+
+    setTimeout(() => {
+      document.getElementById("saveStatus").textContent = "Tersimpan";
+      renderNotesList(); // Refresh list judul
+    }, 500);
+  }
+}
+
+function saveNotesToStorage() {
+  localStorage.setItem("quickNotes", JSON.stringify(notesData));
+}
+
+function renderNotesList() {
+  const list = document.getElementById("notesList");
+  list.innerHTML = "";
+
+  notesData.forEach((note) => {
+    const item = document.createElement("div");
+    item.className = `note-list-item ${
+      note.id === currentNoteId ? "active" : ""
+    }`;
+    item.onclick = () => loadNote(note.id);
+    item.innerHTML = `
+      <h4>${note.title || "Tanpa Judul"}</h4>
+      <p>${note.date}</p>
+    `;
+    list.appendChild(item);
+  });
+}
+
+// ===== KANBAN BOARD SYSTEM =====
+let kanbanTasks = JSON.parse(localStorage.getItem("kanbanTasks") || "[]");
+
+function initKanbanBoard() {
+  renderKanbanBoard();
+}
+
+function renderKanbanBoard() {
+  const columns = {
+    "col-todo": [],
+    "col-progress": [],
+    "col-done": [],
+  };
+
+  // Pisahkan task berdasarkan status
+  kanbanTasks.forEach((task) => {
+    if (columns[task.status]) {
+      columns[task.status].push(task);
+    }
+  });
+
+  // Render setiap kolom
+  for (const [colId, tasks] of Object.entries(columns)) {
+    const listEl = document.getElementById(colId).querySelector(".task-list");
+    const countEl = document.getElementById(colId.replace("col", "count")); // count-todo
+
+    listEl.innerHTML = "";
+    countEl.textContent = tasks.length;
+
+    tasks.forEach((task) => {
+      const card = document.createElement("div");
+      card.className = "kanban-card";
+      card.draggable = true;
+      card.id = `task-${task.id}`;
+      card.ondragstart = (e) => drag(e);
+
+      card.innerHTML = `
+        <span class="card-tag">${task.tag}</span>
+        <div class="card-title">${task.title}</div>
+        <button class="delete-task" onclick="deleteKanbanTask(${task.id})">🗑️</button>
+      `;
+      listEl.appendChild(card);
+    });
+  }
+}
+
+// Drag and Drop Functions
+function allowDrop(ev) {
+  ev.preventDefault();
+}
+
+function drag(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function drop(ev) {
+  ev.preventDefault();
+  const data = ev.dataTransfer.getData("text");
+  const taskId = parseInt(data.split("-")[1]);
+
+  // Cari elemen target kolom (bisa jadi didrop di dalam task lain, jadi cari parent .kanban-column)
+  let targetCol = ev.target;
+  while (
+    !targetCol.classList.contains("kanban-column") &&
+    targetCol.parentElement
+  ) {
+    targetCol = targetCol.parentElement;
+  }
+
+  if (targetCol.classList.contains("kanban-column")) {
+    updateTaskStatus(taskId, targetCol.id);
+  }
+}
+
+function updateTaskStatus(id, newStatusCol) {
+  const task = kanbanTasks.find((t) => t.id === id);
+  if (task) {
+    task.status = newStatusCol;
+    localStorage.setItem("kanbanTasks", JSON.stringify(kanbanTasks));
+    renderKanbanBoard();
+  }
+}
+
+// Add New Task Logic
+function openAddTaskModal() {
+  document.getElementById("addTaskModal").style.display = "flex";
+}
+
+function closeAddTaskModal() {
+  document.getElementById("addTaskModal").style.display = "none";
+}
+
+function addNewKanbanTask() {
+  const title = document.getElementById("newTaskTitle").value;
+  const tag = document.getElementById("newTaskTag").value;
+
+  if (title) {
+    const newTask = {
+      id: Date.now(),
+      title: title,
+      tag: tag,
+      status: "col-todo", // Default masuk ke Todo
+    };
+
+    kanbanTasks.push(newTask);
+    localStorage.setItem("kanbanTasks", JSON.stringify(kanbanTasks));
+
+    document.getElementById("newTaskTitle").value = "";
+    closeAddTaskModal();
+    renderKanbanBoard();
+  }
+}
+
+function deleteKanbanTask(id) {
+  if (confirm("Hapus tugas ini?")) {
+    kanbanTasks = kanbanTasks.filter((t) => t.id !== id);
+    localStorage.setItem("kanbanTasks", JSON.stringify(kanbanTasks));
+    renderKanbanBoard();
+  }
+}
+
+// Global scope access
+window.createNewNote = createNewNote;
+window.loadNote = loadNote;
+window.openAddTaskModal = openAddTaskModal;
+window.closeAddTaskModal = closeAddTaskModal;
+window.addNewKanbanTask = addNewKanbanTask;
+window.deleteKanbanTask = deleteKanbanTask;
+window.drop = drop;
+window.allowDrop = allowDrop;
+window.drag = drag;
