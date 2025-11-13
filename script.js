@@ -6662,10 +6662,10 @@ function initGroupChat() {
     div.className = `chat-bubble ${isMe ? "me" : "others"}`;
 
     div.innerHTML = `
-          ${!isMe ? `<span class="sender-name">${data.username}</span>` : ""}
-          <span class="message-content">${data.message}</span>
-          <span class="timestamp">${data.timestamp}</span>
-      `;
+        ${!isMe ? `<span class="sender-name">${data.username}</span>` : ""}
+        <span class="message-content">${data.message}</span>
+        <span class="timestamp">${data.timestamp}</span>
+    `;
 
     chatMessages.appendChild(div);
     chatMessages.scrollTop = chatMessages.scrollHeight;
