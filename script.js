@@ -1895,15 +1895,11 @@ let currentMeeting = null;
 let currentTask = null;
 let currentTab = "attendance";
 
-// ===== MOBILE MENU INITIALIZATION - IMPROVED =====
-// ===== MOBILE MENU INITIALIZATION - FIXED =====
 function initHamburgerMenu() {
-  // Gunakan elemen yang sudah ada di HTML
   const hamburger = document.querySelector(".hamburger");
   const mobileMenuOverlay = document.querySelector(".mobile-menu-overlay");
   const mobileSidebar = document.querySelector(".mobile-sidebar");
 
-  // Pastikan semua elemen ditemukan
   if (!hamburger || !mobileMenuOverlay || !mobileSidebar) {
     console.error("Mobile menu elements not found!");
     return;
@@ -1924,6 +1920,10 @@ function initHamburgerMenu() {
       applyTranslations();
     } else {
       document.body.classList.remove("menu-open");
+      // PERBAIKAN: Refresh header saat menu ditutup
+      setTimeout(() => {
+        loadUserProfile();
+      }, 100);
     }
   }
 
@@ -1934,6 +1934,11 @@ function initHamburgerMenu() {
       mobileMenuOverlay.classList.remove("active");
       mobileSidebar.classList.remove("active");
       document.body.classList.remove("menu-open");
+
+      // PERBAIKAN: Refresh header saat menu ditutup
+      setTimeout(() => {
+        loadUserProfile();
+      }, 100);
     }
   }
 
@@ -1946,7 +1951,7 @@ function initHamburgerMenu() {
   // Event listener untuk overlay
   mobileMenuOverlay.addEventListener("click", closeMenu);
 
-  // Close menu when clicking on links
+  // Close menu when clicking on links - PERBAIKAN: Refresh setelah navigasi
   const mobileLinks = document.querySelectorAll(
     ".mobile-sidebar nav a, .mobile-sidebar .actions button, .logout-btn-mobile"
   );
@@ -1957,6 +1962,12 @@ function initHamburgerMenu() {
         const section = this.dataset.section;
         switchSection(section);
       }
+
+      // PERBAIKAN: Refresh header setelah navigasi mobile
+      setTimeout(() => {
+        loadUserProfile();
+      }, 300);
+
       closeMenu();
     });
   });
@@ -1972,36 +1983,6 @@ function initHamburgerMenu() {
   mobileSidebar.addEventListener("click", function (e) {
     e.stopPropagation();
   });
-
-  // Initialize mobile dark mode toggle
-  const mobileDarkModeToggle = document.getElementById("quickDarkModeMobile");
-  if (mobileDarkModeToggle) {
-    const savedSettings = localStorage.getItem("userSettings");
-    if (savedSettings) {
-      const settings = JSON.parse(savedSettings);
-      mobileDarkModeToggle.checked = settings.darkMode;
-    }
-
-    mobileDarkModeToggle.addEventListener("change", function () {
-      const settings = {
-        emailNotifications:
-          document.getElementById("emailNotifications")?.checked || true,
-        darkMode: this.checked,
-        profileVisibility:
-          document.getElementById("profileVisibility")?.value || "public",
-        language: document.getElementById("languageSelect")?.value || "en",
-      };
-
-      localStorage.setItem("userSettings", JSON.stringify(settings));
-      applySettings(settings);
-
-      // Sync with desktop toggle
-      const desktopToggle = document.getElementById("quickDarkMode");
-      if (desktopToggle) {
-        desktopToggle.checked = this.checked;
-      }
-    });
-  }
 
   console.log("Mobile menu initialized successfully!");
 }
