@@ -4725,6 +4725,25 @@ function updateDashboardHeader(firstName) {
     // Format: "Welcome back, Kharis"
     welcomeEl.textContent = `${baseWelcome} ${firstName}`;
   }
+
+  const mobileNameElement = document.querySelector(".mobile-name");
+  if (mobileNameElement) {
+    // Gunakan nama lengkap sesuai permintaan Anda
+    mobileNameElement.textContent = user.fullName;
+  }
+
+  // Update Mobile Avatar (Opsional, agar inisialnya juga update)
+  const mobileAvatarElement = document.querySelector(".mobile-avatar");
+  if (mobileAvatarElement) {
+    // Ambil inisial dari 2 kata pertama (misal: Kharis Destian -> KD)
+    const initials = user.fullName
+      .split(" ")
+      .slice(0, 2)
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase();
+    mobileAvatarElement.textContent = initials;
+  }
 }
 
 function initLogout() {
