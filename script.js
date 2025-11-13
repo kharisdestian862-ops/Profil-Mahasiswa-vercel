@@ -2002,7 +2002,11 @@ function switchSection(sectionId) {
   sections.forEach((sec) => (sec.style.display = "none"));
 
   // === LOGIKA PENANDA LAYOUT BARU ===
-  if (sectionId === "chatbot" || sectionId === "codeplayground") {
+  if (
+    sectionId === "chatbot" ||
+    sectionId === "codeplayground" ||
+    sections === "chat"
+  ) {
     document.body.classList.add("full-layout-active");
   } else {
     document.body.classList.remove("full-layout-active");
