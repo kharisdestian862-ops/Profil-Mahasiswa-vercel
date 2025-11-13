@@ -1289,7 +1289,6 @@ const translations = {
     "playground.saved": "Code saved successfully!",
     "playground.loaded": "Saved code loaded!",
 
-    // Tambahkan di translations.en
     "nav.finance": "Finance",
     "finance.title": "Finance",
     "finance.subtitle": "Manage your tuition and payment information",
@@ -1338,6 +1337,28 @@ const translations = {
     "finance.quick_pay": "Quick Pay",
     "finance.upcoming_bills": "Upcoming Bills",
     "finance.no_bills": "No upcoming bills",
+
+    "chat.group_chat": "Group Chat",
+    "chat.subtitle": "Chat with all online students",
+    "chat.group_name": "Classroom Group",
+    "chat.online_count": "online",
+    "chat.welcome_title": "Welcome to Classroom Group!",
+    "chat.welcome_subtitle": "Start chatting with everyone online",
+    "chat.placeholder": "Type a message to everyone...",
+    "chat.online_now": "Online Now",
+    "chat.refresh": "Refresh",
+    "chat.search_messages": "Search messages",
+    "chat.group_info": "Group info",
+    "chat.emoji": "Emoji",
+    "chat.attach_file": "Attach file",
+    "chat.joined_chat": "joined the chat",
+    "chat.left_chat": "left the chat",
+    "chat.typing": "is typing...",
+    "chat.no_online_users": "No one online",
+    "chat.you": "You",
+
+    // Navigation
+    "nav.messages": "Messages",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -1711,6 +1732,28 @@ const translations = {
     "finance.quick_pay": "Bayar Cepat",
     "finance.upcoming_bills": "Tagihan Mendatang",
     "finance.no_bills": "Tidak ada tagihan mendatang",
+
+    "chat.group_chat": "Chat Grup",
+    "chat.subtitle": "Chat dengan semua siswa yang online",
+    "chat.group_name": "Grup Kelas",
+    "chat.online_count": "online",
+    "chat.welcome_title": "Selamat datang di Grup Kelas!",
+    "chat.welcome_subtitle": "Mulai chat dengan semua yang online",
+    "chat.placeholder": "Ketik pesan untuk semua orang...",
+    "chat.online_now": "Sedang Online",
+    "chat.refresh": "Muat Ulang",
+    "chat.search_messages": "Cari pesan",
+    "chat.group_info": "Info grup",
+    "chat.emoji": "Emoji",
+    "chat.attach_file": "Lampirkan file",
+    "chat.joined_chat": "bergabung ke chat",
+    "chat.left_chat": "keluar dari chat",
+    "chat.typing": "sedang mengetik...",
+    "chat.no_online_users": "Tidak ada yang online",
+    "chat.you": "Anda",
+
+    // Navigation
+    "nav.messages": "Pesan",
   },
 };
 
@@ -3272,7 +3315,7 @@ document.addEventListener("DOMContentLoaded", function () {
             mutation.attributeName === "style" &&
             !chatSection.style.display
           ) {
-            dmSystem.init();
+            groupChat.init();
           }
         });
       });
@@ -6125,6 +6168,385 @@ const dmSystem = {
         hour12: false,
       });
 
+    return date.toLocaleDateString("en-US", {
+      month: "short",
+      day: "numeric",
+    });
+  },
+};
+
+const groupChat = {
+  currentUser: null,
+  onlineUsers: new Map(),
+  messages: [],
+
+  init() {
+    this.setCurrentUser();
+    this.loadMessages();
+    this.setupWebSocket();
+    this.renderMessages();
+    this.updateOnlineUsers();
+    this.setupEventListeners();
+    this.startPolling();
+    this.addSystemMessage(`${this.currentUser.name} joined the chat`);
+
+    // Handle mobile view
+    this.handleMobileView();
+  },
+
+  setCurrentUser() {
+    const userData = JSON.parse(localStorage.getItem("currentUser") || "{}");
+    this.currentUser = {
+      id: userData.nim || "user_" + Date.now(),
+      name: userData.fullName || "Student",
+      avatar: this.getRandomAvatar(),
+      lastSeen: new Date().toISOString(),
+    };
+    this.markUserOnline();
+  },
+
+  getRandomAvatar() {
+    const avatars = ["👦", "👧", "👨", "👩", "🧑", "👨‍💻", "👩‍🎓", "👨‍🎓", "👩‍💻"];
+    return avatars[Math.floor(Math.random() * avatars.length)];
+  },
+
+  markUserOnline() {
+    const onlineUsers = JSON.parse(
+      localStorage.getItem("online_users") || "{}"
+    );
+    onlineUsers[this.currentUser.id] = {
+      ...this.currentUser,
+      lastSeen: new Date().toISOString(),
+    };
+    localStorage.setItem("online_users", JSON.stringify(onlineUsers));
+  },
+
+  updateOnlineUsers() {
+    const onlineUsers = JSON.parse(
+      localStorage.getItem("online_users") || "{}"
+    );
+
+    // Remove users who haven't been seen for 5 minutes
+    const now = new Date();
+    Object.keys(onlineUsers).forEach((userId) => {
+      const lastSeen = new Date(onlineUsers[userId].lastSeen);
+      if (now - lastSeen > 300000) {
+        // 5 minutes
+        delete onlineUsers[userId];
+      }
+    });
+
+    localStorage.setItem("online_users", JSON.stringify(onlineUsers));
+    this.renderOnlineUsers(onlineUsers);
+  },
+
+  renderOnlineUsers(onlineUsers) {
+    const container = document.getElementById("onlineUsersList");
+    const onlineCount = document.getElementById("onlineCount");
+    if (!container || !onlineCount) return;
+
+    const users = Object.values(onlineUsers);
+    onlineCount.textContent = `${users.length} online`;
+
+    container.innerHTML = "";
+    users.forEach((user) => {
+      const userEl = this.createOnlineUserElement(user);
+      container.appendChild(userEl);
+    });
+  },
+
+  handleMobileView() {
+    // Toggle online sidebar on mobile
+    if (window.innerWidth <= 768) {
+      const sidebar = document.querySelector(".online-sidebar");
+      if (sidebar) {
+        sidebar.style.display = "none"; // Hide by default on mobile
+      }
+
+      // Add toggle button for online users on mobile
+      this.addMobileToggle();
+    }
+  },
+
+  addMobileToggle() {
+    const header = document.querySelector(".group-chat-header");
+    if (!header) return;
+
+    const toggleBtn = document.createElement("button");
+    toggleBtn.className = "mobile-toggle-btn";
+    toggleBtn.innerHTML = "👥";
+    toggleBtn.title = "Show Online Users";
+    toggleBtn.style.cssText = `
+        background: #2b26b9;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        padding: 8px;
+        cursor: pointer;
+        margin-left: 10px;
+    `;
+
+    toggleBtn.addEventListener("click", () => {
+      const sidebar = document.querySelector(".online-sidebar");
+      if (sidebar) {
+        const isVisible = sidebar.style.display !== "none";
+        sidebar.style.display = isVisible ? "none" : "flex";
+        toggleBtn.innerHTML = isVisible ? "👥" : "✕";
+        toggleBtn.title = isVisible ? "Show Online Users" : "Hide Online Users";
+      }
+    });
+
+    const groupActions = header.querySelector(".group-actions");
+    if (groupActions) {
+      groupActions.appendChild(toggleBtn);
+    }
+  },
+
+  createOnlineUserElement(user) {
+    const div = document.createElement("div");
+    div.className = "online-user";
+    div.innerHTML = `
+            <div class="user-avatar">${user.avatar}</div>
+            <div class="user-info">
+                <div class="user-name">${user.name}</div>
+                <div class="user-status">Online</div>
+            </div>
+            <div class="status-indicator online"></div>
+        `;
+    return div;
+  },
+
+  loadMessages() {
+    const savedMessages = localStorage.getItem("group_chat_messages");
+    if (savedMessages) {
+      this.messages = JSON.parse(savedMessages);
+    }
+  },
+
+  saveMessages() {
+    localStorage.setItem("group_chat_messages", JSON.stringify(this.messages));
+  },
+
+  setupWebSocket() {
+    try {
+      this.ws = new WebSocket("wss://echo.websocket.org");
+      this.ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.type === "group_message") {
+          this.handleIncomingMessage(data);
+        }
+      };
+    } catch (error) {
+      console.log("WebSocket not available");
+    }
+  },
+
+  startPolling() {
+    setInterval(() => {
+      this.markUserOnline();
+      this.updateOnlineUsers();
+      this.checkForNewMessages();
+    }, 30000); // Update every 30 seconds
+
+    setInterval(() => {
+      this.checkForNewMessages();
+    }, 2000); // Check messages every 2 seconds
+  },
+
+  checkForNewMessages() {
+    const savedMessages = localStorage.getItem("group_chat_messages");
+    if (!savedMessages) return;
+
+    const messages = JSON.parse(savedMessages);
+    if (messages.length > this.messages.length) {
+      this.messages = messages;
+      this.renderMessages();
+    }
+  },
+
+  renderMessages() {
+    const container = document.getElementById("groupMessages");
+    if (!container) return;
+
+    if (this.messages.length === 0) {
+      container.innerHTML = `
+                <div class="welcome-message">
+                    <div class="welcome-icon">👋</div>
+                    <h3>Welcome to Classroom Group!</h3>
+                    <p>Start chatting with everyone online</p>
+                </div>
+            `;
+      return;
+    }
+
+    container.innerHTML = "";
+    this.messages.forEach((msg) => {
+      const messageEl = this.createMessageElement(msg);
+      container.appendChild(messageEl);
+    });
+
+    container.scrollTop = container.scrollHeight;
+  },
+
+  createMessageElement(msg) {
+    const div = document.createElement("div");
+    const isCurrentUser = msg.userId === this.currentUser.id;
+    const isSystem = msg.type === "system";
+
+    if (isSystem) {
+      div.className = "system-message";
+      div.innerHTML = `
+                <div class="system-text">${msg.text}</div>
+                <div class="message-time">${this.formatTime(
+                  msg.timestamp
+                )}</div>
+            `;
+    } else {
+      div.className = `group-message ${
+        isCurrentUser ? "own-message" : "other-message"
+      }`;
+      div.innerHTML = `
+                ${
+                  !isCurrentUser
+                    ? `<div class="message-avatar">${msg.avatar}</div>`
+                    : ""
+                }
+                <div class="message-content">
+                    ${
+                      !isCurrentUser
+                        ? `<div class="sender-name">${msg.userName}</div>`
+                        : ""
+                    }
+                    <div class="message-bubble">
+                        <div class="message-text">${this.escapeHtml(
+                          msg.text
+                        )}</div>
+                        <div class="message-time">${this.formatTime(
+                          msg.timestamp
+                        )}</div>
+                    </div>
+                </div>
+                ${
+                  isCurrentUser
+                    ? `<div class="message-avatar">${msg.avatar}</div>`
+                    : ""
+                }
+            `;
+    }
+
+    return div;
+  },
+
+  sendMessage(text) {
+    if (!text.trim()) return;
+
+    const message = {
+      id: "msg_" + Date.now(),
+      text: text.trim(),
+      userId: this.currentUser.id,
+      userName: this.currentUser.name,
+      avatar: this.currentUser.avatar,
+      timestamp: new Date().toISOString(),
+      type: "user",
+    };
+
+    this.addMessage(message);
+    this.broadcastMessage(message);
+  },
+
+  addSystemMessage(text) {
+    const message = {
+      id: "sys_" + Date.now(),
+      text: text,
+      timestamp: new Date().toISOString(),
+      type: "system",
+    };
+    this.addMessage(message);
+  },
+
+  addMessage(message) {
+    this.messages.push(message);
+    this.saveMessages();
+    this.renderNewMessage(message);
+  },
+
+  broadcastMessage(message) {
+    if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+      this.ws.send(
+        JSON.stringify({
+          type: "group_message",
+          ...message,
+        })
+      );
+    }
+  },
+
+  handleIncomingMessage(data) {
+    if (data.userId !== this.currentUser.id) {
+      this.addMessage(data);
+    }
+  },
+
+  renderNewMessage(message) {
+    const container = document.getElementById("groupMessages");
+    if (!container) return;
+
+    // Remove welcome message if it's the first real message
+    if (container.querySelector(".welcome-message")) {
+      container.innerHTML = "";
+    }
+
+    const messageEl = this.createMessageElement(message);
+    container.appendChild(messageEl);
+    container.scrollTop = container.scrollHeight;
+  },
+
+  setupEventListeners() {
+    const sendBtn = document.getElementById("sendGroupMessageBtn");
+    const input = document.getElementById("groupMessageInput");
+    const refreshBtn = document.getElementById("refreshOnlineBtn");
+
+    if (sendBtn && input) {
+      sendBtn.addEventListener("click", () => {
+        this.sendMessage(input.value);
+        input.value = "";
+      });
+
+      input.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          this.sendMessage(input.value);
+          input.value = "";
+        }
+      });
+    }
+
+    if (refreshBtn) {
+      refreshBtn.addEventListener("click", () => {
+        this.updateOnlineUsers();
+      });
+    }
+  },
+
+  escapeHtml(text) {
+    const div = document.createElement("div");
+    div.textContent = text;
+    return div.innerHTML;
+  },
+
+  formatTime(timestamp) {
+    const date = new Date(timestamp);
+    const now = new Date();
+    const diff = now - date;
+
+    if (diff < 60000) return "now";
+    if (diff < 3600000) return Math.floor(diff / 60000) + "m ago";
+    if (diff < 86400000) {
+      return date.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+      });
+    }
     return date.toLocaleDateString("en-US", {
       month: "short",
       day: "numeric",
