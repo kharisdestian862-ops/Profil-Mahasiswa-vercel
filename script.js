@@ -5090,6 +5090,13 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
 
+    const codeFab = document.getElementById("codeFab");
+    if (codeFab) {
+      codeFab.addEventListener("click", () => {
+        switchSection("codeplayground");
+      });
+    }
+
     observer.observe(codePlaygroundSection, {
       attributes: true,
       attributeFilter: ["style"],
