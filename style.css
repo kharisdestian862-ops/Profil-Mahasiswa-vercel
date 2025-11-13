@@ -3804,6 +3804,15 @@ body.login-page .chatbot-fab {
   width: 18px;
   height: 18px;
 }
+.login-footer-desktop {
+  display: flex;
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+#login-footer-mobile {
+  display: none;
+}
 
 .login-footer-mobile {
   display: none;
@@ -3833,6 +3842,16 @@ body.login-page .chatbot-fab {
   .form-subtext {
     display: block;
   }
+}
+
+.regis-footer-desktop {
+  display: flex;
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.regis-footer-mobile {
+  display: none;
 }
 
 .chat-message.bot.loading {
