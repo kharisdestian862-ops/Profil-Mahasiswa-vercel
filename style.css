@@ -6223,7 +6223,6 @@ body.dark-mode .chat-bubble.others {
   outline: none;
 }
 
-/* ===== KANBAN BOARD STYLES ===== */
 .kanban-controls {
   margin-bottom: 1.5rem;
 }
@@ -6286,7 +6285,7 @@ body.dark-mode .chat-bubble.others {
 
 .task-list {
   flex: 1;
-  min-height: 100px; /* Area drop */
+  min-height: 100px;
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
@@ -6338,7 +6337,6 @@ body.dark-mode .chat-bubble.others {
   opacity: 1;
 }
 
-/* Responsif untuk Notes & Kanban */
 @media (max-width: 768px) {
   .notes-container {
     grid-template-columns: 1fr;
@@ -6351,5 +6349,67 @@ body.dark-mode .chat-bubble.others {
   }
   .notes-editor {
     height: 500px;
+  }
+}
+
+.notes-fab,
+.kanban-fab {
+  position: fixed;
+  right: 2rem;
+  width: 60px;
+  height: 60px;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  z-index: 900;
+  transition: all 0.2s ease-in-out;
+}
+
+.notes-fab {
+  bottom: 170px;
+  background: var(--success);
+}
+
+.kanban-fab {
+  bottom: 240px;
+  background: var(--warning);
+}
+
+.notes-fab:hover,
+.kanban-fab:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+body.full-layout-active .chatbot-fab,
+body.full-layout-active .code-fab,
+body.full-layout-active .notes-fab,
+body.full-layout-active .kanban-fab {
+  display: none !important;
+}
+
+body.dark-mode .notes-fab,
+body.dark-mode .kanban-fab {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+}
+
+@media (max-width: 768px) {
+  .notes-fab,
+  .kanban-fab {
+    width: 50px;
+    height: 50px;
+    right: 1.5rem;
+  }
+
+  .notes-fab {
+    bottom: 10.5rem;
+  }
+
+  .kanban-fab {
+    bottom: 15rem;
   }
 }
