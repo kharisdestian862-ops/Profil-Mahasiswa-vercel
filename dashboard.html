@@ -58,6 +58,9 @@
             <a href="#" data-section="schedule" data-i18n="nav.schedule"
               >Class Schedule</a
             >
+            <a href="#" data-section="finance">
+              <span data-i18n="nav.finance">Finance</span>
+            </a>
             <a href="#" data-section="codeplayground">Kode Editor</a>
             <a href="#" data-section="settings" data-i18n="nav.settings"
               >Settings</a
@@ -100,6 +103,9 @@
           <a href="#" data-section="schedule" data-i18n="nav.schedule"
             >Class Schedule</a
           >
+          <a href="#" data-section="finance">
+            <span data-i18n="nav.finance">Finance</span>
+          </a>
           <a href="#" data-section="codeplayground">Kode Editor</a>
           <a href="#" data-section="settings" data-i18n="nav.settings"
             >Settings</a
@@ -1107,6 +1113,170 @@
                 <div class="summary-label" data-i18n="schedule.hours_week">
                   Hours/Week
                 </div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Finance Section -->
+          <section id="finance" class="section" style="display: none">
+            <div class="section-header">
+              <div>
+                <h1 data-i18n="finance.title">Keuangan</h1>
+                <p data-i18n="finance.subtitle">
+                  Kelola informasi pembayaran dan tagihan Anda
+                </p>
+              </div>
+            </div>
+
+            <!-- Payment Summary Cards -->
+            <div class="finance-summary">
+              <div class="summary-card total-bill">
+                <div class="summary-icon">💰</div>
+                <div class="summary-info">
+                  <div class="summary-label" data-i18n="finance.total_bill">
+                    Total Tagihan
+                  </div>
+                  <div class="summary-value" id="totalBill">Rp 12.500.000</div>
+                </div>
+              </div>
+
+              <div class="summary-card total-paid">
+                <div class="summary-icon">✅</div>
+                <div class="summary-info">
+                  <div class="summary-label" data-i18n="finance.total_paid">
+                    Total Dibayar
+                  </div>
+                  <div class="summary-value" id="totalPaid">Rp 8.500.000</div>
+                </div>
+              </div>
+
+              <div class="summary-card remaining-bill">
+                <div class="summary-icon">⏳</div>
+                <div class="summary-info">
+                  <div class="summary-label" data-i18n="finance.remaining_bill">
+                    Sisa Tagihan
+                  </div>
+                  <div class="summary-value" id="remainingBill">
+                    Rp 4.000.000
+                  </div>
+                </div>
+              </div>
+
+              <div class="summary-card payment-status">
+                <div class="summary-icon">📊</div>
+                <div class="summary-info">
+                  <div class="summary-label" data-i18n="finance.payment_status">
+                    Status Pembayaran
+                  </div>
+                  <div class="summary-value">
+                    <span
+                      class="status-badge partially-paid"
+                      id="paymentStatus"
+                      data-i18n="finance.status.partially_paid"
+                      >Sebagian Lunas</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Finance Tabs -->
+            <div class="finance-tabs">
+              <button
+                class="finance-tab-btn active"
+                data-tab="bills"
+                onclick="switchFinanceTab('bills')"
+              >
+                <span data-i18n="finance.tuition_fees">Tagihan & Biaya</span>
+              </button>
+              <button
+                class="finance-tab-btn"
+                data-tab="history"
+                onclick="switchFinanceTab('history')"
+              >
+                <span data-i18n="finance.payment_history"
+                  >Riwayat Pembayaran</span
+                >
+              </button>
+              <button
+                class="finance-tab-btn"
+                data-tab="methods"
+                onclick="switchFinanceTab('methods')"
+              >
+                <span data-i18n="finance.payment_methods"
+                  >Metode Pembayaran</span
+                >
+              </button>
+              <button
+                class="finance-tab-btn"
+                data-tab="scholarships"
+                onclick="switchFinanceTab('scholarships')"
+              >
+                <span data-i18n="finance.scholarships">Beasiswa</span>
+              </button>
+            </div>
+
+            <!-- Bills Tab -->
+            <div id="billsTab" class="finance-tab-content active">
+              <div class="finance-table">
+                <div class="table-header">
+                  <div class="col-semester" data-i18n="finance.semester">
+                    Semester
+                  </div>
+                  <div class="col-type" data-i18n="finance.type">Jenis</div>
+                  <div class="col-amount" data-i18n="finance.amount">
+                    Jumlah
+                  </div>
+                  <div class="col-due" data-i18n="finance.due_date">
+                    Jatuh Tempo
+                  </div>
+                  <div class="col-status" data-i18n="finance.status">
+                    Status
+                  </div>
+                  <div class="col-action" data-i18n="finance.action">Aksi</div>
+                </div>
+                <div id="billsTableBody" class="table-body">
+                  <!-- Populated by JavaScript -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment History Tab -->
+            <div id="historyTab" class="finance-tab-content">
+              <div class="finance-table">
+                <div class="table-header">
+                  <div class="col-date" data-i18n="finance.date">Tanggal</div>
+                  <div class="col-description" data-i18n="finance.description">
+                    Deskripsi
+                  </div>
+                  <div class="col-amount" data-i18n="finance.amount">
+                    Jumlah
+                  </div>
+                  <div class="col-method" data-i18n="finance.method">
+                    Metode
+                  </div>
+                  <div class="col-receipt" data-i18n="finance.receipt_number">
+                    No. Bukti
+                  </div>
+                  <div class="col-action" data-i18n="finance.action">Aksi</div>
+                </div>
+                <div id="historyTableBody" class="table-body">
+                  <!-- Populated by JavaScript -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment Methods Tab -->
+            <div id="methodsTab" class="finance-tab-content">
+              <div class="payment-methods-grid" id="paymentMethodsGrid">
+                <!-- Populated by JavaScript -->
+              </div>
+            </div>
+
+            <!-- Scholarships Tab -->
+            <div id="scholarshipsTab" class="finance-tab-content">
+              <div class="scholarships-container" id="scholarshipsContainer">
+                <!-- Populated by JavaScript -->
               </div>
             </div>
           </section>
