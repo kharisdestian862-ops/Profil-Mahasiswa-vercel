@@ -3190,35 +3190,34 @@ function calculateGPA() {
 }
 
 function downloadTranscriptPDF() {
-  // 1. Ambil data user
   const user = JSON.parse(localStorage.getItem("currentUser")) || {
     fullName: "Mahasiswa",
     nim: "000000",
     programStudi: "Umum",
   };
 
-  // 2. Buat elemen HTML sementara untuk PDF
   const element = document.createElement("div");
+  element.style.width = "800px";
   element.style.padding = "40px";
   element.style.fontFamily = "Arial, sans-serif";
   element.style.color = "#333";
+  element.style.background = "white";
 
-  // Header Transkrip
   let htmlContent = `
     <div style="text-align: center; border-bottom: 3px solid #333; padding-bottom: 20px; margin-bottom: 30px;">
-      <h1 style="margin: 0; font-size: 24px;">TRANSKRIP NILAI SEMENTARA</h1>
-      <p style="margin: 5px 0 0; font-size: 14px;">Universitas Catur Insan Cendekia (UCIC)</p>
+      <h1 style="margin: 0; font-size: 24px; color: #000;">TRANSKRIP NILAI SEMENTARA</h1>
+      <p style="margin: 5px 0 0; font-size: 14px; color: #000;">Universitas Catur Insan Cendekia (UCIC)</p>
     </div>
     
-    <table style="width: 100%; margin-bottom: 30px; font-size: 14px;">
+    <table style="width: 100%; margin-bottom: 30px; font-size: 14px; color: #000;">
       <tr><td style="width: 150px; font-weight: bold;">Nama Mahasiswa</td><td>: ${user.fullName}</td></tr>
       <tr><td style="font-weight: bold;">NIM</td><td>: ${user.nim}</td></tr>
       <tr><td style="font-weight: bold;">Program Studi</td><td>: ${user.programStudi}</td></tr>
       <tr><td style="font-weight: bold;">Tahun Akademik</td><td>: 2024/2025</td></tr>
     </table>
 
-    <h3 style="border-bottom: 1px solid #ccc; padding-bottom: 10px;">Hasil Studi Semester 4</h3>
-    <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px;">
+    <h3 style="border-bottom: 1px solid #ccc; padding-bottom: 10px; color: #000;">Hasil Studi Semester 4</h3>
+    <table style="width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 13px; color: #000;">
       <thead>
         <tr style="background-color: #f2f2f2;">
           <th style="border: 1px solid #999; padding: 10px; text-align: left;">Kode</th>
@@ -3230,11 +3229,7 @@ function downloadTranscriptPDF() {
       <tbody>
   `;
 
-  // Loop data mata kuliah dari attendanceData
-  // (Karena ini simulasi, kita gunakan data statis yang ada di script.js)
-  // Di sistem nyata, ini akan mengambil nilai sebenarnya
   Object.values(attendanceData).forEach((course) => {
-    // Simulasi nilai huruf acak (karena data nilai asli belum disimpan di DB nilai)
     const grade = ["A", "A-", "B+", "B"][Math.floor(Math.random() * 4)];
 
     htmlContent += `
@@ -3251,7 +3246,7 @@ function downloadTranscriptPDF() {
       </tbody>
     </table>
 
-    <div style="margin-top: 40px; text-align: right;">
+    <div style="margin-top: 40px; text-align: right; color: #000;">
       <p>Cirebon, ${new Date().toLocaleDateString("id-ID", {
         day: "numeric",
         month: "long",
@@ -3263,19 +3258,16 @@ function downloadTranscriptPDF() {
 
   element.innerHTML = htmlContent;
 
-  // 3. Konfigurasi PDF
   const opt = {
-    margin: [10, 10, 10, 10], // top, left, bottom, right
+    margin: [10, 10, 10, 10],
     filename: `Transkrip_${user.nim}.pdf`,
     image: { type: "jpeg", quality: 0.98 },
-    html2canvas: { scale: 2 }, // Resolusi lebih tinggi
+    html2canvas: { scale: 2, useCORS: true },
     jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
   };
 
-  // 4. Proses Download (Menampilkan notifikasi dulu)
   showNotification("Sedang membuat PDF...", "info");
 
-  // Menggunakan worker html2pdf
   html2pdf()
     .set(opt)
     .from(element)
