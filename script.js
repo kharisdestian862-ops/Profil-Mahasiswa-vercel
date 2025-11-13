@@ -1782,7 +1782,6 @@ const translations = {
 let currentLanguage = "en";
 
 function setLanguage(lang) {
-  // Validasi bahasa yang dipilih
   if (!translations[lang]) {
     console.error(`Language '${lang}' not found, defaulting to 'en'`);
     lang = "en";
@@ -1790,9 +1789,11 @@ function setLanguage(lang) {
 
   currentLanguage = lang;
   localStorage.setItem("preferredLanguage", lang);
+
   applyTranslations();
   updateLanguageSelect();
 
+  // UPDATE HEADER SETELAH GANTI BAHASA
   const userJson = localStorage.getItem("currentUser");
   if (userJson) {
     const user = JSON.parse(userJson);
@@ -1800,16 +1801,14 @@ function setLanguage(lang) {
     updateDashboardHeader(firstName);
   }
 
-  // Update chatbot greeting
+  // Update Chatbot Greeting
   const messagesContainer = document.getElementById("chatbotMessages");
   if (messagesContainer) {
     messagesContainer.innerHTML = "";
     const newGreeting = translations[currentLanguage]["chat.greeting"];
-
     const msgDiv = document.createElement("div");
     msgDiv.className = "chat-message bot chat-text";
     msgDiv.innerHTML = newGreeting;
-
     messagesContainer.appendChild(msgDiv);
   }
 }
@@ -4664,6 +4663,7 @@ function loadUserProfile() {
 
   const user = JSON.parse(userJson);
 
+  // Update Profile Info (pastikan selector sesuai)
   document.querySelector(
     ".profile-info .info-item:nth-child(1) .info-value"
   ).textContent = user.fullName;
@@ -4679,26 +4679,10 @@ function loadUserProfile() {
 
   const firstName = user.fullName.split(" ")[0];
 
+  // PANGGIL FUNGSI BARU
   updateDashboardHeader(firstName);
 
-  const dashboardTitleElement = document.querySelector(
-    'h1[data-i18n="dashboard.title"]'
-  );
-  if (dashboardTitleElement) {
-    dashboardTitleElement.textContent = `${
-      dashboardTitleElement.textContent.split(" ")[0]
-    } ${firstName}`;
-  }
-
-  const welcomeElement = document.querySelector(
-    'div[data-i18n="dashboard.welcome"]'
-  );
-  if (welcomeElement) {
-    welcomeElement.textContent = `${
-      welcomeElement.textContent.split(",")[0]
-    }, ${firstName}`;
-  }
-
+  // Update Sidebar Info
   document
     .querySelectorAll(".profile .name")
     .forEach((el) => (el.textContent = user.fullName));
