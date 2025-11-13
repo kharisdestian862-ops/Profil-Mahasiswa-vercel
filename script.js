@@ -2068,7 +2068,6 @@ function switchSection(sectionId) {
     }
 
     if (sectionId === "studyroom") {
-      // Pastikan Study Room kembali ke list awal
       loadVideoLearningCenter();
       document.getElementById("studyRoomVideoDetailView").style.display =
         "none";
@@ -2080,9 +2079,8 @@ function switchSection(sectionId) {
     }
   }
 
-  // 5. PENTING: Pastikan Profil Selalu Ter-Update Saat Pindah Menu
-  // Ini akan memperbaiki masalah nama hilang saat ganti section
-  loadUserProfile();
+  // 5. HAPUS BARIS INI: Jangan panggil loadUserProfile() di sini
+  // loadUserProfile(); // ← HAPUS BARIS INI
 }
 
 // Initialize sidebar navigation
@@ -4686,6 +4684,7 @@ function loadUserProfile() {
   // Test setiap fungsi update
   console.log("🔄 Memulai update semua bagian...");
 
+  // PERBAIKAN: Pass both firstName AND user
   updateDashboardHeader(firstName, user);
   console.log("✅ Dashboard header updated");
 
@@ -4705,10 +4704,15 @@ function loadUserProfile() {
 }
 
 function updateDashboardHeader(firstName, user) {
+  console.log("🔹 updateDashboardHeader() dipanggil");
+
   const titleEl = document.querySelector('h1[data-i18n="dashboard.title"]');
   const welcomeEl = document.querySelector(
     'div[data-i18n="dashboard.welcome"]'
   );
+
+  console.log("📌 Title element found:", !!titleEl);
+  console.log("📌 Welcome element found:", !!welcomeEl);
 
   // Ambil teks dasar dari kamus bahasa saat ini
   const baseTitle = translations[currentLanguage]["dashboard.title"];
@@ -4727,10 +4731,10 @@ function updateDashboardHeader(firstName, user) {
     welcomeEl.textContent = `${baseWelcome} ${firstName}`;
   }
 
-  // Update Mobile Header
+  // Update Mobile Header - PERBAIKAN: gunakan parameter user, bukan variable global
   const mobileNameElement = document.querySelector(".mobile-name");
   if (mobileNameElement) {
-    mobileNameElement.textContent = user.fullName;
+    mobileNameElement.textContent = user.fullName; // Sekarang user sudah didefinisikan sebagai parameter
   }
 
   const mobileAvatarElement = document.querySelector(".mobile-avatar");
@@ -4743,6 +4747,8 @@ function updateDashboardHeader(firstName, user) {
       .toUpperCase();
     mobileAvatarElement.textContent = initials;
   }
+
+  console.log("✅ Dashboard header updated successfully");
 }
 
 function updateSidebarProfiles(user, firstName) {
