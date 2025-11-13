@@ -3372,231 +3372,282 @@ function showTranscript() {
 }
 
 // Main initialization
+// Main initialization
 document.addEventListener("DOMContentLoaded", function () {
-  initLanguage();
-  initHamburgerMenu();
-  initSidebar();
-  let chart = initChart();
-  initAttendanceSystem();
-  initLogout();
-  initSettings();
-  initAIAssistant();
-  initQuickDarkMode();
-  initScheduleFilter();
-  initQuickActions();
-  initGpaCalculator();
-  loadUserProfile();
-
-  window.addEventListener("resize", function () {
-    if (chart) {
-      setTimeout(() => {
-        chart.resize();
-      }, 100);
-    }
-  });
-
-  switchSection("dashboard");
-  simulateDataLoading();
-
-  const chatbotFab = document.getElementById("chatbotFab");
-  const messagesContainer = document.getElementById("chatbotMessages");
-  const inputField = document.getElementById("chatbotInput");
-  const sendBtn = document.getElementById("chatbotSendBtn");
-  const scrollToBottomBtn = document.getElementById("scrollToBottomBtn");
-
-  if (chatbotFab && messagesContainer && inputField && sendBtn) {
-    chatbotFab.addEventListener("click", () => {
-      switchSection("chatbot");
-    });
-
-    scrollToBottomBtn.addEventListener("click", () => {
-      messagesContainer.scrollTo({
-        top: messagesContainer.scrollHeight,
-        behavior: "smooth",
-      });
-    });
-
-    messagesContainer.addEventListener("scroll", () => {
-      const scrollFromBottom =
-        messagesContainer.scrollHeight -
-        messagesContainer.scrollTop -
-        messagesContainer.clientHeight;
-
-      if (scrollFromBottom > 150) {
-        scrollToBottomBtn.classList.add("visible");
-      } else {
-        scrollToBottomBtn.classList.remove("visible");
-      }
-    });
-
-    const sendMessage = () => {
-      const query = inputField.value;
-      if (query.trim() === "") return;
-
-      addMessage(query, "user");
-      inputField.value = "";
-
-      const loadingMessageId = addMessage("...", "bot", true);
-
-      const contextData = getContextForAI(query);
-
-      fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: query,
-          context: contextData,
-          language: currentLanguage,
-        }),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+  // 1. Ambil data Mata Kuliah dari Database API
+  fetch("/api/get_courses_db")
+    .then((response) => {
+      if (!response.ok) throw new Error("API request failed");
+      return response.json();
+    })
+    .then((data) => {
+      // Update attendanceData dengan data dari database
+      if (!data.error_message) {
+        Object.keys(attendanceData).forEach((key) => {
+          if (data[key]) {
+            attendanceData[key] = {
+              ...attendanceData[key], // Pertahankan data meetings/tasks statis
+              ...data[key], // Timpa info course (name, credits) dari DB
+            };
           }
-          return response.json();
-        })
-        .then((data) => {
-          removeMessage(loadingMessageId);
-
-          // Handle berbagai format response
-          if (data.choices && data.choices[0] && data.choices[0].message) {
-            const aiResponse = data.choices[0].message.content;
-            addMessage(aiResponse, "bot");
-          } else if (data.error) {
-            addMessage(`Error: ${data.error}`, "bot");
-          } else if (data.message) {
-            addMessage(data.message, "bot");
-          } else {
-            console.error("Unexpected API response:", data);
-            addMessage("Maaf, format response tidak dikenali.", "bot");
-          }
-        })
-        .catch((error) => {
-          removeMessage(loadingMessageId);
-          console.error("Fetch error:", error);
-          addMessage(
-            "Maaf, terjadi masalah koneksi ke server. Coba lagi nanti.",
-            "bot"
-          );
         });
-    };
+      }
+      console.log("Data mata kuliah berhasil dimuat dari database.");
+    })
+    .catch((error) => {
+      console.warn(
+        "Gagal memuat data dari API. Menggunakan data statis.",
+        error
+      );
+    })
+    .finally(() => {
+      // 2. Inisialisasi Semua Fitur (Setelah data siap)
+      initLanguage();
+      initHamburgerMenu();
+      initSidebar();
+      let chart = initChart();
+      initAttendanceSystem();
+      initLogout();
+      initSettings();
+      initAIAssistant();
+      initQuickDarkMode();
+      initScheduleFilter();
+      initQuickActions();
+      initGpaCalculator();
+      loadUserProfile();
 
-    sendBtn.addEventListener("click", sendMessage);
-    inputField.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") {
-        sendMessage();
+      window.addEventListener("resize", function () {
+        if (chart) {
+          setTimeout(() => {
+            chart.resize();
+          }, 100);
+        }
+      });
+
+      switchSection("dashboard");
+      simulateDataLoading();
+
+      // 3. Inisialisasi Chatbot & Event Listeners
+      const chatbotFab = document.getElementById("chatbotFab");
+      const messagesContainer = document.getElementById("chatbotMessages");
+      const inputField = document.getElementById("chatbotInput");
+      const sendBtn = document.getElementById("chatbotSendBtn");
+      const scrollToBottomBtn = document.getElementById("scrollToBottomBtn");
+
+      if (chatbotFab && messagesContainer && inputField && sendBtn) {
+        chatbotFab.addEventListener("click", () => {
+          switchSection("chatbot");
+        });
+
+        if (scrollToBottomBtn) {
+          scrollToBottomBtn.addEventListener("click", () => {
+            messagesContainer.scrollTo({
+              top: messagesContainer.scrollHeight,
+              behavior: "smooth",
+            });
+          });
+
+          messagesContainer.addEventListener("scroll", () => {
+            const scrollFromBottom =
+              messagesContainer.scrollHeight -
+              messagesContainer.scrollTop -
+              messagesContainer.clientHeight;
+
+            if (scrollFromBottom > 150) {
+              scrollToBottomBtn.classList.add("visible");
+            } else {
+              scrollToBottomBtn.classList.remove("visible");
+            }
+          });
+        }
+
+        const sendMessage = () => {
+          const query = inputField.value;
+          if (query.trim() === "") return;
+
+          addMessage(query, "user");
+          inputField.value = "";
+
+          const loadingMessageId = addMessage("...", "bot", true);
+
+          const contextData = getContextForAI(query);
+
+          fetch("/api/chat", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              message: query,
+              context: contextData,
+              language: currentLanguage,
+            }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              removeMessage(loadingMessageId);
+
+              if (data.choices && data.choices[0] && data.choices[0].message) {
+                const aiResponse = data.choices[0].message.content;
+                addMessage(aiResponse, "bot");
+              } else if (data.error) {
+                addMessage(`Error: ${data.error}`, "bot");
+              } else {
+                addMessage(
+                  "Maaf, saya tidak menerima balasan yang valid.",
+                  "bot"
+                );
+              }
+            })
+            .catch((error) => {
+              removeMessage(loadingMessageId);
+              console.error("Fetch error:", error);
+              addMessage(
+                "Maaf, terjadi masalah koneksi ke server. Coba lagi nanti.",
+                "bot"
+              );
+            });
+        };
+
+        sendBtn.addEventListener("click", sendMessage);
+        inputField.addEventListener("keypress", (e) => {
+          if (e.key === "Enter") {
+            sendMessage();
+          }
+        });
+
+        const addMessage = (
+          message,
+          sender,
+          isLoading = false,
+          fromHistory = false
+        ) => {
+          const messagesContainer = document.getElementById("chatbotMessages");
+          if (!messagesContainer) return null;
+
+          const msgDiv = document.createElement("div");
+          msgDiv.className = `chat-message ${sender}`;
+
+          const messageId = "msg-" + Date.now();
+          msgDiv.id = messageId;
+
+          if (sender === "bot") {
+            msgDiv.classList.add("chat-text");
+            if (isLoading) {
+              msgDiv.innerHTML =
+                '<span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span>';
+              msgDiv.classList.add("loading");
+            } else {
+              const htmlMessage = convertMarkdownToHTML(message);
+              msgDiv.innerHTML = htmlMessage;
+            }
+          } else {
+            const textSpan = document.createElement("span");
+            textSpan.className = "chat-text";
+            textSpan.textContent = message;
+            msgDiv.appendChild(textSpan);
+          }
+
+          messagesContainer.appendChild(msgDiv);
+
+          if (!fromHistory) {
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+          }
+
+          return messageId;
+        };
+
+        // Helper Markdown Converter
+        function convertMarkdownToHTML(markdown) {
+          if (!markdown) return "";
+          let html = markdown;
+          html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+          html = html.replace(/\*(.*?)\*/g, "<em>$1</em>");
+          html = html.replace(/__(.*?)__/g, "<strong>$1</strong>");
+          html = html.replace(/_(.*?)_/g, "<em>$1</em>");
+          html = html.replace(/\n/g, "<br>");
+          html = html.replace(/^\s*[-*]\s+(.+)$/gm, "<li>$1</li>");
+          html = html.replace(/(<li>.*<\/li>)/s, "<ul>$1</ul>");
+          return html;
+        }
+
+        function removeMessage(messageId) {
+          const messageElement = document.getElementById(messageId);
+          if (messageElement) {
+            messageElement.remove();
+          }
+        }
+
+        const initialGreeting = translations[currentLanguage]["chat.greeting"];
+        messagesContainer.innerHTML = "";
+        addMessage(initialGreeting, "bot");
+      }
+
+      // 4. Event Listeners Tambahan (Study Room, FABs)
+      const backToStudyRoomList = document.getElementById(
+        "backToStudyRoomList"
+      );
+      if (backToStudyRoomList) {
+        backToStudyRoomList.addEventListener("click", function () {
+          switchSection("studyroom");
+        });
+      }
+
+      // Inisialisasi Notes FAB
+      const notesFab = document.getElementById("notesFab");
+      if (notesFab) {
+        notesFab.addEventListener("click", () => {
+          switchSection("notes");
+        });
+      }
+
+      // Inisialisasi Kanban FAB
+      const kanbanFab = document.getElementById("kanbanFab");
+      if (kanbanFab) {
+        kanbanFab.addEventListener("click", () => {
+          switchSection("kanban");
+        });
+      }
+
+      // Inisialisasi Code FAB (jika masih ada)
+      const codeFab = document.getElementById("codeFab");
+      if (codeFab) {
+        codeFab.addEventListener("click", () => {
+          switchSection("codeplayground");
+        });
+      }
+
+      // Inisialisasi FAB Speed Dial Trigger (Jika menggunakan Speed Dial)
+      const fabTrigger = document.getElementById("fabTrigger");
+      const fabContainer = document.getElementById("fabContainer");
+      if (fabTrigger && fabContainer) {
+        fabTrigger.addEventListener("click", (e) => {
+          e.stopPropagation();
+          fabContainer.classList.toggle("active");
+        });
+        document.addEventListener("click", (e) => {
+          if (!fabContainer.contains(e.target)) {
+            fabContainer.classList.remove("active");
+          }
+        });
+
+        const fabButtons = {
+          chatbotFab: "chatbot",
+          codeFab: "codeplayground",
+          notesFab: "notes",
+          kanbanFab: "kanban",
+        };
+        Object.keys(fabButtons).forEach((id) => {
+          const btn = document.getElementById(id);
+          if (btn) {
+            btn.addEventListener("click", () => {
+              switchSection(fabButtons[id]);
+              fabContainer.classList.remove("active");
+            });
+          }
+        });
       }
     });
-
-    const addMessage = (
-      message,
-      sender,
-      isLoading = false,
-      fromHistory = false
-    ) => {
-      const messagesContainer = document.getElementById("chatbotMessages");
-      if (!messagesContainer) return null;
-
-      const msgDiv = document.createElement("div");
-      msgDiv.className = `chat-message ${sender}`;
-
-      const messageId = "msg-" + Date.now();
-      msgDiv.id = messageId;
-
-      if (sender === "bot") {
-        msgDiv.classList.add("chat-text");
-        if (isLoading) {
-          msgDiv.innerHTML =
-            '<span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span>';
-          msgDiv.classList.add("loading");
-        } else {
-          // CONVERT MARKDOWN TO HTML
-          const htmlMessage = convertMarkdownToHTML(message);
-          msgDiv.innerHTML = htmlMessage;
-        }
-      } else {
-        const textSpan = document.createElement("span");
-        textSpan.className = "chat-text";
-        textSpan.textContent = message;
-        msgDiv.appendChild(textSpan);
-      }
-
-      messagesContainer.appendChild(msgDiv);
-
-      if (!fromHistory) {
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      }
-
-      return messageId;
-    };
-
-    // Fungsi untuk convert markdown ke HTML
-    function convertMarkdownToHTML(markdown) {
-      if (!markdown) return "";
-
-      let html = markdown;
-
-      // Convert **bold** to <strong>
-      html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-
-      // Convert *italic* to <em>
-      html = html.replace(/\*(.*?)\*/g, "<em>$1</em>");
-
-      // Convert __bold__ (alternate syntax) to <strong>
-      html = html.replace(/__(.*?)__/g, "<strong>$1</strong>");
-
-      // Convert _italic_ (alternate syntax) to <em>
-      html = html.replace(/_(.*?)_/g, "<em>$1</em>");
-
-      // Convert line breaks to <br>
-      html = html.replace(/\n/g, "<br>");
-
-      // Convert lists (basic support)
-      html = html.replace(/^\s*[-*]\s+(.+)$/gm, "<li>$1</li>");
-      html = html.replace(/(<li>.*<\/li>)/s, "<ul>$1</ul>");
-
-      // Convert numbered lists
-      html = html.replace(/^\s*\d+\.\s+(.+)$/gm, "<li>$1</li>");
-      html = html.replace(/(<li>.*<\/li>)/s, "<ol>$1</ol>");
-
-      return html;
-    }
-
-    function removeMessage(messageId) {
-      const messageElement = document.getElementById(messageId);
-      if (messageElement) {
-        messageElement.remove();
-      }
-    }
-    const initialGreeting = translations[currentLanguage]["chat.greeting"];
-    messagesContainer.innerHTML = "";
-    addMessage(initialGreeting, "bot");
-
-    const backToStudyRoomList = document.getElementById("backToStudyRoomList");
-    if (backToStudyRoomList) {
-      backToStudyRoomList.addEventListener("click", function () {
-        switchSection("studyroom");
-      });
-    }
-
-    // Inisialisasi Notes FAB
-    const notesFab = document.getElementById("notesFab");
-    if (notesFab) {
-      notesFab.addEventListener("click", () => {
-        switchSection("notes");
-      });
-    }
-
-    // Inisialisasi Kanban FAB
-    const kanbanFab = document.getElementById("kanbanFab");
-    if (kanbanFab) {
-      kanbanFab.addEventListener("click", () => {
-        switchSection("kanban");
-      });
-    }
-  }
 });
 
 // Global functions for HTML onclick events
