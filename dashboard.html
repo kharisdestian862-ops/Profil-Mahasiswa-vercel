@@ -1,21 +1,29 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title data-i18n="dashboard.title">Student Dashboard</title>
+    <title data-i18n="dashboard.title">Student Dashboard | Kharis</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
     <div class="container">
-      <!-- Mobile Header -->
       <div class="mobile-header">
         <div class="mobile-nav">
           <div class="mobile-profile">
             <div class="mobile-avatar">KD</div>
             <div class="mobile-name">Loading...</div>
           </div>
-          <button class="hamburger">
+          <button class="hamburger" aria-label="Buka Menu">
             <span></span>
             <span></span>
             <span></span>
@@ -23,14 +31,10 @@
         </div>
       </div>
 
-      <!-- Mobile Menu Overlay -->
       <div class="mobile-menu-overlay"></div>
 
-      <!-- Mobile Sidebar -->
-      <!-- Mobile Sidebar - FIXED VERSION -->
       <div class="mobile-sidebar">
         <div class="mobile-sidebar-content">
-          <!-- Profile Section -->
           <div class="profile">
             <div class="avatar">KD</div>
             <div>
@@ -39,7 +43,6 @@
             </div>
           </div>
 
-          <!-- Navigation Menu -->
           <nav>
             <a
               href="#"
@@ -58,20 +61,17 @@
             <a href="#" data-section="schedule" data-i18n="nav.schedule"
               >Class Schedule</a
             >
-            <a href="#" data-section="finance">
-              <span data-i18n="nav.finance">Finance</span>
-            </a>
-
-            <a href="#" data-section="chat">
-              <span data-i18n="nav.messages">Messages</span>
-            </a>
-
+            <a href="#" data-section="finance"
+              ><span data-i18n="nav.finance">Finance</span></a
+            >
+            <a href="#" data-section="chat"
+              ><span data-i18n="nav.messages">Messages</span></a
+            >
             <a href="#" data-section="settings" data-i18n="nav.settings"
               >Settings</a
             >
           </nav>
 
-          <!-- Logout Button -->
           <button
             class="logout-btn-mobile"
             id="logoutBtnMobile"
@@ -82,7 +82,6 @@
         </div>
       </div>
 
-      <!-- Desktop Sidebar -->
       <aside class="sidebar">
         <div class="profile">
           <div class="avatar">KD</div>
@@ -107,14 +106,12 @@
           <a href="#" data-section="schedule" data-i18n="nav.schedule"
             >Class Schedule</a
           >
-          <a href="#" data-section="finance">
-            <span data-i18n="nav.finance">Finance</span>
-          </a>
-
-          <a href="#" data-section="chat">
-            <span data-i18n="nav.messages">Messages</span>
-          </a>
-
+          <a href="#" data-section="finance"
+            ><span data-i18n="nav.finance">Finance</span></a
+          >
+          <a href="#" data-section="chat"
+            ><span data-i18n="nav.messages">Messages</span></a
+          >
           <a href="#" data-section="settings" data-i18n="nav.settings"
             >Settings</a
           >
@@ -126,7 +123,12 @@
 
       <div class="fab-container" id="fabContainer">
         <div class="fab-items">
-          <button class="fab-item" id="kanbanFab" title="Tugas Saya">
+          <button
+            class="fab-item"
+            id="kanbanFab"
+            title="Tugas Saya"
+            aria-label="Buka Kanban"
+          >
             <span class="fab-label" data-i18n="nav.kanban">Tugas</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -145,7 +147,12 @@
             </svg>
           </button>
 
-          <button class="fab-item" id="notesFab" title="Catatan">
+          <button
+            class="fab-item"
+            id="notesFab"
+            title="Catatan"
+            aria-label="Buka Catatan"
+          >
             <span class="fab-label" data-i18n="nav.notes">Catatan</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -166,7 +173,12 @@
             </svg>
           </button>
 
-          <button class="fab-item" id="codeFab" title="Kode Editor">
+          <button
+            class="fab-item"
+            id="codeFab"
+            title="Kode Editor"
+            aria-label="Buka Code Editor"
+          >
             <span class="fab-label" data-i18n="nav.codeplayground">Kode</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -182,7 +194,12 @@
             </svg>
           </button>
 
-          <button class="fab-item" id="chatbotFab" title="Asisten AI">
+          <button
+            class="fab-item"
+            id="chatbotFab"
+            title="Asisten AI"
+            aria-label="Buka AI Chat"
+          >
             <span class="fab-label" data-i18n="nav.ai_assistant">AI Chat</span>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -198,7 +215,7 @@
           </button>
         </div>
 
-        <button class="fab-trigger" id="fabTrigger">
+        <button class="fab-trigger" id="fabTrigger" aria-label="Menu Pintas">
           <svg
             class="fab-icon-open"
             xmlns="http://www.w3.org/2000/svg"
@@ -228,18 +245,14 @@
         </button>
       </div>
 
-      <!-- Main + Right Sidebar Wrapper -->
       <div class="main-wrapper">
-        <!-- Main Content -->
         <main class="main-content">
-          <!-- Dashboard Section -->
           <section class="section" id="dashboard">
             <header class="main-header">
               <h1 data-i18n="dashboard.title">Kharis Dashboard</h1>
               <div data-i18n="dashboard.welcome">Welcome back,</div>
             </header>
 
-            <!-- Stats Cards -->
             <section class="cards">
               <div class="card">
                 <div class="card-title" data-i18n="dashboard.gpa">IPK</div>
@@ -278,7 +291,6 @@
               </div>
             </section>
 
-            <!-- Learning Progress + Courses Table -->
             <section class="main-section">
               <div class="chart-section">
                 <div class="chart-header">
@@ -368,7 +380,6 @@
             </section>
           </section>
 
-          <!-- Profile Section -->
           <section class="section" id="profile" style="display: none">
             <h2 data-i18n="profile.title">Profile</h2>
             <div class="profile-info">
@@ -403,7 +414,6 @@
             </div>
           </section>
 
-          <!-- Grades Section -->
           <section class="section" id="grades" style="display: none">
             <h2 data-i18n="grades.title">Grades</h2>
 
@@ -437,16 +447,13 @@
             <div class="grades-list" id="dynamicGradesList"></div>
           </section>
 
-          <!-- Attendance Section -->
           <section class="section" id="attendance" style="display: none">
-            <!-- Breadcrumb Navigation -->
             <div class="breadcrumb" id="attendanceBreadcrumb">
               <span class="breadcrumb-item active" data-i18n="attendance.title"
                 >Attendance</span
               >
             </div>
 
-            <!-- View 1: Course List -->
             <div id="courseListView">
               <h2 data-i18n="attendance.select_course">Select Course</h2>
               <p
@@ -554,7 +561,6 @@
               </div>
             </div>
 
-            <!-- View 2: Course Detail -->
             <div id="courseDetailView" style="display: none">
               <div class="detail-header">
                 <button class="back-btn" id="backToCourseList">
@@ -596,9 +602,7 @@
                 </div>
               </div>
 
-              <!-- Attendance Tab -->
               <div class="tab-content active" id="attendanceTab">
-                <!-- Attendance Summary -->
                 <div class="attendance-summary">
                   <div class="summary-card">
                     <div class="summary-value" id="detailAttendanceRate">
@@ -631,7 +635,6 @@
                   </div>
                 </div>
 
-                <!-- Detailed Attendance Table -->
                 <div class="attendance-details">
                   <h3 data-i18n="attendance.meeting_history">
                     Meeting History
@@ -654,45 +657,41 @@
                         Action
                       </div>
                     </div>
-
-                    <div class="table-body" id="attendanceTableBody">
-                      <!-- Will be populated by JavaScript -->
-                    </div>
+                    <div class="table-body" id="attendanceTableBody"></div>
                   </div>
                 </div>
 
-                <!-- Attendance Legend -->
                 <div class="attendance-legend">
                   <div class="legend-item">
-                    <span class="legend-color present"></span>
-                    <span class="legend-text" data-i18n="attendance.present"
+                    <span class="legend-color present"></span
+                    ><span class="legend-text" data-i18n="attendance.present"
                       >Present</span
                     >
                   </div>
                   <div class="legend-item">
-                    <span class="legend-color absent"></span>
-                    <span class="legend-text" data-i18n="attendance.absent"
+                    <span class="legend-color absent"></span
+                    ><span class="legend-text" data-i18n="attendance.absent"
                       >Absent</span
                     >
                   </div>
                   <div class="legend-item">
-                    <span class="legend-color late"></span>
-                    <span class="legend-text" data-i18n="attendance.late"
+                    <span class="legend-color late"></span
+                    ><span class="legend-text" data-i18n="attendance.late"
                       >Late</span
                     >
                   </div>
                   <div class="legend-item">
-                    <span class="legend-color pending"></span>
-                    <span class="legend-text" data-i18n="attendance.not_started"
+                    <span class="legend-color pending"></span
+                    ><span
+                      class="legend-text"
+                      data-i18n="attendance.not_started"
                       >Not Yet Started</span
                     >
                   </div>
                 </div>
               </div>
 
-              <!-- Tasks Tab -->
               <div class="tab-content" id="tasksTab">
-                <!-- Task Summary -->
                 <div class="attendance-summary">
                   <div class="summary-card">
                     <div class="summary-value" id="detailTaskCompletion">
@@ -720,29 +719,22 @@
                   </div>
                 </div>
 
-                <!-- Tasks List -->
                 <div class="tasks-section">
                   <h3 data-i18n="tasks.course_tasks">Course Tasks</h3>
-                  <div class="tasks-list" id="tasksList">
-                    <!-- Will be populated by JavaScript -->
-                  </div>
+                  <div class="tasks-list" id="tasksList"></div>
                 </div>
               </div>
 
-              <!-- Materials Tab -->
               <div class="tab-content" id="materialsTab">
                 <div class="materials-section">
                   <h3 data-i18n="materials.learning_materials">
                     Learning Materials
                   </h3>
-                  <div class="materials-list" id="materialsList">
-                    <!-- Will be populated by JavaScript -->
-                  </div>
+                  <div class="materials-list" id="materialsList"></div>
                 </div>
               </div>
             </div>
 
-            <!-- View 3: Attendance Code Input -->
             <div id="codeInputView" style="display: none">
               <div class="detail-header">
                 <button class="back-btn" id="backToDetail">
@@ -802,7 +794,6 @@
                       >
                     </p>
                   </div>
-
                   <div
                     class="code-message"
                     id="codeMessage"
@@ -812,7 +803,6 @@
               </div>
             </div>
 
-            <!-- View 4: Task Submission -->
             <div id="taskSubmissionView" style="display: none">
               <div class="detail-header">
                 <button class="back-btn" id="backToDetailFromTask">
@@ -907,15 +897,12 @@
                     </div>
                   </div>
 
-                  <div class="submission-status" id="submissionStatus">
-                    <!-- Will show current submission status -->
-                  </div>
+                  <div class="submission-status" id="submissionStatus"></div>
                 </div>
               </div>
             </div>
           </section>
 
-          <!-- Schedule Section -->
           <section class="section" id="schedule" style="display: none">
             <header class="main-header">
               <h1 data-i18n="schedule.title">Class Schedule</h1>
@@ -1213,7 +1200,6 @@
             </div>
           </section>
 
-          <!-- Finance Section -->
           <section id="finance" class="section" style="display: none">
             <div class="section-header">
               <div>
@@ -1224,7 +1210,6 @@
               </div>
             </div>
 
-            <!-- Payment Summary Cards -->
             <div class="finance-summary">
               <div class="summary-card total-bill">
                 <div class="summary-icon">💰</div>
@@ -1276,7 +1261,6 @@
               </div>
             </div>
 
-            <!-- Finance Tabs -->
             <div class="finance-tabs">
               <button
                 class="finance-tab-btn active"
@@ -1312,7 +1296,6 @@
               </button>
             </div>
 
-            <!-- Bills Tab -->
             <div id="billsTab" class="finance-tab-content active">
               <div class="finance-table">
                 <div class="table-header">
@@ -1331,13 +1314,10 @@
                   </div>
                   <div class="col-action" data-i18n="finance.action">Aksi</div>
                 </div>
-                <div id="billsTableBody" class="table-body">
-                  <!-- Populated by JavaScript -->
-                </div>
+                <div id="billsTableBody" class="table-body"></div>
               </div>
             </div>
 
-            <!-- Payment History Tab -->
             <div id="historyTab" class="finance-tab-content">
               <div class="finance-table">
                 <div class="table-header">
@@ -1356,24 +1336,19 @@
                   </div>
                   <div class="col-action" data-i18n="finance.action">Aksi</div>
                 </div>
-                <div id="historyTableBody" class="table-body">
-                  <!-- Populated by JavaScript -->
-                </div>
+                <div id="historyTableBody" class="table-body"></div>
               </div>
             </div>
 
-            <!-- Payment Methods Tab -->
             <div id="methodsTab" class="finance-tab-content">
-              <div class="payment-methods-grid" id="paymentMethodsGrid">
-                <!-- Populated by JavaScript -->
-              </div>
+              <div class="payment-methods-grid" id="paymentMethodsGrid"></div>
             </div>
 
-            <!-- Scholarships Tab -->
             <div id="scholarshipsTab" class="finance-tab-content">
-              <div class="scholarships-container" id="scholarshipsContainer">
-                <!-- Populated by JavaScript -->
-              </div>
+              <div
+                class="scholarships-container"
+                id="scholarshipsContainer"
+              ></div>
             </div>
           </section>
 
@@ -1622,7 +1597,6 @@
             </div>
           </section>
 
-          <!-- Settings Section -->
           <section class="section" id="settings" style="display: none">
             <h2 data-i18n="settings.title">Settings</h2>
             <div class="settings-content">
@@ -1692,7 +1666,6 @@
           </section>
         </main>
 
-        <!-- Right Sidebar -->
         <aside class="sidebar-right">
           <div class="student-info">
             <h3>Kharis Destian Maulana</h3>
@@ -1809,7 +1782,7 @@
       <div class="modal-content">
         <h3>Tambah Tugas Baru</h3>
         <div class="form-group">
-          <label>Judul Tugas</label>
+          <label for="newTaskTitle">Judul Tugas</label>
           <input
             type="text"
             id="newTaskTitle"
@@ -1817,7 +1790,7 @@
           />
         </div>
         <div class="form-group">
-          <label>Label/Tag</label>
+          <label for="newTaskTag">Label/Tag</label>
           <select id="newTaskTag">
             <option value="Penting">Penting</option>
             <option value="Kuliah">Kuliah</option>
