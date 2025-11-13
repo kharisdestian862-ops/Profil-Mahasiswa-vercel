@@ -980,7 +980,7 @@ const translations = {
     "nav.ai_assistant": "AIDA AI",
     "nav.settings": "Settings",
     "nav.logout": "Logout",
-    "dashboard.title": "Kharis Dashboard",
+    "dashboard.title": "Dashboard",
     "dashboard.welcome": "Welcome back, Kharis",
     "dashboard.gpa": "GPA",
     "dashboard.weighted_average": "Weighted Average",
@@ -1378,7 +1378,7 @@ const translations = {
     "nav.ai_assistant": "AIDA AI",
     "nav.settings": "Pengaturan",
     "nav.logout": "Keluar",
-    "dashboard.title": "Dashboard Kharis",
+    "dashboard.title": "Dashboard",
     "dashboard.welcome": "Selamat datang kembali, Kharis",
     "dashboard.gpa": "IPK",
     "dashboard.weighted_average": "Rata-rata Tertimbang",
@@ -1792,6 +1792,13 @@ function setLanguage(lang) {
   localStorage.setItem("preferredLanguage", lang);
   applyTranslations();
   updateLanguageSelect();
+
+  const userJson = localStorage.getItem("currentUser");
+  if (userJson) {
+    const user = JSON.parse(userJson);
+    const firstName = user.fullName.split(" ")[0];
+    updateDashboardHeader(firstName);
+  }
 
   // Update chatbot greeting
   const messagesContainer = document.getElementById("chatbotMessages");
@@ -4672,6 +4679,8 @@ function loadUserProfile() {
 
   const firstName = user.fullName.split(" ")[0];
 
+  updateDashboardHeader(firstName);
+
   const dashboardTitleElement = document.querySelector(
     'h1[data-i18n="dashboard.title"]'
   );
@@ -4705,6 +4714,33 @@ function loadUserProfile() {
   document.querySelector(
     ".sidebar-right .student-info p:nth-child(3)"
   ).textContent = user.programStudi;
+}
+
+function updateDashboardHeader(firstName) {
+  const titleEl = document.querySelector('h1[data-i18n="dashboard.title"]');
+  const welcomeEl = document.querySelector(
+    'div[data-i18n="dashboard.welcome"]'
+  );
+
+  // Ambil teks dasar dari kamus bahasa saat ini
+  const baseTitle = translations[currentLanguage]["dashboard.title"];
+  const baseWelcome = translations[currentLanguage]["dashboard.welcome"];
+
+  // Atur format sesuai bahasa
+  if (titleEl) {
+    if (currentLanguage === "en") {
+      // Inggris: "Kharis's Dashboard"
+      titleEl.textContent = `${firstName}'s ${baseTitle}`;
+    } else {
+      // Indonesia: "Dashboard Kharis"
+      titleEl.textContent = `${baseTitle} ${firstName}`;
+    }
+  }
+
+  if (welcomeEl) {
+    // Format: "Welcome back, Kharis"
+    welcomeEl.textContent = `${baseWelcome} ${firstName}`;
+  }
 }
 
 function initLogout() {
