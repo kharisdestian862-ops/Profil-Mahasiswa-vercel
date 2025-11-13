@@ -1492,11 +1492,18 @@ const translations = {
 let currentLanguage = "en";
 
 function setLanguage(lang) {
+  // Validasi bahasa yang dipilih
+  if (!translations[lang]) {
+    console.error(`Language '${lang}' not found, defaulting to 'en'`);
+    lang = "en";
+  }
+
   currentLanguage = lang;
   localStorage.setItem("preferredLanguage", lang);
   applyTranslations();
   updateLanguageSelect();
 
+  // Update chatbot greeting
   const messagesContainer = document.getElementById("chatbotMessages");
   if (messagesContainer) {
     messagesContainer.innerHTML = "";
@@ -1511,15 +1518,27 @@ function setLanguage(lang) {
 }
 
 function applyTranslations() {
+  // Safety check
+  if (!currentLanguage || !translations[currentLanguage]) {
+    console.warn("Language not initialized, using default 'en'");
+    currentLanguage = "en";
+  }
+
   const elements = document.querySelectorAll("[data-i18n]");
   elements.forEach((element) => {
     const key = element.getAttribute("data-i18n");
-    if (translations[currentLanguage][key]) {
+
+    // Tambahkan pengecekan
+    if (translations[currentLanguage] && translations[currentLanguage][key]) {
       if (element.tagName === "INPUT" && element.type === "placeholder") {
         element.placeholder = translations[currentLanguage][key];
       } else {
         element.textContent = translations[currentLanguage][key];
       }
+    } else {
+      console.warn(
+        `Translation missing for key: ${key} in language: ${currentLanguage}`
+      );
     }
   });
 
@@ -1563,11 +1582,15 @@ function updateLanguageSelect() {
 
 function initLanguage() {
   const savedLanguage = localStorage.getItem("preferredLanguage");
+
   if (savedLanguage && translations[savedLanguage]) {
-    setLanguage(savedLanguage);
+    currentLanguage = savedLanguage;
   } else {
-    setLanguage("en");
+    currentLanguage = "en";
   }
+
+  applyTranslations();
+  updateLanguageSelect();
 }
 
 // Current view state
@@ -2955,12 +2978,12 @@ function showTranscript() {
 
 // Main initialization
 document.addEventListener("DOMContentLoaded", function () {
+  initLanguage();
   initHamburgerMenu();
   initSidebar();
   let chart = initChart();
   initAttendanceSystem();
   initLogout();
-  initLanguage();
   initSettings();
   initAIAssistant();
   initQuickDarkMode();
