@@ -6559,65 +6559,70 @@ const groupChat = {
 };
 
 // Inisialisasi Fitur Grup Chat (Real-Time dengan Pusher)
+// Inisialisasi Fitur Grup Chat (PERBAIKAN LOGIKA CLONING)
 function initGroupChat() {
   console.log("Initializing Group Chat...");
 
-  const chatMessages = document.getElementById("groupMessages");
-  const chatInput = document.getElementById("groupMessageInput");
-  const sendBtn = document.getElementById("sendGroupMessageBtn");
+  // 1. Ambil elemen lama
+  const oldMessages = document.getElementById("groupMessages");
+  const oldInput = document.getElementById("groupMessageInput");
+  const oldBtn = document.getElementById("sendGroupMessageBtn");
 
-  if (!chatMessages || !chatInput || !sendBtn) {
+  if (!oldMessages || !oldInput || !oldBtn) {
     console.error("Chat elements not found!");
     return;
   }
 
-  // Ambil nama user yang login
+  // 2. LAKUKAN CLONING & REPLACE DI AWAL
+  // Ini penting agar kita bekerja dengan elemen yang "fresh" dan bersih dari event listener lama
+  const chatMessages = oldMessages; // Div pesan tidak perlu diclone, cukup referensi
+  const chatInput = oldInput.cloneNode(true);
+  const sendBtn = oldBtn.cloneNode(true);
+
+  oldInput.parentNode.replaceChild(chatInput, oldInput);
+  oldBtn.parentNode.replaceChild(sendBtn, oldBtn);
+
+  // 3. Ambil data user
   const user = JSON.parse(localStorage.getItem("currentUser")) || {
     fullName: "Anonim",
   };
   const myName = user.fullName;
 
-  // 1. MUAT RIWAYAT DARI LOCALSTORAGE
+  // 4. Muat Riwayat
   const savedHistory = JSON.parse(
     localStorage.getItem("groupChatHistory") || "[]"
   );
 
   if (savedHistory.length > 0) {
-    // Bersihkan pesan default
     const welcomeMsg = chatMessages.querySelector(".welcome-message");
     if (welcomeMsg) welcomeMsg.remove();
 
-    // Render pesan lama
     chatMessages.innerHTML = "";
     savedHistory.forEach((chat) => renderMessage(chat));
-
     setTimeout(() => (chatMessages.scrollTop = chatMessages.scrollHeight), 100);
   }
 
-  // 2. KONEKSI KE PUSHER
+  // 5. Koneksi Pusher
   if (typeof Pusher !== "undefined") {
-    // GANTI 'KEY_ANDA' DENGAN KEY DARI DASHBOARD PUSHER (contoh: 'a1b2c3...')
+    // GANTI KEY PUSHER ANDA DI SINI
     const pusher = new Pusher("MASUKKAN_KEY_PUSHER_ANDA_DISINI", {
-      cluster: "ap1", // Sesuaikan jika cluster Anda bukan ap1
+      cluster: "ap1",
     });
 
     const channel = pusher.subscribe("campus-chat");
 
-    // Mendengarkan pesan masuk dari orang lain
     channel.bind("new-message", function (data) {
-      // Hanya tampilkan jika pesan BUKAN dari diri sendiri
       if (data.username !== myName) {
         renderMessage(data);
         saveMessage(data);
       }
     });
-  } else {
-    console.warn("Library Pusher tidak ditemukan. Chat hanya berjalan lokal.");
   }
 
-  // 3. FUNGSI KIRIM PESAN
+  // 6. Fungsi Kirim Pesan (Menggunakan variabel chatInput yang BARU)
   async function sendChatMessage() {
-    const text = chatInput.value.trim();
+    const text = chatInput.value.trim(); // Sekarang ini membaca elemen yang benar!
+
     if (!text) return;
 
     const msgData = {
@@ -6629,16 +6634,16 @@ function initGroupChat() {
       }),
     };
 
-    // Render langsung (agar terasa cepat)
+    // Optimistic UI Update
     renderMessage(msgData);
     saveMessage(msgData);
-    chatInput.value = "";
+    chatInput.value = ""; // Kosongkan input
 
     // Hapus welcome message jika ada
     const welcomeMsg = chatMessages.querySelector(".welcome-message");
     if (welcomeMsg) welcomeMsg.remove();
 
-    // Kirim ke Backend (untuk disebar ke orang lain)
+    // Kirim ke Backend
     try {
       await fetch("/api/send-chat", {
         method: "POST",
@@ -6650,7 +6655,7 @@ function initGroupChat() {
     }
   }
 
-  // Helper Render
+  // 7. Helper Functions
   function renderMessage(data) {
     const isMe = data.username === myName;
     const div = document.createElement("div");
@@ -6666,7 +6671,6 @@ function initGroupChat() {
     chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 
-  // Helper Save
   function saveMessage(data) {
     const history = JSON.parse(
       localStorage.getItem("groupChatHistory") || "[]"
@@ -6676,14 +6680,13 @@ function initGroupChat() {
     localStorage.setItem("groupChatHistory", JSON.stringify(history));
   }
 
-  const newSendBtn = sendBtn.cloneNode(true);
-  sendBtn.parentNode.replaceChild(newSendBtn, sendBtn);
+  // 8. Pasang Event Listener pada elemen yang BARU
+  sendBtn.addEventListener("click", sendChatMessage);
 
-  const newChatInput = chatInput.cloneNode(true);
-  chatInput.parentNode.replaceChild(newChatInput, chatInput);
-
-  newSendBtn.addEventListener("click", sendChatMessage);
-  newChatInput.addEventListener("keypress", (e) => {
+  chatInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") sendChatMessage();
   });
+
+  // Fokus ke input saat dibuka
+  chatInput.focus();
 }
