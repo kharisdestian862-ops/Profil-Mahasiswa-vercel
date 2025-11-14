@@ -66,6 +66,10 @@
               <span data-i18n="nav.messages">Messages</span>
             </a>
 
+            <a href="#" data-section="ujian" data-i18n="nav.exams"
+              >Pusat Ujian</a
+            >
+
             <a href="#" data-section="settings" data-i18n="nav.settings"
               >Settings</a
             >
@@ -116,6 +120,8 @@
           <a href="#" data-section="chat">
             <span data-i18n="nav.messages">Messages</span>
           </a>
+
+          <a href="#" data-section="ujian" data-i18n="nav.exams">Pusat Ujian</a>
 
           <a href="#" data-section="settings" data-i18n="nav.settings"
             >Settings</a
@@ -1627,6 +1633,122 @@
                     ></path>
                   </svg>
                 </button>
+              </div>
+            </div>
+          </section>
+
+          <section class="section" id="ujian" style="display: none">
+            <header class="main-header">
+              <h1 data-i18n="exams.title">Pusat Ujian (UTS & UAS)</h1>
+              <div data-i18n="exams.subtitle">
+                Lihat jadwal, status, dan mulai ujian online Anda di sini.
+              </div>
+            </header>
+
+            <div class="exam-tabs">
+              <button
+                class="exam-tab-btn active"
+                data-tab="utsTab"
+                data-i18n="exams.midterm"
+              >
+                Ujian Tengah Semester (UTS)
+              </button>
+              <button
+                class="exam-tab-btn"
+                data-tab="uasTab"
+                data-i18n="exams.final"
+              >
+                Ujian Akhir Semester (UAS)
+              </button>
+            </div>
+
+            <div id="utsTab" class="exam-tab-content active">
+              <div class="exam-list">
+                <div class="exam-card">
+                  <div class="exam-time">
+                    <span class="exam-date">20 Nov 2025</span>
+                    <span class="exam-clock">08:00 - 09:40</span>
+                  </div>
+                  <div class="exam-info">
+                    <h4 class="exam-name" data-i18n="courses.algorithms">
+                      Algorithms
+                    </h4>
+                    <div class="exam-details">
+                      <span class="exam-room">Ruang: A-301</span>
+                      <span class="exam-lecturer"
+                        >Dr. Ahmad Santoso, M.Kom.</span
+                      >
+                      <span class="exam-type">Online Test</span>
+                    </div>
+                  </div>
+                  <div class="exam-action">
+                    <div
+                      class="exam-status upcoming"
+                      data-i18n="schedule.upcoming"
+                    >
+                      Akan Datang
+                    </div>
+                    <button class="exam-btn" disabled>Belum Mulai</button>
+                  </div>
+                </div>
+
+                <div class="exam-card">
+                  <div class="exam-time">
+                    <span class="exam-date">18 Nov 2025</span>
+                    <span class="exam-clock">10:00 - 11:40</span>
+                  </div>
+                  <div class="exam-info">
+                    <h4 class="exam-name" data-i18n="courses.databases">
+                      Databases
+                    </h4>
+                    <div class="exam-details">
+                      <span class="exam-room">Ruang: C-102</span>
+                      <span class="exam-lecturer"
+                        >Dr. Budi Prasetyo, M.Sc.</span
+                      >
+                      <span class="exam-type">Offline (Luring)</span>
+                    </div>
+                  </div>
+                  <div class="exam-action">
+                    <div
+                      class="exam-status finished"
+                      data-i18n="schedule.finished"
+                    >
+                      Selesai
+                    </div>
+                    <button class="exam-btn view-score">Lihat Nilai</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="uasTab" class="exam-tab-content" style="display: none">
+              <div class="exam-list">
+                <div class="exam-card">
+                  <div class="exam-time">
+                    <span class="exam-date">15 Jan 2026</span>
+                    <span class="exam-clock">08:00 - 10:30</span>
+                  </div>
+                  <div class="exam-info">
+                    <h4 class="exam-name" data-i18n="courses.web_development">
+                      Web Development
+                    </h4>
+                    <div class="exam-details">
+                      <span class="exam-room">Ruang: Lab. Komputer 3</span>
+                      <span class="exam-lecturer">Dian Purnama, M.Kom.</span>
+                      <span class="exam-type">Projek Take-Home</span>
+                    </div>
+                  </div>
+                  <div class="exam-action">
+                    <div
+                      class="exam-status upcoming"
+                      data-i18n="schedule.upcoming"
+                    >
+                      Akan Datang
+                    </div>
+                    <button class="exam-btn" disabled>Belum Mulai</button>
+                  </div>
+                </div>
               </div>
             </div>
           </section>
