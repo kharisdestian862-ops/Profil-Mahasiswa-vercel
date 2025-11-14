@@ -1987,6 +1987,71 @@ function initHamburgerMenu() {
   console.log("Mobile menu initialized successfully!");
 }
 
+// ===== FLOATING ACTION BUTTON SYSTEM =====
+function initFAB() {
+  console.log("🔄 Initializing FAB...");
+
+  const fabTrigger = document.getElementById("fabTrigger");
+  const fabContainer = document.getElementById("fabContainer");
+
+  console.log("🎯 FAB Trigger:", fabTrigger);
+  console.log("🎯 FAB Container:", fabContainer);
+
+  if (!fabTrigger || !fabContainer) {
+    console.error("❌ FAB elements not found!");
+    return;
+  }
+
+  // Event listener untuk FAB trigger
+  fabTrigger.addEventListener("click", function (e) {
+    console.log("🎪 FAB Trigger clicked");
+    e.stopPropagation();
+    fabContainer.classList.toggle("active");
+
+    // Debug: cek state setelah click
+    console.log(
+      "FAB Container active:",
+      fabContainer.classList.contains("active")
+    );
+  });
+
+  // Close FAB ketika klik di luar
+  document.addEventListener("click", function (e) {
+    if (
+      fabContainer.classList.contains("active") &&
+      !fabContainer.contains(e.target)
+    ) {
+      console.log("🔒 Closing FAB (outside click)");
+      fabContainer.classList.remove("active");
+    }
+  });
+
+  // Event listener untuk setiap FAB item
+  const fabItems = {
+    chatbotFab: "chatbot",
+    codeFab: "codeplayground",
+    notesFab: "notes",
+    kanbanFab: "kanban",
+  };
+
+  Object.keys(fabItems).forEach((id) => {
+    const btn = document.getElementById(id);
+    if (btn) {
+      console.log(`✅ Found FAB item: ${id}`);
+      btn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        console.log(`🎯 FAB ${id} clicked, switching to: ${fabItems[id]}`);
+        switchSection(fabItems[id]);
+        fabContainer.classList.remove("active");
+      });
+    } else {
+      console.warn(`❌ FAB item not found: ${id}`);
+    }
+  });
+
+  console.log("✅ FAB initialization complete");
+}
+
 // Switch between main sections
 function switchSection(sectionId) {
   const links = document.querySelectorAll(
