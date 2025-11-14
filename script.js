@@ -7455,3 +7455,123 @@ function initExamTabs() {
     });
   });
 }
+
+function startUjian(namaUjian) {
+  // 1. Sembunyikan section daftar ujian
+  const sectionUjian = document.getElementById("ujian");
+  if (sectionUjian) sectionUjian.style.display = "none";
+
+  // 2. Tampilkan section halaman ujian
+  const examPage = document.getElementById("examPage");
+  if (examPage) examPage.style.display = "flex"; // Gunakan 'flex'
+
+  // 3. Update judul ujian dan nama user
+  document.getElementById("examPageTitle").textContent =
+    "Ujian Tengah Semester: " + namaUjian;
+  const user = JSON.parse(localStorage.getItem("currentUser"));
+  if (user) {
+    document.getElementById("examPageUser").textContent =
+      "Mahasiswa: " + user.fullName;
+  }
+
+  // 4. (Opsional) Mulai Timer
+  startExamTimer(90); // 90 menit
+}
+
+// Fungsi Timer Sederhana
+function startExamTimer(minutes) {
+  const timerEl = document.getElementById("examTimer");
+  let seconds = minutes * 60;
+
+  const timerInterval = setInterval(() => {
+    seconds--;
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+
+    timerEl.textContent = `Sisa Waktu: ${mins}:${secs < 10 ? "0" : ""}${secs}`;
+
+    if (seconds <= 0) {
+      clearInterval(timerInterval);
+      timerEl.textContent = "Waktu Habis!";
+      alert("Waktu Ujian Habis! Jawaban Anda akan dikumpulkan otomatis.");
+      submitExam(); // Panggil fungsi kumpulkan
+    }
+  }, 1000);
+}
+
+// Fungsi untuk Tombol "Jalankan Tes Kode" (Soal Ganjil/Genap)
+const runCodeBtn = document.getElementById("runCodeBtn");
+if (runCodeBtn) {
+  runCodeBtn.addEventListener("click", () => {
+    const codeToRun = document.getElementById("codingAnswer").value;
+    const outputEl = document.getElementById("codeOutput");
+    outputEl.textContent = ""; // Kosongkan output
+
+    try {
+      // Ini adalah cara aman untuk menjalankan kode JS dari user
+      // Kita "membungkus" kode user dalam sebuah Fungsi
+      const userFunction = new Function(
+        "angka",
+        codeToRun + "\nreturn cekGanjilGenap(angka);"
+      );
+
+      let output = "";
+
+      // Tes Kasus 1: Angka Genap
+      const hasil1 = userFunction(4);
+      output += `Tes 1: Input (4)\nHasil: ${hasil1}\nStatus: ${
+        hasil1 === "Genap" ? "✅ Lulus" : "❌ Gagal"
+      }\n\n`;
+
+      // Tes Kasus 2: Angka Ganjil
+      const hasil2 = userFunction(7);
+      output += `Tes 2: Input (7)\nHasil: ${hasil2}\nStatus: ${
+        hasil2 === "Ganjil" ? "✅ Lulus" : "❌ Gagal"
+      }\n\n`;
+
+      // Tes Kasus 3: Angka Nol
+      const hasil3 = userFunction(0);
+      output += `Tes 3: Input (0)\nHasil: ${hasil3}\nStatus: ${
+        hasil3 === "Genap" ? "✅ Lulus" : "❌ Gagal"
+      }\n`;
+
+      outputEl.textContent = output;
+    } catch (error) {
+      outputEl.textContent = `Error: ${error.message}`;
+    }
+  });
+}
+
+// Fungsi untuk Tombol "Kumpulkan Jawaban Ujian"
+const submitExamBtn = document.getElementById("submitExamBtn");
+if (submitExamBtn) {
+  submitExamBtn.addEventListener("click", () => {
+    if (confirm("Apakah Anda yakin ingin mengumpulkan jawaban ujian ini?")) {
+      submitExam();
+    }
+  });
+}
+
+function submitExam() {
+  // Di sini Anda bisa mengambil semua jawaban
+  const pg_answer = document.querySelector(
+    'input[name="soal1_pg"]:checked'
+  )?.value;
+  const esai_answer = document.getElementById("essayAnswer").value;
+  const code_answer = document.getElementById("codingAnswer").value;
+
+  console.log("JAWABAN TERKUMPUL:");
+  console.log("PG:", pg_answer);
+  console.log("Esai:", esai_answer);
+  console.log("Coding:", code_answer);
+
+  // (Di aplikasi nyata, Anda akan mengirim ini ke server/API)
+
+  alert("Ujian Anda telah berhasil dikumpulkan!");
+
+  // Sembunyikan halaman ujian dan kembali ke dashboard
+  const examPage = document.getElementById("examPage");
+  if (examPage) examPage.style.display = "none";
+
+  switchSection("dashboard");
+}
