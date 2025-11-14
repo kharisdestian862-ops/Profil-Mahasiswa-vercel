@@ -2095,6 +2095,7 @@ function switchSection(sectionId) {
     if (sectionId === "finance") initFinanceSection();
     if (sectionId === "notes") initNotesSection();
     if (sectionId === "kanban") initKanbanBoard();
+    if (sectionId === "ujian") initExamTabs();
 
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
@@ -3677,6 +3678,48 @@ document.addEventListener("DOMContentLoaded", function () {
         codeFab.addEventListener("click", () => {
           switchSection("codeplayground");
         });
+      }
+      try {
+        if ("serviceWorker" in navigator && "PushManager" in window) {
+          // 1. Daftarkan file service-worker.js
+          navigator.serviceWorker.register("service-worker.js").then(() => {
+            console.log("Service Worker untuk Notifikasi terdaftar.");
+
+            // 2. Inisialisasi Pusher Beams
+            const beamsClient = new PusherPushNotifications.Client({
+              instanceId: "INSTANCE_ID_ANDA", // <-- GANTI INI (Dapat dari dashboard Pusher Beams)
+            });
+
+            // 3. Ambil ID pengguna (misal: NIM) dari localStorage
+            const user = JSON.parse(localStorage.getItem("currentUser"));
+            const myUserId = user ? user.nim : null; // Gunakan NIM atau ID unik
+
+            if (myUserId) {
+              // 4. Minta izin notifikasi
+              beamsClient
+                .start()
+                .then(() => beamsClient.requestPermission()) // Minta pop-up "Allow Notifications?"
+                .then(() =>
+                  beamsClient.setUserId(
+                    myUserId,
+                    new PusherPushNotifications.TokenProvider({
+                      // Anda perlu membuat API baru ini di Vercel untuk otentikasi
+                      url: "/api/pusher-auth-beams",
+                    })
+                  )
+                )
+                .then(() =>
+                  console.log(
+                    "Berhasil terdaftar ke Pusher Beams dengan ID:",
+                    myUserId
+                  )
+                )
+                .catch(console.error);
+            }
+          });
+        }
+      } catch (e) {
+        console.error("Gagal mendaftarkan Push Notifications:", e);
       }
     });
 });
@@ -7385,3 +7428,30 @@ window.deleteKanbanTask = deleteKanbanTask;
 window.drop = drop;
 window.allowDrop = allowDrop;
 window.drag = drag;
+
+// ===== FUNGSI BARU UNTUK TAB UJIAN =====
+function initExamTabs() {
+  const tabButtons = document.querySelectorAll(".exam-tab-btn");
+  const tabContents = document.querySelectorAll(".exam-tab-content");
+
+  tabButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      // 1. Hapus 'active' dari semua tombol dan sembunyikan semua konten
+      tabButtons.forEach((btn) => btn.classList.remove("active"));
+      tabContents.forEach((content) => {
+        content.style.display = "none";
+        content.classList.remove("active");
+      });
+
+      // 2. Tambahkan 'active' ke tombol yang diklik
+      button.classList.add("active");
+
+      // 3. Tampilkan konten yang sesuai
+      const targetTab = document.getElementById(button.dataset.tab);
+      if (targetTab) {
+        targetTab.style.display = "block";
+        targetTab.classList.add("active");
+      }
+    });
+  });
+}
