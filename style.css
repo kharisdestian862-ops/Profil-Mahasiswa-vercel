@@ -6591,3 +6591,205 @@ body.full-layout-active .fab-container {
     right: 20px;
   }
 }
+
+.exam-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  border-bottom: 2px solid var(--border);
+  overflow-x: auto;
+}
+
+.exam-tab-btn {
+  padding: 1rem 1.5rem;
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s;
+  border-bottom: 3px solid transparent;
+  white-space: nowrap;
+}
+
+.exam-tab-btn:hover {
+  color: var(--primary);
+}
+
+.exam-tab-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.exam-tab-content {
+  display: none;
+}
+
+.exam-tab-content.active {
+  display: block;
+}
+
+/* List Ujian */
+.exam-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Kartu Ujian (Mirip .class-item) */
+.exam-card {
+  display: grid;
+  grid-template-columns: 130px 1fr 120px;
+  align-items: center;
+  gap: 1.5rem;
+  background: var(--surface);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+  border-left: 4px solid var(--primary);
+}
+
+.exam-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-left-color: var(--accent);
+}
+
+/* Waktu Ujian */
+.exam-time {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  padding-right: 1.5rem;
+  border-right: 1px solid var(--border);
+}
+
+.exam-date {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.exam-clock {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--primary);
+}
+
+/* Info Ujian */
+.exam-info {
+  min-width: 0;
+}
+
+.exam-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.exam-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+/* Status & Tombol */
+.exam-action {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+}
+
+.exam-status {
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* Status (Mirip .class-status) */
+.exam-status.upcoming {
+  color: var(--text-secondary);
+  background: #f1f5f9;
+}
+.exam-status.finished {
+  color: var(--success);
+  background: #dcfce7;
+}
+
+.exam-btn {
+  width: 100%;
+  padding: 0.6rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--primary);
+  color: white;
+}
+
+.exam-btn.view-score {
+  background: var(--secondary);
+}
+
+.exam-btn:disabled {
+  background: var(--border);
+  color: var(--text-secondary);
+  cursor: not-allowed;
+}
+
+/* Dark Mode */
+body.dark-mode .exam-tab-btn {
+  color: var(--text-secondary);
+}
+body.dark-mode .exam-tab-btn:hover {
+  color: var(--primary);
+}
+body.dark-mode .exam-tab-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+body.dark-mode .exam-status.upcoming {
+  background: #374151;
+  color: #9ca3af;
+}
+body.dark-mode .exam-status.finished {
+  background: #065f46;
+  color: #34d399;
+}
+body.dark-mode .exam-btn:disabled {
+  background: #334155;
+  color: #64748b;
+}
+
+/* Responsif */
+@media (max-width: 768px) {
+  .exam-card {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    border-left-width: 0;
+  }
+  .exam-time {
+    border-right: none;
+    padding-right: 0;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .exam-action {
+    align-items: flex-start;
+  }
+  .exam-btn {
+    max-width: 200px;
+  }
+}
