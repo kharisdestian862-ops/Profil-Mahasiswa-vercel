@@ -3678,37 +3678,6 @@ document.addEventListener("DOMContentLoaded", function () {
           switchSection("codeplayground");
         });
       }
-
-      // Inisialisasi FAB Speed Dial Trigger (Jika menggunakan Speed Dial)
-      const fabTrigger = document.getElementById("fabTrigger");
-      const fabContainer = document.getElementById("fabContainer");
-      if (fabTrigger && fabContainer) {
-        fabTrigger.addEventListener("click", (e) => {
-          e.stopPropagation();
-          fabContainer.classList.toggle("active");
-        });
-        document.addEventListener("click", (e) => {
-          if (!fabContainer.contains(e.target)) {
-            fabContainer.classList.remove("active");
-          }
-        });
-
-        const fabButtons = {
-          chatbotFab: "chatbot",
-          codeFab: "codeplayground",
-          notesFab: "notes",
-          kanbanFab: "kanban",
-        };
-        Object.keys(fabButtons).forEach((id) => {
-          const btn = document.getElementById(id);
-          if (btn) {
-            btn.addEventListener("click", () => {
-              switchSection(fabButtons[id]);
-              fabContainer.classList.remove("active");
-            });
-          }
-        });
-      }
     });
 });
 
