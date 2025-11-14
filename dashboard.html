@@ -1665,20 +1665,20 @@
             <div id="utsTab" class="exam-tab-content active">
               <div class="exam-list">
                 <div class="exam-card">
-                  <div class="exam-time">
-                    <span class="exam-date">20 Nov 2025</span>
-                    <span class="exam-clock">08:00 - 09:40</span>
-                  </div>
                   <div class="exam-info">
                     <h4 class="exam-name" data-i18n="courses.algorithms">
                       Algorithms
                     </h4>
                     <div class="exam-details">
-                      <span class="exam-room">Ruang: A-301</span>
+                      <span class="exam-room"
+                        ><span data-i18n="exams.room">Ruang:</span> A-301</span
+                      >
                       <span class="exam-lecturer"
                         >Dr. Ahmad Santoso, M.Kom.</span
                       >
-                      <span class="exam-type">Online Test</span>
+                      <span class="exam-type" data-i18n="exams.typeOnline"
+                        >Online Test</span
+                      >
                     </div>
                   </div>
                   <div class="exam-action">
@@ -1688,29 +1688,17 @@
                     >
                       Akan Datang
                     </div>
-                    <button class="exam-btn" onclick="startUjian('Algorithms')">
+                    <button
+                      class="exam-btn"
+                      onclick="startUjian('Algorithms')"
+                      data-i18n="exams.startExam"
+                    >
                       Mulai Ujian
                     </button>
                   </div>
                 </div>
 
                 <div class="exam-card">
-                  <div class="exam-time">
-                    <span class="exam-date">18 Nov 2025</span>
-                    <span class="exam-clock">10:00 - 11:40</span>
-                  </div>
-                  <div class="exam-info">
-                    <h4 class="exam-name" data-i18n="courses.databases">
-                      Databases
-                    </h4>
-                    <div class="exam-details">
-                      <span class="exam-room">Ruang: C-102</span>
-                      <span class="exam-lecturer"
-                        >Dr. Budi Prasetyo, M.Sc.</span
-                      >
-                      <span class="exam-type">Offline (Luring)</span>
-                    </div>
-                  </div>
                   <div class="exam-action">
                     <div
                       class="exam-status finished"
@@ -1718,37 +1706,12 @@
                     >
                       Selesai
                     </div>
-                    <button class="exam-btn view-score">Lihat Nilai</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div id="uasTab" class="exam-tab-content" style="display: none">
-              <div class="exam-list">
-                <div class="exam-card">
-                  <div class="exam-time">
-                    <span class="exam-date">15 Jan 2026</span>
-                    <span class="exam-clock">08:00 - 10:30</span>
-                  </div>
-                  <div class="exam-info">
-                    <h4 class="exam-name" data-i18n="courses.web_development">
-                      Web Development
-                    </h4>
-                    <div class="exam-details">
-                      <span class="exam-room">Ruang: Lab. Komputer 3</span>
-                      <span class="exam-lecturer">Dian Purnama, M.Kom.</span>
-                      <span class="exam-type">Projek Take-Home</span>
-                    </div>
-                  </div>
-                  <div class="exam-action">
-                    <div
-                      class="exam-status upcoming"
-                      data-i18n="schedule.upcoming"
+                    <button
+                      class="exam-btn view-score"
+                      data-i18n="exams.viewScore"
                     >
-                      Akan Datang
-                    </div>
-                    <button class="exam-btn" disabled>Belum Mulai</button>
+                      Lihat Nilai
+                    </button>
                   </div>
                 </div>
               </div>
@@ -1761,79 +1724,64 @@
                 <h1 id="examPageTitle">Ujian Tengah Semester: Algorithms</h1>
                 <p id="examPageUser">Mahasiswa: Loading...</p>
               </div>
-              <div id="examTimer" class="exam-timer">Sisa Waktu: 90:00</div>
+              <div id="examTimer" class="exam-timer">
+                <span data-i18n="exams.timeLeft">Sisa Waktu:</span> 90:00
+              </div>
             </header>
 
             <div class="exam-question-block">
-              <h3>Soal 1 (Pilihan Ganda)</h3>
-              <p class="question-text">
-                Manakah dari berikut ini yang merupakan kompleksitas waktu
-                terburuk (worst-case) dari algoritma Bubble Sort?
+              <h3 data-i18n="exams.q1title">Soal 1 (Pilihan Ganda)</h3>
+              <p class="question-text" data-i18n="exams.q1text">
+                Manakah dari berikut ini...
               </p>
-              <div class="options-group">
-                <label>
-                  <input type="radio" name="soal1_pg" value="n" />
-                  O(n)
-                </label>
-                <label>
-                  <input type="radio" name="soal1_pg" value="nlogn" />
-                  O(n log n)
-                </label>
-                <label>
-                  <input type="radio" name="soal1_pg" value="n2" />
-                  O(n²)
-                </label>
-                <label>
-                  <input type="radio" name="soal1_pg" value="1" />
-                  O(1)
-                </label>
-              </div>
             </div>
 
             <div class="exam-question-block">
-              <h3>Soal 2 (Esai)</h3>
-              <p class="question-text">
-                Jelaskan perbedaan utama antara struktur data 'Queue' dan
-                'Stack' beserta contoh penggunaannya masing-masing!
+              <h3 data-i18n="exams.q2title">Soal 2 (Esai)</h3>
+              <p class="question-text" data-i18n="exams.q2text">
+                Jelaskan perbedaan utama...
               </p>
               <textarea
                 id="essayAnswer"
                 class="essay-textarea"
                 rows="6"
+                data-i18n-placeholder="exams.q2placeholder"
                 placeholder="Ketik jawaban esai Anda di sini..."
               ></textarea>
             </div>
 
             <div class="exam-question-block">
-              <h3>Soal 3 (Coding)</h3>
-              <p class="question-text">
-                Buatlah sebuah fungsi JavaScript sederhana yang menerima satu
-                parameter (angka) dan mengembalikan string "Genap" jika angka
-                tersebut genap, atau "Ganjil" jika angka tersebut ganjil.
+              <h3 data-i18n="exams.q3title">Soal 3 (Coding)</h3>
+              <p class="question-text" data-i18n="exams.q3text">
+                Buatlah sebuah fungsi JavaScript...
               </p>
-              <textarea
-                id="codingAnswer"
-                class="coding-textarea"
-                rows="8"
-                placeholder="function cekGanjilGenap(angka) {
-  // Tulis kode Anda di sini
-}"
-              ></textarea>
-
-              <button id="runCodeBtn" class="run-btn" style="margin-top: 1rem">
+              <button
+                id="runCodeBtn"
+                class="run-btn"
+                style="margin-top: 1rem"
+                data-i18n="exams.runTest"
+              >
                 Jalankan Tes Kode
               </button>
 
               <div class="output-header" style="margin-top: 1rem">
-                <h4>Output Tes</h4>
+                <h4 data-i18n="exams.testOutput">Output Tes</h4>
               </div>
-              <pre id="codeOutput" class="output-result">
+              <pre
+                id="codeOutput"
+                class="output-result"
+                data-i18n="exams.runTestPrompt"
+              >
 Jalankan tes untuk melihat hasil...
 </pre
               >
             </div>
 
-            <button id="submitExamBtn" class="submit-exam-btn">
+            <button
+              id="submitExamBtn"
+              class="submit-exam-btn"
+              data-i18n="exams.submitExam"
+            >
               Kumpulkan Jawaban Ujian
             </button>
           </section>
