@@ -5015,7 +5015,7 @@ function updateRightSidebar(user) {
   setText("rightSidebarProgram", user.programStudi);
 }
 
-function updateDashboardHeader(firstName, user) {
+function updateDashboardHeader(firstName) {
   const titleEl = document.querySelector('h1[data-i18n="dashboard.title"]');
   const welcomeEl = document.querySelector(
     'div[data-i18n="dashboard.welcome"]'
@@ -7517,29 +7517,18 @@ function initExamTabs() {
 }
 
 function startUjian(namaUjian) {
-  // --- TAMBAHAN SAFETY CHECK ---
-  const userJson = localStorage.getItem("currentUser");
-  if (!userJson) {
-    alert("Error: Data pengguna tidak ditemukan. Silakan login ulang.");
-    return; // Hentikan fungsi jika user tidak ada
-  }
-  const user = JSON.parse(userJson);
-  // --- AKHIR SAFETY CHECK ---
-
   // 1. Sembunyikan section daftar ujian
   const sectionUjian = document.getElementById("ujian");
   if (sectionUjian) sectionUjian.style.display = "none";
 
   // 2. Tampilkan section halaman ujian
   const examPage = document.getElementById("examPage");
-  if (examPage) examPage.style.display = "flex";
+  if (examPage) examPage.style.display = "flex"; // Gunakan 'flex'
 
-  // 3. Update judul ujian dan nama user (Sekarang aman)
-  const titlePrefix =
-    translations[currentLanguage]["exams.midterm"] || "Ujian Tengah Semester";
+  // 3. Update judul ujian dan nama user
   document.getElementById("examPageTitle").textContent =
-    titlePrefix + ": " + namaUjian;
-
+    "Ujian Tengah Semester: " + namaUjian;
+  const user = JSON.parse(localStorage.getItem("currentUser"));
   if (user) {
     document.getElementById("examPageUser").textContent =
       "Mahasiswa: " + user.fullName;
@@ -7554,26 +7543,18 @@ function startExamTimer(minutes) {
   const timerEl = document.getElementById("examTimer");
   let seconds = minutes * 60;
 
-  // Ambil prefix bahasa
-  const prefix =
-    translations[currentLanguage]["exams.timeLeft"] || "Sisa Waktu:";
-  const timeUpText =
-    translations[currentLanguage]["exams.timeUp"] || "Waktu Habis!";
-
   const timerInterval = setInterval(() => {
     seconds--;
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
 
-    // --- MODIFIKASI DISINI ---
-    timerEl.textContent = `${prefix} ${mins}:${secs < 10 ? "0" : ""}${secs}`;
+    timerEl.textContent = `Sisa Waktu: ${mins}:${secs < 10 ? "0" : ""}${secs}`;
 
     if (seconds <= 0) {
       clearInterval(timerInterval);
-      // --- MODIFIKASI DISINI ---
-      timerEl.textContent = timeUpText;
-      alert(timeUpText + " Jawaban Anda akan dikumpulkan otomatis.");
-      submitExam();
+      timerEl.textContent = "Waktu Habis!";
+      alert("Waktu Ujian Habis! Jawaban Anda akan dikumpulkan otomatis.");
+      submitExam(); // Panggil fungsi kumpulkan
     }
   }, 1000);
 }
@@ -7654,3 +7635,4 @@ function submitExam() {
 
   switchSection("dashboard");
 }
+
