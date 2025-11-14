@@ -1688,8 +1688,9 @@
                     >
                       Akan Datang
                     </div>
-                    <button class="exam-btn" disabled>Belum Mulai</button>
-                  </div>
+                    <button class="exam-btn" onclick="startUjian('Algorithms')">
+      Mulai Ujian
+    </button>
                 </div>
 
                 <div class="exam-card">
@@ -1751,6 +1752,89 @@
                 </div>
               </div>
             </div>
+          </section>
+
+          <section class="section" id="examPage" style="display: none">
+            <header class="exam-page-header">
+              <div>
+                <h1 id="examPageTitle">Ujian Tengah Semester: Algorithms</h1>
+                <p id="examPageUser">Mahasiswa: Loading...</p>
+              </div>
+              <div id="examTimer" class="exam-timer">Sisa Waktu: 90:00</div>
+            </header>
+
+            <div class="exam-question-block">
+              <h3>Soal 1 (Pilihan Ganda)</h3>
+              <p class="question-text">
+                Manakah dari berikut ini yang merupakan kompleksitas waktu
+                terburuk (worst-case) dari algoritma Bubble Sort?
+              </p>
+              <div class="options-group">
+                <label>
+                  <input type="radio" name="soal1_pg" value="n" />
+                  O(n)
+                </label>
+                <label>
+                  <input type="radio" name="soal1_pg" value="nlogn" />
+                  O(n log n)
+                </label>
+                <label>
+                  <input type="radio" name="soal1_pg" value="n2" />
+                  O(n²)
+                </label>
+                <label>
+                  <input type="radio" name="soal1_pg" value="1" />
+                  O(1)
+                </label>
+              </div>
+            </div>
+
+            <div class="exam-question-block">
+              <h3>Soal 2 (Esai)</h3>
+              <p class="question-text">
+                Jelaskan perbedaan utama antara struktur data 'Queue' dan
+                'Stack' beserta contoh penggunaannya masing-masing!
+              </p>
+              <textarea
+                id="essayAnswer"
+                class="essay-textarea"
+                rows="6"
+                placeholder="Ketik jawaban esai Anda di sini..."
+              ></textarea>
+            </div>
+
+            <div class="exam-question-block">
+              <h3>Soal 3 (Coding)</h3>
+              <p class="question-text">
+                Buatlah sebuah fungsi JavaScript sederhana yang menerima satu
+                parameter (angka) dan mengembalikan string "Genap" jika angka
+                tersebut genap, atau "Ganjil" jika angka tersebut ganjil.
+              </p>
+              <textarea
+                id="codingAnswer"
+                class="coding-textarea"
+                rows="8"
+                placeholder="function cekGanjilGenap(angka) {
+  // Tulis kode Anda di sini
+}"
+              ></textarea>
+
+              <button id="runCodeBtn" class="run-btn" style="margin-top: 1rem">
+                Jalankan Tes Kode
+              </button>
+
+              <div class="output-header" style="margin-top: 1rem">
+                <h4>Output Tes</h4>
+              </div>
+              <pre id="codeOutput" class="output-result">
+Jalankan tes untuk melihat hasil...
+</pre
+              >
+            </div>
+
+            <button id="submitExamBtn" class="submit-exam-btn">
+              Kumpulkan Jawaban Ujian
+            </button>
           </section>
 
           <!-- Settings Section -->
