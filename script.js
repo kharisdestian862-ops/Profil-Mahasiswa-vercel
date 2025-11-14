@@ -1368,6 +1368,36 @@ const translations = {
     "kanban.todo": "To Do",
     "kanban.progress": "In Progress",
     "kanban.done": "Done",
+
+    "nav.exams": "Exam Center",
+    "exams.title": "Exam Center (Midterms & Finals)",
+    "exams.subtitle":
+      "View schedules, statuses, and start your online exams here.",
+    "exams.midterm": "Midterm Exams (UTS)",
+    "exams.final": "Final Exams (UAS)",
+    "exams.room": "Room:",
+    "exams.typeOnline": "Online Test",
+    "exams.typeOffline": "Offline Exam",
+    "exams.typeProject": "Take-Home Project",
+    "exams.notStarted": "Not Started",
+    "exams.viewScore": "View Score",
+    "exams.startExam": "Start Exam",
+    "exams.timeLeft": "Time Left:",
+    "exams.timeUp": "Time's Up!",
+    "exams.q1title": "Question 1 (Multiple Choice)",
+    "exams.q1text":
+      "Which of the following is the worst-case time complexity of the Bubble Sort algorithm?",
+    "exams.q2title": "Question 2 (Essay)",
+    "exams.q2text":
+      "Explain the main difference between 'Queue' and 'Stack' data structures, along with an example of their use.",
+    "exams.q2placeholder": "Type your essay answer here...",
+    "exams.q3title": "Question 3 (Coding)",
+    "exams.q3text":
+      "Create a simple JavaScript function that accepts one parameter (a number) and returns the string 'Even' if the number is even, or 'Odd' if the number is odd.",
+    "exams.runTest": "Run Code Test",
+    "exams.testOutput": "Test Output",
+    "exams.runTestPrompt": "Run the test to see the results...",
+    "exams.submitExam": "Submit Exam Answers",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -1774,6 +1804,36 @@ const translations = {
     "kanban.todo": "Akan Dikerjakan",
     "kanban.progress": "Sedang Dikerjakan",
     "kanban.done": "Selesai",
+
+    "nav.exams": "Pusat Ujian",
+    "exams.title": "Pusat Ujian (UTS & UAS)",
+    "exams.subtitle":
+      "Lihat jadwal, status, dan mulai ujian online Anda di sini.",
+    "exams.midterm": "Ujian Tengah Semester (UTS)",
+    "exams.final": "Ujian Akhir Semester (UAS)",
+    "exams.room": "Ruang:",
+    "exams.typeOnline": "Tes Online",
+    "exams.typeOffline": "Ujian Offline (Luring)",
+    "exams.typeProject": "Projek Take-Home",
+    "exams.notStarted": "Belum Mulai",
+    "exams.viewScore": "Lihat Nilai",
+    "exams.startExam": "Mulai Ujian",
+    "exams.timeLeft": "Sisa Waktu:",
+    "exams.timeUp": "Waktu Habis!",
+    "exams.q1title": "Soal 1 (Pilihan Ganda)",
+    "exams.q1text":
+      "Manakah dari berikut ini yang merupakan kompleksitas waktu terburuk (worst-case) dari algoritma Bubble Sort?",
+    "exams.q2title": "Soal 2 (Esai)",
+    "exams.q2text":
+      "Jelaskan perbedaan utama antara struktur data 'Queue' dan 'Stack' beserta contoh penggunaannya masing-masing!",
+    "exams.q2placeholder": "Ketik jawaban esai Anda di sini...",
+    "exams.q3title": "Soal 3 (Coding)",
+    "exams.q3text":
+      "Buatlah sebuah fungsi JavaScript sederhana yang menerima satu parameter (angka) dan mengembalikan string 'Genap' jika angka tersebut genap, atau 'Ganjil' jika angka tersebut ganjil.",
+    "exams.runTest": "Jalankan Tes Kode",
+    "exams.testOutput": "Output Tes",
+    "exams.runTestPrompt": "Jalankan tes untuk melihat hasil...",
+    "exams.submitExam": "Kumpulkan Jawaban Ujian",
   },
 };
 
@@ -4955,7 +5015,7 @@ function updateRightSidebar(user) {
   setText("rightSidebarProgram", user.programStudi);
 }
 
-function updateDashboardHeader(firstName) {
+function updateDashboardHeader(firstName, user) {
   const titleEl = document.querySelector('h1[data-i18n="dashboard.title"]');
   const welcomeEl = document.querySelector(
     'div[data-i18n="dashboard.welcome"]'
@@ -7457,18 +7517,29 @@ function initExamTabs() {
 }
 
 function startUjian(namaUjian) {
+  // --- TAMBAHAN SAFETY CHECK ---
+  const userJson = localStorage.getItem("currentUser");
+  if (!userJson) {
+    alert("Error: Data pengguna tidak ditemukan. Silakan login ulang.");
+    return; // Hentikan fungsi jika user tidak ada
+  }
+  const user = JSON.parse(userJson);
+  // --- AKHIR SAFETY CHECK ---
+
   // 1. Sembunyikan section daftar ujian
   const sectionUjian = document.getElementById("ujian");
   if (sectionUjian) sectionUjian.style.display = "none";
 
   // 2. Tampilkan section halaman ujian
   const examPage = document.getElementById("examPage");
-  if (examPage) examPage.style.display = "flex"; // Gunakan 'flex'
+  if (examPage) examPage.style.display = "flex";
 
-  // 3. Update judul ujian dan nama user
+  // 3. Update judul ujian dan nama user (Sekarang aman)
+  const titlePrefix =
+    translations[currentLanguage]["exams.midterm"] || "Ujian Tengah Semester";
   document.getElementById("examPageTitle").textContent =
-    "Ujian Tengah Semester: " + namaUjian;
-  const user = JSON.parse(localStorage.getItem("currentUser"));
+    titlePrefix + ": " + namaUjian;
+
   if (user) {
     document.getElementById("examPageUser").textContent =
       "Mahasiswa: " + user.fullName;
@@ -7483,18 +7554,26 @@ function startExamTimer(minutes) {
   const timerEl = document.getElementById("examTimer");
   let seconds = minutes * 60;
 
+  // Ambil prefix bahasa
+  const prefix =
+    translations[currentLanguage]["exams.timeLeft"] || "Sisa Waktu:";
+  const timeUpText =
+    translations[currentLanguage]["exams.timeUp"] || "Waktu Habis!";
+
   const timerInterval = setInterval(() => {
     seconds--;
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
 
-    timerEl.textContent = `Sisa Waktu: ${mins}:${secs < 10 ? "0" : ""}${secs}`;
+    // --- MODIFIKASI DISINI ---
+    timerEl.textContent = `${prefix} ${mins}:${secs < 10 ? "0" : ""}${secs}`;
 
     if (seconds <= 0) {
       clearInterval(timerInterval);
-      timerEl.textContent = "Waktu Habis!";
-      alert("Waktu Ujian Habis! Jawaban Anda akan dikumpulkan otomatis.");
-      submitExam(); // Panggil fungsi kumpulkan
+      // --- MODIFIKASI DISINI ---
+      timerEl.textContent = timeUpText;
+      alert(timeUpText + " Jawaban Anda akan dikumpulkan otomatis.");
+      submitExam();
     }
   }, 1000);
 }
