@@ -1637,6 +1637,16 @@
             </div>
           </section>
 
+          <section class="section" id="chat" style="display: none">
+            <header class="main-header">
+              <h1 data-i18n="chat.group_chat">Chat Grup</h1>
+              <div data-i18n="chat.subtitle">
+                Chat dengan semua siswa yang online
+              </div>
+            </header>
+            <div class="chat-container-full"></div>
+          </section>
+
           <section class="section" id="ujian" style="display: none">
             <header class="main-header">
               <h1 data-i18n="exams.title">Pusat Ujian (UTS & UAS)</h1>
@@ -1665,6 +1675,10 @@
             <div id="utsTab" class="exam-tab-content active">
               <div class="exam-list">
                 <div class="exam-card">
+                  <div class="exam-time">
+                    <span class="exam-date">20 Nov 2025</span>
+                    <span class="exam-clock">08:00 - 09:40</span>
+                  </div>
                   <div class="exam-info">
                     <h4 class="exam-name" data-i18n="courses.algorithms">
                       Algorithms
@@ -1699,6 +1713,26 @@
                 </div>
 
                 <div class="exam-card">
+                  <div class="exam-time">
+                    <span class="exam-date">18 Nov 2025</span>
+                    <span class="exam-clock">10:00 - 11:40</span>
+                  </div>
+                  <div class="exam-info">
+                    <h4 class="exam-name" data-i18n="courses.databases">
+                      Databases
+                    </h4>
+                    <div class="exam-details">
+                      <span class="exam-room"
+                        ><span data-i18n="exams.room">Ruang:</span> C-102</span
+                      >
+                      <span class="exam-lecturer"
+                        >Dr. Budi Prasetyo, M.Sc.</span
+                      >
+                      <span class="exam-type" data-i18n="exams.typeOffline"
+                        >Offline (Luring)</span
+                      >
+                    </div>
+                  </div>
                   <div class="exam-action">
                     <div
                       class="exam-status finished"
@@ -1711,6 +1745,47 @@
                       data-i18n="exams.viewScore"
                     >
                       Lihat Nilai
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="uasTab" class="exam-tab-content" style="display: none">
+              <div class="exam-list">
+                <div class="exam-card">
+                  <div class="exam-time">
+                    <span class="exam-date">15 Jan 2026</span>
+                    <span class="exam-clock">08:00 - 10:30</span>
+                  </div>
+                  <div class="exam-info">
+                    <h4 class="exam-name" data-i18n="courses.web_development">
+                      Web Development
+                    </h4>
+                    <div class="exam-details">
+                      <span class="exam-room"
+                        ><span data-i18n="exams.room">Ruang:</span> Lab.
+                        Komputer 3</span
+                      >
+                      <span class="exam-lecturer">Dian Purnama, M.Kom.</span>
+                      <span class="exam-type" data-i18n="exams.typeProject"
+                        >Projek Take-Home</span
+                      >
+                    </div>
+                  </div>
+                  <div class="exam-action">
+                    <div
+                      class="exam-status upcoming"
+                      data-i18n="schedule.upcoming"
+                    >
+                      Akan Datang
+                    </div>
+                    <button
+                      class="exam-btn"
+                      disabled
+                      data-i18n="exams.notStarted"
+                    >
+                      Belum Mulai
                     </button>
                   </div>
                 </div>
@@ -1732,14 +1807,17 @@
             <div class="exam-question-block">
               <h3 data-i18n="exams.q1title">Soal 1 (Pilihan Ganda)</h3>
               <p class="question-text" data-i18n="exams.q1text">
-                Manakah dari berikut ini...
+                Manakah dari berikut ini yang merupakan kompleksitas waktu
+                terburuk (worst-case) dari algoritma Bubble Sort?
               </p>
+              <div class="options-group"></div>
             </div>
 
             <div class="exam-question-block">
               <h3 data-i18n="exams.q2title">Soal 2 (Esai)</h3>
               <p class="question-text" data-i18n="exams.q2text">
-                Jelaskan perbedaan utama...
+                Jelaskan perbedaan utama antara struktur data 'Queue' dan
+                'Stack' beserta contoh penggunaannya masing-masing!
               </p>
               <textarea
                 id="essayAnswer"
@@ -1753,8 +1831,19 @@
             <div class="exam-question-block">
               <h3 data-i18n="exams.q3title">Soal 3 (Coding)</h3>
               <p class="question-text" data-i18n="exams.q3text">
-                Buatlah sebuah fungsi JavaScript...
+                Buatlah sebuah fungsi JavaScript sederhana yang menerima satu
+                parameter (angka) dan mengembalikan string "Genap" jika angka
+                tersebut genap, atau "Ganjil" jika angka tersebut ganjil.
               </p>
+              <textarea
+                id="codingAnswer"
+                class="coding-textarea"
+                rows="8"
+                placeholder="function cekGanjilGenap(angka) {
+  // Tulis kode Anda di sini
+}"
+              ></textarea>
+
               <button
                 id="runCodeBtn"
                 class="run-btn"
