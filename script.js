@@ -5028,6 +5028,9 @@ function loadUserProfile() {
       chatbotHeaderGreeting.textContent = headerGreetingText;
     }
 
+    // Panggil fungsi update greeting (tanpa parameter)
+    updateChatbotGreeting();
+
     const messagesContainer = document.getElementById("chatbotMessages");
     if (messagesContainer && messagesContainer.children.length <= 1) {
       const firstMessageText =
@@ -5228,16 +5231,22 @@ function initLogout() {
   }
 }
 
-function updateChatbotGreeting(name) {
+function updateChatbotGreeting() {
   const messagesContainer = document.getElementById("chatbotMessages");
   if (!messagesContainer) return;
+
+  // Ambil nama dari localStorage (BUKAN dari parameter)
+  const userData = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  const firstName = userData.fullName
+    ? userData.fullName.split(" ")[0]
+    : "Student";
 
   // Cek apakah pesan pertama adalah greeting default
   if (messagesContainer.children.length <= 1) {
     const greetingKey =
       currentLanguage === "id"
-        ? `Halo ${name}! Ada yang bisa saya bantu?`
-        : `Hello ${name}! How can I help you?`;
+        ? `Halo ${firstName}! Ada yang bisa saya bantu?`
+        : `Hello ${firstName}! How can I help you?`;
 
     // Update pesan jika elemen sudah ada
     const botMsg = messagesContainer.querySelector(".chat-message.bot");
@@ -5253,6 +5262,7 @@ function updateChatbotGreeting(name) {
     }
   }
 }
+
 // ===== CODE PLAYGROUND SYSTEM =====
 let currentEditor = null;
 
