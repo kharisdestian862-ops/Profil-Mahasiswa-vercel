@@ -1398,6 +1398,58 @@ const translations = {
     "exams.testOutput": "Test Output",
     "exams.runTestPrompt": "Run the test to see the results...",
     "exams.submitExam": "Submit Exam Answers",
+
+    "nav.feb": "FEB Tools",
+    "feb.title": "Faculty of Economics & Business Tools",
+    "feb.subtitle": "Your financial calculators and accounting utilities.",
+    "feb.tab.accounting": "Accounting Journal",
+    "feb.tab.compound": "Compound Interest",
+    "feb.tab.npv": "NPV Calculator",
+    "feb.accounting.title": "General Journal",
+    "feb.accounting.desc":
+      "Enter transactions below. The status will update to 'Balance' if total Debit and Credit are equal.",
+    "feb.accounting.account": "Account",
+    "feb.accounting.descShort": "Description",
+    "feb.accounting.debit": "Debit ($)",
+    "feb.accounting.credit": "Credit ($)",
+    "feb.accounting.addRow": "+ Add Row",
+    "feb.accounting.totalDebit": "Total Debit",
+    "feb.accounting.totalCredit": "Total Credit",
+    "feb.accounting.status": "Status",
+    "feb.accounting.statusBalance": "Balance",
+    "feb.accounting.statusImbalance": "Imbalance",
+    "feb.compound.title": "Compound Interest Calculator",
+    "feb.compound.principal": "Initial Principal ($)",
+    "feb.compound.monthly": "Monthly Contribution ($)",
+    "feb.compound.rateAnnum": "Annual Interest Rate (%)",
+    "feb.compound.period": "Period (Years)",
+    "feb.compound.calculate": "Calculate Future Value",
+    "feb.compound.futureValue": "Future Value",
+    "feb.compound.totalPrincipal": "Total Principal Invested",
+    "feb.compound.totalInterest": "Total Interest Earned",
+    "feb.npv.title": "Project Viability (NPV) Calculator",
+    "feb.npv.investment": "Initial Investment ($)",
+    "feb.npv.rate": "Discount Rate (%)",
+    "feb.npv.cashflow": "Cash Flow (per Year)",
+    "feb.npv.calculate": "Calculate NPV",
+    "feb.npv.netValue": "Net Present Value (NPV)",
+    "feb.npv.statusPrompt": "Enter data to see viability",
+    "feb.npv.statusGood": "Project is Viable (NPV is Positive)",
+    "feb.npv.statusBad": "Project is Not Viable (NPV is Negative)",
+    "feb.npv.statusEven": "Project Breaks Even (NPV is 0)",
+
+    "nav.dkv": "Pixel Pad",
+    "dkv.title": "Pixel Pad",
+    "dkv.subtitle": "A simple pixel art tool for DKV.",
+    "dkv.color": "Color:",
+    "dkv.tools": "Tool:",
+    "dkv.tool.pencil": "Pencil",
+    "dkv.tool.eraser": "Eraser",
+    "dkv.tool.picker": "Picker",
+    "dkv.gridSize": "Grid Size:",
+    "dkv.toggleGrid": "Toggle Grid",
+    "dkv.clear": "Clear",
+    "dkv.download": "Download PNG",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -1834,6 +1886,58 @@ const translations = {
     "exams.testOutput": "Output Tes",
     "exams.runTestPrompt": "Jalankan tes untuk melihat hasil...",
     "exams.submitExam": "Kumpulkan Jawaban Ujian",
+
+    "nav.feb": "Pusat Alat FEB",
+    "feb.title": "Pusat Alat Fakultas Ekonomi Bisnis",
+    "feb.subtitle": "Kalkulator finansial dan alat bantu akuntansi Anda.",
+    "feb.tab.accounting": "Jurnal Akuntansi",
+    "feb.tab.compound": "Bunga Majemuk",
+    "feb.tab.npv": "Kalkulator NPV",
+    "feb.accounting.title": "Jurnal Umum",
+    "feb.accounting.desc":
+      "Masukkan transaksi di bawah ini. Status akan berubah menjadi 'Balance' jika total Debit dan Kredit seimbang.",
+    "feb.accounting.account": "Akun",
+    "feb.accounting.descShort": "Deskripsi",
+    "feb.accounting.debit": "Debit (Rp)",
+    "feb.accounting.credit": "Kredit (Rp)",
+    "feb.accounting.addRow": "+ Tambah Baris",
+    "feb.accounting.totalDebit": "Total Debit",
+    "feb.accounting.totalCredit": "Total Kredit",
+    "feb.accounting.status": "Status",
+    "feb.accounting.statusBalance": "Seimbang",
+    "feb.accounting.statusImbalance": "Tidak Seimbang",
+    "feb.compound.title": "Kalkulator Bunga Majemuk",
+    "feb.compound.principal": "Modal Awal (Rp)",
+    "feb.compound.monthly": "Setoran per Bulan (Rp)",
+    "feb.compound.rateAnnum": "Suku Bunga Tahunan (%)",
+    "feb.compound.period": "Periode (Tahun)",
+    "feb.compound.calculate": "Hitung Nilai Masa Depan",
+    "feb.compound.futureValue": "Nilai Masa Depan",
+    "feb.compound.totalPrincipal": "Total Modal Disetor",
+    "feb.compound.totalInterest": "Total Bunga Didapat",
+    "feb.npv.title": "Kalkulator Kelayakan (NPV)",
+    "feb.npv.investment": "Investasi Awal (Rp)",
+    "feb.npv.rate": "Suku Bunga Diskon (%)",
+    "feb.npv.cashflow": "Aliran Kas (per Tahun)",
+    "feb.npv.calculate": "Hitung NPV",
+    "feb.npv.netValue": "Net Present Value (NPV)",
+    "feb.npv.statusPrompt": "Masukkan data untuk melihat kelayakan",
+    "feb.npv.statusGood": "Investasi Layak (NPV Positif)",
+    "feb.npv.statusBad": "Investasi Tidak Layak (NPV Negatif)",
+    "feb.npv.statusEven": "Investasi Impas (NPV 0)",
+
+    "nav.dkv": "Pixel Pad",
+    "dkv.title": "Pixel Pad",
+    "dkv.subtitle": "Alat gambar pixel art sederhana untuk DKV.",
+    "dkv.color": "Warna:",
+    "dkv.tools": "Alat:",
+    "dkv.tool.pencil": "Pensil",
+    "dkv.tool.eraser": "Penghapus",
+    "dkv.tool.picker": "Pipet",
+    "dkv.gridSize": "Ukuran Grid:",
+    "dkv.toggleGrid": "Toggle Grid",
+    "dkv.clear": "Bersihkan",
+    "dkv.download": "Download PNG",
   },
 };
 
@@ -1915,7 +2019,9 @@ function updateDynamicContent() {
   });
 
   // Update quick actions
-  const quickActions = document.querySelectorAll(".actions button");
+  const quickActions = document.querySelectorAll(
+    ".quick-actions .actions button"
+  );
   if (quickActions.length >= 4) {
     quickActions[0].textContent =
       translations[currentLanguage]["quick.download_transcript"];
@@ -2092,6 +2198,8 @@ function initFAB() {
     codeFab: "codeplayground",
     notesFab: "notes",
     kanbanFab: "kanban",
+    febFab: "feb-center",
+    dkvFab: "dkv-center",
   };
 
   Object.keys(fabItems).forEach((id) => {
@@ -2137,7 +2245,13 @@ function switchSection(sectionId) {
   sections.forEach((sec) => (sec.style.display = "none"));
 
   // 3. Atur Layout (Full Width untuk Chat/Code)
-  const fullWidthSections = ["chatbot", "codeplayground", "chat"];
+  const fullWidthSections = [
+    "chatbot",
+    "codeplayground",
+    "chat",
+    "feb-center",
+    "dkv-center",
+  ];
   if (fullWidthSections.includes(sectionId)) {
     document.body.classList.add("full-layout-active");
   } else {
@@ -2156,6 +2270,8 @@ function switchSection(sectionId) {
     if (sectionId === "notes") initNotesSection();
     if (sectionId === "kanban") initKanbanBoard();
     if (sectionId === "ujian") initExamTabs();
+    if (sectionId === "feb-center") initFebCenter();
+    if (sectionId === "dkv-center") initDkvCenter();
 
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
@@ -3701,7 +3817,18 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         }
 
-        const initialGreeting = translations[currentLanguage]["chat.greeting"];
+        const userData = JSON.parse(
+          localStorage.getItem("currentUser") || "{}"
+        );
+        const firstName = userData.fullName
+          ? userData.fullName.split(" ")[0]
+          : "Student";
+
+        const initialGreeting =
+          currentLanguage === "id"
+            ? `Halo ${firstName}! Ada yang bisa saya bantu?`
+            : `Hello ${firstName}! How can I help you?`;
+
         messagesContainer.innerHTML = "";
         addMessage(initialGreeting, "bot");
       }
@@ -7636,3 +7763,393 @@ function submitExam() {
   switchSection("dashboard");
 }
 
+function initFebCenter() {
+  initFebTabs();
+  initAccountingJournal();
+  initCompoundInterestCalc();
+  initNpvCalc();
+  // Panggil kalkulator sekali saat load agar tidak kosong
+  calculateCI();
+  calculateNPV();
+}
+
+/**
+ * Mengatur logika perpindahan tab (Jurnal, Bunga Majemuk, NPV).
+ */
+function initFebTabs() {
+  const tabButtons = document.querySelectorAll(".feb-tab-btn");
+  const tabContents = document.querySelectorAll(".feb-tab-content");
+
+  tabButtons.forEach((button) => {
+    // Hindari menambah listener berulang kali jika sudah ada
+    if (button.dataset.listenerAttached) return;
+
+    button.addEventListener("click", () => {
+      // 1. Hapus 'active' dari semua tombol dan sembunyikan semua konten
+      tabButtons.forEach((btn) => btn.classList.remove("active"));
+      tabContents.forEach((content) => {
+        content.style.display = "none";
+        content.classList.remove("active");
+      });
+
+      // 2. Tambahkan 'active' ke tombol yang diklik
+      button.classList.add("active");
+
+      // 3. Tampilkan konten yang sesuai
+      const targetTab = document.getElementById(button.dataset.tab);
+      if (targetTab) {
+        targetTab.style.display = "block";
+        targetTab.classList.add("active");
+      }
+    });
+    button.dataset.listenerAttached = true; // Tandai sudah ada listener
+  });
+}
+
+/**
+ * Mengatur logika Jurnal Akuntansi (Tambah baris, hapus, hitung total).
+ */
+function initAccountingJournal() {
+  const addRowBtn = document.getElementById("addJournalRow");
+  const entryList = document.getElementById("journalEntryList");
+
+  if (!addRowBtn || !entryList) return;
+
+  // Panggil update total setiap kali ada input di tabel
+  entryList.addEventListener("input", updateJournalTotals);
+
+  addRowBtn.onclick = () => {
+    const row = document.createElement("div");
+    row.className = "journal-row";
+    row.innerHTML = `
+      <input type="text" name="account" placeholder="Kas...">
+      <input type="text" name="desc" placeholder="Setoran modal...">
+      <input type="number" name="debit" placeholder="0" value="0">
+      <input type="number" name="credit" placeholder="0" value="0">
+      <button class="delete-row-btn" onclick="this.parentElement.remove(); updateJournalTotals();">×</button>
+    `;
+    entryList.appendChild(row);
+  };
+
+  // Tambah 2 baris awal
+  if (entryList.children.length === 0) {
+    addRowBtn.click();
+    addRowBtn.click();
+  }
+}
+
+/**
+ * Menghitung total Debit & Kredit dan mengecek keseimbangan.
+ */
+function updateJournalTotals() {
+  const debitInputs = document.querySelectorAll(
+    '#journalEntryList input[name="debit"]'
+  );
+  const creditInputs = document.querySelectorAll(
+    '#journalEntryList input[name="credit"]'
+  );
+
+  let totalDebit = 0;
+  let totalCredit = 0;
+
+  debitInputs.forEach((input) => {
+    totalDebit += parseFloat(input.value) || 0;
+  });
+
+  creditInputs.forEach((input) => {
+    totalCredit += parseFloat(input.value) || 0;
+  });
+
+  const totalDebitEl = document.getElementById("totalDebit");
+  const totalCreditEl = document.getElementById("totalCredit");
+  const statusEl = document.getElementById("journalStatus");
+
+  totalDebitEl.textContent = "Rp " + totalDebit.toLocaleString("id-ID");
+  totalCreditEl.textContent = "Rp " + totalCredit.toLocaleString("id-ID");
+
+  if (totalDebit === totalCredit && totalDebit > 0) {
+    statusEl.textContent = "Balance";
+    statusEl.className = "status-balance";
+  } else {
+    statusEl.textContent = "Imbalance";
+    statusEl.className = "status-imbalance";
+  }
+}
+
+/**
+ * Mengatur tombol hitung Bunga Majemuk.
+ */
+function initCompoundInterestCalc() {
+  const calculateBtn = document.getElementById("calculateCIBtn");
+  if (calculateBtn) {
+    calculateBtn.onclick = calculateCI;
+  }
+}
+
+/**
+ * Logika perhitungan Bunga Majemuk.
+ */
+function calculateCI() {
+  const p = parseFloat(document.getElementById("ciModalAwal").value) || 0;
+  const pmt = parseFloat(document.getElementById("ciSetoranBulan").value) || 0;
+  const r =
+    (parseFloat(document.getElementById("ciSukuBunga").value) || 0) / 100;
+  const t = parseFloat(document.getElementById("ciPeriode").value) || 0;
+
+  const n = 12; // Dihitung bulanan
+  const i = r / n;
+  const nt = n * t;
+
+  // Rumus Future Value (Modal Awal)
+  const fvPrincipal = p * Math.pow(1 + i, nt);
+
+  // Rumus Future Value (Setoran Bulanan)
+  const fvMonthly = pmt * ((Math.pow(1 + i, nt) - 1) / i);
+
+  const futureValue = fvPrincipal + fvMonthly;
+  const totalPrincipal = p + pmt * nt;
+  const totalInterest = futureValue - totalPrincipal;
+
+  document.getElementById("ciResult").textContent =
+    "Rp " + futureValue.toLocaleString("id-ID", { maximumFractionDigits: 0 });
+  document.getElementById("ciPrincipal").textContent =
+    "Rp " + totalPrincipal.toLocaleString("id-ID");
+  document.getElementById("ciInterest").textContent =
+    "Rp " + totalInterest.toLocaleString("id-ID", { maximumFractionDigits: 0 });
+}
+
+/**
+ * Mengatur tombol hitung NPV.
+ */
+function initNpvCalc() {
+  const calculateBtn = document.getElementById("calculateNPVBtn");
+  if (calculateBtn) {
+    calculateBtn.onclick = calculateNPV;
+  }
+}
+
+/**
+ * Logika perhitungan NPV (Net Present Value).
+ */
+function calculateNPV() {
+  const investment =
+    parseFloat(document.getElementById("npvInvestasiAwal").value) || 0;
+  const rate =
+    (parseFloat(document.getElementById("npvDiscountRate").value) || 0) / 100;
+
+  const cashFlows = [
+    parseFloat(document.getElementById("npvCF1").value) || 0,
+    parseFloat(document.getElementById("npvCF2").value) || 0,
+    parseFloat(document.getElementById("npvCF3").value) || 0,
+  ];
+
+  let presentValue = 0;
+  cashFlows.forEach((cf, index) => {
+    presentValue += cf / Math.pow(1 + rate, index + 1);
+  });
+
+  const npv = presentValue - investment;
+
+  const resultEl = document.getElementById("npvResult");
+  const statusEl = document.getElementById("npvStatus");
+
+  resultEl.textContent =
+    "Rp " + npv.toLocaleString("id-ID", { maximumFractionDigits: 0 });
+
+  if (npv > 0) {
+    statusEl.textContent = "Investasi Layak (NPV Positif)";
+    statusEl.className = "npv-status-box layak";
+  } else if (npv < 0) {
+    statusEl.textContent = "Investasi Tidak Layak (NPV Negatif)";
+    statusEl.className = "npv-status-box tidak-layak";
+  } else {
+    statusEl.textContent = "Investasi Impas (NPV 0)";
+    statusEl.className = "npv-status-box";
+  }
+}
+
+let dkvCurrentTool = "pencil";
+let dkvCurrentColor = "#000000";
+let dkvIsDrawing = false;
+let dkvIsInitialized = false;
+
+/**
+ * Fungsi utama untuk menginisialisasi DKV Pixel Pad.
+ */
+function initDkvCenter() {
+  // Hanya inisialisasi listener satu kali
+  if (dkvIsInitialized) {
+    createPixelGrid(document.getElementById("gridSize").value);
+    return;
+  }
+
+  // 1. Buat Grid Awal
+  createPixelGrid(32);
+
+  // 2. Setup Listener Toolbar
+  const colorPicker = document.getElementById("colorPicker");
+  const toolPencil = document.getElementById("toolPencil");
+  const toolEraser = document.getElementById("toolEraser");
+  const toolPicker = document.getElementById("toolPicker");
+  const gridSizeSelect = document.getElementById("gridSize");
+  const toggleGridBtn = document.getElementById("toggleGridBtn");
+  const clearCanvasBtn = document.getElementById("clearCanvasBtn");
+  const downloadArtBtn = document.getElementById("downloadArtBtn");
+  const colorPalette = document.querySelector(".color-palette");
+
+  // Listener Pemilih Warna
+  colorPicker.addEventListener("input", (e) => {
+    dkvCurrentColor = e.target.value;
+  });
+
+  // Listener Palet Cepat
+  colorPalette.addEventListener("click", (e) => {
+    if (e.target.classList.contains("color-swatch")) {
+      dkvCurrentColor = e.target.dataset.color;
+      colorPicker.value = dkvCurrentColor;
+    }
+  });
+
+  // Listener Pilihan Alat
+  function setActiveTool(toolName) {
+    dkvCurrentTool = toolName;
+    toolPencil.classList.toggle("active", toolName === "pencil");
+    toolEraser.classList.toggle("active", toolName === "eraser");
+    toolPicker.classList.toggle("active", toolName === "picker");
+  }
+  toolPencil.onclick = () => setActiveTool("pencil");
+  toolEraser.onclick = () => setActiveTool("eraser");
+  toolPicker.onclick = () => setActiveTool("picker");
+
+  // Listener Aksi
+  gridSizeSelect.onchange = (e) => createPixelGrid(e.target.value);
+  toggleGridBtn.onclick = togglePixelGrid;
+  clearCanvasBtn.onclick = clearPixelCanvas;
+  downloadArtBtn.onclick = downloadPixelArt;
+
+  // 3. Tandai sudah ter-inisialisasi
+  dkvIsInitialized = true;
+}
+
+/**
+ * Membuat (atau membuat ulang) grid pixel di kanvas.
+ */
+function createPixelGrid(size = 32) {
+  const canvas = document.getElementById("pixelCanvas");
+  if (!canvas) return;
+
+  canvas.innerHTML = ""; // Kosongkan kanvas
+  canvas.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
+
+  for (let i = 0; i < size * size; i++) {
+    const cell = document.createElement("div");
+    cell.className = "pixel-cell";
+
+    // Tambahkan listener untuk menggambar
+    cell.addEventListener("mousedown", handleDrawStart);
+    cell.addEventListener("mouseover", handleDrawMove);
+
+    canvas.appendChild(cell);
+  }
+
+  // Listener 'mouseup' di window agar berhenti menggambar di mana saja
+  window.addEventListener("mouseup", handleDrawEnd);
+}
+
+/**
+ * Fungsi-fungsi untuk menggambar (Mouse Events)
+ */
+function handleDrawStart(e) {
+  e.preventDefault();
+  dkvIsDrawing = true;
+  drawOnPixel(e.target);
+}
+function handleDrawMove(e) {
+  if (dkvIsDrawing) {
+    drawOnPixel(e.target);
+  }
+}
+function handleDrawEnd() {
+  dkvIsDrawing = false;
+}
+
+/**
+ * Logika utama untuk mewarnai/menghapus/memilih pixel.
+ */
+function drawOnPixel(cell) {
+  if (!cell) return;
+
+  switch (dkvCurrentTool) {
+    case "pencil":
+      cell.style.backgroundColor = dkvCurrentColor;
+      break;
+    case "eraser":
+      cell.style.backgroundColor = "#FFFFFF"; // Selalu putih
+      break;
+    case "picker":
+      // Ambil warna dan set sebagai warna aktif
+      dkvCurrentColor = cell.style.backgroundColor || "#FFFFFF";
+      document.getElementById("colorPicker").value = dkvCurrentColor;
+      break;
+  }
+}
+
+/**
+ * Menampilkan atau menyembunyikan garis grid.
+ */
+function togglePixelGrid() {
+  document.getElementById("pixelCanvas").classList.toggle("grid-on");
+}
+
+/**
+ * Membersihkan kanvas (mengembalikan semua pixel jadi putih).
+ */
+function clearPixelCanvas() {
+  if (confirm("Anda yakin ingin membersihkan seluruh kanvas?")) {
+    const cells = document.querySelectorAll("#pixelCanvas .pixel-cell");
+    cells.forEach((cell) => {
+      cell.style.backgroundColor = "#FFFFFF";
+    });
+  }
+}
+
+/**
+ * Mengunduh karya sebagai file PNG.
+ */
+function downloadPixelArt() {
+  const canvas = document.getElementById("pixelCanvas");
+
+  // Tampilkan notifikasi
+  showNotification("Membuat gambar PNG...", "info");
+
+  // Gunakan html2canvas yang sudah di-load
+  html2canvas(canvas, {
+    backgroundColor: null, // Jaga transparansi (jika ada)
+    onclone: (clonedDoc) => {
+      // Saat meng-clone, hilangkan border grid agar tidak ikut tergambar
+      clonedDoc.getElementById("pixelCanvas").classList.remove("grid-on");
+    },
+  })
+    .then((canvasImage) => {
+      // Buat link download
+      const link = document.createElement("a");
+      link.href = canvasImage.toDataURL("image/png");
+      link.download = "pixel-art-karya-saya.png";
+      link.click();
+
+      showNotification("Gambar berhasil diunduh!", "success");
+    })
+    .catch((err) => {
+      console.error("Gagal download gambar:", err);
+      showNotification("Gagal mengunduh gambar.", "error");
+    });
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const dkvFab = document.getElementById("dkvFab");
+  if (dkvFab) {
+    dkvFab.addEventListener("click", () => {
+      showSection("dkv-center");
+    });
+  }
+});
