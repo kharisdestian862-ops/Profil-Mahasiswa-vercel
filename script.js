@@ -5011,19 +5011,32 @@ function loadUserProfile() {
       user.programStudi;
     console.log("✅ Right sidebar updated");
 
-    // 5. Update Chatbot
+    const chatbotHeaderGreeting = document.querySelector(
+      '#chatbot .main-header div[data-i18n="chat.greeting"]'
+    );
+
+    const headerGreetingText =
+      currentLanguage === "id"
+        ? `Halo ${firstName}! Tanya saya seputar dashboard Anda.`
+        : `Hello ${firstName}! Ask me about your dashboard.`;
+
+    if (chatbotHeaderGreeting) {
+      chatbotHeaderGreeting.textContent = headerGreetingText;
+    }
+
     const messagesContainer = document.getElementById("chatbotMessages");
     if (messagesContainer && messagesContainer.children.length <= 1) {
-      const greeting =
+      const firstMessageText =
         currentLanguage === "id"
-          ? `Halo ${firstName}! Ada yang bisa saya bantu?`
-          : `Hello ${firstName}! How can I help you?`;
+          ? `Halo ${firstName}! Ada yang bisa saya bantu? Coba ketik 'bantuan'.`
+          : `Hello ${firstName}! How can I help you? Try typing 'help'.`;
 
       const botMsg = messagesContainer.querySelector(".chat-message.bot");
       if (botMsg && botMsg.querySelector(".chat-text")) {
-        botMsg.querySelector(".chat-text").textContent = greeting;
+        botMsg.querySelector(".chat-text").textContent = firstMessageText;
       }
     }
+
     console.log("✅ Chatbot greeting updated");
 
     console.log("🎉 Semua update selesai");
