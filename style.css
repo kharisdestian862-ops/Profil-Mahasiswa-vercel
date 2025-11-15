@@ -3397,8 +3397,7 @@ body.dark-mode .chatbot-fab {
 /* 2. Halaman Penuh Chatbot */
 #chatbot {
   flex-direction: column;
-  height: 100%;
-  background: var(--primary);
+  height: 100%; 
 }
 
 .chatbot-fullpage-wrapper {
