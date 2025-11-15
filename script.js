@@ -7234,7 +7234,7 @@ const groupChat = {
   },
 };
 
-function initGroupChat() {
+async function initGroupChat() {
   const chatMessages = document.getElementById("groupMessages");
   const chatInput = document.getElementById("groupMessageInput");
   const sendBtn = document.getElementById("sendGroupMessageBtn");
@@ -7251,7 +7251,6 @@ function initGroupChat() {
   };
   const myName = user.fullName;
 
-  // 1. Muat riwayat chat dari LocalStorage
   if (chatMessages.children.length <= 1) {
     const savedHistory = JSON.parse(
       localStorage.getItem("groupChatHistory") || "[]"
@@ -7308,7 +7307,6 @@ function initGroupChat() {
             const welcome = activeContainer.querySelector(".welcome-message");
             if (welcome) welcome.remove();
 
-            // Render pesan yang masuk
             renderMessage(data);
 
             saveMessageToLocal(data);
@@ -7320,10 +7318,8 @@ function initGroupChat() {
 
   async function triggerAIGroupChatResponse(query) {
     try {
-      // (Logika ini diambil dari fungsi AI Chatbot Anda yang sudah ada)
       const contextData = getContextForAI(query);
       const response = await fetch("/api/chat", {
-        //
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -7340,9 +7336,8 @@ function initGroupChat() {
         aiResponse = data.choices[0].message.content;
       }
 
-      // Buat objek pesan balasan dari AI
       const aiMessageData = {
-        username: "AIDA AI", // Nama AI Anda
+        username: "AIDA AI",
         message: aiResponse,
         timestamp: new Date().toLocaleTimeString([], {
           hour: "2-digit",
@@ -7350,19 +7345,15 @@ function initGroupChat() {
         }),
       };
 
-      // Tampilkan balasan AI di layar Anda
       renderMessage(aiMessageData);
-      // Simpan balasan AI ke riwayat Anda
       saveMessageToLocal(aiMessageData);
 
-      // Kirim balasan AI ke semua orang di grup
       await fetch("/api/send-chat", {
-        //
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...aiMessageData,
-          socketId: window.myPusherSocketId, // Agar tidak terkirim balik ke Anda
+          socketId: window.myPusherSocketId,
         }),
       });
     } catch (error) {
@@ -7391,7 +7382,6 @@ function initGroupChat() {
     if (welcomeMsg) welcomeMsg.remove();
 
     try {
-      // 2. Siarkan pesan ANDA ke semua orang
       const currentSocketId = window.pusherInstance?.connection?.socket_id;
       await fetch("/api/send-chat", {
         method: "POST",
@@ -7402,24 +7392,21 @@ function initGroupChat() {
         }),
       });
 
-      // --- LOGIKA BARU UNTUK TAG AI ---
-      const tag = "@AIDA"; // (Ganti ini jika nama tag-nya beda, misal "@asdos")
-      if (text.toLowerCase().startsWith(tag.toLowerCase())) {
-        // Hapus tag dari pertanyaan
-        const question = text.substring(tag.length).trim();
+      const tagAI = "@AIDA";
+      const tagAsdos = "@asdos";
 
-        // Panggil fungsi AI untuk merespons
+      if (text.toLowerCase().startsWith(tagAI.toLowerCase())) {
+        const question = text.substring(tagAI.length).trim();
+        await triggerAIGroupChatResponse(question);
+      } else if (text.toLowerCase().startsWith(tagAsdos.toLowerCase())) {
+        const question = text.substring(tagAsdos.length).trim();
         await triggerAIGroupChatResponse(question);
       }
-      // --- AKHIR LOGIKA BARU ---
     } catch (err) {
       console.error(err);
     }
   }
 
-  /**
-   * Menampilkan pesan di layar
-   */
   function renderMessage(data) {
     const isMe = data.username === myName;
     const div = document.createElement("div");
@@ -7442,13 +7429,12 @@ function initGroupChat() {
       localStorage.getItem("groupChatHistory") || "[]"
     );
     history.push(data);
-    if (history.length > 50) history.shift(); // Batasi 50 pesan
+    if (history.length > 50) history.shift();
     localStorage.setItem("groupChatHistory", JSON.stringify(history));
   }
 
-  newSendBtn.addEventListener("click", sendChatMessage); //
+  newSendBtn.addEventListener("click", sendChatMessage);
   newChatInput.addEventListener("keypress", (e) => {
-    //
     if (e.key === "Enter") sendChatMessage();
   });
 }
