@@ -1450,6 +1450,8 @@ const translations = {
     "dkv.toggleGrid": "Toggle Grid",
     "dkv.clear": "Clear",
     "dkv.download": "Download PNG",
+
+    "chat.clearHistory": "Clear History",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -1938,6 +1940,8 @@ const translations = {
     "dkv.toggleGrid": "Toggle Grid",
     "dkv.clear": "Bersihkan",
     "dkv.download": "Download PNG",
+
+    "chat.clearHistory": "Bersihkan Riwayat",
   },
 };
 
@@ -7239,6 +7243,9 @@ async function initGroupChat() {
   const chatInput = document.getElementById("groupMessageInput");
   const sendBtn = document.getElementById("sendGroupMessageBtn");
 
+  const clearBtn = document.getElementById("clearChatBtn");
+  if (clearBtn) clearBtn.onclick = clearGroupChatHistory;
+
   if (!chatMessages || !chatInput || !sendBtn) return;
 
   const newSendBtn = sendBtn.cloneNode(true);
@@ -7437,6 +7444,31 @@ async function initGroupChat() {
   newChatInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") sendChatMessage();
   });
+}
+
+function clearGroupChatHistory() {
+  // Tampilkan konfirmasi
+  const confirmClear = confirm(
+    "Apakah Anda yakin ingin menghapus semua riwayat chat lokal? (Ini tidak akan menghapus riwayat orang lain)"
+  );
+
+  if (confirmClear) {
+    // 1. Hapus data dari localStorage
+    localStorage.removeItem("groupChatHistory");
+
+    // 2. Bersihkan tampilan chat di layar
+    const chatMessages = document.getElementById("groupMessages");
+    if (chatMessages) {
+      // Sisakan pesan selamat datang
+      chatMessages.innerHTML = `
+        <div class="system-msg welcome-message" data-i18n="chat.welcome_title">
+          Riwayat obrolan telah dibersihkan.
+        </div>`;
+    }
+
+    // 3. (Opsional) Tampilkan notifikasi
+    showNotification("Riwayat chat lokal berhasil dihapus!", "success");
+  }
 }
 
 let notesData = JSON.parse(localStorage.getItem("quickNotes") || "[]");
