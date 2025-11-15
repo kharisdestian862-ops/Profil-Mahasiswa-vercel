@@ -7765,6 +7765,7 @@ window.drop = drop;
 window.allowDrop = allowDrop;
 window.drag = drag;
 
+let cheatWarningCount = 0;
 // ===== FUNGSI BARU UNTUK TAB UJIAN =====
 function initExamTabs() {
   const tabButtons = document.querySelectorAll(".exam-tab-btn");
@@ -7794,6 +7795,8 @@ function initExamTabs() {
 
 function startUjian(namaUjian) {
   document.body.classList.add("exam-lockdown");
+
+  enterExamFullscreen();
 
   const sectionUjian = document.getElementById("ujian");
   if (sectionUjian) sectionUjian.style.display = "none";
@@ -7913,6 +7916,12 @@ function submitExam() {
   if (examPage) examPage.style.display = "none";
 
   document.body.classList.remove("exam-lockdown");
+
+  document.removeEventListener("visibilitychange", handleVisibilityChange);
+  document.removeEventListener("fullscreenchange", handleVisibilityChange);
+  if (document.fullscreenElement) {
+    document.exitFullscreen();
+  }
 
   switchSection("dashboard");
 }
