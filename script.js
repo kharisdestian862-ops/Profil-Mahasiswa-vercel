@@ -7243,11 +7243,18 @@ async function initGroupChat() {
   const chatInput = document.getElementById("groupMessageInput");
   const sendBtn = document.getElementById("sendGroupMessageBtn");
 
+  // Cegah multiple initialization
+  if (window.groupChatInitialized) {
+    return;
+  }
+  window.groupChatInitialized = true;
+
   const clearBtn = document.getElementById("clearChatBtn");
   if (clearBtn) clearBtn.onclick = clearGroupChatHistory;
 
   if (!chatMessages || !chatInput || !sendBtn) return;
 
+  // Clone elements untuk hindari event listener duplikat
   const newSendBtn = sendBtn.cloneNode(true);
   sendBtn.parentNode.replaceChild(newSendBtn, sendBtn);
   const newChatInput = chatInput.cloneNode(true);
@@ -7258,16 +7265,23 @@ async function initGroupChat() {
   };
   const myName = user.fullName;
 
-  if (chatMessages.children.length <= 1) {
+  // Load chat history - HANYA SATU KALI
+  function loadChatHistory() {
     const savedHistory = JSON.parse(
       localStorage.getItem("groupChatHistory") || "[]"
     );
+
     if (savedHistory.length > 0) {
       const welcomeMsg = chatMessages.querySelector(".welcome-message");
       if (welcomeMsg) welcomeMsg.remove();
 
-      chatMessages.innerHTML = "";
+      // Clear existing messages kecuali welcome message
+      const existingMessages = chatMessages.querySelectorAll(".chat-bubble");
+      existingMessages.forEach((msg) => msg.remove());
+
+      // Render semua pesan dari history
       savedHistory.forEach((chat) => renderMessage(chat));
+
       setTimeout(
         () => (chatMessages.scrollTop = chatMessages.scrollHeight),
         100
@@ -7275,6 +7289,10 @@ async function initGroupChat() {
     }
   }
 
+  // Panggil load history
+  loadChatHistory();
+
+  // Setup Pusher - HANYA SATU KALI
   if (!window.pusherInstance) {
     if (typeof Pusher !== "undefined") {
       window.pusherInstance = new Pusher("f13ff92cbbe2788163f8", {
@@ -7297,13 +7315,29 @@ async function initGroupChat() {
             const welcome = activeContainer.querySelector(".welcome-message");
             if (welcome) welcome.remove();
 
-            renderMessage(data);
-
-            saveMessageToLocal(data);
+            // Cek duplikasi sebelum render
+            if (!isMessageDuplicate(data)) {
+              renderMessage(data);
+              saveMessageToLocal(data);
+            }
           }
         }
       });
     }
+  }
+
+  // Fungsi untuk cek duplikasi pesan
+  function isMessageDuplicate(newMessage) {
+    const history = JSON.parse(
+      localStorage.getItem("groupChatHistory") || "[]"
+    );
+
+    return history.some(
+      (msg) =>
+        msg.username === newMessage.username &&
+        msg.message === newMessage.message &&
+        msg.timestamp === newMessage.timestamp
+    );
   }
 
   async function triggerAIGroupChatResponse(query) {
@@ -7335,17 +7369,20 @@ async function initGroupChat() {
         }),
       };
 
-      renderMessage(aiMessageData);
-      saveMessageToLocal(aiMessageData);
+      // Cek duplikasi sebelum render AI response
+      if (!isMessageDuplicate(aiMessageData)) {
+        renderMessage(aiMessageData);
+        saveMessageToLocal(aiMessageData);
 
-      await fetch("/api/send-chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...aiMessageData,
-          socketId: window.myPusherSocketId,
-        }),
-      });
+        await fetch("/api/send-chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            ...aiMessageData,
+            socketId: window.myPusherSocketId,
+          }),
+        });
+      }
     } catch (error) {
       console.error("Gagal memicu AI:", error);
     }
@@ -7364,8 +7401,12 @@ async function initGroupChat() {
       }),
     };
 
-    renderMessage(msgData);
-    saveMessageToLocal(msgData);
+    // Cek duplikasi sebelum kirim
+    if (!isMessageDuplicate(msgData)) {
+      renderMessage(msgData);
+      saveMessageToLocal(msgData);
+    }
+
     newChatInput.value = "";
 
     const welcomeMsg = chatMessages.querySelector(".welcome-message");
@@ -7418,15 +7459,32 @@ async function initGroupChat() {
     const history = JSON.parse(
       localStorage.getItem("groupChatHistory") || "[]"
     );
-    history.push(data);
-    if (history.length > 50) history.shift();
-    localStorage.setItem("groupChatHistory", JSON.stringify(history));
+
+    // Cek duplikasi sebelum save
+    const isDuplicate = history.some(
+      (msg) =>
+        msg.username === data.username &&
+        msg.message === data.message &&
+        msg.timestamp === data.timestamp
+    );
+
+    if (!isDuplicate) {
+      history.push(data);
+      if (history.length > 50) history.shift();
+      localStorage.setItem("groupChatHistory", JSON.stringify(history));
+    }
   }
 
+  // Pasang event listener
   newSendBtn.addEventListener("click", sendChatMessage);
   newChatInput.addEventListener("keypress", (e) => {
     if (e.key === "Enter") sendChatMessage();
   });
+}
+
+// Fungsi untuk reset initialization jika needed
+function resetGroupChatInit() {
+  window.groupChatInitialized = false;
 }
 
 function clearGroupChatHistory() {
