@@ -1451,6 +1451,44 @@ const translations = {
     "dkv.clear": "Clear",
     "dkv.download": "Download PNG",
 
+    "nav.fpo": "Fitness Tools",
+    "fpo.title": "Fitness Analysis Center",
+    "fpo.subtitle":
+      "Calculators for Anthropometry, Energy Needs, and Training Zones.",
+    "fpo.tab.bmi": "BMI Calculator",
+    "fpo.tab.tdee": "Energy Calculator (TDEE)",
+    "fpo.tab.hr": "Training Zones (Heart Rate)",
+    "fpo.calculate": "Calculate",
+    "fpo.bmi.title": "Anthropometry Calculator (BMI)",
+    "fpo.bmi.height": "Height (cm)",
+    "fpo.bmi.weight": "Weight (kg)",
+    "fpo.bmi.yourBmi": "Your Body Mass Index (BMI)",
+    "fpo.bmi.prompt": "Enter your data",
+    "fpo.bmi.underweight": "Underweight",
+    "fpo.bmi.normal": "Normal Weight",
+    "fpo.bmi.overweight": "Overweight",
+    "fpo.bmi.obese": "Obese",
+    "fpo.tdee.title": "Energy Needs Calculator",
+    "fpo.tdee.age": "Age",
+    "fpo.tdee.gender": "Gender",
+    "fpo.tdee.male": "Male",
+    "fpo.tdee.female": "Female",
+    "fpo.tdee.activity": "Activity Level",
+    "fpo.tdee.sedentary": "Sedentary (Rarely)",
+    "fpo.tdee.light": "Light (1-3x / week)",
+    "fpo.tdee.moderate": "Moderate (3-5x / week)",
+    "fpo.tdee.heavy": "Heavy (6-7x / week)",
+    "fpo.tdee.athlete": "Athlete (2x / day)",
+    "fpo.tdee.tdee": "Daily Calorie Needs (TDEE)",
+    "fpo.tdee.bmr": "Resting Calories (BMR)",
+    "fpo.hr.title": "Training Zone Calculator (Heart Rate)",
+    "fpo.hr.mhr": "Max Heart Rate (MHR)",
+    "fpo.hr.zone1": "Zone 1 (50-60%)",
+    "fpo.hr.zone2": "Zone 2 (60-70%)",
+    "fpo.hr.zone3": "Zone 3 (70-80%)",
+    "fpo.hr.zone4": "Zone 4 (80-90%)",
+    "fpo.hr.zone5": "Zone 5 (90-100%)",
+
     "chat.clearHistory": "Clear History",
   },
   id: {
@@ -1941,6 +1979,44 @@ const translations = {
     "dkv.clear": "Bersihkan",
     "dkv.download": "Download PNG",
 
+    "nav.fpo": "Alat Kebugaran",
+    "fpo.title": "Pusat Analisis Kebugaran",
+    "fpo.subtitle":
+      "Kalkulator untuk Antropometri, Kebutuhan Energi, dan Zona Latihan.",
+    "fpo.tab.bmi": "Kalkulator BMI",
+    "fpo.tab.tdee": "Kalkulator Energi (TDEE)",
+    "fpo.tab.hr": "Zona Latihan (Denyut Nadi)",
+    "fpo.calculate": "Hitung",
+    "fpo.bmi.title": "Kalkulator Antropometri (BMI)",
+    "fpo.bmi.height": "Tinggi Badan (cm)",
+    "fpo.bmi.weight": "Berat Badan (kg)",
+    "fpo.bmi.yourBmi": "Body Mass Index (BMI) Anda",
+    "fpo.bmi.prompt": "Masukkan data Anda",
+    "fpo.bmi.underweight": "Berat Badan Kurang",
+    "fpo.bmi.normal": "Berat Badan Normal",
+    "fpo.bmi.overweight": "Berat Badan Berlebih",
+    "fpo.bmi.obese": "Obesitas",
+    "fpo.tdee.title": "Kalkulator Kebutuhan Energi",
+    "fpo.tdee.age": "Usia",
+    "fpo.tdee.gender": "Jenis Kelamin",
+    "fpo.tdee.male": "Laki-laki",
+    "fpo.tdee.female": "Perempuan",
+    "fpo.tdee.activity": "Tingkat Aktivitas",
+    "fpo.tdee.sedentary": "Sedentary (Jarang)",
+    "fpo.tdee.light": "Ringan (1-3x / minggu)",
+    "fpo.tdee.moderate": "Sedang (3-5x / minggu)",
+    "fpo.tdee.heavy": "Berat (6-7x / minggu)",
+    "fpo.tdee.athlete": "Atlet (2x / hari)",
+    "fpo.tdee.tdee": "Kebutuhan Kalori Harian (TDEE)",
+    "fpo.tdee.bmr": "Kalori Istirahat (BMR)",
+    "fpo.hr.title": "Kalkulator Zona Latihan (Denyut Nadi)",
+    "fpo.hr.mhr": "Denyut Nadi Maksimal (MHR)",
+    "fpo.hr.zone1": "Zona 1 (50-60%)",
+    "fpo.hr.zone2": "Zona 2 (60-70%)",
+    "fpo.hr.zone3": "Zona 3 (70-80%)",
+    "fpo.hr.zone4": "Zona 4 (80-90%)",
+    "fpo.hr.zone5": "Zona 5 (90-100%)",
+
     "chat.clearHistory": "Bersihkan Riwayat",
   },
 };
@@ -2204,6 +2280,7 @@ function initFAB() {
     kanbanFab: "kanban",
     febFab: "feb-center",
     dkvFab: "dkv-center",
+    fpoFab: "fpo-center",
   };
 
   Object.keys(fabItems).forEach((id) => {
@@ -2255,6 +2332,7 @@ function switchSection(sectionId) {
     "chat",
     "feb-center",
     "dkv-center",
+    "fpo-center",
   ];
   if (fullWidthSections.includes(sectionId)) {
     document.body.classList.add("full-layout-active");
@@ -2276,6 +2354,7 @@ function switchSection(sectionId) {
     if (sectionId === "ujian") initExamTabs();
     if (sectionId === "feb-center") initFebCenter();
     if (sectionId === "dkv-center") initDkvCenter();
+    if (sectionId === "fpo-center") initFpoCenter();
 
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
@@ -8524,3 +8603,164 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+function initFpoCenter() {
+  initFpoTabs();
+  initBmiCalc();
+  initTdeeCalc();
+  initHeartRateCalc();
+
+  calculateBMI();
+  calculateTDEE();
+  calculateHeartRateZones();
+}
+
+function initFpoTabs() {
+  const tabButtons = document.querySelectorAll(".fpo-tab-btn");
+  const tabContents = document.querySelectorAll(".fpo-tab-content");
+
+  tabButtons.forEach((button) => {
+    if (button.dataset.listenerAttached) return;
+
+    button.addEventListener("click", () => {
+      tabButtons.forEach((btn) => btn.classList.remove("active"));
+      tabContents.forEach((content) => {
+        content.style.display = "none";
+        content.classList.remove("active");
+      });
+
+      button.classList.add("active");
+      const targetTab = document.getElementById(button.dataset.tab);
+      if (targetTab) {
+        targetTab.style.display = "block";
+        targetTab.classList.add("active");
+      }
+    });
+    button.dataset.listenerAttached = true;
+  });
+}
+
+function initBmiCalc() {
+  const calculateBtn = document.getElementById("calculateBmiBtn");
+  if (calculateBtn) {
+    calculateBtn.onclick = calculateBMI;
+  }
+}
+
+function calculateBMI() {
+  const height = parseFloat(document.getElementById("bmiHeight").value);
+  const weight = parseFloat(document.getElementById("bmiWeight").value);
+  const resultEl = document.getElementById("bmiResult");
+  const statusEl = document.getElementById("bmiStatus");
+
+  if (!height || !weight || height <= 0 || weight <= 0) {
+    resultEl.textContent = "0.0";
+    statusEl.textContent = translations[currentLanguage]["fpo.bmi.prompt"];
+    statusEl.className = "fpo-status-box";
+    return;
+  }
+
+  const heightInMeters = height / 100;
+  const bmi = weight / (heightInMeters * heightInMeters);
+
+  resultEl.textContent = bmi.toFixed(1);
+
+  if (bmi < 18.5) {
+    statusEl.textContent = translations[currentLanguage]["fpo.bmi.underweight"];
+    statusEl.className = "fpo-status-box underweight";
+  } else if (bmi >= 18.5 && bmi <= 24.9) {
+    statusEl.textContent = translations[currentLanguage]["fpo.bmi.normal"];
+    statusEl.className = "fpo-status-box normal";
+  } else if (bmi >= 25 && bmi <= 29.9) {
+    statusEl.textContent = translations[currentLanguage]["fpo.bmi.overweight"];
+    statusEl.className = "fpo-status-box overweight";
+  } else {
+    statusEl.textContent = translations[currentLanguage]["fpo.bmi.obese"];
+    statusEl.className = "fpo-status-box obese";
+  }
+}
+
+function initTdeeCalc() {
+  const calculateBtn = document.getElementById("calculateTdeeBtn");
+  if (calculateBtn) {
+    calculateBtn.onclick = calculateTDEE;
+  }
+}
+
+function calculateTDEE() {
+  const age = parseFloat(document.getElementById("tdeeAge").value);
+  const gender = document.getElementById("tdeeGender").value;
+  const height = parseFloat(document.getElementById("tdeeHeight").value);
+  const weight = parseFloat(document.getElementById("tdeeWeight").value);
+  const activity = parseFloat(document.getElementById("tdeeActivity").value);
+
+  if (!age || !height || !weight) return;
+
+  let bmr = 0;
+  if (gender === "male") {
+    bmr = 88.362 + 13.397 * weight + 4.799 * height - 5.677 * age;
+  } else {
+    bmr = 447.593 + 9.247 * weight + 3.098 * height - 4.33 * age;
+  }
+
+  const tdee = bmr * activity;
+
+  document.getElementById("bmrResult").textContent = bmr.toFixed(0) + " kCal";
+  document.getElementById("tdeeResult").innerHTML = `${tdee.toFixed(
+    0
+  )} <span class="kcal">kCal</span>`;
+}
+
+function initHeartRateCalc() {
+  const calculateBtn = document.getElementById("calculateHrBtn");
+  if (calculateBtn) {
+    calculateBtn.onclick = calculateHeartRateZones;
+  }
+}
+
+function calculateHeartRateZones() {
+  const age = parseFloat(document.getElementById("hrAge").value);
+  if (!age) return;
+
+  const mhr = 220 - age;
+  document.getElementById(
+    "mhrResult"
+  ).innerHTML = `${mhr} <span class="bpm">BPM</span>`;
+
+  const zones = [
+    { key: "fpo.hr.zone1", range: [0.5, 0.6] },
+    { key: "fpo.hr.zone2", range: [0.6, 0.7] },
+    { key: "fpo.hr.zone3", range: [0.7, 0.8] },
+    { key: "fpo.hr.zone4", range: [0.8, 0.9] },
+    { key: "fpo.hr.zone5", range: [0.9, 1.0] },
+  ];
+
+  const listEl = document.getElementById("hrZonesList");
+  listEl.innerHTML = "";
+
+  zones.forEach((zone) => {
+    const minBpm = (mhr * zone.range[0]).toFixed(0);
+    const maxBpm = (mhr * zone.range[1]).toFixed(0);
+    const zoneName =
+      translations[currentLanguage][zone.key] ||
+      `Zone (${zone.range[0] * 100}%)`;
+
+    const zoneEl = document.createElement("div");
+    zoneEl.className = "hr-zone";
+    zoneEl.style.setProperty("--zone-color", getZoneColor(zone.key));
+    zoneEl.innerHTML = `
+      <span>${zoneName}</span>
+      <strong>${minBpm}-${maxBpm} BPM</strong>
+    `;
+    listEl.appendChild(zoneEl);
+  });
+}
+
+function getZoneColor(key) {
+  if (key.includes("zone1")) return "#4ade80";
+  if (key.includes("zone2")) return "#a3e635";
+  if (key.includes("zone3")) return "#facc15";
+  if (key.includes("zone4")) return "#fb923c";
+  if (key.includes("zone5")) return "#f87171";
+  return "#e2e8f0";
+}
