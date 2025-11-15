@@ -7757,29 +7757,26 @@ body.dark-mode .mock-terminal-btn {
   }
 }
 
-body.exam-lockdown .sidebar {
-  display: none !important;
-}
-
-body.exam-lockdown .mobile-header {
-  display: none !important;
-}
-
-body.exam-lockdown .fab-container {
-  display: none !important;
-}
-
-body.exam-lockdown .main-wrapper {
-  grid-template-columns: 1fr !important;
-  padding-left: 0 !important;
-}
-
+body.exam-lockdown .sidebar,
+body.exam-lockdown .mobile-header,
+body.exam-lockdown .fab-container,
 body.exam-lockdown .sidebar-right {
   display: none !important;
 }
 
+body.exam-lockdown .container {
+  grid-template-columns: 1fr !important;
+}
+
+body.exam-lockdown .main-wrapper {
+  padding-left: 0 !important;
+  align-items: center;
+}
+
 body.exam-lockdown .main-content {
-  padding: 1.5rem !important;
+  flex: 0 1 auto;
+  width: 100%;
   max-width: 900px;
   margin: 0 auto;
+  padding: 1.5rem !important;
 }
