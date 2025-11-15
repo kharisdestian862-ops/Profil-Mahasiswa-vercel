@@ -7243,7 +7243,6 @@ function initGroupChat() {
 
   const newSendBtn = sendBtn.cloneNode(true);
   sendBtn.parentNode.replaceChild(newSendBtn, sendBtn);
-
   const newChatInput = chatInput.cloneNode(true);
   chatInput.parentNode.replaceChild(newChatInput, chatInput);
 
@@ -7251,6 +7250,24 @@ function initGroupChat() {
     fullName: "Anonim",
   };
   const myName = user.fullName;
+
+  // 1. Muat riwayat chat dari LocalStorage
+  if (chatMessages.children.length <= 1) {
+    const savedHistory = JSON.parse(
+      localStorage.getItem("groupChatHistory") || "[]"
+    );
+    if (savedHistory.length > 0) {
+      const welcomeMsg = chatMessages.querySelector(".welcome-message");
+      if (welcomeMsg) welcomeMsg.remove();
+
+      chatMessages.innerHTML = "";
+      savedHistory.forEach((chat) => renderMessage(chat));
+      setTimeout(
+        () => (chatMessages.scrollTop = chatMessages.scrollHeight),
+        100
+      );
+    }
+  }
 
   if (chatMessages.children.length <= 1) {
     const savedHistory = JSON.parse(
@@ -7291,20 +7308,65 @@ function initGroupChat() {
             const welcome = activeContainer.querySelector(".welcome-message");
             if (welcome) welcome.remove();
 
-            const div = document.createElement("div");
-            div.className = "chat-bubble others";
-            div.innerHTML = `
-                          <span class="sender-name">${data.username}</span>
-                          <span class="message-content">${data.message}</span>
-                          <span class="timestamp">${data.timestamp}</span>
-                      `;
-            activeContainer.appendChild(div);
-            activeContainer.scrollTop = activeContainer.scrollHeight;
+            // Render pesan yang masuk
+            renderMessage(data);
 
             saveMessageToLocal(data);
           }
         }
       });
+    }
+  }
+
+  async function triggerAIGroupChatResponse(query) {
+    try {
+      // (Logika ini diambil dari fungsi AI Chatbot Anda yang sudah ada)
+      const contextData = getContextForAI(query);
+      const response = await fetch("/api/chat", {
+        //
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: query,
+          context: contextData,
+          language: currentLanguage,
+        }),
+      });
+
+      const data = await response.json();
+      let aiResponse = "Maaf, saya tidak mengerti.";
+
+      if (data.choices && data.choices[0] && data.choices[0].message) {
+        aiResponse = data.choices[0].message.content;
+      }
+
+      // Buat objek pesan balasan dari AI
+      const aiMessageData = {
+        username: "AIDA AI", // Nama AI Anda
+        message: aiResponse,
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      };
+
+      // Tampilkan balasan AI di layar Anda
+      renderMessage(aiMessageData);
+      // Simpan balasan AI ke riwayat Anda
+      saveMessageToLocal(aiMessageData);
+
+      // Kirim balasan AI ke semua orang di grup
+      await fetch("/api/send-chat", {
+        //
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...aiMessageData,
+          socketId: window.myPusherSocketId, // Agar tidak terkirim balik ke Anda
+        }),
+      });
+    } catch (error) {
+      console.error("Gagal memicu AI:", error);
     }
   }
 
@@ -7329,8 +7391,8 @@ function initGroupChat() {
     if (welcomeMsg) welcomeMsg.remove();
 
     try {
+      // 2. Siarkan pesan ANDA ke semua orang
       const currentSocketId = window.pusherInstance?.connection?.socket_id;
-
       await fetch("/api/send-chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -7339,15 +7401,31 @@ function initGroupChat() {
           socketId: currentSocketId,
         }),
       });
+
+      // --- LOGIKA BARU UNTUK TAG AI ---
+      const tag = "@AIDA"; // (Ganti ini jika nama tag-nya beda, misal "@asdos")
+      if (text.toLowerCase().startsWith(tag.toLowerCase())) {
+        // Hapus tag dari pertanyaan
+        const question = text.substring(tag.length).trim();
+
+        // Panggil fungsi AI untuk merespons
+        await triggerAIGroupChatResponse(question);
+      }
+      // --- AKHIR LOGIKA BARU ---
     } catch (err) {
       console.error(err);
     }
   }
 
+  /**
+   * Menampilkan pesan di layar
+   */
   function renderMessage(data) {
     const isMe = data.username === myName;
     const div = document.createElement("div");
-    div.className = `chat-bubble ${isMe ? "me" : "others"}`;
+
+    const botClass = data.username === "AIDA AI" ? "bot-message" : "";
+    div.className = `chat-bubble ${isMe ? "me" : "others"} ${botClass}`;
 
     div.innerHTML = `
           ${!isMe ? `<span class="sender-name">${data.username}</span>` : ""}
@@ -7364,12 +7442,13 @@ function initGroupChat() {
       localStorage.getItem("groupChatHistory") || "[]"
     );
     history.push(data);
-    if (history.length > 50) history.shift();
+    if (history.length > 50) history.shift(); // Batasi 50 pesan
     localStorage.setItem("groupChatHistory", JSON.stringify(history));
   }
 
-  newSendBtn.addEventListener("click", sendChatMessage);
+  newSendBtn.addEventListener("click", sendChatMessage); //
   newChatInput.addEventListener("keypress", (e) => {
+    //
     if (e.key === "Enter") sendChatMessage();
   });
 }
