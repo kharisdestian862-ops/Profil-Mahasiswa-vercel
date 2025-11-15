@@ -7973,6 +7973,16 @@ let dkvCurrentColor = "#000000";
 let dkvIsDrawing = false;
 let dkvIsInitialized = false;
 
+let dkvScale = 1;
+let dkvTranslateX = 0;
+let dkvTranslateY = 0;
+let dkvIsPanning = false;
+let dkvPanLastX = 0;
+let dkvPanLastY = 0;
+
+/**
+ * Fungsi utama untuk menginisialisasi DKV Pixel Pad.
+ */
 /**
  * Fungsi utama untuk menginisialisasi DKV Pixel Pad.
  */
@@ -7986,7 +7996,7 @@ function initDkvCenter() {
   // 1. Buat Grid Awal
   createPixelGrid(32);
 
-  // 2. Setup Listener Toolbar
+  // 2. Setup Listener Toolbar (Ini sudah ada, tidak berubah)
   const colorPicker = document.getElementById("colorPicker");
   const toolPencil = document.getElementById("toolPencil");
   const toolEraser = document.getElementById("toolEraser");
@@ -7997,20 +8007,15 @@ function initDkvCenter() {
   const downloadArtBtn = document.getElementById("downloadArtBtn");
   const colorPalette = document.querySelector(".color-palette");
 
-  // Listener Pemilih Warna
   colorPicker.addEventListener("input", (e) => {
     dkvCurrentColor = e.target.value;
   });
-
-  // Listener Palet Cepat
   colorPalette.addEventListener("click", (e) => {
     if (e.target.classList.contains("color-swatch")) {
       dkvCurrentColor = e.target.dataset.color;
       colorPicker.value = dkvCurrentColor;
     }
   });
-
-  // Listener Pilihan Alat
   function setActiveTool(toolName) {
     dkvCurrentTool = toolName;
     toolPencil.classList.toggle("active", toolName === "pencil");
@@ -8020,20 +8025,131 @@ function initDkvCenter() {
   toolPencil.onclick = () => setActiveTool("pencil");
   toolEraser.onclick = () => setActiveTool("eraser");
   toolPicker.onclick = () => setActiveTool("picker");
-
-  // Listener Aksi
   gridSizeSelect.onchange = (e) => createPixelGrid(e.target.value);
   toggleGridBtn.onclick = togglePixelGrid;
   clearCanvasBtn.onclick = clearPixelCanvas;
   downloadArtBtn.onclick = downloadPixelArt;
 
+  // --- ▼▼▼ LOGIKA BARU UNTUK PAN & ZOOM ▼▼▼ ---
+
+  const canvasWrapper = document.querySelector(".pixel-canvas-wrapper");
+  const canvas = document.getElementById("pixelCanvas");
+
+  if (!canvasWrapper || !canvas) return;
+
+  // 3. ZOOM (Mouse Wheel)
+  canvasWrapper.addEventListener("wheel", (e) => {
+    e.preventDefault(); // Hentikan scroll halaman
+
+    const zoomFactor = 1.1;
+    const oldScale = dkvScale;
+
+    // Ambil posisi mouse relatif terhadap wrapper
+    const rect = canvasWrapper.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    // Tentukan arah zoom
+    if (e.deltaY < 0) {
+      // Zoom In
+      dkvScale = Math.min(dkvScale * zoomFactor, 10); // Max zoom 10x
+    } else {
+      // Zoom Out
+      dkvScale = Math.max(dkvScale / zoomFactor, 0.5); // Min zoom 0.5x
+    }
+
+    // Hitung translasi baru agar zoom berpusat di kursor mouse
+    dkvTranslateX = mouseX - (mouseX - dkvTranslateX) * (dkvScale / oldScale);
+    dkvTranslateY = mouseY - (mouseY - dkvTranslateY) * (dkvScale / oldScale);
+
+    updateDkvTransform();
+  });
+
+  // 4. PAN (Spacebar + Drag)
+
+  // Tekan Spasi = Aktifkan Mode Pan
+  window.addEventListener("keydown", (e) => {
+    // Hanya aktif jika di section DKV dan belum mode pan
+    if (
+      e.code === "Space" &&
+      document.getElementById("dkv-center").style.display === "flex" &&
+      !dkvIsPanning
+    ) {
+      e.preventDefault();
+      dkvIsPanning = true;
+      canvasWrapper.style.cursor = "grab";
+    }
+  });
+
+  // Lepas Spasi = Matikan Mode Pan
+  window.addEventListener("keyup", (e) => {
+    if (e.code === "Space") {
+      e.preventDefault();
+      dkvIsPanning = false;
+      canvasWrapper.style.cursor = "crosshair"; // Kembalikan ke kursor gambar
+    }
+  });
+
+  // Mouse Down (Mulai Pan / Mulai Gambar)
+  canvasWrapper.addEventListener("mousedown", (e) => {
+    if (dkvIsPanning && e.button === 0) {
+      // Jika SPASI ditahan + Klik Kiri
+      e.preventDefault();
+      canvasWrapper.style.cursor = "grabbing";
+      dkvIsDrawing = false; // Pastikan tidak menggambar
+      dkvPanLastX = e.clientX; // Simpan posisi awal klik
+      dkvPanLastY = e.clientY;
+    } else if (e.button === 0) {
+      // Jika hanya Klik Kiri (Mode Gambar)
+      handleDrawStart(e);
+    }
+  });
+
+  // Mouse Move (Melakukan Pan / Melakukan Gambar)
+  canvasWrapper.addEventListener("mousemove", (e) => {
+    if (dkvIsPanning && e.buttons === 1) {
+      // Jika SPASI ditahan DAN Klik Kiri ditahan (DRAG)
+      e.preventDefault();
+      const dx = e.clientX - dkvPanLastX; // Perbedaan gerak X
+      const dy = e.clientY - dkvPanLastY; // Perbedaan gerak Y
+
+      dkvTranslateX += dx; // Tambahkan ke posisi kanvas
+      dkvTranslateY += dy;
+
+      dkvPanLastX = e.clientX; // Simpan posisi terakhir
+      dkvPanLastY = e.clientY;
+
+      updateDkvTransform();
+    } else if (e.buttons === 1) {
+      // Jika hanya Klik Kiri ditahan (DRAW)
+      handleDrawMove(e);
+    }
+  });
+
+  // Mouse Up (Berhenti Pan / Berhenti Gambar)
+  window.addEventListener("mouseup", (e) => {
+    if (dkvIsPanning) {
+      canvasWrapper.style.cursor = "grab"; // Tetap 'grab' jika spasi masih ditahan
+    }
+    handleDrawEnd(e); // Berhentikan proses menggambar
+  });
+
+  // Mouse Keluar Wrapper
+  canvasWrapper.addEventListener("mouseleave", () => {
+    if (dkvIsPanning) {
+      canvasWrapper.style.cursor = "grab";
+    }
+    dkvIsDrawing = false; // Hentikan gambar jika keluar area
+  });
+
+  // --- ▲▲▲ AKHIR LOGIKA BARU ▲▲▲ ---
+
   // 3. Tandai sudah ter-inisialisasi
   dkvIsInitialized = true;
 }
 
-/**
- * Membuat (atau membuat ulang) grid pixel di kanvas.
- */
+// (Fungsi createPixelGrid tetap sama)
+// ...
 function createPixelGrid(size = 32) {
   const canvas = document.getElementById("pixelCanvas");
   if (!canvas) return;
@@ -8041,32 +8157,57 @@ function createPixelGrid(size = 32) {
   canvas.innerHTML = ""; // Kosongkan kanvas
   canvas.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
 
+  // Setel ulang posisi & zoom saat ganti grid
+  dkvScale = 1;
+  dkvTranslateX = 0;
+  dkvTranslateY = 0;
+  updateDkvTransform(); // Panggil reset transform
+
   for (let i = 0; i < size * size; i++) {
     const cell = document.createElement("div");
     cell.className = "pixel-cell";
 
-    // Tambahkan listener untuk menggambar
-    cell.addEventListener("mousedown", handleDrawStart);
-    cell.addEventListener("mouseover", handleDrawMove);
+    // Listener 'mousedown' SEKARANG DI-HANDLE oleh wrapper
+    // Hapus listener lama
+    // cell.addEventListener("mousedown", handleDrawStart);
+    // cell.addEventListener("mouseover", handleDrawMove);
 
     canvas.appendChild(cell);
   }
 
-  // Listener 'mouseup' di window agar berhenti menggambar di mana saja
-  window.addEventListener("mouseup", handleDrawEnd);
+  // Hapus listener 'mouseup' lama dari window
+  // window.removeEventListener("mouseup", handleDrawEnd);
+}
+
+// FUNGSI BARU: Untuk menerapkan CSS Transform
+function updateDkvTransform() {
+  const canvas = document.getElementById("pixelCanvas");
+  if (canvas) {
+    canvas.style.transform = `translate(${dkvTranslateX}px, ${dkvTranslateY}px) scale(${dkvScale})`;
+  }
 }
 
 /**
  * Fungsi-fungsi untuk menggambar (Mouse Events)
+ * DIMODIFIKASI AGAR TIDAK BENTROK DENGAN PAN
  */
 function handleDrawStart(e) {
+  // JANGAN menggambar jika sedang mode PAN
+  if (dkvIsPanning) return;
+
   e.preventDefault();
   dkvIsDrawing = true;
   drawOnPixel(e.target);
 }
 function handleDrawMove(e) {
+  // JANGAN menggambar jika sedang mode PAN
+  if (dkvIsPanning) return;
+
   if (dkvIsDrawing) {
-    drawOnPixel(e.target);
+    // Cek apakah targetnya adalah pixel cell
+    if (e.target.classList.contains("pixel-cell")) {
+      drawOnPixel(e.target);
+    }
   }
 }
 function handleDrawEnd() {
@@ -8075,9 +8216,11 @@ function handleDrawEnd() {
 
 /**
  * Logika utama untuk mewarnai/menghapus/memilih pixel.
+ * (Tidak ada perubahan di fungsi ini)
  */
 function drawOnPixel(cell) {
-  if (!cell) return;
+  // ... (Isi fungsi ini tetap sama seperti sebelumnya)
+  if (!cell || !cell.classList.contains("pixel-cell")) return; // Safety check
 
   switch (dkvCurrentTool) {
     case "pencil":
@@ -8087,16 +8230,15 @@ function drawOnPixel(cell) {
       cell.style.backgroundColor = "#FFFFFF"; // Selalu putih
       break;
     case "picker":
-      // Ambil warna dan set sebagai warna aktif
-      dkvCurrentColor = cell.style.backgroundColor || "#FFFFFF";
-      document.getElementById("colorPicker").value = dkvCurrentColor;
+      if (dkvIsDrawing) {
+        // Hanya pick warna saat klik, bukan drag
+        dkvCurrentColor = cell.style.backgroundColor || "#FFFFFF";
+        document.getElementById("colorPicker").value = dkvCurrentColor;
+      }
       break;
   }
 }
 
-/**
- * Menampilkan atau menyembunyikan garis grid.
- */
 function togglePixelGrid() {
   document.getElementById("pixelCanvas").classList.toggle("grid-on");
 }
