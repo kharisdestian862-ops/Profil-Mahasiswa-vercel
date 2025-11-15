@@ -2284,12 +2284,7 @@ function switchSection(sectionId) {
     }
 
     if (sectionId === "codeplayground") {
-      setTimeout(() => {
-        initCodePlayground();
-        loadCodePlayground();
-        currentEditor.focus();
-        loadCodePlayground();
-      }, 50);
+      setTimeout(initCodePlayground, 50);
     }
 
     if (sectionId === "chat") {
@@ -5358,21 +5353,26 @@ class Program {
 }`,
 };
 
+let isMonacoLoading = false;
+
 // Initialize Code Playground
 function initCodePlayground() {
-  // Load Monaco Editor
-  loadMonacoEditor();
+  if (currentEditor) {
+    currentEditor.focus();
+    return;
+  }
 
-  // Setup event listeners
-  setupPlaygroundEvents();
+  if (!isMonacoLoading && !window.monaco) {
+    loadMonacoEditor();
+  } else if (window.monaco) {
+    initializeEditor();
+  }
 }
 
 // Load Monaco Editor dynamically
 function loadMonacoEditor() {
-  if (window.monaco) {
-    initializeEditor();
-    return;
-  }
+  if (isMonacoLoading) return;
+  isMonacoLoading = true;
 
   const script = document.createElement("script");
   script.src =
@@ -5382,6 +5382,7 @@ function loadMonacoEditor() {
       paths: { vs: "https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs" },
     });
     require(["vs/editor/editor.main"], () => {
+      isMonacoLoading = false;
       initializeEditor();
     });
   };
@@ -5390,6 +5391,11 @@ function loadMonacoEditor() {
 
 // Initialize Monaco Editor
 function initializeEditor() {
+  if (currentEditor) {
+    currentEditor.focus();
+    return;
+  }
+
   const editorContainer = document.getElementById("codeEditor");
   if (!editorContainer) return;
 
@@ -5416,11 +5422,13 @@ function initializeEditor() {
       parameterHints: { enabled: true },
     });
 
-    console.log("Monaco Editor initialized successfully");
     currentEditor.focus();
+    console.log("Monaco Editor initialized successfully");
+
+    setupPlaygroundEvents();
+    loadCodePlayground();
   } catch (error) {
     console.error("Failed to initialize Monaco Editor:", error);
-    // Fallback to textarea
     setupFallbackEditor();
   }
 }
