@@ -7275,23 +7275,6 @@ async function initGroupChat() {
     }
   }
 
-  if (chatMessages.children.length <= 1) {
-    const savedHistory = JSON.parse(
-      localStorage.getItem("groupChatHistory") || "[]"
-    );
-    if (savedHistory.length > 0) {
-      const welcomeMsg = chatMessages.querySelector(".welcome-message");
-      if (welcomeMsg) welcomeMsg.remove();
-
-      chatMessages.innerHTML = "";
-      savedHistory.forEach((chat) => renderMessage(chat));
-      setTimeout(
-        () => (chatMessages.scrollTop = chatMessages.scrollHeight),
-        100
-      );
-    }
-  }
-
   if (!window.pusherInstance) {
     if (typeof Pusher !== "undefined") {
       window.pusherInstance = new Pusher("f13ff92cbbe2788163f8", {
