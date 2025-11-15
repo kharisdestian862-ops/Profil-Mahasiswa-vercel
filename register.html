@@ -16,6 +16,55 @@
             Daftar sekali dan kelola seluruh jadwal akademik Anda di satu
             tempat.
           </p>
+
+          <div class="terminal-animation-container">
+            <div class="mock-terminal">
+              <div class="mock-cursor-group" style="top: 15px; left: 20px">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                  <path
+                    d="M0 512V32C0 14.3 14.3 0 32 0s32 14.3 32 32V190.8l136.6-114.5c20.3-17 50.8-11.3 62.7 11.1s6.9 52.8-15.3 64L133.3 256 248.1 360.6c22.2 11.2 28 41.6 15.3 64s-42.4 28.4-62.7 11.1L64 429.2V480c0 17.7-14.3 32-32 32s-32-14.3-32-32z"
+                  />
+                </svg>
+                <div class="mock-shape">
+                  <div class="mock-text" id="mock-text-fullname"></div>
+                </div>
+              </div>
+
+              <div class="mock-cursor-group" style="top: 55px; left: 70px">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                  <path
+                    d="M0 512V32C0 14.3 14.3 0 32 0s32 14.3 32 32V190.8l136.6-114.5c20.3-17 50.8-11.3 62.7 11.1s6.9 52.8-15.3 64L133.3 256 248.1 360.6c22.2 11.2 28 41.6 15.3 64s-42.4 28.4-62.7 11.1L64 429.2V480c0 17.7-14.3 32-32 32s-32-14.3-32-32z"
+                  />
+                </svg>
+                <div class="mock-shape">
+                  <div class="mock-text" id="mock-text-email"></div>
+                </div>
+              </div>
+
+              <div class="mock-cursor-group" style="top: 95px; left: 40px">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                  <path
+                    d="M0 512V32C0 14.3 14.3 0 32 0s32 14.3 32 32V190.8l136.6-114.5c20.3-17 50.8-11.3 62.7 11.1s6.9 52.8-15.3 64L133.3 256 248.1 360.6c22.2 11.2 28 41.6 15.3 64s-42.4 28.4-62.7 11.1L64 429.2V480c0 17.7-14.3 32-32 32s-32-14.3-32-32z"
+                  />
+                </svg>
+                <div class="mock-shape">
+                  <div class="mock-text" id="mock-text-password"></div>
+                </div>
+              </div>
+
+              <div class="mock-cursor-group" style="top: 135px; left: 90px">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512">
+                  <path
+                    d="M0 512V32C0 14.3 14.3 0 32 0s32 14.3 32 32V190.8l136.6-114.5c20.3-17 50.8-11.3 62.7 11.1s6.9 52.8-15.3 64L133.3 256 248.1 360.6c22.2 11.2 28 41.6 15.3 64s-42.4 28.4-62.7 11.1L64 429.2V480c0 17.7-14.3 32-32 32s-32-14.3-32-32z"
+                  />
+                </svg>
+                <div class="mock-shape">
+                  <div class="mock-text" id="mock-text-confirmpass"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="promo-footer">
             <p>© 2024 UCIC. All rights reserved.</p>
           </div>
@@ -95,7 +144,6 @@
     </div>
 
     <script>
-      // Fungsi Hash Password
       async function hashPassword(str) {
         const msgUint8 = new TextEncoder().encode(str);
         const hashBuffer = await crypto.subtle.digest("SHA-256", msgUint8);
@@ -103,13 +151,7 @@
         return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
       }
 
-      // ... (Bagian translations tetap sama, tidak perlu diubah) ...
-      // Pastikan kode translations dan applyTranslations Anda tetap ada di sini
-
       document.addEventListener("DOMContentLoaded", function () {
-        // ... (Kode init bahasa tetap sama) ...
-
-        // === LOGIKA REGISTER ===
         document
           .getElementById("registerForm")
           .addEventListener("submit", async function (e) {
@@ -126,38 +168,74 @@
               return;
             }
 
-            // 1. Ambil database user yang ada, atau buat array baru jika kosong
             const users = JSON.parse(localStorage.getItem("users_db") || "[]");
 
-            // 2. Cek apakah email sudah terdaftar
             if (users.some((u) => u.email === email)) {
               alert("Email sudah terdaftar!");
               return;
             }
 
-            // 3. Buat data user baru
             const hashedPassword = await hashPassword(password);
 
-            // Kita generate NIM dan Prodi default untuk demo,
-            // tapi Nama dan Email diambil ASLI dari form.
             const newUser = {
               id: Date.now(),
-              fullName: fullName, // <-- Data Penting 1
-              email: email, // <-- Data Penting 2
+              fullName: fullName,
+              email: email,
               password: hashedPassword,
-              nim: "202" + Math.floor(Math.random() * 10000), // NIM Random
+              nim: "202" + Math.floor(Math.random() * 10000),
               programStudi: "Informatics Engineering",
               semester: 1,
               year: new Date().getFullYear(),
             };
 
-            // 4. Simpan ke Local Storage
             users.push(newUser);
             localStorage.setItem("users_db", JSON.stringify(users));
 
             alert("Registrasi Berhasil! Silakan Login.");
             window.location.href = "index.html";
           });
+
+        try {
+          const fullNameInput = document.getElementById("fullName");
+          const emailInput = document.getElementById("email");
+          const passwordInput = document.getElementById("password");
+          const confirmPasswordInput =
+            document.getElementById("confirmPassword");
+
+          const mockFullNameText =
+            document.getElementById("mock-text-fullname");
+          const mockEmailText = document.getElementById("mock-text-email");
+          const mockPasswordText =
+            document.getElementById("mock-text-password");
+          const mockConfirmPassText = document.getElementById(
+            "mock-text-confirmpass"
+          );
+
+          if (fullNameInput && mockFullNameText) {
+            fullNameInput.addEventListener("input", (e) => {
+              mockFullNameText.textContent = e.target.value;
+            });
+          }
+          if (emailInput && mockEmailText) {
+            emailInput.addEventListener("input", (e) => {
+              mockEmailText.textContent = e.target.value;
+            });
+          }
+          if (passwordInput && mockPasswordText) {
+            passwordInput.addEventListener("input", (e) => {
+              mockPasswordText.textContent = "•".repeat(e.target.value.length);
+            });
+          }
+          if (confirmPasswordInput && mockConfirmPassText) {
+            confirmPasswordInput.addEventListener("input", (e) => {
+              mockConfirmPassText.textContent = "•".repeat(
+                e.target.value.length
+              );
+            });
+          }
+        } catch (error) {
+          console.error("Gagal inisialisasi animasi terminal:", error);
+        }
       });
     </script>
   </body>
