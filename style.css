@@ -3398,6 +3398,7 @@ body.dark-mode .chatbot-fab {
 #chatbot {
   flex-direction: column;
   height: 100%;
+  background: var(--primary);
 }
 
 .chatbot-fullpage-wrapper {
@@ -7754,4 +7755,31 @@ body.dark-mode .mock-terminal-btn {
   .terminal-animation-container {
     display: none;
   }
+}
+
+body.exam-lockdown .sidebar {
+  display: none !important;
+}
+
+body.exam-lockdown .mobile-header {
+  display: none !important;
+}
+
+body.exam-lockdown .fab-container {
+  display: none !important;
+}
+
+body.exam-lockdown .main-wrapper {
+  grid-template-columns: 1fr !important;
+  padding-left: 0 !important;
+}
+
+body.exam-lockdown .sidebar-right {
+  display: none !important;
+}
+
+body.exam-lockdown .main-content {
+  padding: 1.5rem !important;
+  max-width: 900px;
+  margin: 0 auto;
 }
