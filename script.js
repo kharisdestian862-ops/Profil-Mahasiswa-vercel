@@ -2287,6 +2287,8 @@ function switchSection(sectionId) {
       setTimeout(() => {
         initCodePlayground();
         loadCodePlayground();
+        currentEditor.focus();
+        loadCodePlayground();
       }, 50);
     }
 
@@ -5415,6 +5417,7 @@ function initializeEditor() {
     });
 
     console.log("Monaco Editor initialized successfully");
+    currentEditor.focus();
   } catch (error) {
     console.error("Failed to initialize Monaco Editor:", error);
     // Fallback to textarea
