@@ -7926,6 +7926,45 @@ function submitExam() {
   switchSection("dashboard");
 }
 
+function enterExamFullscreen() {
+  const elem = document.documentElement;
+
+  if (elem.requestFullscreen) {
+    elem.requestFullscreen().catch((err) => {
+      alert(
+        `Error: Gagal masuk mode fullscreen. Ujian tidak dapat dimulai.\n(${err.message})`
+      );
+      document.body.classList.remove("exam-lockdown");
+      switchSection("ujian");
+    });
+  }
+
+  cheatWarningCount = 0;
+
+  document.addEventListener("visibilitychange", handleVisibilityChange);
+  document.addEventListener("fullscreenchange", handleVisibilityChange);
+}
+
+function handleVisibilityChange() {
+  if (!document.body.classList.contains("exam-lockdown")) return;
+
+  if (document.hidden || !document.fullscreenElement) {
+    if (cheatWarningCount === 0) {
+      cheatWarningCount++;
+      alert(
+        "PERINGATAN!\nAnda terdeteksi meninggalkan halaman ujian. Jika Anda melakukannya lagi, ujian Anda akan dikumpulkan secara otomatis."
+      );
+
+      enterExamFullscreen();
+    } else {
+      alert(
+        "Anda terdeteksi meninggalkan halaman ujian untuk kedua kalinya. Ujian Anda dikumpulkan secara otomatis."
+      );
+      submitExam();
+    }
+  }
+}
+
 function initFebCenter() {
   initFebTabs();
   initAccountingJournal();
