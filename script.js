@@ -1107,7 +1107,7 @@ const translations = {
     "gpa.calculated": "GPA/IPS calculation complete!",
     "chat.greeting": "Hello! Ask me about your dashboard. Try typing 'help'.",
 
-    "chat.hello": "Hello, Kharis! How can I help you with your dashboard?",
+    "chat.hello": "Hello, {name}! How can I help you with your dashboard?",
     "chat.welcome": "You're welcome! Happy to help.",
     "chat.help": `I can answer a lot! Here is a complete list of what you can ask:
         <br><br>
@@ -1590,7 +1590,7 @@ const translations = {
       "Halo! Tanya saya seputar dashboard Anda. Coba ketik 'bantuan'.",
 
     "chat.hello":
-      "Halo, Kharis! Ada yang bisa saya bantu terkait dashboard Anda?",
+      "Halo, {name}! Ada yang bisa saya bantu terkait dashboard Anda?",
     "chat.welcome": "Sama-sama! Senang bisa membantu.",
     "chat.help": `Saya bisa menjawab banyak hal! Ini adalah daftar lengkap yang bisa Anda tanyakan:
         <br><br>
@@ -4764,7 +4764,11 @@ function getContextForAI(query) {
     input.includes("hai") ||
     input.includes("selamat")
   ) {
-    return translations[currentLanguage]["chat.hello"];
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    const firstName = user ? user.fullName.split(" ")[0] : "Student";
+
+    let greeting = translations[currentLanguage]["chat.hello"];
+    return greeting.replace("{name}", firstName);
   }
   if (input.includes("terima kasih") || input.includes("makasih")) {
     return translations[currentLanguage]["chat.welcome"];
