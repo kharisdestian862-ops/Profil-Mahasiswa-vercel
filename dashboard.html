@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+\<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -186,6 +186,24 @@
             >
               <path d="M16 16v2m-8-5v5m4-2v2m-8-5v5m12-3v3M4 4h16v16H4z"></path>
               <path d="M4 8h16"></path>
+            </svg>
+          </button>
+
+          <button class="fab-item" id="fpoFab" title="Alat PIKOR">
+            <span class="fab-label" data-i18n="nav.fpo">Alat Kebugaran</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M20.38 3.46 16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.2l1.52 8.5a2 2 0 0 0 2.1 1.74h12.2a2 2 0 0 0 2.1-1.74l1.52-8.5a2 2 0 0 0-1.34-2.2z"
+              ></path>
+              <line x1="10" y1="2" x2="14" y2="2"></line>
             </svg>
           </button>
 
@@ -2276,6 +2294,244 @@ Jalankan tes untuk melihat hasil...
 
             <div class="pixel-canvas-wrapper">
               <div id="pixelCanvas" class="grid-on"></div>
+            </div>
+          </section>
+
+          <section class="section" id="fpo-center" style="display: none">
+            <header class="main-header">
+              <h1 data-i18n="fpo.title">Pusat Analisis Kebugaran</h1>
+              <div data-i18n="fpo.subtitle">
+                Kalkulator untuk Antropometri, Kebutuhan Energi, dan Zona
+                Latihan.
+              </div>
+            </header>
+
+            <div class="fpo-tabs">
+              <button
+                class="fpo-tab-btn active"
+                data-tab="bmiTab"
+                data-i18n="fpo.tab.bmi"
+              >
+                Kalkulator BMI
+              </button>
+              <button
+                class="fpo-tab-btn"
+                data-tab="tdeeTab"
+                data-i18n="fpo.tab.tdee"
+              >
+                Kalkulator Energi (TDEE)
+              </button>
+              <button
+                class="fpo-tab-btn"
+                data-tab="hrTab"
+                data-i18n="fpo.tab.hr"
+              >
+                Zona Latihan (Denyut Nadi)
+              </button>
+            </div>
+
+            <div id="bmiTab" class="fpo-tab-content active">
+              <div class="fpo-tool-container">
+                <h3 data-i18n="fpo.bmi.title">Kalkulator Antropometri (BMI)</h3>
+                <div class="calc-wrapper">
+                  <div class="form-block">
+                    <div class="form-group">
+                      <label for="bmiHeight" data-i18n="fpo.bmi.height"
+                        >Tinggi Badan (cm)</label
+                      >
+                      <input
+                        type="number"
+                        id="bmiHeight"
+                        value="170"
+                        placeholder="Contoh: 170"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="bmiWeight" data-i18n="fpo.bmi.weight"
+                        >Berat Badan (kg)</label
+                      >
+                      <input
+                        type="number"
+                        id="bmiWeight"
+                        value="65"
+                        placeholder="Contoh: 65"
+                      />
+                    </div>
+                    <button
+                      id="calculateBmiBtn"
+                      class="exam-btn"
+                      data-i18n="fpo.calculate"
+                    >
+                      Hitung BMI
+                    </button>
+                  </div>
+                  <div class="calc-result-box fpo-result-box">
+                    <span data-i18n="fpo.bmi.yourBmi"
+                      >Body Mass Index (BMI) Anda</span
+                    >
+                    <h2 id="bmiResult">0.0</h2>
+                    <hr />
+                    <div id="bmiStatus" class="fpo-status-box">
+                      Masukkan data Anda
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="tdeeTab" class="fpo-tab-content" style="display: none">
+              <div class="fpo-tool-container">
+                <h3 data-i18n="fpo.tdee.title">Kalkulator Kebutuhan Energi</h3>
+                <div class="calc-wrapper">
+                  <div class="form-block">
+                    <div class="form-group">
+                      <label for="tdeeAge" data-i18n="fpo.tdee.age">Usia</label>
+                      <input
+                        type="number"
+                        id="tdeeAge"
+                        value="20"
+                        placeholder="Contoh: 20"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="tdeeGender" data-i18n="fpo.tdee.gender"
+                        >Jenis Kelamin</label
+                      >
+                      <select id="tdeeGender">
+                        <option value="male" data-i18n="fpo.tdee.male">
+                          Laki-laki
+                        </option>
+                        <option value="female" data-i18n="fpo.tdee.female">
+                          Perempuan
+                        </option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="tdeeHeight" data-i18n="fpo.bmi.height"
+                        >Tinggi Badan (cm)</label
+                      >
+                      <input
+                        type="number"
+                        id="tdeeHeight"
+                        value="170"
+                        placeholder="Contoh: 170"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="tdeeWeight" data-i18n="fpo.bmi.weight"
+                        >Berat Badan (kg)</label
+                      >
+                      <input
+                        type="number"
+                        id="tdeeWeight"
+                        value="65"
+                        placeholder="Contoh: 65"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="tdeeActivity" data-i18n="fpo.tdee.activity"
+                        >Tingkat Aktivitas</label
+                      >
+                      <select id="tdeeActivity">
+                        <option value="1.2" data-i18n="fpo.tdee.sedentary">
+                          Sedentary (Jarang)
+                        </option>
+                        <option value="1.375" data-i18n="fpo.tdee.light">
+                          Ringan (1-3x / minggu)
+                        </option>
+                        <option value="1.55" data-i18n="fpo.tdee.moderate">
+                          Sedang (3-5x / minggu)
+                        </option>
+                        <option value="1.725" data-i18n="fpo.tdee.heavy">
+                          Berat (6-7x / minggu)
+                        </option>
+                        <option value="1.9" data-i18n="fpo.tdee.athlete">
+                          Atlet (2x / hari)
+                        </option>
+                      </select>
+                    </div>
+                    <button
+                      id="calculateTdeeBtn"
+                      class="exam-btn"
+                      data-i18n="fpo.calculate"
+                    >
+                      Hitung Kalori
+                    </button>
+                  </div>
+                  <div class="calc-result-box fpo-result-box">
+                    <span data-i18n="fpo.tdee.tdee"
+                      >Kebutuhan Kalori Harian (TDEE)</span
+                    >
+                    <h2 id="tdeeResult">0 <span class="kcal">kCal</span></h2>
+                    <hr />
+                    <div class="calc-breakdown">
+                      <span data-i18n="fpo.tdee.bmr"
+                        >Kalori Istirahat (BMR)</span
+                      >
+                      <strong id="bmrResult">0 kCal</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="hrTab" class="fpo-tab-content" style="display: none">
+              <div class="fpo-tool-container">
+                <h3 data-i18n="fpo.hr.title">
+                  Kalkulator Zona Latihan (Denyut Nadi)
+                </h3>
+                <div class="calc-wrapper">
+                  <div class="form-block">
+                    <div class="form-group">
+                      <label for="hrAge" data-i18n="fpo.tdee.age"
+                        >Usia Anda</label
+                      >
+                      <input
+                        type="number"
+                        id="hrAge"
+                        value="20"
+                        placeholder="Contoh: 20"
+                      />
+                    </div>
+                    <button
+                      id="calculateHrBtn"
+                      class="exam-btn"
+                      data-i18n="fpo.calculate"
+                    >
+                      Hitung Zona
+                    </button>
+                  </div>
+                  <div class="calc-result-box fpo-result-box">
+                    <span data-i18n="fpo.hr.mhr"
+                      >Denyut Nadi Maksimal (MHR)</span
+                    >
+                    <h2 id="mhrResult">0 <span class="bpm">BPM</span></h2>
+                    <hr />
+                    <div id="hrZonesList" class="hr-zones-list">
+                      <div class="hr-zone" style="--zone-color: #4ade80">
+                        <span>Zone 1 (50-60%)</span>
+                        <strong>0-0 BPM</strong>
+                      </div>
+                      <div class="hr-zone" style="--zone-color: #a3e635">
+                        <span>Zone 2 (60-70%)</span>
+                        <strong>0-0 BPM</strong>
+                      </div>
+                      <div class="hr-zone" style="--zone-color: #facc15">
+                        <span>Zone 3 (70-80%)</span>
+                        <strong>0-0 BPM</strong>
+                      </div>
+                      <div class="hr-zone" style="--zone-color: #fb923c">
+                        <span>Zone 4 (80-90%)</span>
+                        <strong>0-0 BPM</strong>
+                      </div>
+                      <div class="hr-zone" style="--zone-color: #f87171">
+                        <span>Zone 5 (90-100%)</span>
+                        <strong>0-0 BPM</strong>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
 
