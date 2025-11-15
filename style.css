@@ -7347,22 +7347,23 @@ body.dark-mode .status-col .status-imbalance {
 /* Kanvas Pixel */
 .pixel-canvas-wrapper {
   width: 100%;
-  padding: 1rem;
+  height: 65vh;
   background: var(--background);
   border-radius: 8px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  overflow: auto; /* Agar bisa scroll jika grid terlalu besar */
+  border: 1px solid var(--border);
+  display: block;
+  overflow: hidden;
+  position: relative;
 }
 
 #pixelCanvas {
   display: grid;
-  width: 512px; /* Ukuran tetap untuk kanvas */
+  width: 512px;
   height: 512px;
   border: 1px solid #94a3b8;
   background: #ffffff;
   cursor: crosshair;
+  transform-origin: top left; /* PENTING: Atur titik zoom/pan */
 }
 
 #pixelCanvas.grid-on .pixel-cell {
