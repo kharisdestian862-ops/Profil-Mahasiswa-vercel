@@ -153,6 +153,42 @@
             </svg>
           </button>
 
+          <button class="fab-item" id="dkvFab" title="Alat DKV">
+            <span class="fab-label" id="dkvFab" data-i18n="nav.dkv"
+              >Pixel Pad</span
+            >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 20h9"></path>
+              <path
+                d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"
+              ></path>
+            </svg>
+          </button>
+
+          <button class="fab-item" id="febFab" title="Alat FEB">
+            <span class="fab-label" data-i18n="nav.feb">Alat FEB</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M16 16v2m-8-5v5m4-2v2m-8-5v5m12-3v3M4 4h16v16H4z"></path>
+              <path d="M4 8h16"></path>
+            </svg>
+          </button>
+
           <button class="fab-item" id="notesFab" title="Catatan">
             <span class="fab-label" data-i18n="nav.notes">Catatan</span>
             <svg
@@ -1875,6 +1911,348 @@ Jalankan tes untuk melihat hasil...
             </button>
           </section>
 
+          <section class="section" id="feb-center" style="display: none">
+            <header class="main-header">
+              <h1 data-i18n="feb.title">Pusat Alat Fakultas Ekonomi Bisnis</h1>
+              <div data-i18n="feb.subtitle">
+                Kalkulator finansial dan alat bantu akuntansi Anda.
+              </div>
+            </header>
+
+            <div class="feb-tabs">
+              <button
+                class="feb-tab-btn active"
+                data-tab="accountingTab"
+                data-i18n="feb.tab.accounting"
+              >
+                Jurnal Akuntansi
+              </button>
+              <button
+                class="feb-tab-btn"
+                data-tab="compoundInterestTab"
+                data-i18n="feb.tab.compound"
+              >
+                Bunga Majemuk
+              </button>
+              <button
+                class="feb-tab-btn"
+                data-tab="npvTab"
+                data-i18n="feb.tab.npv"
+              >
+                Kalkulator NPV
+              </button>
+            </div>
+
+            <div id="accountingTab" class="feb-tab-content active">
+              <div class="feb-tool-container">
+                <h3 data-i18n="feb.accounting.title">Jurnal Umum</h3>
+                <p data-i18n="feb.accounting.desc">
+                  Masukkan transaksi di bawah ini. Status akan berubah menjadi
+                  'Balance' jika total Debit dan Kredit seimbang.
+                </p>
+
+                <div class="journal-table">
+                  <div class="journal-header">
+                    <div data-i18n="feb.accounting.account">Akun</div>
+                    <div data-i18n="feb.accounting.descShort">Deskripsi</div>
+                    <div data-i18n="feb.accounting.debit">Debit (Rp)</div>
+                    <div data-i18n="feb.accounting.credit">Kredit (Rp)</div>
+                    <div></div>
+                  </div>
+                  <div id="journalEntryList" class="journal-body"></div>
+                  <div class="journal-footer">
+                    <button id="addJournalRow" class="add-row-btn">
+                      + Tambah Baris
+                    </button>
+                    <div class="journal-totals">
+                      <div class="total-col">
+                        <span data-i18n="feb.accounting.totalDebit"
+                          >Total Debit</span
+                        >
+                        <strong id="totalDebit">Rp 0</strong>
+                      </div>
+                      <div class="total-col">
+                        <span data-i18n="feb.accounting.totalCredit"
+                          >Total Kredit</span
+                        >
+                        <strong id="totalCredit">Rp 0</strong>
+                      </div>
+                      <div class="total-col status-col">
+                        <span data-i18n="feb.accounting.status">Status</span>
+                        <strong id="journalStatus" class="status-balance"
+                          >Balance</strong
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              id="compoundInterestTab"
+              class="feb-tab-content"
+              style="display: none"
+            >
+              <div class="feb-tool-container">
+                <h3 data-i18n="feb.compound.title">Kalkulator Bunga Majemuk</h3>
+                <div class="calc-wrapper">
+                  <div class="form-block">
+                    <div class="form-group">
+                      <label
+                        for="ciModalAwal"
+                        data-i18n="feb.compound.principal"
+                        >Modal Awal (Rp)</label
+                      >
+                      <input
+                        type="number"
+                        id="ciModalAwal"
+                        value="1000000"
+                        placeholder="Contoh: 1000000"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label
+                        for="ciSetoranBulan"
+                        data-i18n="feb.compound.monthly"
+                        >Setoran per Bulan (Rp)</label
+                      >
+                      <input
+                        type="number"
+                        id="ciSetoranBulan"
+                        value="100000"
+                        placeholder="Contoh: 100000"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="ciSukuBunga" data-i18n="feb.compound.rate"
+                        >Suku Bunga Tahunan (%)</label
+                      >
+                      <input
+                        type="number"
+                        id="ciSukuBunga"
+                        value="5"
+                        placeholder="Contoh: 5"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="ciPeriode" data-i18n="feb.compound.period"
+                        >Periode (Tahun)</label
+                      >
+                      <input
+                        type="number"
+                        id="ciPeriode"
+                        value="10"
+                        placeholder="Contoh: 10"
+                      />
+                    </div>
+                    <button id="calculateCIBtn" class="exam-btn">
+                      Hitung Nilai Masa Depan
+                    </button>
+                  </div>
+                  <div class="calc-result-box">
+                    <span data-i18n="feb.compound.futureValue"
+                      >Nilai Masa Depan (Future Value)</span
+                    >
+                    <h2 id="ciResult">Rp 0</h2>
+                    <hr />
+                    <div class="calc-breakdown">
+                      <span data-i18n="feb.compound.totalPrincipal"
+                        >Total Modal Disetor</span
+                      >
+                      <strong id="ciPrincipal">Rp 0</strong>
+                    </div>
+                    <div class="calc-breakdown">
+                      <span data-i18n="feb.compound.totalInterest"
+                        >Total Bunga Didapat</span
+                      >
+                      <strong id="ciInterest">Rp 0</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="npvTab" class="feb-tab-content" style="display: none">
+              <div class="feb-tool-container">
+                <h3 data-i18n="feb.npv.title">Kalkulator Kelayakan (NPV)</h3>
+                <div class="calc-wrapper">
+                  <div class="form-block">
+                    <div class="form-group">
+                      <label
+                        for="npvInvestasiAwal"
+                        data-i18n="feb.npv.investment"
+                        >Investasi Awal (Rp)</label
+                      >
+                      <input
+                        type="number"
+                        id="npvInvestasiAwal"
+                        value="10000000"
+                        placeholder="Contoh: 10000000"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label for="npvDiscountRate" data-i18n="feb.npv.rate"
+                        >Suku Bunga Diskon (%)</label
+                      >
+                      <input
+                        type="number"
+                        id="npvDiscountRate"
+                        value="8"
+                        placeholder="Contoh: 8"
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label data-i18n="feb.npv.cashflow"
+                        >Aliran Kas (Cash Flow)</label
+                      >
+                      <input
+                        type="number"
+                        id="npvCF1"
+                        placeholder="Tahun 1: 3000000"
+                      />
+                      <input
+                        type="number"
+                        id="npvCF2"
+                        placeholder="Tahun 2: 4000000"
+                      />
+                      <input
+                        type="number"
+                        id="npvCF3"
+                        placeholder="Tahun 3: 5000000"
+                      />
+                    </div>
+                    <button id="calculateNPVBtn" class="exam-btn">
+                      Hitung NPV
+                    </button>
+                  </div>
+                  <div class="calc-result-box">
+                    <span data-i18n="feb.npv.netValue"
+                      >Net Present Value (NPV)</span
+                    >
+                    <h2 id="npvResult">Rp 0</h2>
+                    <hr />
+                    <div id="npvStatus" class="npv-status-box">
+                      Masukkan data untuk melihat kelayakan
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section" id="dkv-center" style="display: none">
+            <header class="main-header">
+              <h1 data-i18n="dkv.title">Pixel Pad</h1>
+              <div data-i18n="dkv.subtitle">
+                Alat gambar pixel art sederhana untuk DKV.
+              </div>
+            </header>
+
+            <div class="dkv-toolbar">
+              <div class="dkv-tool-group">
+                <label data-i18n="dkv.color">Warna:</label>
+                <input type="color" id="colorPicker" value="#000000" />
+                <div class="color-palette">
+                  <div
+                    class="color-swatch"
+                    style="background: #000000"
+                    data-color="#000000"
+                  ></div>
+                  <div
+                    class="color-swatch"
+                    style="background: #ffffff"
+                    data-color="#FFFFFF"
+                  ></div>
+                  <div
+                    class="color-swatch"
+                    style="background: #ff0000"
+                    data-color="#FF0000"
+                  ></div>
+                  <div
+                    class="color-swatch"
+                    style="background: #00ff00"
+                    data-color="#00FF00"
+                  ></div>
+                  <div
+                    class="color-swatch"
+                    style="background: #0000ff"
+                    data-color="#0000FF"
+                  ></div>
+                  <div
+                    class="color-swatch"
+                    style="background: #ffff00"
+                    data-color="#FFFF00"
+                  ></div>
+                </div>
+              </div>
+
+              <div class="dkv-tool-group">
+                <label data-i18n="dkv.tools">Alat:</label>
+                <button
+                  class="dkv-tool-btn active"
+                  id="toolPencil"
+                  data-i18n="dkv.tool.pencil"
+                >
+                  Pensil
+                </button>
+                <button
+                  class="dkv-tool-btn"
+                  id="toolEraser"
+                  data-i18n="dkv.tool.eraser"
+                >
+                  Penghapus
+                </button>
+                <button
+                  class="dkv-tool-btn"
+                  id="toolPicker"
+                  data-i18n="dkv.tool.picker"
+                >
+                  Pipet
+                </button>
+              </div>
+
+              <div class="dkv-tool-group">
+                <label for="gridSize" data-i18n="dkv.gridSize"
+                  >Ukuran Grid:</label
+                >
+                <select id="gridSize">
+                  <option value="16">16x16</option>
+                  <option value="32" selected>32x32</option>
+                  <option value="48">48x48</option>
+                </select>
+              </div>
+
+              <div class="dkv-tool-group actions">
+                <button
+                  class="dkv-action-btn"
+                  id="toggleGridBtn"
+                  data-i18n="dkv.toggleGrid"
+                >
+                  Toggle Grid
+                </button>
+                <button
+                  class="dkv-action-btn clear"
+                  id="clearCanvasBtn"
+                  data-i18n="dkv.clear"
+                >
+                  Bersihkan
+                </button>
+                <button
+                  class="dkv-action-btn save"
+                  id="downloadArtBtn"
+                  data-i18n="dkv.download"
+                >
+                  Download PNG
+                </button>
+              </div>
+            </div>
+
+            <div class="pixel-canvas-wrapper">
+              <div id="pixelCanvas" class="grid-on"></div>
+            </div>
+          </section>
+
           <!-- Settings Section -->
           <section class="section" id="settings" style="display: none">
             <h2 data-i18n="settings.title">Settings</h2>
@@ -2092,6 +2470,7 @@ Jalankan tes untuk melihat hasil...
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
