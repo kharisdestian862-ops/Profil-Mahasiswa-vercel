@@ -7793,25 +7793,32 @@ function initExamTabs() {
 }
 
 function startUjian(namaUjian) {
-  // 1. Sembunyikan section daftar ujian
+  document.body.classList.add("exam-lockdown");
+
   const sectionUjian = document.getElementById("ujian");
   if (sectionUjian) sectionUjian.style.display = "none";
 
-  // 2. Tampilkan section halaman ujian
   const examPage = document.getElementById("examPage");
-  if (examPage) examPage.style.display = "flex"; // Gunakan 'flex'
+  if (examPage) examPage.style.display = "flex";
 
-  // 3. Update judul ujian dan nama user
+  const titlePrefix =
+    translations[currentLanguage]["exams.midterm"] || "Ujian Tengah Semester";
   document.getElementById("examPageTitle").textContent =
-    "Ujian Tengah Semester: " + namaUjian;
-  const user = JSON.parse(localStorage.getItem("currentUser"));
+    titlePrefix + ": " + namaUjian;
+
+  const userJson = localStorage.getItem("currentUser");
+  if (!userJson) {
+    alert("Error: Data pengguna tidak ditemukan. Silakan login ulang.");
+    return;
+  }
+  const user = JSON.parse(userJson);
+
   if (user) {
     document.getElementById("examPageUser").textContent =
       "Mahasiswa: " + user.fullName;
   }
 
-  // 4. (Opsional) Mulai Timer
-  startExamTimer(90); // 90 menit
+  startExamTimer(90);
 }
 
 // Fungsi Timer Sederhana
@@ -7889,7 +7896,6 @@ if (submitExamBtn) {
 }
 
 function submitExam() {
-  // Di sini Anda bisa mengambil semua jawaban
   const pg_answer = document.querySelector(
     'input[name="soal1_pg"]:checked'
   )?.value;
@@ -7901,13 +7907,12 @@ function submitExam() {
   console.log("Esai:", esai_answer);
   console.log("Coding:", code_answer);
 
-  // (Di aplikasi nyata, Anda akan mengirim ini ke server/API)
-
   alert("Ujian Anda telah berhasil dikumpulkan!");
 
-  // Sembunyikan halaman ujian dan kembali ke dashboard
   const examPage = document.getElementById("examPage");
   if (examPage) examPage.style.display = "none";
+
+  document.body.classList.remove("exam-lockdown");
 
   switchSection("dashboard");
 }
