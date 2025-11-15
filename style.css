@@ -3577,6 +3577,16 @@ body.chatbot-active .main-wrapper .main-content {
   }
 }
 
+.chat-bubble.bot-message {
+  background: #e0e7ff; /* Warna biru muda (Light mode) */
+  border: 1px solid var(--primary);
+}
+
+body.dark-mode .chat-bubble.bot-message {
+  background: #312e81; 
+  border: 1px solid #a5b4fc;
+}
+
 body.login-page {
   display: flex;
   align-items: center;
