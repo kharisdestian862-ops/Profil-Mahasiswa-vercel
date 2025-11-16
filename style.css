@@ -7711,8 +7711,7 @@ body.dark-mode .fpo-status-box.obese {
   #codeFab,
   #febFab,
   #dkvFab,
-  #fpoFab
-  #siFab,
+  #fpoFab #siFab,
   #miFab {
     display: none !important;
   }
