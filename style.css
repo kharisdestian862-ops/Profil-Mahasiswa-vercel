@@ -7706,3 +7706,30 @@ body.dark-mode .fpo-status-box.overweight {
 body.dark-mode .fpo-status-box.obese {
   background: #f87171;
 }
+
+@media (max-width: 1024px) {
+  #codeFab,
+  #febFab,
+  #dkvFab,
+  #fpoFab {
+    display: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  #codeFab,
+  #febFab,
+  #dkvFab,
+  #fpoFab {
+    display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  #codeFab,
+  #febFab,
+  #dkvFab,
+  #fpoFab {
+    display: none !important;
+  }
+}
