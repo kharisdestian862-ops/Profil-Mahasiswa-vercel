@@ -207,6 +207,39 @@
             </svg>
           </button>
 
+          <button class="fab-item" id="siFab" title="Alat SI">
+            <span class="fab-label" data-i18n="nav.si">ERD Designer</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+              <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+              <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+            </svg>
+          </button>
+
+          <button class="fab-item" id="miFab" title="Alat MI">
+            <span class="fab-label" data-i18n="nav.mi">Flowchart</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M6 3v6a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V3" />
+              <path d="M6 15v6a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3v-6" />
+            </svg>
+          </button>
+
           <button class="fab-item" id="notesFab" title="Catatan">
             <span class="fab-label" data-i18n="nav.notes">Catatan</span>
             <svg
@@ -2535,6 +2568,256 @@ Jalankan tes untuk melihat hasil...
             </div>
           </section>
 
+          <section class="section" id="si-center" style="display: none">
+            <header class="main-header">
+              <h1 data-i18n="si.title">Database Schema Designer</h1>
+              <div data-i18n="si.subtitle">
+                Buat tabel, tambahkan kolom, dan rancang ERD sederhana Anda.
+              </div>
+            </header>
+
+            <div class="si-toolbar">
+              <div class="si-tool-group">
+                <label data-i18n="si.tableName">Nama Tabel:</label>
+                <input
+                  type="text"
+                  id="siTableNameInput"
+                  placeholder="Contoh: 'mahasiswa'"
+                />
+                <button
+                  class="si-action-btn"
+                  id="siAddTableBtn"
+                  data-i18n="si.addTable"
+                >
+                  + Tambah Tabel
+                </button>
+              </div>
+              <div class="si-tool-group actions">
+                <button
+                  class="si-action-btn clear"
+                  id="siClearCanvasBtn"
+                  data-i18n="si.clearAll"
+                >
+                  Bersihkan Kanvas
+                </button>
+              </div>
+            </div>
+
+            <div class="si-canvas-wrapper" id="siCanvas"></div>
+          </section>
+
+          <section class="section" id="mi-center" style="display: none">
+            <header class="main-header">
+              <h1 data-i18n="mi.title">Flowchart Designer</h1>
+              <div data-i18n="mi.subtitle">
+                Rancang alur proses bisnis atau flowchart sederhana.
+              </div>
+            </header>
+
+            <div class="mi-toolbar">
+              <div class="mi-tool-group">
+                <label data-i18n="mi.addShape">Tambah Bentuk:</label>
+                <button
+                  class="mi-shape-btn"
+                  id="miAddTerminator"
+                  data-i18n="mi.terminator"
+                >
+                  Terminator
+                </button>
+                <button
+                  class="mi-shape-btn"
+                  id="miAddProcess"
+                  data-i18n="mi.process"
+                >
+                  Proses
+                </button>
+                <button
+                  class="mi-shape-btn"
+                  id="miAddAlternateProcess"
+                  data-i18n="mi.alternateProcess"
+                >
+                  Proses Pilihan
+                </button>
+                <button
+                  class="mi-shape-btn"
+                  id="miAddDecision"
+                  data-i18n="mi.decision"
+                >
+                  Keputusan
+                </button>
+                <button
+                  class="mi-shape-btn"
+                  id="miAddInputOutput"
+                  data-i18n="mi.inputOutput"
+                >
+                  Input/Output
+                </button>
+                <button
+                  class="mi-shape-btn"
+                  id="miAddPredefined"
+                  data-i18n="mi.predefinedProcess"
+                >
+                  Predefined Process
+                </button>
+                <button
+                  class="mi-shape-btn"
+                  id="miAddInternalStorage"
+                  data-i18n="mi.internalStorage"
+                >
+                  Internal Storage
+                </button>
+                <button
+                  class="mi-shape-btn"
+                  id="miAddDocument"
+                  data-i18n="mi.document"
+                >
+                  Dokumen
+                </button>
+                <button
+                  class="mi-shape-btn"
+                  id="miAddMultiDocument"
+                  data-i18n="mi.multiDocument"
+                >
+                  Multi-Dokumen
+                </button>
+                <button
+                  class="mi-shape-btn"
+                  id="miAddPreparation"
+                  data-i18n="mi.preparation"
+                >
+                  Preparasi
+                </button>
+                <button
+                  class="mi-shape-btn"
+                  id="miAddManualInput"
+                  data-i18n="mi.manualInput"
+                >
+                  Manual Input
+                </button>
+                <button
+                  class="mi-shape-btn"
+                  id="miAddManualOp"
+                  data-i18n="mi.manualop"
+                >
+                  Manual Operasi
+                </button>
+                <button
+                  class="mi-shape-btn"
+                  id="miAddOnPageRef"
+                  data-i18n="mi.onpageref"
+                >
+                  On-Page Ref
+                </button>
+                <button
+                  class="mi-shape-btn"
+                  id="miAddOffPageRef"
+                  data-i18n="mi.offpageref"
+                >
+                  Off-Page Ref
+                </button>
+                <button class="mi-shape-btn" id="miAddCard" data-i18n="mi.card">
+                  Card
+                </button>
+                <button
+                  class="mi-shape-btn"
+                  id="miAddPunchedTape"
+                  data-i18n="mi.punchedTape"
+                >
+                  Punched Tape
+                </button>
+                <button
+                  class="mi-shape-btn"
+                  id="miAddSummingJunction"
+                  data-i18n="mi.summingJunction"
+                >
+                  Summing Junction
+                </button>
+                <button class="mi-shape-btn" id="miAddOr" data-i18n="mi.or">
+                  Or
+                </button>
+                <button
+                  class="mi-shape-btn"
+                  id="miAddCollate"
+                  data-i18n="mi.collate"
+                >
+                  Collate
+                </button>
+                <button class="mi-shape-btn" id="miAddSort" data-i18n="mi.sort">
+                  Sort
+                </button>
+                <button
+                  class="mi-shape-btn"
+                  id="miAddExtract"
+                  data-i18n="mi.extract"
+                >
+                  Extract
+                </button>
+                <button
+                  class="mi-shape-btn"
+                  id="miAddMerge"
+                  data-i18n="mi.merge"
+                >
+                  Merge
+                </button>
+                <button
+                  class="mi-shape-btn"
+                  id="miAddStorageData"
+                  data-i18n="mi.storageData"
+                >
+                  Storage Data
+                </button>
+                <button
+                  class="mi-shape-btn"
+                  id="miAddDelay"
+                  data-i18n="mi.delay"
+                >
+                  Delay
+                </button>
+                <button
+                  class="mi-shape-btn"
+                  id="miAddSequentialStorage"
+                  data-i18n="mi.sequentialStorage"
+                >
+                  Sequential Storage
+                </button>
+                <button
+                  class="mi-shape-btn"
+                  id="miAddDirectStorage"
+                  data-i18n="mi.directStorage"
+                >
+                  Direct Storage
+                </button>
+                <button
+                  class="mi-shape-btn"
+                  id="miAddDisplay"
+                  data-i18n="mi.display"
+                >
+                  Display
+                </button>
+              </div>
+              <div class="mi-tool-group actions">
+                <button
+                  class="mi-action-btn clear"
+                  id="miClearCanvasBtn"
+                  data-i18n="si.clearAll"
+                >
+                  Bersihkan Kanvas
+                </button>
+                <button
+                  class="mi-action-btn save"
+                  id="miDownloadFlowchartBtn"
+                  data-i18n="mi.download"
+                >
+                  Download PNG
+                </button>
+              </div>
+            </div>
+
+            <div class="mi-canvas-wrapper" id="miCanvasWrapper">
+              <div class="mi-canvas-background" id="miCanvas"></div>
+            </div>
+          </section>
+
           <!-- Settings Section -->
           <section class="section" id="settings" style="display: none">
             <h2 data-i18n="settings.title">Settings</h2>
@@ -2753,6 +3036,7 @@ Jalankan tes untuk melihat hasil...
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/leader-line-new@1.1.9/leader-line.min.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
