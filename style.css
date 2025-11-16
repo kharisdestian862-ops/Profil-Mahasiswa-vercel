@@ -4268,7 +4268,6 @@ body.dark-mode .output-header {
   transition: transform 0.2s;
 }
 
-/* Finance Section Styles */
 .finance-summary {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -4277,7 +4276,7 @@ body.dark-mode .output-header {
 }
 
 .summary-card {
-  background: white;
+  background: var(--surface);
   border-radius: 12px;
   padding: 1.5rem;
   display: flex;
@@ -4309,14 +4308,14 @@ body.dark-mode .output-header {
 
 .summary-label {
   font-size: 0.875rem;
-  color: #64748b;
+  color: var(--text-secondary);
   margin-bottom: 0.5rem;
 }
 
 .summary-value {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--text-primary);
 }
 
 .total-bill .summary-icon {
@@ -4329,7 +4328,7 @@ body.dark-mode .output-header {
   background: #fee2e2;
 }
 .payment-status .summary-icon {
-  background: #e0e7ff;
+  background: #dbeafe;
 }
 
 .status-badge {
@@ -4374,7 +4373,7 @@ body.dark-mode .output-header {
   display: flex;
   gap: 1rem;
   margin-bottom: 2rem;
-  border-bottom: 2px solid #e2e8f0;
+  border-bottom: 2px solid var(--border);
   overflow-x: auto;
 }
 
@@ -4382,7 +4381,7 @@ body.dark-mode .output-header {
   padding: 1rem 1.5rem;
   background: none;
   border: none;
-  color: #64748b;
+  color: var(--text-secondary);
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s;
@@ -4391,12 +4390,12 @@ body.dark-mode .output-header {
 }
 
 .finance-tab-btn:hover {
-  color: #6366f1;
+  color: var(--primary);
 }
 
 .finance-tab-btn.active {
-  color: #6366f1;
-  border-bottom-color: #6366f1;
+  color: var(--primary);
+  border-bottom-color: var(--primary);
 }
 
 .finance-tab-content {
@@ -4408,7 +4407,7 @@ body.dark-mode .output-header {
 }
 
 .finance-table {
-  background: white;
+  background: var(--surface);
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -4419,9 +4418,9 @@ body.dark-mode .output-header {
   grid-template-columns: 2fr 2fr 1.5fr 1.5fr 1fr 1fr;
   gap: 1rem;
   padding: 1rem 1.5rem;
-  background: #f8fafc;
+  background: var(--background);
   font-weight: 600;
-  color: #475569;
+  color: var(--text-secondary);
   font-size: 0.875rem;
 }
 
@@ -4435,31 +4434,31 @@ body.dark-mode .output-header {
   grid-template-columns: 2fr 2fr 1.5fr 1.5fr 1fr 1fr;
   gap: 1rem;
   padding: 1.25rem 1.5rem;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--border);
   align-items: center;
   transition: background 0.2s;
 }
 
 .finance-table .table-row:hover {
-  background: #f8fafc;
+  background: var(--background);
 }
 
 .finance-table .col-semester,
 .finance-table .col-type,
 .finance-table .col-description {
   font-weight: 500;
-  color: #1e293b;
+  color: var(--text-primary);
 }
 
 .finance-table .col-amount {
   font-weight: 600;
-  color: #6366f1;
+  color: var(--primary);
 }
 
 .finance-table .col-due,
 .finance-table .col-date {
   font-size: 0.875rem;
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .finance-table .col-action {
@@ -4480,24 +4479,24 @@ body.dark-mode .output-header {
 }
 
 .pay-btn {
-  background: #6366f1;
+  background: var(--primary);
   color: white;
 }
 
 .pay-btn:hover {
-  background: #4f46e5;
+  background: var(--primary-dark);
   transform: translateY(-2px);
 }
 
 .receipt-btn,
 .download-btn {
-  background: #e0e7ff;
-  color: #4f46e5;
+  background: rgba(37, 99, 235, 0.1);
+  color: var(--primary);
 }
 
 .receipt-btn:hover,
 .download-btn:hover {
-  background: #c7d2fe;
+  background: rgba(37, 99, 235, 0.2);
 }
 
 .payment-methods-grid {
@@ -4507,7 +4506,7 @@ body.dark-mode .output-header {
 }
 
 .payment-method-card {
-  background: white;
+  background: var(--surface);
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -4527,12 +4526,12 @@ body.dark-mode .output-header {
 .method-name {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #1e293b;
+  color: var(--text-primary);
   margin-bottom: 1rem;
 }
 
 .method-details {
-  background: #f8fafc;
+  background: var(--background);
   padding: 1rem;
   border-radius: 8px;
   margin-top: 1rem;
@@ -4541,11 +4540,11 @@ body.dark-mode .output-header {
 .method-details p {
   margin: 0.5rem 0;
   font-size: 0.875rem;
-  color: #475569;
+  color: var(--text-secondary);
 }
 
 .method-details strong {
-  color: #1e293b;
+  color: var(--text-primary);
 }
 
 .scholarships-container {
@@ -4554,7 +4553,7 @@ body.dark-mode .output-header {
 }
 
 .scholarship-card {
-  background: white;
+  background: var(--surface);
   border-radius: 12px;
   padding: 2rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -4564,7 +4563,7 @@ body.dark-mode .output-header {
 }
 
 .scholarship-info h3 {
-  color: #1e293b;
+  color: var(--text-primary);
   margin-bottom: 1rem;
 }
 
@@ -4575,15 +4574,32 @@ body.dark-mode .output-header {
 }
 
 .scholarship-detail span:first-child {
-  color: #64748b;
+  color: var(--text-secondary);
 }
 
 .scholarship-detail span:last-child {
   font-weight: 600;
-  color: #1e293b;
+  color: var(--text-primary);
 }
 
-/* Responsive */
+.scholarship-visual {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    var(--primary-dark) 100%
+  );
+  border-radius: 12px;
+  color: white;
+  padding: 2rem;
+}
+
+.scholarship-visual svg {
+  stroke: white !important;
+}
+
 @media (max-width: 768px) {
   .finance-summary {
     grid-template-columns: 1fr;
@@ -4600,7 +4616,7 @@ body.dark-mode .output-header {
   }
 
   .finance-table .table-row {
-    border: 1px solid #e2e8f0;
+    border: 1px solid var(--border);
     border-radius: 8px;
     margin-bottom: 1rem;
     padding: 1rem;
@@ -4609,7 +4625,7 @@ body.dark-mode .output-header {
   .finance-table .table-row > div:before {
     content: attr(data-label);
     font-weight: 600;
-    color: #64748b;
+    color: var(--text-secondary);
     display: block;
     margin-bottom: 0.25rem;
   }
@@ -4624,31 +4640,84 @@ body.dark-mode .output-header {
 }
 
 /* SVG Icon Styles */
-.method-icon svg,
-.summary-icon svg {
-  color: #6366f1;
+.scholarships-container {
+  display: grid;
+  gap: 1.5rem;
 }
 
-.payment-method-card:hover .method-icon svg {
-  transform: scale(1.1);
-  transition: transform 0.2s;
+.scholarship-card {
+  background: var(--surface);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
 }
 
-.summary-icon {
+.scholarship-info h3 {
+  color: var(--text-primary);
+  margin-bottom: 1rem;
+}
+
+.scholarship-detail {
+  margin: 0.75rem 0;
   display: flex;
-  align-items: center;
-  justify-content: center;
+  justify-content: space-between;
 }
 
-.summary-icon svg {
-  width: 32px;
-  height: 32px;
+.scholarship-detail span:first-child {
+  color: var(--text-secondary);
+}
+
+.scholarship-detail span:last-child {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+@media (max-width: 768px) {
+  .finance-summary {
+    grid-template-columns: 1fr;
+  }
+
+  .finance-table .table-header,
+  .finance-table .table-row {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .finance-table .table-header {
+    display: none;
+  }
+
+  .finance-table .table-row {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    padding: 1rem;
+  }
+
+  .finance-table .table-row > div:before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: var(--text-secondary);
+    display: block;
+    margin-bottom: 0.25rem;
+  }
+
+  .payment-methods-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .scholarship-card {
+    grid-template-columns: 1fr;
+  }
 }
 
 .icon-bill::before {
   content: "₿";
   font-size: 2rem;
-  color: #6366f1;
+  color: var(--primary);
 }
 .icon-check::before {
   content: "✓";
@@ -4664,25 +4733,25 @@ body.dark-mode .output-header {
 .icon-chart::before {
   content: "📊";
   font-size: 2rem;
-  color: #8b5cf6;
+  color: var(--primary);
 }
 
 /* Finance Section Dark Mode Support */
 body.dark-mode .finance-summary .summary-card {
-  background: #1e293b;
+  background: var(--surface);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 body.dark-mode .summary-label {
-  color: #94a3b8;
+  color: var(--text-secondary);
 }
 
 body.dark-mode .summary-value {
-  color: #f1f5f9;
+  color: var(--text-primary);
 }
 
 body.dark-mode .summary-icon {
-  background: #334155;
+  background: var(--background);
 }
 
 body.dark-mode .total-bill .summary-icon {
@@ -4701,37 +4770,35 @@ body.dark-mode .payment-status .summary-icon {
   background: #312e81;
 }
 
-/* Finance Tabs Dark Mode */
 body.dark-mode .finance-tabs {
-  border-bottom-color: #334155;
+  border-bottom-color: var(--border);
 }
 
 body.dark-mode .finance-tab-btn {
-  color: #94a3b8;
+  color: var(--text-secondary);
 }
 
 body.dark-mode .finance-tab-btn:hover {
-  color: #423cea;
+  color: var(--primary);
 }
 
 body.dark-mode .finance-tab-btn.active {
-  color: #2b26b9;
-  border-bottom-color: #2b26b9;
+  color: var(--primary);
+  border-bottom-color: var(--primary);
 }
 
-/* Finance Table Dark Mode */
 body.dark-mode .finance-table {
-  background: #1e293b;
+  background: var(--surface);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 body.dark-mode .finance-table .table-header {
-  background: #0f172a;
-  color: #cbd5e1;
+  background: var(--background);
+  color: var(--text-primary);
 }
 
 body.dark-mode .finance-table .table-row {
-  border-bottom-color: #334155;
+  border-bottom-color: var(--border);
 }
 
 body.dark-mode .finance-table .table-row:hover {
@@ -4741,19 +4808,18 @@ body.dark-mode .finance-table .table-row:hover {
 body.dark-mode .finance-table .col-semester,
 body.dark-mode .finance-table .col-type,
 body.dark-mode .finance-table .col-description {
-  color: #f1f5f9;
+  color: var(--text-primary);
 }
 
 body.dark-mode .finance-table .col-amount {
-  color: #818cf8;
+  color: var(--primary);
 }
 
 body.dark-mode .finance-table .col-due,
 body.dark-mode .finance-table .col-date {
-  color: #94a3b8;
+  color: var(--text-secondary);
 }
 
-/* Status Badges Dark Mode */
 body.dark-mode .status-badge.paid {
   background: #064e3b;
   color: #6ee7b7;
@@ -4775,7 +4841,7 @@ body.dark-mode .status-badge.overdue {
 }
 
 body.dark-mode .status-badge.pending {
-  background: #2b26b9;
+  background: #312e81;
   color: #c7d2fe;
 }
 
@@ -4784,71 +4850,68 @@ body.dark-mode .status-badge.verified {
   color: #6ee7b7;
 }
 
-/* Buttons Dark Mode */
 body.dark-mode .pay-btn {
   background: var(--primary);
 }
 
 body.dark-mode .pay-btn:hover {
-  background: #2b26b9;
+  background: var(--primary-dark);
 }
 
 body.dark-mode .receipt-btn,
 body.dark-mode .download-btn {
-  background: var(--primary);
-  color: #c7d2fe;
+  background: var(--primary-dark);
+  color: white;
 }
 
 body.dark-mode .receipt-btn:hover,
 body.dark-mode .download-btn:hover {
-  background: #3730a3;
+  background: var(--background);
+  color: white;
 }
 
-/* Payment Methods Dark Mode */
 body.dark-mode .payment-method-card {
-  background: #1e293b;
+  background: var(--surface);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 body.dark-mode .method-name {
-  color: #f1f5f9;
+  color: var(--text-primary);
 }
 
 body.dark-mode .method-details {
-  background: #0f172a;
+  background: var(--background);
 }
 
 body.dark-mode .method-details p {
-  color: #cbd5e1;
+  color: var(--text-secondary);
 }
 
 body.dark-mode .method-details strong {
-  color: #f1f5f9;
+  color: var(--text-primary);
 }
 
 body.dark-mode .method-icon svg {
   color: var(--primary);
 }
 
-/* Scholarships Dark Mode */
 body.dark-mode .scholarship-card {
-  background: #1e293b;
+  background: var(--surface);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
 }
 
 body.dark-mode .scholarship-info h3 {
-  color: #f1f5f9;
+  color: var(--text-primary);
 }
 
 body.dark-mode .scholarship-detail span:first-child {
-  color: #94a3b8;
+  color: var(--text-secondary);
 }
 
 body.dark-mode .scholarship-detail span:last-child {
-  color: #f1f5f9;
+  color: var(--text-primary);
 }
 
-/* Payment Modal Dark Mode */
 body.dark-mode .payment-modal > div {
   background: #1e293b !important;
   color: #f1f5f9;
@@ -4887,33 +4950,19 @@ body.dark-mode .payment-modal button[onclick*="remove"] {
   color: #f1f5f9 !important;
 }
 
-/* SVG Icons Dark Mode */
 body.dark-mode .summary-icon svg,
 body.dark-mode .method-icon svg {
   color: var(--primary);
 }
 
-body.dark-mode .icon-bill::before {
-  color: #fbbf24;
-}
-
-body.dark-mode .icon-check::before {
-  color: #34d399;
-}
-
-body.dark-mode .icon-clock::before {
-  color: #fb923c;
-}
-
 body.dark-mode .icon-chart::before {
-  color: #2b26b9;
+  color: var(--primary);
 }
 
-/* Mobile Responsive Dark Mode */
 @media (max-width: 768px) {
   body.dark-mode .finance-table .table-row {
-    border-color: #334155;
-    background: #1e293b;
+    border-color: var(--border);
+    background: var(--surface);
   }
 
   body.dark-mode .finance-table .table-row:hover {
@@ -4921,294 +4970,34 @@ body.dark-mode .icon-chart::before {
   }
 
   body.dark-mode .finance-table .table-row > div:before {
-    color: #94a3b8;
+    color: var(--text-secondary);
   }
 }
 
-/* Empty State Dark Mode */
 body.dark-mode .scholarships-container > div[style*="text-align: center"] {
-  color: #94a3b8 !important;
+  color: var(--text-secondary) !important;
 }
 
 body.dark-mode .scholarships-container svg {
-  stroke: #3649ec !important;
+  stroke: var(--primary) !important;
 }
 
 /* Finance Section Mobile Responsive - IMPROVED */
 @media (max-width: 768px) {
-  /* Summary Cards Mobile */
-  .finance-summary {
-    grid-template-columns: 1fr;
-    gap: 1rem;
+  #finance {
+    overflow-x: hidden;
   }
 
-  .summary-card {
-    padding: 1.25rem;
+  .finance-table {
+    overflow-x: hidden;
   }
 
-  .summary-icon {
-    width: 50px;
-    height: 50px;
-    font-size: 2rem;
-  }
-
-  .summary-icon svg {
-    width: 28px;
-    height: 28px;
-  }
-
-  .summary-label {
-    font-size: 0.8rem;
-  }
-
-  .summary-value {
-    font-size: 1.25rem;
-  }
-
-  /* Finance Tabs Mobile */
-  .finance-tabs {
-    gap: 0.5rem;
-    padding-bottom: 0;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
-  }
-
-  .finance-tabs::-webkit-scrollbar {
-    display: none;
-  }
-
-  .finance-tab-btn {
-    padding: 0.875rem 1rem;
-    font-size: 0.875rem;
-    flex-shrink: 0;
-  }
-
-  /* Finance Table Mobile - Card Style */
-  .finance-table .table-header {
-    display: none;
-  }
-
-  .finance-table .table-body {
-    max-height: none;
-    padding: 0.5rem;
-  }
-
-  .finance-table .table-row {
-    display: block;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
-    margin-bottom: 1rem;
-    padding: 1rem;
-    background: white;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  }
-
-  body.dark-mode .finance-table .table-row {
-    border-color: #334155;
-    background: #1e293b;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
-  }
-
-  .finance-table .table-row:hover {
-    background: #f8fafc;
-    transform: none;
-  }
-
-  body.dark-mode .finance-table .table-row:hover {
-    background: #334155;
-  }
-
-  .finance-table .table-row > div {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0.5rem 0;
-    border-bottom: 1px solid #f1f5f9;
-  }
-
-  body.dark-mode .finance-table .table-row > div {
-    border-bottom-color: #334155;
-  }
-
-  .finance-table .table-row > div:last-child {
-    border-bottom: none;
-    margin-top: 0.5rem;
-    padding-top: 0.75rem;
-    border-top: 2px solid #f1f5f9;
-  }
-
-  body.dark-mode .finance-table .table-row > div:last-child {
-    border-top-color: #334155;
-  }
-
-  .finance-table .table-row > div:before {
-    content: attr(data-label);
-    font-weight: 600;
-    color: #64748b;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  body.dark-mode .finance-table .table-row > div:before {
-    color: #94a3b8;
-  }
-
-  /* Specific column adjustments for mobile */
   .finance-table .col-semester,
   .finance-table .col-type,
   .finance-table .col-description {
-    font-size: 0.875rem;
-    font-weight: 500;
-    text-align: right;
-  }
-
-  .finance-table .col-amount {
-    font-size: 1rem;
-    font-weight: 700;
-  }
-
-  .finance-table .col-due,
-  .finance-table .col-date,
-  .finance-table .col-method,
-  .finance-table .col-receipt {
-    font-size: 0.8rem;
-  }
-
-  .finance-table .col-status {
-    justify-content: flex-end;
-  }
-
-  .finance-table .col-action {
-    flex-direction: column;
-    gap: 0.5rem;
-    justify-content: center;
-  }
-
-  .finance-table .col-action button {
-    width: 100%;
-    padding: 0.625rem 1rem;
-    font-size: 0.875rem;
-  }
-
-  /* Payment Methods Mobile */
-  .payment-methods-grid {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .payment-method-card {
-    padding: 1.5rem;
-  }
-
-  .method-icon {
-    font-size: 2.5rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .method-icon svg {
-    width: 40px;
-    height: 40px;
-  }
-
-  .method-name {
-    font-size: 1.125rem;
-  }
-
-  .method-details {
-    padding: 0.875rem;
-    margin-top: 0.75rem;
-  }
-
-  .method-details p {
-    font-size: 0.8rem;
-  }
-
-  /* Scholarships Mobile */
-  .scholarship-card {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-    padding: 1.5rem;
-  }
-
-  .scholarship-info h3 {
-    font-size: 1.125rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .scholarship-detail {
-    margin: 0.5rem 0;
-    font-size: 0.875rem;
-  }
-
-  .scholarship-visual {
-    padding: 1.5rem !important;
-    min-height: 150px;
-  }
-
-  .scholarship-visual svg {
-    width: 48px !important;
-    height: 48px !important;
-  }
-
-  .scholarship-visual > div > div:first-of-type {
-    font-size: 1.25rem !important;
-  }
-
-  .scholarship-visual > div > div:last-of-type {
-    font-size: 0.75rem !important;
-  }
-
-  /* Payment Modal Mobile */
-  .payment-modal > div {
-    width: 95% !important;
-    max-width: none !important;
-    padding: 1.5rem !important;
-    margin: 1rem;
-  }
-
-  .payment-modal h2 {
-    font-size: 1.25rem;
-  }
-
-  .payment-modal button[onclick*="processPayment"] {
-    padding: 0.875rem !important;
-    font-size: 0.875rem;
-  }
-
-  .payment-modal button[onclick*="processPayment"] svg {
-    width: 24px !important;
-    height: 24px !important;
-  }
-
-  /* Status Badges Mobile */
-  .status-badge {
-    padding: 0.375rem 0.75rem;
-    font-size: 0.75rem;
-    white-space: nowrap;
-  }
-
-  /* Buttons Mobile */
-  .pay-btn,
-  .receipt-btn,
-  .download-btn {
-    padding: 0.5rem 0.875rem;
-    font-size: 0.8rem;
-  }
-
-  /* Empty State Mobile */
-  .scholarships-container > div[style*="text-align: center"] {
-    padding: 2rem 1rem !important;
-  }
-
-  .scholarships-container > div[style*="text-align: center"] > div {
-    font-size: 2.5rem !important;
-  }
-
-  .scholarships-container > div[style*="text-align: center"] svg {
-    width: 48px !important;
-    height: 48px !important;
+    word-wrap: break-word;
+    word-break: break-word;
+    hyphens: auto;
   }
 }
 
@@ -5291,7 +5080,6 @@ body.dark-mode .scholarships-container svg {
     min-height: 44px;
   }
 
-  /* Larger touch targets */
   .finance-table .table-row {
     padding: 1.25rem;
   }
@@ -5303,11 +5091,15 @@ body.dark-mode .scholarships-container svg {
 
 /* Finance Section Header - Same style as Schedule */
 #finance .section-header {
-  background: linear-gradient(135deg, #1e3a5f 0%, #2d5a8f 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    var(--primary-dark) 100%
+  );
   border-radius: 16px;
   padding: 2rem;
   margin-bottom: 2rem;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
 }
 
 #finance .section-header h1 {
@@ -5323,7 +5115,6 @@ body.dark-mode .scholarships-container svg {
   font-size: 1rem;
 }
 
-/* Dark Mode - Finance Header */
 body.dark-mode #finance .section-header {
   background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
