@@ -7733,3 +7733,711 @@ body.dark-mode .fpo-status-box.obese {
     display: none !important;
   }
 }
+
+#siFab {
+  background: #0ea5e9;
+}
+
+.si-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 2rem;
+}
+
+.si-tool-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.si-tool-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.si-tool-group input[type="text"] {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--background);
+  color: var(--text-primary);
+}
+
+.si-tool-group.actions {
+  margin-left: auto;
+}
+
+.si-action-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border);
+  background: var(--primary);
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.si-action-btn:hover {
+  background: var(--primary-dark);
+}
+
+.si-action-btn.clear {
+  background: var(--error);
+  border-color: var(--error);
+  color: white;
+}
+
+.si-canvas-wrapper {
+  width: 100%;
+  height: 70vh;
+  background: var(--background);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  overflow: auto;
+  position: relative;
+}
+
+.erd-table {
+  position: absolute;
+  width: 220px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.erd-table-header {
+  background: var(--primary);
+  color: white;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  border-radius: 8px 8px 0 0;
+  cursor: grab;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.erd-table-header:active {
+  cursor: grabbing;
+}
+
+.erd-table-header .delete-table-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.1rem;
+  cursor: pointer;
+  opacity: 0.7;
+}
+.erd-table-header .delete-table-btn:hover {
+  opacity: 1;
+}
+
+.erd-table-body {
+  padding: 0.5rem;
+  min-height: 100px;
+}
+
+.erd-table-field {
+  font-size: 0.85rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px dashed var(--border);
+  display: flex;
+  justify-content: space-between;
+}
+.erd-table-field:last-child {
+  border-bottom: none;
+}
+.erd-table-field .field-type {
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.erd-table-footer {
+  padding: 0.5rem;
+  display: flex;
+  gap: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.erd-table-footer input {
+  width: 100%;
+  font-size: 0.8rem;
+  padding: 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.erd-table-footer button {
+  background: var(--primary);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+body.dark-mode .si-toolbar {
+  background: var(--surface);
+  border-color: var(--border);
+}
+body.dark-mode .si-tool-group input[type="text"] {
+  background: var(--background);
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+body.dark-mode .si-canvas-wrapper {
+  background: #0f172a;
+  border-color: #334155;
+}
+body.dark-mode .erd-table {
+  background: var(--surface);
+  border-color: #334155;
+}
+body.dark-mode .erd-table-header {
+  background: var(--primary);
+}
+body.dark-mode .erd-table-field {
+  border-color: var(--border);
+}
+body.dark-mode .erd-table-footer {
+  border-color: var(--border);
+}
+body.dark-mode .erd-table-footer input {
+  background: var(--background);
+  border-color: var(--border);
+  color: var(--text-primary);
+}
+
+#miFab {
+  background: #22c55e;
+}
+
+.mi-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 2rem;
+}
+
+.mi-tool-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.mi-tool-group label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+.mi-tool-group.actions {
+  margin-left: auto;
+}
+
+.mi-shape-btn,
+.mi-action-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border);
+  background: var(--background);
+  color: var(--text-primary);
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+}
+
+.mi-shape-btn:hover {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: white;
+}
+
+.mi-action-btn.clear {
+  background: var(--error);
+  border-color: var(--error);
+  color: white;
+}
+
+.mi-canvas-wrapper {
+  width: 100%;
+  height: 70vh;
+  background: var(--background);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  overflow: auto;
+  position: relative;
+}
+
+.mi-canvas-background {
+  width: 2000px;
+  height: 2000px;
+  position: relative;
+  background-image: linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(to right, var(--border) 1px, var(--background) 1px);
+  background-size: 20px 20px;
+}
+
+.flowchart-shape {
+  position: absolute;
+  min-width: 150px;
+  min-height: 70px;
+  background: var(--surface);
+  border: 2px solid var(--primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 10;
+}
+
+.flowchart-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 20px;
+  cursor: grab;
+}
+
+.flowchart-shape:active .flowchart-header {
+  cursor: grabbing;
+}
+
+.flowchart-shape.shape-terminator {
+  border-radius: 35px;
+}
+
+.flowchart-shape.shape-process {
+  border-radius: 4px;
+}
+
+.flowchart-shape.shape-decision {
+  width: 150px;
+  height: 100px;
+  min-width: 0;
+  min-height: 0;
+  transform: rotate(45deg);
+  border-radius: 4px;
+}
+
+.flowchart-shape.shape-decision .shape-text {
+  transform: rotate(-45deg);
+  max-width: 120px;
+  text-align: center;
+}
+
+.flowchart-shape.shape-data {
+  border-radius: 4px;
+  transform: skew(-20deg);
+}
+.flowchart-shape.shape-data .shape-text {
+  transform: skew(20deg);
+}
+
+.flowchart-shape.shape-document {
+  border-radius: 4px;
+  position: relative;
+  padding-bottom: 25px;
+}
+.flowchart-shape.shape-document::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: -2px;
+  right: -2px;
+  height: 25px;
+  background: var(--surface);
+  border: 2px solid var(--primary);
+  border-top: 2px dashed var(--primary);
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 75% 50%, 25% 100%, 0 50%);
+}
+
+.flowchart-shape.shape-subroutine {
+  border-radius: 4px;
+  border-left: 5px solid var(--primary);
+  border-right: 5px solid var(--primary);
+}
+
+.shape-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.flowchart-socket {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: white;
+  border: 2px solid var(--primary);
+  border-radius: 50%;
+  z-index: 11;
+  cursor: crosshair;
+  transition: background 0.2s;
+}
+.flowchart-socket:hover {
+  background: var(--primary);
+}
+.flowchart-socket.socket-top {
+  top: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.flowchart-socket.socket-bottom {
+  bottom: -7px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.flowchart-socket.socket-left {
+  top: 50%;
+  left: -7px;
+  transform: translateY(-50%);
+}
+.flowchart-socket.socket-right {
+  top: 50%;
+  right: -7px;
+  transform: translateY(-50%);
+}
+.flowchart-socket.selected {
+  background: var(--primary);
+  box-shadow: 0 0 0 4px var(--accent);
+}
+
+body.dark-mode .mi-toolbar {
+  background: var(--surface);
+  border-color: var(--border);
+}
+body.dark-mode .mi-shape-btn {
+  background: var(--background);
+  color: var(--text-primary);
+  border-color: var(--border);
+}
+body.dark-mode .mi-shape-btn:hover {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: white;
+}
+body.dark-mode .mi-canvas-wrapper {
+  background: #0f172a;
+  border-color: #334155;
+}
+body.dark-mode .mi-canvas-background {
+  background-image: linear-gradient(#334155 1px, transparent 1px),
+    linear-gradient(to right, #334155 1px, #0f172a 1px);
+}
+body.dark-mode .flowchart-shape {
+  background: var(--surface);
+  border-color: var(--primary);
+}
+body.dark-mode .shape-text {
+  color: var(--text-primary);
+}
+body.dark-mode .flowchart-shape.shape-document::after {
+  background: var(--surface);
+  border-color: var(--primary);
+  border-top-style: dashed;
+}
+
+.flowchart-shape.shape-inputoutput {
+  border-radius: 4px;
+  transform: skew(-20deg);
+}
+.flowchart-shape.shape-inputoutput .shape-text {
+  transform: skew(20deg);
+}
+
+.flowchart-shape.shape-predefined {
+  border-radius: 4px;
+  border-left: 5px solid var(--primary);
+  border-right: 5px solid var(--primary);
+}
+
+.flowchart-shape.shape-document {
+  border-radius: 4px;
+  position: relative;
+  padding-bottom: 25px;
+}
+.flowchart-shape.shape-document::after {
+  content: "";
+  position: absolute;
+  bottom: -2px;
+  left: -2px;
+  right: -2px;
+  height: 25px;
+  background: var(--surface);
+  border: 2px solid var(--primary);
+  border-top: 2px dashed var(--primary);
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 75% 50%, 25% 100%, 0 50%);
+}
+body.dark-mode .flowchart-shape.shape-document::after {
+  background: var(--surface);
+  border-color: var(--primary);
+  border-top-style: dashed;
+}
+
+.flowchart-shape.shape-onpageref {
+  min-width: 70px;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  padding: 0;
+}
+
+.flowchart-shape.shape-offpageref {
+  min-width: 100px;
+  width: 100px;
+  height: 70px;
+  padding: 0;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 75%, 50% 100%, 0% 75%);
+}
+
+.flowchart-shape.shape-manualop {
+  clip-path: polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+.flowchart-shape.shape-display {
+  clip-path: polygon(0 0, 75% 0, 100% 50%, 75% 100%, 0 100%, 25% 50%);
+}
+
+.flowchart-shape.shape-preparation {
+  min-width: 170px;
+  clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+}
+
+.mi-tool-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.flowchart-shape.shape-alternate-process {
+  border-radius: 10px;
+}
+
+.flowchart-shape.shape-internal-storage {
+  position: relative;
+}
+.flowchart-shape.shape-internal-storage::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0.5rem;
+  width: calc(100% - 1rem);
+  height: 100%;
+  border-top: 2px solid var(--primary);
+}
+.flowchart-shape.shape-internal-storage::after {
+  content: "";
+  position: absolute;
+  top: 0.5rem;
+  left: 0;
+  width: 100%;
+  height: calc(100% - 1rem);
+  border-left: 2px solid var(--primary);
+}
+body.dark-mode .flowchart-shape.shape-internal-storage::before,
+body.dark-mode .flowchart-shape.shape-internal-storage::after {
+  border-color: var(--primary);
+}
+
+.flowchart-shape.shape-multi-document {
+  position: relative;
+}
+.flowchart-shape.shape-multi-document::before,
+.flowchart-shape.shape-multi-document::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: var(--surface);
+  border: 2px solid var(--primary);
+  border-radius: 4px;
+  z-index: -1;
+}
+.flowchart-shape.shape-multi-document::before {
+  transform: translate(4px, 4px);
+  z-index: -2;
+}
+.flowchart-shape.shape-multi-document::after {
+  transform: translate(8px, 8px);
+  z-index: -3;
+}
+body.dark-mode .flowchart-shape.shape-multi-document::before,
+body.dark-mode .flowchart-shape.shape-multi-document::after {
+  background: var(--surface);
+  border-color: var(--primary);
+}
+
+.flowchart-shape.shape-manual-input {
+  min-height: 60px;
+  clip-path: polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%);
+}
+
+.flowchart-shape.shape-card {
+  min-width: 120px;
+  height: 80px;
+  clip-path: polygon(15% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 15%);
+}
+
+.flowchart-shape.shape-punched-tape {
+  padding-bottom: 20px;
+  clip-path: polygon(0% 0%, 100% 0%, 100% 80%, 75% 100%, 25% 80%, 0% 100%);
+}
+
+.flowchart-shape.shape-summing-junction,
+.flowchart-shape.shape-or {
+  min-width: 70px;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  padding: 0;
+}
+.flowchart-shape.shape-summing-junction::before {
+  content: "✕";
+  font-size: 2.5rem;
+  color: var(--text-primary);
+}
+.flowchart-shape.shape-or::before {
+  content: "+";
+  font-size: 2.5rem;
+  color: var(--text-primary);
+}
+.flowchart-shape.shape-summing-junction .shape-text,
+.flowchart-shape.shape-or .shape-text {
+  display: none;
+}
+body.dark-mode .flowchart-shape.shape-summing-junction::before,
+body.dark-mode .flowchart-shape.shape-or::before {
+  color: var(--text-primary);
+}
+
+.flowchart-shape.shape-collate {
+  min-width: 100px;
+  width: 100px;
+  height: 100px;
+  padding: 0;
+  clip-path: polygon(0% 0%, 100% 0%, 50% 50%, 100% 100%, 0% 100%, 50% 50%);
+}
+
+.flowchart-shape.shape-sort {
+  min-width: 100px;
+  width: 100px;
+  height: 100px;
+  padding: 0;
+  transform: rotate(45deg);
+}
+.flowchart-shape.shape-sort .shape-text {
+  transform: rotate(-45deg);
+}
+.flowchart-shape.shape-sort::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  border-top: 2px dashed var(--primary);
+  transform: translateY(-1px);
+}
+body.dark-mode .flowchart-shape.shape-sort::before {
+  border-color: var(--primary);
+}
+
+.flowchart-shape.shape-extract {
+  min-width: 100px;
+  width: 100px;
+  height: 80px;
+  padding: 0;
+  clip-path: polygon(50% 100%, 0 0, 100% 0);
+}
+
+.flowchart-shape.shape-merge {
+  min-width: 100px;
+  width: 100px;
+  height: 80px;
+  padding: 0;
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+.flowchart-shape.shape-storage-data {
+  min-width: 150px;
+  clip-path: polygon(85% 0, 100% 50%, 85% 100%, 0% 100%, 0 50%, 0% 0%);
+  border-radius: 4px;
+}
+
+.flowchart-shape.shape-delay {
+  min-width: 150px;
+  clip-path: polygon(0 0, 75% 0, 100% 50%, 75% 100%, 0 100%);
+  border-radius: 4px;
+}
+
+.flowchart-shape.shape-sequential-storage {
+  width: 100px;
+  height: 100px;
+  min-width: 0;
+  padding: 0;
+  border-radius: 50%;
+  position: relative;
+}
+.flowchart-shape.shape-sequential-storage::after {
+  content: "";
+  position: absolute;
+  right: 15px;
+  bottom: 15px;
+  width: 50%;
+  height: 2px;
+  background: var(--primary);
+}
+body.dark-mode .flowchart-shape.shape-sequential-storage::after {
+  background: var(--primary);
+}
+
+.flowchart-shape.shape-direct-storage {
+  width: 120px;
+  height: 90px;
+  min-width: 0;
+  padding: 0;
+  border-radius: 50% / 20%;
+}
+
+.mi-action-btn.save {
+  background: var(--success);
+  border-color: var(--success);
+  color: white;
+}
+
+.leader-line {
+  position: absolute !important;
+  z-index: 5 !important;
+}
+
+.mi-canvas-background {
+  position: relative;
+}
