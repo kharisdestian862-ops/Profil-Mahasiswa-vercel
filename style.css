@@ -4717,7 +4717,6 @@ body.dark-mode .output-header {
 .icon-bill::before {
   content: "₿";
   font-size: 2rem;
-  color: var(--primary);
 }
 .icon-check::before {
   content: "✓";
