@@ -1489,6 +1489,59 @@ const translations = {
     "fpo.hr.zone4": "Zone 4 (80-90%)",
     "fpo.hr.zone5": "Zone 5 (90-100%)",
 
+    "nav.si": "ERD Designer",
+    "si.title": "Database Schema Designer",
+    "si.subtitle": "Create tables, add columns, and design your simple ERD.",
+    "si.tableName": "Table Name:",
+    "si.addTable": "+ Add Table",
+    "si.clearAll": "Clear Canvas",
+    "si.addField": "Add Field",
+    "si.fieldName": "Field Name",
+    "si.fieldType": "Data Type",
+
+    "nav.mi": "Flowchart",
+    "mi.title": "Flowchart Designer",
+    "mi.subtitle": "Design business process flows or simple flowcharts.",
+    "mi.addShape": "Add Shape:",
+    "mi.terminator": "Start / End",
+    "mi.process": "Process",
+    "mi.decision": "Decision",
+    "mi.decision": "Decision",
+    "mi.data": "Data (I/O)",
+    "mi.document": "Document",
+    "mi.subroutine": "Subroutine",
+    "mi.terminator": "Terminator",
+    "mi.process": "Process",
+    "mi.decision": "Decision",
+    "mi.inputOutput": "Input/Output",
+    "mi.predefinedProcess": "Predefined Process",
+    "mi.document": "Document",
+    "mi.onpageref": "On-Page Ref",
+    "mi.offpageref": "Off-Page Ref",
+    "mi.manualop": "Manual Operation",
+    "mi.display": "Display",
+    "mi.subroutine": "Subroutine",
+    "mi.alternateProcess": "Alternate Process",
+    "mi.internalStorage": "Internal Storage",
+    "mi.multiDocument": "Multi-Document",
+    "mi.manualInput": "Manual Input",
+    "mi.card": "Card",
+    "mi.punchedTape": "Punched Tape",
+    "mi.summingJunction": "Summing Junction",
+    "mi.or": "Or",
+    "mi.collate": "Collate",
+    "mi.sort": "Sort",
+    "mi.extract": "Extract",
+    "mi.merge": "Merge",
+    "mi.storageData": "Storage Data",
+    "mi.delay": "Delay",
+    "mi.sequentialStorage": "Sequential Storage",
+    "mi.directStorage": "Direct Storage",
+    "mi.display": "Display",
+    "mi.preparation": "Preparation",
+
+    "mi.download": "Download PNG",
+
     "chat.clearHistory": "Clear History",
   },
   id: {
@@ -2017,6 +2070,60 @@ const translations = {
     "fpo.hr.zone4": "Zona 4 (80-90%)",
     "fpo.hr.zone5": "Zona 5 (90-100%)",
 
+    "nav.si": "Desainer ERD",
+    "si.title": "Desainer Skema Database",
+    "si.subtitle":
+      "Buat tabel, tambahkan kolom, dan rancang ERD sederhana Anda.",
+    "si.tableName": "Nama Tabel:",
+    "si.addTable": "+ Tambah Tabel",
+    "si.clearAll": "Bersihkan Kanvas",
+    "si.addField": "Tambah Kolom",
+    "si.fieldName": "Nama Kolom",
+    "si.fieldType": "Tipe Data",
+
+    "nav.mi": "Flowchart",
+    "mi.title": "Desainer Flowchart",
+    "mi.subtitle": "Rancang alur proses bisnis atau flowchart sederhana.",
+    "mi.addShape": "Tambah Bentuk:",
+    "mi.terminator": "Mulai / Selesai",
+    "mi.process": "Proses",
+    "mi.decision": "Keputusan",
+    "mi.decision": "Keputusan",
+    "mi.data": "Data (I/O)",
+    "mi.document": "Dokumen",
+    "mi.subroutine": "Subroutine",
+    "mi.terminator": "Terminator",
+    "mi.process": "Proses",
+    "mi.decision": "Keputusan",
+    "mi.inputOutput": "Input/Output",
+    "mi.predefinedProcess": "Predefined Process",
+    "mi.document": "Dokumen",
+    "mi.onpageref": "Ref. Halaman Sama",
+    "mi.offpageref": "Ref. Halaman Beda",
+    "mi.manualop": "Operasi Manual",
+    "mi.display": "Tampilan",
+    "mi.subroutine": "Subroutine",
+    "mi.alternateProcess": "Proses Pilihan",
+    "mi.internalStorage": "Internal Storage",
+    "mi.multiDocument": "Multi-Dokumen",
+    "mi.manualInput": "Manual Input",
+    "mi.card": "Card",
+    "mi.punchedTape": "Punched Tape",
+    "mi.summingJunction": "Summing Junction",
+    "mi.or": "Or",
+    "mi.collate": "Collate",
+    "mi.sort": "Sort",
+    "mi.extract": "Extract",
+    "mi.merge": "Merge",
+    "mi.storageData": "Storage Data",
+    "mi.delay": "Delay",
+    "mi.sequentialStorage": "Sequential Storage",
+    "mi.directStorage": "Direct Storage",
+    "mi.display": "Tampilan",
+    "mi.preparation": "Persiapan",
+
+    "mi.download": "Unduh PNG",
+
     "chat.clearHistory": "Bersihkan Riwayat",
   },
 };
@@ -2281,6 +2388,8 @@ function initFAB() {
     febFab: "feb-center",
     dkvFab: "dkv-center",
     fpoFab: "fpo-center",
+    siFab: "si-center",
+    miFab: "mi-center",
   };
 
   Object.keys(fabItems).forEach((id) => {
@@ -2333,6 +2442,8 @@ function switchSection(sectionId) {
     "feb-center",
     "dkv-center",
     "fpo-center",
+    "si-center",
+    "mi-center",
   ];
   if (fullWidthSections.includes(sectionId)) {
     document.body.classList.add("full-layout-active");
@@ -2355,6 +2466,8 @@ function switchSection(sectionId) {
     if (sectionId === "feb-center") initFebCenter();
     if (sectionId === "dkv-center") initDkvCenter();
     if (sectionId === "fpo-center") initFpoCenter();
+    if (sectionId === "si-center") initSiCenter();
+    if (sectionId === "mi-center") initMiCenter();
 
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
@@ -8763,4 +8876,453 @@ function getZoneColor(key) {
   if (key.includes("zone4")) return "#fb923c";
   if (key.includes("zone5")) return "#f87171";
   return "#e2e8f0";
+}
+
+let siIsInitialized = false;
+
+function initSiCenter() {
+  if (siIsInitialized) return;
+
+  const addTableBtn = document.getElementById("siAddTableBtn");
+  const tableNameInput = document.getElementById("siTableNameInput");
+  const clearCanvasBtn = document.getElementById("siClearCanvasBtn");
+  const canvas = document.getElementById("siCanvas");
+
+  addTableBtn.addEventListener("click", () => {
+    const tableName = tableNameInput.value.trim();
+    if (tableName) {
+      createErdTable(tableName, canvas);
+      tableNameInput.value = "";
+    }
+  });
+
+  clearCanvasBtn.addEventListener("click", () => {
+    if (confirm("Anda yakin ingin menghapus semua tabel dari kanvas?")) {
+      canvas.innerHTML = "";
+    }
+  });
+
+  siIsInitialized = true;
+}
+
+function createErdTable(name, canvas) {
+  const tableId = `table-${Date.now()}`;
+  const tableEl = document.createElement("div");
+  tableEl.className = "erd-table";
+  tableEl.id = tableId;
+  tableEl.style.left = `${Math.floor(Math.random() * 100) + 20}px`;
+  tableEl.style.top = `${Math.floor(Math.random() * 100) + 20}px`;
+
+  const fieldNameKey =
+    translations[currentLanguage]["si.fieldName"] || "Field Name";
+  const fieldTypeKey =
+    translations[currentLanguage]["si.fieldType"] || "Data Type";
+  const addFieldKey =
+    translations[currentLanguage]["si.addField"] || "Add Field";
+
+  tableEl.innerHTML = `
+    <div class="erd-table-header" id="${tableId}-header">
+      <span>${name}</span>
+      <button class="delete-table-btn" onclick="document.getElementById('${tableId}').remove()">×</button>
+    </div>
+    <div class="erd-table-body" id="${tableId}-body">
+      <div class="erd-table-field">
+        <span>id</span>
+        <span class="field-type">INT</span>
+      </div>
+    </div>
+    <div class="erd-table-footer">
+      <input type="text" id="${tableId}-field-name" placeholder="${fieldNameKey}">
+      <input type="text" id="${tableId}-field-type" placeholder="${fieldTypeKey}" value="VARCHAR(255)">
+      <button id="${tableId}-add-field-btn" title="${addFieldKey}">+</button>
+    </div>
+  `;
+
+  canvas.appendChild(tableEl);
+
+  makeElementDraggable(tableEl);
+
+  document
+    .getElementById(`${tableId}-add-field-btn`)
+    .addEventListener("click", () => {
+      const fieldNameInput = document.getElementById(`${tableId}-field-name`);
+      const fieldTypeInput = document.getElementById(`${tableId}-field-type`);
+      const fieldName = fieldNameInput.value.trim();
+      const fieldType = fieldTypeInput.value.trim() || "VARCHAR(255)";
+
+      if (fieldName) {
+        const fieldEl = document.createElement("div");
+        fieldEl.className = "erd-table-field";
+        fieldEl.innerHTML = `
+        <span>${fieldName}</span>
+        <span class="field-type">${fieldType.toUpperCase()}</span>
+      `;
+        document.getElementById(`${tableId}-body`).appendChild(fieldEl);
+        fieldNameInput.value = "";
+        fieldTypeInput.value = "VARCHAR(255)";
+      }
+    });
+}
+
+function makeElementDraggable(elmnt) {
+  let pos1 = 0,
+    pos2 = 0,
+    pos3 = 0,
+    pos4 = 0;
+  const header = document.getElementById(elmnt.id + "-header");
+
+  if (header) {
+    header.onmousedown = dragMouseDown;
+  } else {
+    elmnt.onmousedown = dragMouseDown;
+  }
+
+  function dragMouseDown(e) {
+    e = e || window.event;
+    e.preventDefault();
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    document.onmousemove = elementDrag;
+  }
+
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    elmnt.style.top = elmnt.offsetTop - pos2 + "px";
+    elmnt.style.left = elmnt.offsetLeft - pos1 + "px";
+  }
+
+  function closeDragElement() {
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+}
+
+let miIsInitialized = false;
+let miLines = [];
+let miSelectedSocket = null;
+
+function initMiCenter() {
+  if (miIsInitialized) return;
+
+  const canvas = document.getElementById("miCanvas");
+
+  document.getElementById("miAddTerminator").addEventListener("click", () => {
+    const text = translations[currentLanguage]["mi.terminator"] || "Terminator";
+    createFlowchartShape("terminator", text, canvas);
+  });
+
+  document.getElementById("miAddProcess").addEventListener("click", () => {
+    const text = translations[currentLanguage]["mi.process"] || "Proses";
+    createFlowchartShape("process", text, canvas);
+  });
+
+  document
+    .getElementById("miAddAlternateProcess")
+    .addEventListener("click", () => {
+      const text =
+        translations[currentLanguage]["mi.alternateProcess"] ||
+        "Proses Pilihan";
+      createFlowchartShape("alternate-process", text, canvas);
+    });
+
+  document.getElementById("miAddDecision").addEventListener("click", () => {
+    const text = translations[currentLanguage]["mi.decision"] || "Keputusan";
+    createFlowchartShape("decision", text, canvas);
+  });
+
+  document.getElementById("miAddInputOutput").addEventListener("click", () => {
+    const text =
+      translations[currentLanguage]["mi.inputOutput"] || "Input/Output";
+    createFlowchartShape("inputoutput", text, canvas);
+  });
+
+  document.getElementById("miAddPredefined").addEventListener("click", () => {
+    const text =
+      translations[currentLanguage]["mi.predefinedProcess"] || "Predefined";
+    createFlowchartShape("predefined", text, canvas);
+  });
+
+  document
+    .getElementById("miAddInternalStorage")
+    .addEventListener("click", () => {
+      const text =
+        translations[currentLanguage]["mi.internalStorage"] || "Storage";
+      createFlowchartShape("internal-storage", text, canvas);
+    });
+
+  document.getElementById("miAddDocument").addEventListener("click", () => {
+    const text = translations[currentLanguage]["mi.document"] || "Dokumen";
+    createFlowchartShape("document", text, canvas);
+  });
+
+  document
+    .getElementById("miAddMultiDocument")
+    .addEventListener("click", () => {
+      const text =
+        translations[currentLanguage]["mi.multiDocument"] || "Multi-Dokumen";
+      createFlowchartShape("multi-document", text, canvas);
+    });
+
+  document.getElementById("miAddPreparation").addEventListener("click", () => {
+    const text = translations[currentLanguage]["mi.preparation"] || "Preparasi";
+    createFlowchartShape("preparation", text, canvas);
+  });
+
+  document.getElementById("miAddManualInput").addEventListener("click", () => {
+    const text =
+      translations[currentLanguage]["mi.manualInput"] || "Manual Input";
+    createFlowchartShape("manual-input", text, canvas);
+  });
+
+  document.getElementById("miAddManualOp").addEventListener("click", () => {
+    const text =
+      translations[currentLanguage]["mi.manualop"] || "Manual Operasi";
+    createFlowchartShape("manualop", text, canvas);
+  });
+
+  document.getElementById("miAddOnPageRef").addEventListener("click", () => {
+    const text = "A";
+    createFlowchartShape("onpageref", text, canvas);
+  });
+
+  document.getElementById("miAddOffPageRef").addEventListener("click", () => {
+    const text = "B";
+    createFlowchartShape("offpageref", text, canvas);
+  });
+
+  document.getElementById("miAddCard").addEventListener("click", () => {
+    const text = translations[currentLanguage]["mi.card"] || "Card";
+    createFlowchartShape("card", text, canvas);
+  });
+
+  document.getElementById("miAddPunchedTape").addEventListener("click", () => {
+    const text =
+      translations[currentLanguage]["mi.punchedTape"] || "Punched Tape";
+    createFlowchartShape("punched-tape", text, canvas);
+  });
+
+  document
+    .getElementById("miAddSummingJunction")
+    .addEventListener("click", () => {
+      const text = "";
+      createFlowchartShape("summing-junction", text, canvas);
+    });
+
+  document.getElementById("miAddOr").addEventListener("click", () => {
+    const text = "";
+    createFlowchartShape("or", text, canvas);
+  });
+
+  document.getElementById("miAddCollate").addEventListener("click", () => {
+    const text = "";
+    createFlowchartShape("collate", text, canvas);
+  });
+
+  document.getElementById("miAddSort").addEventListener("click", () => {
+    const text = translations[currentLanguage]["mi.sort"] || "Sort";
+    createFlowchartShape("sort", text, canvas);
+  });
+
+  document.getElementById("miAddExtract").addEventListener("click", () => {
+    const text = "";
+    createFlowchartShape("extract", text, canvas);
+  });
+
+  document.getElementById("miAddMerge").addEventListener("click", () => {
+    const text = "";
+    createFlowchartShape("merge", text, canvas);
+  });
+
+  document.getElementById("miAddStorageData").addEventListener("click", () => {
+    const text = translations[currentLanguage]["mi.storageData"] || "Storage";
+    createFlowchartShape("storage-data", text, canvas);
+  });
+
+  document.getElementById("miAddDelay").addEventListener("click", () => {
+    const text = translations[currentLanguage]["mi.delay"] || "Delay";
+    createFlowchartShape("delay", text, canvas);
+  });
+
+  document
+    .getElementById("miAddSequentialStorage")
+    .addEventListener("click", () => {
+      const text = "";
+      createFlowchartShape("sequential-storage", text, canvas);
+    });
+
+  document
+    .getElementById("miAddDirectStorage")
+    .addEventListener("click", () => {
+      const text = "DB";
+      createFlowchartShape("direct-storage", text, canvas);
+    });
+
+  document.getElementById("miAddDisplay").addEventListener("click", () => {
+    const text = translations[currentLanguage]["mi.display"] || "Display";
+    createFlowchartShape("display", text, canvas);
+  });
+
+  document.getElementById("miClearCanvasBtn").addEventListener("click", () => {
+    if (confirm("Anda yakin ingin menghapus semua bentuk dari kanvas?")) {
+      canvas.innerHTML = "";
+      miLines.forEach((line) => line.remove());
+      miLines = [];
+    }
+  });
+
+  document
+    .getElementById("miDownloadFlowchartBtn")
+    .addEventListener("click", downloadFlowchart);
+
+  canvas.addEventListener("click", (e) => {
+    if (e.target === canvas) {
+      if (miSelectedSocket) {
+        miSelectedSocket.classList.remove("selected");
+        miSelectedSocket = null;
+      }
+    }
+  });
+
+  miIsInitialized = true;
+}
+function createFlowchartShape(type, text, canvas) {
+  const shapeId = `shape-${Date.now()}`;
+  const shapeEl = document.createElement("div");
+
+  shapeEl.className = `flowchart-shape shape-${type}`;
+  shapeEl.id = shapeId;
+  shapeEl.style.left = `${Math.floor(Math.random() * 100) + 20}px`;
+  shapeEl.style.top = `${Math.floor(Math.random() * 100) + 20}px`;
+
+  shapeEl.innerHTML = `
+    <div class="flowchart-header" id="${shapeId}-header"></div>
+    <div class="shape-text" contenteditable="true">${text}</div>
+    <div class="flowchart-socket socket-top" data-shape-id="${shapeId}"></div>
+    <div class="flowchart-socket socket-bottom" data-shape-id="${shapeId}"></div>
+    <div class="flowchart-socket socket-left" data-shape-id="${shapeId}"></div>
+    <div class="flowchart-socket socket-right" data-shape-id="${shapeId}"></div>
+  `;
+
+  canvas.appendChild(shapeEl);
+
+  makeFlowchartDraggable(shapeEl);
+
+  shapeEl.querySelectorAll(".flowchart-socket").forEach((socket) => {
+    socket.addEventListener("click", (e) => {
+      e.stopPropagation();
+      handleSocketClick(socket, shapeId);
+    });
+  });
+}
+
+function handleSocketClick(socketEl, shapeId) {
+  if (!miSelectedSocket) {
+    socketEl.classList.add("selected");
+    miSelectedSocket = socketEl;
+  } else {
+    if (miSelectedSocket === socketEl) {
+      socketEl.classList.remove("selected");
+      miSelectedSocket = null;
+      return;
+    }
+
+    const startEl = miSelectedSocket;
+    const endEl = socketEl;
+
+    const line = new LeaderLine(startEl, endEl, {
+      color: "#64748b",
+      size: 3,
+      path: "grid",
+      endPlug: "arrow1",
+      startSocket: "auto",
+      endSocket: "auto",
+      parent: document.getElementById("miCanvas"),
+    });
+
+    miLines.push(line);
+
+    startEl.classList.remove("selected");
+    miSelectedSocket = null;
+  }
+}
+
+function makeFlowchartDraggable(elmnt) {
+  let pos1 = 0,
+    pos2 = 0,
+    pos3 = 0,
+    pos4 = 0;
+  const header = document.getElementById(elmnt.id + "-header");
+
+  if (header) {
+    header.onmousedown = dragMouseDown;
+  }
+
+  function dragMouseDown(e) {
+    e = e || window.event;
+    e.preventDefault();
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+    document.onmouseup = closeDragElement;
+    document.onmousemove = elementDrag;
+  }
+
+  function elementDrag(e) {
+    e = e || window.event;
+    e.preventDefault();
+    pos1 = pos3 - e.clientX;
+    pos2 = pos4 - e.clientY;
+    pos3 = e.clientX;
+    pos4 = e.clientY;
+
+    const newTop = elmnt.offsetTop - pos2;
+    const newLeft = elmnt.offsetLeft - pos1;
+
+    elmnt.style.top = newTop + "px";
+    elmnt.style.left = newLeft + "px";
+
+    miLines.forEach((line) => line.position());
+  }
+
+  function closeDragElement() {
+    document.onmouseup = null;
+    document.onmousemove = null;
+  }
+}
+
+function downloadFlowchart() {
+  const canvasEl = document.getElementById("miCanvas");
+  const wrapperEl = document.getElementById("miCanvasWrapper");
+
+  showNotification("Membuat gambar PNG...", "info");
+
+  const options = {
+    backgroundColor: null,
+    width: canvasEl.scrollWidth,
+    height: canvasEl.scrollHeight,
+    windowWidth: canvasEl.scrollWidth,
+    windowHeight: canvasEl.scrollHeight,
+    scrollX: 0,
+    scrollY: 0,
+    x: 0,
+    y: 0,
+  };
+
+  html2canvas(canvasEl, options)
+    .then((canvasImage) => {
+      const link = document.createElement("a");
+      link.href = canvasImage.toDataURL("image/png");
+      link.download = "flowchart-prodi-mi.png";
+      link.click();
+      showNotification("Flowchart berhasil diunduh!", "success");
+    })
+    .catch((err) => {
+      console.error("Gagal download flowchart:", err);
+      showNotification("Gagal mengunduh flowchart.", "error");
+    });
 }
