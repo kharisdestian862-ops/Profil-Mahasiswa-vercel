@@ -248,6 +248,22 @@
             </svg>
           </button>
 
+          <button class="fab-item" id="pomodoroFab" title="Pusat Studi">
+            <span class="fab-label" data-i18n="nav.pomodoro">Pusat Studi</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </button>
+
           <button class="fab-item" id="notesFab" title="Catatan">
             <span class="fab-label" data-i18n="nav.notes">Catatan</span>
             <svg
@@ -2849,6 +2865,13 @@ Jalankan tes untuk melihat hasil...
               >
                 Papan Pengumuman
               </button>
+              <button
+                class="info-tab-btn"
+                data-tab="mapTab"
+                data-i18n="info.tab.map"
+              >
+                Peta Kampus
+              </button>
             </div>
 
             <div id="eventsTab" class="info-tab-content active">
@@ -2861,6 +2884,119 @@ Jalankan tes untuk melihat hasil...
               style="display: none"
             >
               <div class="info-grid" id="announcementsListContainer"></div>
+            </div>
+            <div id="mapTab" class="info-tab-content" style="display: none">
+              <div class="campus-map-wrapper">
+                <img
+                  src="https://via.placeholder.com/1200x800.png?text=GANTI+SAYA+DENGAN+GAMBAR+PETA+KAMPUS"
+                  alt="Peta Kampus"
+                  id="campusMapImage"
+                />
+
+                <button
+                  class="map-hotspot"
+                  id="hotspot-k1"
+                  style="top: 30%; left: 25%"
+                  data-title-key="info.map.k1.title"
+                  data-address="Jl. Kesambi No.202, Drajat, Kec. Kesambi, Kota Cirebon, Jawa Barat 45133"
+                >
+                  <span>1</span>
+                </button>
+
+                <button
+                  class="map-hotspot"
+                  id="hotspot-k2"
+                  style="top: 60%; left: 55%"
+                  data-title-key="info.map.k2.title"
+                  data-address="Jl. Kesambi No.58a, Kesambi, Kec. Kesambi, Kota Cirebon, Jawa Barat 45134"
+                >
+                  <span>2</span>
+                </button>
+
+                <div class="map-popup" id="mapPopup">
+                  <h4 id="popupTitle"></h4>
+                  <p id="popupAddress"></p>
+                  <a
+                    id="popupLink"
+                    href="#"
+                    target="_blank"
+                    data-i18n="info.map.open"
+                    >Buka di Google Maps</a
+                  >
+                  <button class="popup-close" id="popupClose">×</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="section" id="study-center" style="display: none">
+            <header class="main-header">
+              <h1 data-i18n="pomodoro.title">Pusat Studi (Timer Pomodoro)</h1>
+              <div data-i18n="pomodoro.subtitle">
+                Gunakan teknik Pomodoro untuk belajar lebih fokus.
+              </div>
+            </header>
+
+            <div class="pomodoro-container">
+              <div class="pomodoro-timer-wrapper">
+                <div class="pomodoro-timer-display" id="pomodoroTime">
+                  25:00
+                </div>
+                <div
+                  class="pomodoro-mode-display"
+                  id="pomodoroMode"
+                  data-i18n="pomodoro.mode.pomodoro"
+                >
+                  Waktu Fokus
+                </div>
+              </div>
+              <div class="pomodoro-controls">
+                <button
+                  id="pomodoroStart"
+                  class="pomodoro-btn start"
+                  data-i18n="pomodoro.start"
+                >
+                  Mulai
+                </button>
+                <button
+                  id="pomodoroPause"
+                  class="pomodoro-btn pause"
+                  style="display: none"
+                  data-i18n="pomodoro.pause"
+                >
+                  Jeda
+                </button>
+                <button
+                  id="pomodoroReset"
+                  class="pomodoro-btn reset"
+                  data-i18n="pomodoro.reset"
+                >
+                  Reset
+                </button>
+              </div>
+              <div class="pomodoro-mode-selector">
+                <button
+                  class="pomodoro-mode-btn active"
+                  data-mode="pomodoro"
+                  data-i18n="pomodoro.mode.pomodoro"
+                >
+                  Pomodoro
+                </button>
+                <button
+                  class="pomodoro-mode-btn"
+                  data-mode="shortBreak"
+                  data-i18n="pomodoro.mode.shortBreak"
+                >
+                  Istirahat Pendek
+                </button>
+                <button
+                  class="pomodoro-mode-btn"
+                  data-mode="longBreak"
+                  data-i18n="pomodoro.mode.longBreak"
+                >
+                  Istirahat Panjang
+                </button>
+              </div>
             </div>
           </section>
 
