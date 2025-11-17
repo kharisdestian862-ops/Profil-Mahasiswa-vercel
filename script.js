@@ -1614,6 +1614,22 @@ const translations = {
     "info.organizer": "Organizer:",
     "info.tag.academic": "Academic",
     "info.tag.general": "General",
+    "info.tab.map": "Campus Map",
+    "info.map.k1.title": "Campus 1 (Main Building)",
+    "info.map.k2.title": "Campus 2",
+    "info.map.open": "Open in Google Maps",
+
+    "nav.pomodoro": "Study Center",
+    "pomodoro.title": "Study Center (Pomodoro Timer)",
+    "pomodoro.subtitle": "Use the Pomodoro technique to study with more focus.",
+    "pomodoro.mode.pomodoro": "Focus Time",
+    "pomodoro.mode.shortBreak": "Short Break",
+    "pomodoro.mode.longBreak": "Long Break",
+    "pomodoro.start": "Start",
+    "pomodoro.pause": "Pause",
+    "pomodoro.reset": "Reset",
+    "pomodoro.alarm.pomodoro": "Focus time is over! Time for a short break.",
+    "pomodoro.alarm.break": "Break time is over! Time to get back to focus.",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -2206,6 +2222,22 @@ const translations = {
     "info.organizer": "Penyelenggara:",
     "info.tag.academic": "Akademik",
     "info.tag.general": "Umum",
+    "info.tab.map": "Peta Kampus",
+    "info.map.k1.title": "Kampus 1 (Gedung Utama)",
+    "info.map.k2.title": "Kampus 2",
+    "info.map.open": "Buka di Google Maps",
+
+    "nav.pomodoro": "Pusat Studi",
+    "pomodoro.title": "Pusat Studi (Timer Pomodoro)",
+    "pomodoro.subtitle": "Gunakan teknik Pomodoro untuk belajar lebih fokus.",
+    "pomodoro.mode.pomodoro": "Waktu Fokus",
+    "pomodoro.mode.shortBreak": "Istirahat Pendek",
+    "pomodoro.mode.longBreak": "Istirahat Panjang",
+    "pomodoro.start": "Mulai",
+    "pomodoro.pause": "Jeda",
+    "pomodoro.reset": "Reset",
+    "pomodoro.alarm.pomodoro": "Waktu fokus habis! Saatnya istirahat pendek.",
+    "pomodoro.alarm.break": "Waktu istirahat habis! Saatnya kembali fokus.",
   },
 };
 
@@ -2471,6 +2503,7 @@ function initFAB() {
     fpoFab: "fpo-center",
     siFab: "si-center",
     miFab: "mi-center",
+    pomodoroFab: "study-center",
   };
 
   Object.keys(fabItems).forEach((id) => {
@@ -2525,6 +2558,7 @@ function switchSection(sectionId) {
     "fpo-center",
     "si-center",
     "mi-center",
+    "study-center",
   ];
   if (fullWidthSections.includes(sectionId)) {
     document.body.classList.add("full-layout-active");
@@ -2550,6 +2584,7 @@ function switchSection(sectionId) {
     if (sectionId === "si-center") initSiCenter();
     if (sectionId === "mi-center") initMiCenter();
     if (sectionId === "info-center") initInfoCenter();
+    if (sectionId === "study-center") initStudyCenter();
 
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
@@ -9412,11 +9447,15 @@ function downloadFlowchart() {
 let infoIsInitialized = false;
 
 function initInfoCenter() {
-  if (infoIsInitialized) return;
+  if (infoIsInitialized) {
+    applyTranslations();
+    return;
+  }
 
   initInfoTabs();
   populateEvents();
   populateAnnouncements();
+  initCampusMap();
 
   infoIsInitialized = true;
 }
@@ -9451,7 +9490,6 @@ function populateEvents() {
 
   campusInfoData.events.forEach((event) => {
     const eventEl = document.createElement("div");
-
     eventEl.className = "exam-card";
 
     const eventDate = new Date(event.date);
@@ -9516,4 +9554,196 @@ function populateAnnouncements() {
   });
 
   applyTranslations();
+}
+
+function initCampusMap() {
+  const hotspots = document.querySelectorAll(".map-hotspot");
+  const popup = document.getElementById("mapPopup");
+  const titleEl = document.getElementById("popupTitle");
+  const addressEl = document.getElementById("popupAddress");
+  const linkEl = document.getElementById("popupLink");
+  const closeBtn = document.getElementById("popupClose");
+  const mapImage = document.getElementById("campusMapImage");
+
+  // ðŸ"¥ DEBUGGING - CEK APAKAH ELEMEN ADA
+  console.log("Map elements:", {
+    hotspots: hotspots.length,
+    popup: !!popup,
+    mapImage: !!mapImage,
+  });
+
+  if (!popup || !closeBtn || !mapImage) {
+    console.error("Map elements not found!");
+    return;
+  }
+
+  // Event listener untuk setiap hotspot (tombol 1 dan 2)
+  hotspots.forEach((spot, index) => {
+    console.log(`Setting up hotspot ${index + 1}`);
+
+    spot.addEventListener("click", (e) => {
+      e.stopPropagation();
+      console.log("Hotspot clicked:", spot.dataset.titleKey);
+
+      const titleKey = spot.dataset.titleKey;
+      const address = spot.dataset.address;
+
+      // Ambil teks dari translations
+      const title = translations[currentLanguage][titleKey] || "Lokasi Kampus";
+      const mapsUrl = `https://www.google.com/maps?q=${encodeURIComponent(
+        address
+      )}`;
+
+      // Update popup content
+      titleEl.textContent = title;
+      addressEl.textContent = address;
+      linkEl.href = mapsUrl;
+
+      // Tampilkan popup
+      popup.classList.add("active");
+      console.log("Popup should be visible now");
+    });
+  });
+
+  // Tombol close popup
+  closeBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    popup.classList.remove("active");
+    console.log("Popup closed");
+  });
+
+  // Klik di gambar peta = tutup popup
+  mapImage.addEventListener("click", () => {
+    popup.classList.remove("active");
+  });
+
+  console.log("Campus map initialized successfully!");
+}
+
+let pomodoroIsInitialized = false;
+let pomodoroTimer;
+let pomodoroCurrentMode = "pomodoro";
+let pomodoroTimeLeft = 1500;
+let pomodoroIsRunning = false;
+let pomodoroCycle = 0;
+
+const POMODORO_TIMES = {
+  pomodoro: 1500,
+  shortBreak: 300,
+  longBreak: 900,
+};
+
+function initStudyCenter() {
+  if (pomodoroIsInitialized) return;
+
+  document.getElementById("pomodoroStart").onclick = startPomodoro;
+  document.getElementById("pomodoroPause").onclick = pausePomodoro;
+  document.getElementById("pomodoroReset").onclick = resetPomodoro;
+
+  document.querySelectorAll(".pomodoro-mode-btn").forEach((btn) => {
+    btn.onclick = () => {
+      switchPomodoroMode(btn.dataset.mode);
+    };
+  });
+
+  updateTimerDisplay();
+  updatePomodoroModeDisplay();
+
+  pomodoroIsInitialized = true;
+}
+
+function startPomodoro() {
+  pomodoroIsRunning = true;
+  document.getElementById("pomodoroStart").style.display = "none";
+  document.getElementById("pomodoroPause").style.display = "inline-block";
+
+  pomodoroTimer = setInterval(() => {
+    pomodoroTimeLeft--;
+    updateTimerDisplay();
+
+    if (pomodoroTimeLeft <= 0) {
+      clearInterval(pomodoroTimer);
+      playAlarmSound();
+
+      if (pomodoroCurrentMode === "pomodoro") {
+        pomodoroCycle++;
+        if (pomodoroCycle % 4 === 0) {
+          switchPomodoroMode("longBreak");
+          alert(translations[currentLanguage]["pomodoro.alarm.pomodoro"]);
+        } else {
+          switchPomodoroMode("shortBreak");
+          alert(translations[currentLanguage]["pomodoro.alarm.pomodoro"]);
+        }
+      } else {
+        switchPomodoroMode("pomodoro");
+        alert(translations[currentLanguage]["pomodoro.alarm.break"]);
+      }
+    }
+  }, 1000);
+}
+
+function pausePomodoro() {
+  pomodoroIsRunning = false;
+  clearInterval(pomodoroTimer);
+  document.getElementById("pomodoroStart").style.display = "inline-block";
+  document.getElementById("pomodoroPause").style.display = "none";
+}
+
+function resetPomodoro() {
+  pausePomodoro();
+  pomodoroTimeLeft = POMODORO_TIMES[pomodoroCurrentMode];
+  updateTimerDisplay();
+}
+
+function switchPomodoroMode(mode) {
+  pausePomodoro();
+  pomodoroCurrentMode = mode;
+  pomodoroTimeLeft = POMODORO_TIMES[mode];
+
+  document.querySelectorAll(".pomodoro-mode-btn").forEach((btn) => {
+    btn.classList.toggle("active", btn.dataset.mode === mode);
+  });
+
+  updateTimerDisplay();
+  updatePomodoroModeDisplay();
+}
+
+function updateTimerDisplay() {
+  const minutes = Math.floor(pomodoroTimeLeft / 60);
+  const seconds = pomodoroTimeLeft % 60;
+  document.getElementById("pomodoroTime").textContent = `${minutes}:${
+    seconds < 10 ? "0" : ""
+  }${seconds}`;
+}
+
+function updatePomodoroModeDisplay() {
+  const modeKey = `pomodoro.mode.${pomodoroCurrentMode}`;
+  document.getElementById("pomodoroMode").textContent =
+    translations[currentLanguage][modeKey];
+  document.getElementById("pomodoroMode").dataset.i18n = modeKey;
+}
+
+function playAlarmSound() {
+  try {
+    const audioContext = new (window.AudioContext ||
+      window.webkitAudioContext)();
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+
+    oscillator.type = "sine";
+    oscillator.frequency.setValueAtTime(880, audioContext.currentTime);
+    gainNode.gain.setValueAtTime(1, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(
+      0.001,
+      audioContext.currentTime + 1
+    );
+
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 1);
+  } catch (e) {
+    console.error("Gagal memutar suara alarm:", e);
+  }
 }
