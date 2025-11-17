@@ -58,6 +58,11 @@
             <a href="#" data-section="schedule" data-i18n="nav.schedule"
               >Class Schedule</a
             >
+
+            <a href="#" data-section="room-finder" data-i18n="nav.roomfinder"
+              >Pencari Ruangan</a
+            >
+
             <a href="#" data-section="finance">
               <span data-i18n="nav.finance">Finance</span>
             </a>
@@ -117,6 +122,11 @@
           <a href="#" data-section="schedule" data-i18n="nav.schedule"
             >Class Schedule</a
           >
+
+          <a href="#" data-section="room-finder" data-i18n="nav.roomfinder"
+            >Pencari Ruangan</a
+          >
+
           <a href="#" data-section="finance">
             <span data-i18n="nav.finance">Finance</span>
           </a>
@@ -1338,6 +1348,56 @@
               </div>
             </div>
           </section>
+
+          <section class="section" id="room-finder" style="display: none">
+            <header class="main-header">
+              <h1 data-i18n="roomfinder.title">Pencari Ruang Kelas</h1>
+              <div data-i18n="roomfinder.subtitle">
+                Lihat ruangan yang sedang kosong atau dipakai saat ini.
+              </div>
+            </header>
+
+            <div class="room-finder-container">
+              <div class="room-list-column">
+                <h3 class="room-list-header available">
+                  <span data-i18n="roomfinder.available">Ruangan Kosong</span>
+                  (<span id="availableRoomCount">0</span>)
+                </h3>
+                <div class="room-list" id="availableRoomsList"></div>
+              </div>
+
+              <div class="room-list-column">
+                <h3 class="room-list-header in-use">
+                  <span data-i18n="roomfinder.inuse">Ruangan Dipakai</span>
+                  (<span id="inUseRoomCount">0</span>)
+                </h3>
+                <div class="room-list" id="inUseRoomsList"></div>
+              </div>
+            </div>
+          </section>
+
+          <div id="roomBookingModal" class="modal" style="display: none">
+            <div class="modal-content">
+              <h3>Booking Ruangan</h3>
+
+              <label>Nama Pemesan</label>
+              <input type="text" id="bookingName" />
+
+              <label>Tanggal</label>
+              <input type="date" id="bookingDate" />
+
+              <label>Jam Mulai</label>
+              <input type="time" id="bookingStart" />
+
+              <label>Jam Selesai</label>
+              <input type="time" id="bookingEnd" />
+
+              <div class="modal-actions">
+                <button id="confirmBooking">Kirim</button>
+                <button id="closeBookingModal">Batal</button>
+              </div>
+            </div>
+          </div>
 
           <!-- Finance Section -->
           <section id="finance" class="section" style="display: none">
