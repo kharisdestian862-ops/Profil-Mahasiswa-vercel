@@ -150,7 +150,6 @@ body {
   background: var(--surface);
   z-index: 1001;
   transition: left 0.3s ease;
-  overflow-y: auto;
   box-shadow: 4px 0 24px rgba(0, 0, 0, 0.3);
 }
 
@@ -164,6 +163,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 0;
+  overflow: hidden;
 }
 
 .mobile-sidebar .profile {
@@ -211,6 +211,7 @@ body {
   flex-direction: column;
   gap: 0.5rem;
   flex: 1;
+  overflow-y: auto;
 }
 
 .mobile-sidebar nav a {
@@ -9032,7 +9033,6 @@ body.dark-mode .room-card.in-use .room-status {
   background: #7f1d1d;
   color: #fca5a5;
 }
-
 
 @media (max-width: 768px) {
   .room-finder-container {
