@@ -70,6 +70,10 @@
               >Pusat Ujian</a
             >
 
+            <a href="#" data-section="info-center" data-i18n="nav.info"
+              >Info Kampus</a
+            >
+
             <a href="#" data-section="settings" data-i18n="nav.settings"
               >Settings</a
             >
@@ -122,6 +126,10 @@
           </a>
 
           <a href="#" data-section="ujian" data-i18n="nav.exams">Pusat Ujian</a>
+
+          <a href="#" data-section="info-center" data-i18n="nav.info"
+            >Info Kampus</a
+          >
 
           <a href="#" data-section="settings" data-i18n="nav.settings"
             >Settings</a
@@ -2818,7 +2826,44 @@ Jalankan tes untuk melihat hasil...
             </div>
           </section>
 
-          <!-- Settings Section -->
+          <section class="section" id="info-center" style="display: none">
+            <header class="main-header">
+              <h1 data-i18n="info.title">Pusat Informasi Kampus</h1>
+              <div data-i18n="info.subtitle">
+                Acara, pengumuman, dan berita terbaru dari kampus.
+              </div>
+            </header>
+
+            <div class="info-tabs">
+              <button
+                class="info-tab-btn active"
+                data-tab="eventsTab"
+                data-i18n="info.tab.events"
+              >
+                Kalender Acara
+              </button>
+              <button
+                class="info-tab-btn"
+                data-tab="announceTab"
+                data-i18n="info.tab.announcements"
+              >
+                Papan Pengumuman
+              </button>
+            </div>
+
+            <div id="eventsTab" class="info-tab-content active">
+              <div class="info-list" id="eventsListContainer"></div>
+            </div>
+
+            <div
+              id="announceTab"
+              class="info-tab-content"
+              style="display: none"
+            >
+              <div class="info-grid" id="announcementsListContainer"></div>
+            </div>
+          </section>
+
           <section class="section" id="settings" style="display: none">
             <h2 data-i18n="settings.title">Settings</h2>
             <div class="settings-content">
@@ -2888,7 +2933,6 @@ Jalankan tes untuk melihat hasil...
           </section>
         </main>
 
-        <!-- Right Sidebar -->
         <aside class="sidebar-right">
           <div class="student-info">
             <h3 id="rightSidebarName">Kharis Destian Maulana</h3>
