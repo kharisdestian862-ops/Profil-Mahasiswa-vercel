@@ -8922,3 +8922,113 @@ body.dark-mode .pomodoro-mode-btn.active {
   background: var(--primary);
   color: white;
 }
+
+.room-finder-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.room-list-column {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  height: 70vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.room-list-header {
+  font-size: 1.25rem;
+  font-weight: 600;
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid var(--border);
+}
+.room-list-header.available {
+  color: var(--success);
+  border-bottom-color: var(--success);
+}
+.room-list-header.in-use {
+  color: var(--error);
+  border-bottom-color: var(--error);
+}
+
+.room-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.room-card {
+  padding: 1rem;
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+
+.room-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.room-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.room-status {
+  font-size: 0.8rem;
+  font-weight: 500;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.room-card.available .room-status {
+  background: #dcfce7;
+  color: #065f46;
+}
+.room-card.in-use .room-status {
+  background: #fecaca;
+  color: #991b1b;
+}
+
+.room-info {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+body.dark-mode .room-list-column {
+  background: var(--surface);
+  border-color: var(--border);
+}
+body.dark-mode .room-list-header {
+  border-bottom-color: var(--border);
+}
+body.dark-mode .room-list-header.available {
+  color: var(--success);
+  border-bottom-color: var(--success);
+}
+body.dark-mode .room-list-header.in-use {
+  color: var(--error);
+  border-bottom-color: var(--error);
+}
+body.dark-mode .room-card {
+  background: var(--background);
+  border-color: var(--border);
+}
+body.dark-mode .room-card.available .room-status {
+  background: #065f46;
+  color: #34d399;
+}
+body.dark-mode .room-card.in-use .room-status {
+  background: #7f1d1d;
+  color: #fca5a5;
+}
