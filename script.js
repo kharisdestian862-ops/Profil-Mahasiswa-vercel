@@ -1615,7 +1615,7 @@ const translations = {
     "info.tag.academic": "Academic",
     "info.tag.general": "General",
     "info.tab.map": "Campus Map",
-    "info.map.k1.title": "Campus 1 (Main Building)",
+    "info.map.k1.title": "Campus 1",
     "info.map.k2.title": "Campus 2",
     "info.map.open": "Open in Google Maps",
 
@@ -2223,7 +2223,7 @@ const translations = {
     "info.tag.academic": "Akademik",
     "info.tag.general": "Umum",
     "info.tab.map": "Peta Kampus",
-    "info.map.k1.title": "Kampus 1 (Gedung Utama)",
+    "info.map.k1.title": "Kampus 1",
     "info.map.k2.title": "Kampus 2",
     "info.map.open": "Buka di Google Maps",
 
@@ -9619,6 +9619,30 @@ function initCampusMap() {
 
   console.log("Campus map initialized successfully!");
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  console.log("ðŸ", "Page loaded, checkingInfoKampustab...");
+
+  // Cek apakah section info-center sedang aktif
+  const infoSection = document.getElementById("info-center");
+  if (infoSection && infoSection.style.display !== "none") {
+    console.log("âœ… Info section active, initializing map");
+    setTimeout(() => {
+      initCampusMap();
+    }, 500);
+  }
+
+  // Listener untuk FAB button Info Kampus
+  const infoFab = document.querySelector('[data-section="info-center"]');
+  if (infoFab) {
+    infoFab.addEventListener("click", () => {
+      console.log("ðŸ—ºï¸ Info Kampus opened via navigation");
+      setTimeout(() => {
+        initCampusMap();
+      }, 200);
+    });
+  }
+});
 
 let pomodoroIsInitialized = false;
 let pomodoroTimer;
