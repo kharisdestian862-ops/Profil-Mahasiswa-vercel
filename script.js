@@ -1630,6 +1630,16 @@ const translations = {
     "pomodoro.reset": "Reset",
     "pomodoro.alarm.pomodoro": "Focus time is over! Time for a short break.",
     "pomodoro.alarm.break": "Break time is over! Time to get back to focus.",
+
+    "nav.roomfinder": "Room",
+    "roomfinder.title": "Classroom Finder",
+    "roomfinder.subtitle":
+      "See which classrooms are available or in use right now.",
+    "roomfinder.available": "Available Rooms",
+    "roomfinder.inuse": "In-Use Rooms",
+    "roomfinder.until": "Available until",
+    "roomfinder.occupied": "Occupied by",
+    "roomfinder.untilTime": "until",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -2238,6 +2248,16 @@ const translations = {
     "pomodoro.reset": "Reset",
     "pomodoro.alarm.pomodoro": "Waktu fokus habis! Saatnya istirahat pendek.",
     "pomodoro.alarm.break": "Waktu istirahat habis! Saatnya kembali fokus.",
+
+    "nav.roomfinder": "Ruangan",
+    "roomfinder.title": "Ruang Kelas",
+    "roomfinder.subtitle":
+      "Lihat ruangan kelas yang sedang kosong atau dipakai saat ini.",
+    "roomfinder.available": "Ruangan Kosong",
+    "roomfinder.inuse": "Ruangan Dipakai",
+    "roomfinder.until": "Kosong sampai",
+    "roomfinder.occupied": "Dipakai oleh",
+    "roomfinder.untilTime": "sampai",
   },
 };
 
@@ -2585,6 +2605,7 @@ function switchSection(sectionId) {
     if (sectionId === "mi-center") initMiCenter();
     if (sectionId === "info-center") initInfoCenter();
     if (sectionId === "study-center") initStudyCenter();
+    if (sectionId === "room-finder") initRoomFinder();
 
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
@@ -9770,4 +9791,182 @@ function playAlarmSound() {
   } catch (e) {
     console.error("Gagal memutar suara alarm:", e);
   }
+}
+
+let roomFinderInitialized = false;
+
+function initRoomFinder() {
+  if (roomFinderInitialized) {
+    updateRoomFinder();
+    return;
+  }
+
+  updateRoomFinder();
+
+  setInterval(updateRoomFinder, 60000);
+
+  roomFinderInitialized = true;
+}
+
+function updateRoomFinder() {
+  const now = new Date();
+  const currentDayIndex = now.getDay();
+  const currentTime = now.getHours() * 100 + now.getMinutes();
+
+  const daysMap = [
+    "sunday",
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+  ];
+  const currentDayKey = daysMap[currentDayIndex];
+
+  let allKnownRooms = new Set();
+  let occupiedRooms = new Map();
+
+  const scheduleDays = document.querySelectorAll(".schedule-day");
+  if (scheduleDays.length === 0) {
+    console.error("Data Jadwal (elemen .schedule-day) tidak ditemukan.");
+    return;
+  }
+
+  scheduleDays.forEach((dayEl) => {
+    const dayKey = dayEl.dataset.day;
+    const classes = dayEl.querySelectorAll(".class-item");
+
+    classes.forEach((classEl) => {
+      const room = classEl
+        .querySelector(".class-room")
+        .textContent.replace("Room: ", "")
+        .trim();
+      allKnownRooms.add(room);
+
+      if (dayKey === currentDayKey) {
+        const startTimeStr = classEl
+          .querySelector(".time-start")
+          .textContent.replace(":", "");
+        const endTimeStr = classEl
+          .querySelector(".time-end")
+          .textContent.replace(":", "");
+        const startTime = parseInt(startTimeStr, 10);
+        const endTime = parseInt(endTimeStr, 10);
+
+        if (currentTime >= startTime && currentTime < endTime) {
+          const courseName = classEl
+            .querySelector(".class-name")
+            .textContent.trim();
+          occupiedRooms.set(room, {
+            course: courseName,
+            end: classEl.querySelector(".time-end").textContent,
+          });
+        }
+      }
+    });
+  });
+
+  const availableList = document.getElementById("availableRoomsList");
+  const inUseList = document.getElementById("inUseRoomsList");
+
+  availableList.innerHTML = "";
+  inUseList.innerHTML = "";
+
+  let availableCount = 0;
+  let inUseCount = 0;
+
+  allKnownRooms.forEach((room) => {
+    if (occupiedRooms.has(room)) {
+      const details = occupiedRooms.get(room);
+      inUseList.appendChild(
+        createRoomCard(
+          room,
+          "in-use",
+          `${
+            translations[currentLanguage]["roomfinder.occupied"] ||
+            "Occupied by"
+          } ${details.course}`,
+          `${
+            translations[currentLanguage]["roomfinder.untilTime"] || "until"
+          } ${details.end}`
+        )
+      );
+      inUseCount++;
+    } else {
+      const nextClassTime = findNextClassForRoom(
+        scheduleDays,
+        currentDayKey,
+        room,
+        currentTime
+      );
+      availableList.appendChild(
+        createRoomCard(
+          room,
+          "available",
+          `${
+            translations[currentLanguage]["roomfinder.until"] ||
+            "Available until"
+          } ${nextClassTime}`,
+          ""
+        )
+      );
+      availableCount++;
+    }
+  });
+
+  document.getElementById("availableRoomCount").textContent = availableCount;
+  document.getElementById("inUseRoomCount").textContent = inUseCount;
+}
+
+function findNextClassForRoom(scheduleDays, currentDayKey, room, currentTime) {
+  let nextStartTime = "24:00";
+
+  const todaySchedule = document.querySelector(
+    `.schedule-day[data-day="${currentDayKey}"]`
+  );
+
+  if (todaySchedule) {
+    const classes = todaySchedule.querySelectorAll(".class-item");
+    let soonestTime = 2400;
+
+    classes.forEach((classEl) => {
+      const classRoom = classEl
+        .querySelector(".class-room")
+        .textContent.replace("Room: ", "")
+        .trim();
+      if (classRoom === room) {
+        const startTime = parseInt(
+          classEl.querySelector(".time-start").textContent.replace(":", ""),
+          10
+        );
+        if (startTime > currentTime && startTime < soonestTime) {
+          soonestTime = startTime;
+          nextStartTime = classEl.querySelector(".time-start").textContent;
+        }
+      }
+    });
+  }
+
+  return nextStartTime === "24:00" ? "End of Day" : nextStartTime;
+}
+
+function createRoomCard(roomName, status, infoLine1, infoLine2) {
+  const card = document.createElement("div");
+  card.className = `room-card ${status}`;
+
+  const statusText =
+    status === "available"
+      ? translations[currentLanguage]["roomfinder.available"] || "Available"
+      : translations[currentLanguage]["roomfinder.inuse"] || "In Use";
+
+  card.innerHTML = `
+    <div class="room-card-header">
+      <span class="room-name">${roomName}</span>
+      <span class="room-status">${statusText}</span>
+    </div>
+    <p class="room-info">${infoLine1}</p>
+    <p class="room-info">${infoLine2}</p>
+  `;
+  return card;
 }
