@@ -9032,3 +9032,28 @@ body.dark-mode .room-card.in-use .room-status {
   background: #7f1d1d;
   color: #fca5a5;
 }
+
+
+@media (max-width: 768px) {
+  .room-finder-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .room-list-column {
+    height: auto;
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .room-finder-container {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+
+  .room-list-column {
+    height: auto;
+    min-height: 300px;
+  }
+}
