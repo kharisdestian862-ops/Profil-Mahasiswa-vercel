@@ -8551,8 +8551,9 @@ body.dark-mode .flowchart-shape.shape-sequential-storage::after {
   margin: 0 auto;
   background: #1e293b;
   border-radius: 12px;
-  overflow: hidden;
+  overflow: visible;
   padding: 1rem;
+  min-height: 500px;
 }
 
 #campusMapImage {
