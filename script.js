@@ -970,6 +970,67 @@ const validCodes = {
   softwareeng: "SE7890",
 };
 
+const campusInfoData = {
+  events: [
+    {
+      id: 1,
+      title: "Seminar Nasional AI",
+      date: "2025-11-25",
+      time: "10:00",
+      location: "Aula Gedung Rektorat",
+      organizer: "HIMA TI",
+      status: "upcoming",
+    },
+    {
+      id: 2,
+      title: "Pekan Olahraga Mahasiswa (POM)",
+      date: "2025-11-28",
+      time: "08:00",
+      location: "Stadion Kampus",
+      organizer: "FPO",
+      status: "upcoming",
+    },
+    {
+      id: 3,
+      title: "Pameran DKV 'Pixelation'",
+      date: "2025-12-01",
+      time: "09:00",
+      location: "Galeri FTI",
+      organizer: "Prodi DKV",
+      status: "upcoming",
+    },
+  ],
+  announcements: [
+    {
+      id: 1,
+      title: "Pendaftaran Beasiswa 2026 Dibuka",
+      excerpt:
+        "Pendaftaran beasiswa prestasi akademik dan non-akademik telah dibuka mulai 15 November hingga 15 Desember 2025.",
+      date: "2025-11-16",
+      tag: "Akademik",
+      tagKey: "info.tag.academic",
+    },
+    {
+      id: 2,
+      title: "Perubahan Jadwal Libur Akhir Semester",
+      excerpt:
+        "Libur akhir semester dimajukan menjadi tanggal 20 Januari 2026. Harap perhatikan jadwal ujian akhir Anda.",
+      date: "2025-11-15",
+      tag: "Umum",
+      tagKey: "info.tag.general",
+    },
+    {
+      id: 3,
+      title: "Pendaftaran KKN 2026",
+      excerpt:
+        "Bagi mahasiswa semester 6, pendaftaran Kuliah Kerja Nyata (KKN) akan dibuka pada tanggal 1 Desember 2025.",
+      date: "2025-11-14",
+      tag: "Akademik",
+      tagKey: "info.tag.academic",
+    },
+  ],
+};
+
 // Language System - COMPREHENSIVE TRANSLATIONS
 const translations = {
   en: {
@@ -1543,6 +1604,16 @@ const translations = {
     "mi.download": "Download PNG",
 
     "chat.clearHistory": "Clear History",
+
+    "nav.info": "Campus Info",
+    "info.title": "Campus Information Center",
+    "info.subtitle": "Events, announcements, and the latest news from campus.",
+    "info.tab.events": "Event Calendar",
+    "info.tab.announcements": "Announcement Board",
+    "info.location": "Location:",
+    "info.organizer": "Organizer:",
+    "info.tag.academic": "Academic",
+    "info.tag.general": "General",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -2125,6 +2196,16 @@ const translations = {
     "mi.download": "Unduh PNG",
 
     "chat.clearHistory": "Bersihkan Riwayat",
+
+    "nav.info": "Info Kampus",
+    "info.title": "Pusat Informasi Kampus",
+    "info.subtitle": "Acara, pengumuman, dan berita terbaru dari kampus.",
+    "info.tab.events": "Kalender Acara",
+    "info.tab.announcements": "Papan Pengumuman",
+    "info.location": "Lokasi:",
+    "info.organizer": "Penyelenggara:",
+    "info.tag.academic": "Akademik",
+    "info.tag.general": "Umum",
   },
 };
 
@@ -2468,6 +2549,7 @@ function switchSection(sectionId) {
     if (sectionId === "fpo-center") initFpoCenter();
     if (sectionId === "si-center") initSiCenter();
     if (sectionId === "mi-center") initMiCenter();
+    if (sectionId === "info-center") initInfoCenter();
 
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
@@ -9325,4 +9407,113 @@ function downloadFlowchart() {
       console.error("Gagal download flowchart:", err);
       showNotification("Gagal mengunduh flowchart.", "error");
     });
+}
+
+let infoIsInitialized = false;
+
+function initInfoCenter() {
+  if (infoIsInitialized) return;
+
+  initInfoTabs();
+  populateEvents();
+  populateAnnouncements();
+
+  infoIsInitialized = true;
+}
+
+function initInfoTabs() {
+  const tabButtons = document.querySelectorAll(".info-tab-btn");
+  const tabContents = document.querySelectorAll(".info-tab-content");
+
+  tabButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      tabButtons.forEach((btn) => btn.classList.remove("active"));
+      tabContents.forEach((content) => {
+        content.style.display = "none";
+        content.classList.remove("active");
+      });
+
+      button.classList.add("active");
+      const targetTab = document.getElementById(button.dataset.tab);
+      if (targetTab) {
+        targetTab.style.display = "block";
+        targetTab.classList.add("active");
+      }
+    });
+  });
+}
+
+function populateEvents() {
+  const container = document.getElementById("eventsListContainer");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  campusInfoData.events.forEach((event) => {
+    const eventEl = document.createElement("div");
+
+    eventEl.className = "exam-card";
+
+    const eventDate = new Date(event.date);
+    const dateStr = eventDate
+      .toLocaleDateString(currentLanguage, { day: "numeric", month: "short" })
+      .toUpperCase();
+
+    const statusKey = `schedule.${event.status}`;
+    const statusText = translations[currentLanguage][statusKey] || "Upcoming";
+
+    eventEl.innerHTML = `
+      <div class="exam-time">
+        <span class="exam-date">${dateStr}</span>
+        <span class="exam-clock">${event.time}</span>
+      </div>
+      <div class="exam-info">
+        <h4 class="exam-name">${event.title}</h4>
+        <div class="exam-details">
+          <span class="exam-room"><b data-i18n="info.location">Lokasi:</b> ${event.location}</span>
+          <span class="exam-lecturer"><b data-i18n="info.organizer">Penyelenggara:</b> ${event.organizer}</span>
+        </div>
+      </div>
+      <div class="exam-action">
+        <div class="exam-status ${event.status}" data-i18n="${statusKey}">
+          ${statusText}
+        </div>
+      </div>
+    `;
+    container.appendChild(eventEl);
+  });
+
+  applyTranslations();
+}
+
+function populateAnnouncements() {
+  const container = document.getElementById("announcementsListContainer");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  campusInfoData.announcements.forEach((item) => {
+    const cardEl = document.createElement("div");
+    cardEl.className = "announcement-card";
+
+    const itemDate = new Date(item.date);
+    const dateStr = itemDate.toLocaleDateString(currentLanguage, {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+    const tagText = translations[currentLanguage][item.tagKey] || item.tag;
+
+    cardEl.innerHTML = `
+      <h3 class="announcement-title">${item.title}</h3>
+      <p class="announcement-excerpt">${item.excerpt}</p>
+      <div class="announcement-footer">
+        <span class="announcement-date">${dateStr}</span>
+        <span class="announcement-tag" data-i18n="${item.tagKey}">${tagText}</span>
+      </div>
+    `;
+    container.appendChild(cardEl);
+  });
+
+  applyTranslations();
 }
