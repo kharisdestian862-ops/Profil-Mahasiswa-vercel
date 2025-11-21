@@ -9264,6 +9264,16 @@ function makeElementDraggable(elmnt) {
     pos4 = e.clientY;
     elmnt.style.top = elmnt.offsetTop - pos2 + "px";
     elmnt.style.left = elmnt.offsetLeft - pos1 + "px";
+
+    if (window.miLines) {
+      window.miLines.forEach((line) => {
+        try {
+          line.position(); // Perintahkan garis untuk update posisi
+        } catch (err) {
+          // Abaikan error jika garis sudah dihapus
+        }
+      });
+    }
   }
 
   function closeDragElement() {
@@ -9437,6 +9447,10 @@ function initMiCenter() {
     createFlowchartShape("display", text, canvas);
   });
 
+  document
+    .getElementById("miCodeToFlowchartBtn")
+    .addEventListener("click", openCodeToFlowchartModal);
+
   document.getElementById("miClearCanvasBtn").addEventListener("click", () => {
     if (confirm("Anda yakin ingin menghapus semua bentuk dari kanvas?")) {
       canvas.innerHTML = "";
@@ -9460,6 +9474,7 @@ function initMiCenter() {
 
   miIsInitialized = true;
 }
+
 function createFlowchartShape(type, text, canvas) {
   const shapeId = `shape-${Date.now()}`;
   const shapeEl = document.createElement("div");
@@ -9530,6 +9545,8 @@ function makeFlowchartDraggable(elmnt) {
 
   if (header) {
     header.onmousedown = dragMouseDown;
+  } else {
+    elmnt.onmousedown = dragMouseDown;
   }
 
   function dragMouseDown(e) {
@@ -9544,18 +9561,29 @@ function makeFlowchartDraggable(elmnt) {
   function elementDrag(e) {
     e = e || window.event;
     e.preventDefault();
+    // Hitung pergeseran kursor
     pos1 = pos3 - e.clientX;
     pos2 = pos4 - e.clientY;
     pos3 = e.clientX;
     pos4 = e.clientY;
 
-    const newTop = elmnt.offsetTop - pos2;
-    const newLeft = elmnt.offsetLeft - pos1;
+    // Set posisi baru elemen
+    elmnt.style.top = elmnt.offsetTop - pos2 + "px";
+    elmnt.style.left = elmnt.offsetLeft - pos1 + "px";
 
-    elmnt.style.top = newTop + "px";
-    elmnt.style.left = newLeft + "px";
-
-    miLines.forEach((line) => line.position());
+    // ▼▼▼ PERBAIKAN DI SINI: Hapus 'window.' ▼▼▼
+    // Pastikan variabel miLines ada dan memiliki isi
+    if (typeof miLines !== "undefined" && miLines.length > 0) {
+      miLines.forEach((line) => {
+        try {
+          // Paksa LeaderLine untuk menghitung ulang posisi start & end
+          line.position();
+        } catch (err) {
+          // Abaikan jika garis error
+        }
+      });
+    }
+    // ▲▲▲ AKHIR PERBAIKAN ▲▲▲
   }
 
   function closeDragElement() {
@@ -9566,6 +9594,7 @@ function makeFlowchartDraggable(elmnt) {
 
 function downloadFlowchart() {
   const canvasEl = document.getElementById("miCanvas");
+
   const wrapperEl = document.getElementById("miCanvasWrapper");
 
   showNotification("Membuat gambar PNG...", "info");
@@ -9595,6 +9624,16 @@ function downloadFlowchart() {
       showNotification("Gagal mengunduh flowchart.", "error");
     });
 }
+
+const wrapperEl = document.getElementById("miCanvasWrapper");
+
+wrapperEl.addEventListener("scroll", () => {
+  miLines.forEach((line) => {
+    try {
+      line.position();
+    } catch {}
+  });
+});
 
 let infoIsInitialized = false;
 
@@ -10683,3 +10722,186 @@ function closeLfModal() {
 
 window.openLfModal = openLfModal;
 window.closeLfModal = closeLfModal;
+
+function openCodeToFlowchartModal() {
+  const modal = document.getElementById("codeToFlowchartModal");
+  modal.style.display = "flex";
+  setTimeout(() => modal.classList.add("active"), 10);
+}
+
+function closeCodeToFlowchartModal() {
+  const modal = document.getElementById("codeToFlowchartModal");
+  modal.classList.remove("active");
+  setTimeout(() => (modal.style.display = "none"), 300);
+}
+
+window.openCodeToFlowchartModal = openCodeToFlowchartModal;
+window.closeCodeToFlowchartModal = closeCodeToFlowchartModal;
+window.generateFlowchartFromInput = generateFlowchartFromInput;
+
+function generateFlowchartFromInput() {
+  const code = document.getElementById("flowchartCodeInput").value;
+  if (!code.trim()) return;
+
+  const canvas = document.getElementById("miCanvas");
+  
+  canvas.innerHTML = "";
+  miLines.forEach(line => line.remove());
+  miLines = [];
+
+  const lines = code.split("\n").filter(line => line.trim() !== "");
+  
+  let lastShape = null;
+  let startX = 400; 
+  let startY = 50;
+  let gapY = 120;
+  let shapeCount = 0;
+
+  lines.forEach((line) => {
+    const text = line.trim();
+    const lowerText = text.toLowerCase();
+    
+    // Filter: Abaikan baris kosong, komentar, atau kurung kurawal saja
+    if (!text || text === "{" || text === "}" || text.startsWith("//") || text.startsWith("#") || text.startsWith("/*")) {
+        return;
+    }
+
+    let type = "process"; 
+
+    // 1. DETEKSI TERMINATOR (Start/End)
+    if (
+        // Umum
+        lowerText.includes("start") || lowerText.includes("stop") || lowerText.includes("begin") || lowerText.includes("end") ||
+        // Python
+        lowerText.startsWith("def ") || lowerText.startsWith("return") ||
+        // JS / C++ / C#
+        lowerText.startsWith("function ") || lowerText.includes("class ") || 
+        lowerText.includes("void main") || lowerText.includes("int main") || lowerText.includes("static void main")
+    ) {
+      type = "terminator";
+    } 
+    
+    // 2. DETEKSI DECISION (Percabangan/Loop)
+    else if (
+        lowerText.startsWith("if") || lowerText.startsWith("else") || lowerText.startsWith("elif") ||
+        lowerText.startsWith("while") || lowerText.startsWith("for") || lowerText.startsWith("do ") ||
+        lowerText.startsWith("switch") || lowerText.startsWith("case")
+    ) {
+      type = "decision";
+    } 
+    
+    // 3. DETEKSI INPUT
+    else if (
+        // Umum
+        lowerText.includes("input") || lowerText.includes("read") || lowerText.includes("get") ||
+        // JS
+        lowerText.includes("prompt(") || 
+        // C++
+        lowerText.includes("cin >>") || 
+        // C#
+        lowerText.includes("console.readline") || 
+        // Java
+        lowerText.includes("scanner.next")
+    ) {
+      type = "inputoutput";
+    } 
+    
+    // 4. DETEKSI OUTPUT (Display)
+    else if (
+        // Umum
+        lowerText.includes("print") || lowerText.includes("display") || lowerText.includes("output") ||
+        // JS
+        lowerText.includes("console.log") || lowerText.includes("alert") ||
+        // Python
+        lowerText.startsWith("print(") ||
+        // C++
+        lowerText.includes("cout <<") || 
+        // C#
+        lowerText.includes("console.writeline") || lowerText.includes("console.write") ||
+        // Java
+        lowerText.includes("system.out.print")
+    ) {
+      type = "display"; 
+    } 
+    
+    // 5. DEFAULT (Process)
+    else {
+      type = "process";
+    }
+
+    const shapeEl = createShapeForGenerator(type, text, startX, startY + (shapeCount * gapY));
+    
+    if (lastShape) {
+      connectShapes(lastShape, shapeEl);
+    }
+
+    lastShape = shapeEl;
+    shapeCount++;
+  });
+
+  closeCodeToFlowchartModal();
+  showNotification("Flowchart berhasil digenerate dari kode!", "success");
+}
+
+// Fungsi Helper Khusus untuk Generator (tanpa drag manual awal)
+function createShapeForGenerator(type, text, x, y) {
+  const canvas = document.getElementById("miCanvas");
+  const shapeId = `shape-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+  const shapeEl = document.createElement("div");
+
+  // Mapping tipe untuk class CSS yang sesuai
+  let cssClass = type;
+  if (type === "inputoutput") cssClass = "shape-inputoutput";
+  if (type === "terminator") cssClass = "shape-terminator";
+  if (type === "process") cssClass = "shape-process";
+  if (type === "decision") cssClass = "shape-decision";
+  if (type === "display") cssClass = "shape-display";
+
+  // Fallback jika class spesifik tidak ada, gunakan nama tipe langsung
+  if (!cssClass.startsWith("shape-")) cssClass = `shape-${type}`;
+
+  shapeEl.className = `flowchart-shape ${cssClass}`;
+  shapeEl.id = shapeId;
+  shapeEl.style.left = `${x}px`;
+  shapeEl.style.top = `${y}px`;
+
+  shapeEl.innerHTML = `
+    <div class="flowchart-header" id="${shapeId}-header"></div>
+    <div class="shape-text" contenteditable="true">${text}</div>
+    <div class="flowchart-socket socket-top" data-shape-id="${shapeId}"></div>
+    <div class="flowchart-socket socket-bottom" data-shape-id="${shapeId}"></div>
+    <div class="flowchart-socket socket-left" data-shape-id="${shapeId}"></div>
+    <div class="flowchart-socket socket-right" data-shape-id="${shapeId}"></div>
+  `;
+
+  canvas.appendChild(shapeEl);
+  makeFlowchartDraggable(shapeEl); // Tetap bisa didrag setelah digenerate
+
+  // Re-attach socket listeners
+  shapeEl.querySelectorAll(".flowchart-socket").forEach((socket) => {
+    socket.addEventListener("click", (e) => {
+      e.stopPropagation();
+      handleSocketClick(socket, shapeId);
+    });
+  });
+
+  return shapeEl;
+}
+
+function connectShapes(source, target) {
+  const sourceSocket = source.querySelector(".socket-bottom");
+  const targetSocket = target.querySelector(".socket-top");
+
+  if (sourceSocket && targetSocket) {
+    const line = new LeaderLine(sourceSocket, targetSocket, {
+      color: "#64748b",
+      size: 3,
+      path: "straight", // Gunakan garis lurus untuk auto-layout vertikal
+      endPlug: "arrow1",
+      startSocket: "auto",
+      endSocket: "auto",
+      parent: document.getElementById("miCanvas"),
+    });
+    miLines.push(line);
+  }
+}
