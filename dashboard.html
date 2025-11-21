@@ -51,6 +51,9 @@
             <a href="#" data-section="profile" data-i18n="nav.profile"
               >Profile</a
             >
+            <a href="#" data-section="ktm-digital" data-i18n="nav.ktm"
+              >KTM Digital</a
+            >
             <a href="#" data-section="grades" data-i18n="nav.grades">Grades</a>
             <a href="#" data-section="attendance" data-i18n="nav.attendance"
               >Attendance</a
@@ -115,6 +118,9 @@
             >Dashboard</a
           >
           <a href="#" data-section="profile" data-i18n="nav.profile">Profile</a>
+          <a href="#" data-section="ktm-digital" data-i18n="nav.ktm"
+            >KTM Digital</a
+          >
           <a href="#" data-section="grades" data-i18n="nav.grades">Grades</a>
           <a href="#" data-section="attendance" data-i18n="nav.attendance"
             >Attendance</a
@@ -535,6 +541,78 @@
                 <span class="info-value" id="profileDetailEmail"
                   >kharis.destian@example.ac.id</span
                 >
+              </div>
+            </div>
+          </section>
+
+          <section class="section" id="ktm-digital" style="display: none">
+            <header class="main-header">
+              <h1 data-i18n="ktm.title">KTM Digital</h1>
+              <div data-i18n="ktm.subtitle">
+                Kartu Tanda Mahasiswa Virtual Anda. Klik kartu untuk membalik.
+              </div>
+            </header>
+
+            <div class="ktm-container">
+              <div class="ktm-scene">
+                <div class="ktm-card" id="studentCard">
+                  <div class="ktm-face ktm-front">
+                    <div class="ktm-header">
+                      <div class="ktm-logo">*</div>
+                      <div class="ktm-univ-name">
+                        UNIVERSITAS CATUR INSAN CENDEKIA
+                      </div>
+                    </div>
+                    <div class="ktm-body">
+                      <div class="ktm-photo-area">
+                        <div class="ktm-photo-placeholder" id="ktmPhoto">
+                          KD
+                        </div>
+                      </div>
+                      <div class="ktm-details">
+                        <h3 id="ktmName">Nama Mahasiswa</h3>
+                        <p class="ktm-label" data-i18n="profile.nim">NIM</p>
+                        <p class="ktm-value" id="ktmNim">2023001</p>
+                        <p class="ktm-label" data-i18n="profile.program">
+                          Program Studi
+                        </p>
+                        <p class="ktm-value" id="ktmProdi">
+                          Teknik Informatika
+                        </p>
+                      </div>
+                    </div>
+                    <div class="ktm-footer">
+                      <span class="ktm-chip"></span>
+                      <span class="ktm-type">STUDENT CARD</span>
+                    </div>
+                  </div>
+
+                  <div class="ktm-face ktm-back">
+                    <div class="ktm-back-header">KETENTUAN PENGGUNAAN</div>
+                    <div class="ktm-rules">
+                      <ol>
+                        <li>Kartu ini adalah milik Universitas CIC.</li>
+                        <li>Harap dibawa saat mengikuti kegiatan akademik.</li>
+                        <li>Kehilangan kartu harap lapor ke BAAK.</li>
+                      </ol>
+                    </div>
+                    <div class="ktm-qr-area">
+                      <div id="ktmQrCode"></div>
+                      <p id="ktmNimQr">2023001</p>
+                    </div>
+                    <div class="ktm-back-footer">www.cic.ac.id</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="ktm-actions">
+                <button
+                  class="exam-btn"
+                  id="downloadKtmBtn"
+                  data-i18n="ktm.download"
+                >
+                  Unduh KTM (PNG)
+                </button>
               </div>
             </div>
           </section>
@@ -3359,6 +3437,7 @@ Jalankan tes untuk melihat hasil...
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/leader-line-new@1.1.9/leader-line.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
