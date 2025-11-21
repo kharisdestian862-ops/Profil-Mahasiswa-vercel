@@ -1651,6 +1651,24 @@ const translations = {
     "ktm.rule2": "Please carry during academic activities.",
     "ktm.rule3": "Report lost cards to Academic Administration.",
     "ktm.type": "STUDENT CARD",
+
+    "nav.marketplace": "Marketplace",
+    "market.title": "Student Marketplace",
+    "market.subtitle": "Buy and sell items, services, and food within campus.",
+    "market.sell": "+ Sell Item",
+    "market.cat.all": "All",
+    "market.cat.book": "Books",
+    "market.cat.elec": "Electronics",
+    "market.cat.food": "Food",
+    "market.cat.service": "Services",
+    "market.chat": "Chat Seller",
+    "market.sellTitle": "Sell Item/Service",
+    "market.form.name": "Product Name",
+    "market.form.price": "Price (Rp)",
+    "market.form.category": "Category",
+    "market.form.wa": "WhatsApp Number",
+    "market.form.submit": "Post Ad",
+    "market.success": "Item posted successfully!",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -2281,6 +2299,25 @@ const translations = {
     "ktm.rule2": "Harap dibawa saat mengikuti kegiatan akademik.",
     "ktm.rule3": "Kehilangan kartu harap lapor ke BAAK.",
     "ktm.type": "KARTU MAHASISWA",
+
+    "nav.marketplace": "Marketplace",
+    "market.title": "Marketplace Mahasiswa",
+    "market.subtitle":
+      "Jual beli barang bekas, jasa, dan makanan antar mahasiswa.",
+    "market.sell": "+ Jual Barang",
+    "market.cat.all": "Semua",
+    "market.cat.book": "Buku",
+    "market.cat.elec": "Elektronik",
+    "market.cat.food": "Makanan",
+    "market.cat.service": "Jasa",
+    "market.chat": "Chat Penjual",
+    "market.sellTitle": "Jual Barang/Jasa",
+    "market.form.name": "Nama Produk",
+    "market.form.price": "Harga (Rp)",
+    "market.form.category": "Kategori",
+    "market.form.wa": "Nomor WhatsApp",
+    "market.form.submit": "Pasang Iklan",
+    "market.success": "Iklan berhasil dipasang!",
   },
 };
 
@@ -2630,6 +2667,7 @@ function switchSection(sectionId) {
     if (sectionId === "study-center") initStudyCenter();
     if (sectionId === "room-finder") initRoomFinder();
     if (sectionId === "ktm-digital") initKTM();
+    if (sectionId === "marketplace") initMarketplace();
 
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
@@ -2655,10 +2693,10 @@ function switchSection(sectionId) {
         translations[currentLanguage]["nav.studyroom"] || "Study Room",
       ]);
     }
+    if (sectionId === "marketplace") {
+      initMarketplace();
+    }
   }
-
-  // 5. HAPUS BARIS INI: Jangan panggil loadUserProfile() di sini
-  // loadUserProfile(); // ← HAPUS BARIS INI
 }
 
 // Initialize sidebar navigation
@@ -10077,3 +10115,223 @@ function processDownloadKTM() {
       showNotification("Gagal mengunduh KTM", "error");
     });
 }
+
+let marketInitialized = false;
+let marketItems = JSON.parse(localStorage.getItem("marketItems") || "[]");
+
+// Update Data Dummy dengan Deskripsi (Jika kosong/reset)
+if (marketItems.length === 0) {
+  marketItems = [
+    {
+      id: 1,
+      name: "Buku Algoritma Dasar",
+      price: 45000,
+      category: "book",
+      seller: "Budi",
+      wa: "628123456789",
+      description:
+        "Buku bekas kondisi 90%. Tidak ada coretan, halaman lengkap. Cocok untuk semester 1.",
+    },
+    {
+      id: 2,
+      name: "Jasa Instal Ulang Laptop",
+      price: 50000,
+      category: "service",
+      seller: "Andi",
+      wa: "628987654321",
+      description:
+        "Melayani instal ulang Windows 10/11, Office, dan aplikasi standar kuliah. Bisa dipanggil ke kost sekitar kampus.",
+    },
+    {
+      id: 3,
+      name: "Mouse Logitech Silent",
+      price: 80000,
+      category: "electronics",
+      seller: "Siti",
+      wa: "62811223344",
+      description:
+        "Mouse wireless silent click. Baterai awet, dongle USB ada. Baru dipakai 1 bulan.",
+    },
+    {
+      id: 4,
+      name: "Nasi Kulit Syuurga",
+      price: 20000,
+      category: "food",
+      seller: "Kantin Kejujuran",
+      wa: "62855667788",
+      description:
+        "Paket nasi kulit ayam krispi + serundeng + sambal bawang. Bisa antar ke lobi FTI.",
+    },
+  ];
+  localStorage.setItem("marketItems", JSON.stringify(marketItems));
+}
+
+// Icon SVG Mapping
+const categoryIcons = {
+  book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+  electronics:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>',
+  food: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>',
+  service:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>',
+  other:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>',
+};
+
+function initMarketplace() {
+  if (!marketInitialized) {
+    const filterBtns = document.querySelectorAll(".market-filter-btn");
+    filterBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        filterBtns.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderMarketplace(btn.dataset.category);
+      });
+    });
+
+    document
+      .getElementById("sellForm")
+      .addEventListener("submit", handleSellSubmit);
+    marketInitialized = true;
+  }
+
+  renderMarketplace("all");
+
+  const allBtn = document.querySelector(
+    '.market-filter-btn[data-category="all"]'
+  );
+  if (allBtn) {
+    document
+      .querySelectorAll(".market-filter-btn")
+      .forEach((b) => b.classList.remove("active"));
+    allBtn.classList.add("active");
+  }
+}
+
+function renderMarketplace(category) {
+  const container = document.getElementById("marketGrid");
+  container.innerHTML = "";
+
+  const items =
+    category === "all"
+      ? marketItems
+      : marketItems.filter((item) => item.category === category);
+
+  items.forEach((item) => {
+    const card = document.createElement("div");
+    card.className = "market-card";
+    // Tambahkan onclick untuk membuka detail
+    card.style.cursor = "pointer";
+    card.onclick = (e) => {
+      // Jangan buka modal jika yang diklik adalah tombol WA
+      if (!e.target.closest(".market-wa-btn")) {
+        openProductDetail(item.id);
+      }
+    };
+
+    const iconSvg = categoryIcons[item.category] || categoryIcons["other"];
+
+    card.innerHTML = `
+      <div class="market-img-placeholder">${iconSvg}</div>
+      <div class="market-info">
+        <div class="market-cat-badge">${item.category}</div>
+        <h3 class="market-title">${item.name}</h3>
+        <div class="market-price">Rp ${item.price.toLocaleString("id-ID")}</div>
+        <div class="market-seller">
+          <span>👤 ${item.seller}</span>
+        </div>
+        <button class="market-wa-btn" onclick="contactSeller('${item.wa}', '${
+      item.name
+    }')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          <span data-i18n="market.chat">Chat</span>
+        </button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// Fungsi Membuka Modal Detail Produk
+function openProductDetail(id) {
+  const item = marketItems.find((i) => i.id === id);
+  if (!item) return;
+
+  const modal = document.getElementById("productDetailModal");
+
+  // Isi konten modal
+  const iconSvg = categoryIcons[item.category] || categoryIcons["other"];
+  document.getElementById("detailImagePlaceholder").innerHTML = iconSvg;
+
+  document.getElementById("detailCategory").textContent = item.category;
+  document.getElementById("detailName").textContent = item.name;
+  document.getElementById("detailPrice").textContent =
+    "Rp " + item.price.toLocaleString("id-ID");
+  document.getElementById("detailSeller").textContent = item.seller;
+  document.getElementById("detailWA").textContent = item.wa;
+  document.getElementById("detailDescription").textContent =
+    item.description || "Tidak ada deskripsi.";
+
+  // Update tombol chat di modal
+  const chatBtn = document.getElementById("detailChatBtn");
+  chatBtn.onclick = () => contactSeller(item.wa, item.name);
+  chatBtn.innerHTML = `<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="margin-right: 8px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg> Hubungi Penjual`;
+
+  // Tampilkan modal
+  modal.style.display = "flex";
+  setTimeout(() => modal.classList.add("active"), 10);
+}
+
+function closeProductModal() {
+  const modal = document.getElementById("productDetailModal");
+  modal.classList.remove("active");
+  setTimeout(() => (modal.style.display = "none"), 300);
+}
+
+function openSellModal() {
+  const modal = document.getElementById("sellModal");
+  modal.style.display = "flex";
+  setTimeout(() => modal.classList.add("active"), 10);
+}
+
+function closeSellModal() {
+  const modal = document.getElementById("sellModal");
+  modal.classList.remove("active");
+  setTimeout(() => (modal.style.display = "none"), 300);
+}
+
+function handleSellSubmit(e) {
+  e.preventDefault();
+  const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
+
+  const newItem = {
+    id: Date.now(),
+    name: document.getElementById("sellName").value,
+    price: parseInt(document.getElementById("sellPrice").value),
+    category: document.getElementById("sellCategory").value,
+    seller: user.fullName || "Mahasiswa",
+    wa: document.getElementById("sellWA").value,
+    description: "Produk baru dari " + (user.fullName || "Mahasiswa"),
+  };
+
+  marketItems.unshift(newItem);
+  localStorage.setItem("marketItems", JSON.stringify(marketItems));
+
+  closeSellModal();
+  renderMarketplace("all");
+  document.getElementById("sellForm").reset();
+  showNotification(translations[currentLanguage]["market.success"], "success");
+}
+
+function contactSeller(wa, productName) {
+  const text = `Halo, saya tertarik dengan produk "${productName}" yang Anda jual di Dashboard Mahasiswa.`;
+  const url = `https://wa.me/${wa}?text=${encodeURIComponent(text)}`;
+  window.open(url, "_blank");
+}
+
+// Expose global functions
+window.openSellModal = openSellModal;
+window.closeSellModal = closeSellModal;
+window.contactSeller = contactSeller;
+window.openProductDetail = openProductDetail;
+window.closeProductModal = closeProductModal;
