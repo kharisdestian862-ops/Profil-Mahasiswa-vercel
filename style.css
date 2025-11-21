@@ -9590,3 +9590,7 @@ body.dark-mode .product-cat-badge {
   margin-top: 1rem;
   width: 100%;
 }
+
+#marketFab {
+  background: #8b5cf6;
+}
