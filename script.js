@@ -2584,6 +2584,7 @@ function initFAB() {
     siFab: "si-center",
     miFab: "mi-center",
     pomodoroFab: "study-center",
+    marketFab: "marketplace",
   };
 
   Object.keys(fabItems).forEach((id) => {
@@ -2639,7 +2640,9 @@ function switchSection(sectionId) {
     "si-center",
     "mi-center",
     "study-center",
+    "marketplace",
   ];
+
   if (fullWidthSections.includes(sectionId)) {
     document.body.classList.add("full-layout-active");
   } else {
