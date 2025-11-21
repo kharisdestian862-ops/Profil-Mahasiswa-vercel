@@ -1683,6 +1683,23 @@ const translations = {
     "career.form.cover": "Cover Letter (Optional)",
     "career.form.submit": "Submit Application",
     "career.success": "Application sent successfully!",
+
+    "nav.help": "Help Center",
+    "help.title": "Student Help Center",
+    "help.subtitle": "Submit aspirations or report lost items on campus.",
+    "help.tab.voice": "Student Voice",
+    "help.tab.lf": "Lost & Found",
+    "help.voice.formTitle": "Submit Report/Aspiration",
+    "help.voice.type": "Report Type",
+    "help.voice.desc": "Description",
+    "help.voice.submit": "Submit Report",
+    "help.voice.history": "Your History",
+    "help.voice.success": "Report submitted successfully!",
+    "help.lf.post": "+ Post Item",
+    "help.lf.modalTitle": "Post Lost/Found Item",
+    "help.lf.type": "Status",
+    "help.lf.item": "Item Name",
+    "help.lf.location": "Location",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -2347,6 +2364,24 @@ const translations = {
     "career.form.cover": "Cover Letter (Opsional)",
     "career.form.submit": "Kirim Lamaran",
     "career.success": "Lamaran berhasil dikirim!",
+
+    "nav.help": "Pusat Bantuan",
+    "help.title": "Pusat Bantuan & Aspirasi",
+    "help.subtitle":
+      "Sampaikan aspirasi Anda atau cari barang yang hilang di area kampus.",
+    "help.tab.voice": "Suara Mahasiswa",
+    "help.tab.lf": "Barang Hilang/Temu",
+    "help.voice.formTitle": "Sampaikan Aspirasi / Laporan",
+    "help.voice.type": "Jenis Laporan",
+    "help.voice.desc": "Deskripsi",
+    "help.voice.submit": "Kirim Laporan",
+    "help.voice.history": "Riwayat Laporan Anda",
+    "help.voice.success": "Laporan berhasil dikirim!",
+    "help.lf.post": "+ Post Barang",
+    "help.lf.modalTitle": "Info Barang Hilang/Temu",
+    "help.lf.type": "Status",
+    "help.lf.item": "Nama Barang",
+    "help.lf.location": "Lokasi",
   },
 };
 
@@ -2701,6 +2736,7 @@ function switchSection(sectionId) {
     if (sectionId === "ktm-digital") initKTM();
     if (sectionId === "marketplace") initMarketplace();
     if (sectionId === "career-center") initCareerCenter();
+    if (sectionId === "help-center") initHelpCenter();
 
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
@@ -10524,3 +10560,126 @@ function closeApplyModal() {
 }
 window.openApplyModal = openApplyModal;
 window.closeApplyModal = closeApplyModal;
+
+let helpInitialized = false;
+let voiceData = JSON.parse(localStorage.getItem("voiceData") || "[]");
+let lfData = JSON.parse(localStorage.getItem("lfData") || "[]");
+
+function initHelpCenter() {
+  if (!helpInitialized) {
+    const tabButtons = document.querySelectorAll(".help-tab-btn");
+    const tabContents = document.querySelectorAll(".help-tab-content");
+
+    tabButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        tabButtons.forEach((btn) => btn.classList.remove("active"));
+        tabContents.forEach((content) => {
+          content.style.display = "none";
+          content.classList.remove("active");
+        });
+        button.classList.add("active");
+        document.getElementById(button.dataset.tab).style.display = "block";
+      });
+    });
+
+    document
+      .getElementById("voiceForm")
+      .addEventListener("submit", handleVoiceSubmit);
+    document
+      .getElementById("lfForm")
+      .addEventListener("submit", handleLfSubmit);
+
+    helpInitialized = true;
+  }
+  renderVoiceHistory();
+  renderLfItems();
+}
+
+function handleVoiceSubmit(e) {
+  e.preventDefault();
+  const newItem = {
+    id: Date.now(),
+    type: document.getElementById("voiceType").value,
+    desc: document.getElementById("voiceDesc").value,
+    status: "sent",
+    date: new Date().toLocaleDateString(),
+  };
+  voiceData.unshift(newItem);
+  localStorage.setItem("voiceData", JSON.stringify(voiceData));
+  e.target.reset();
+  renderVoiceHistory();
+  showNotification(
+    translations[currentLanguage]["help.voice.success"],
+    "success"
+  );
+}
+
+function renderVoiceHistory() {
+  const list = document.getElementById("voiceList");
+  list.innerHTML = "";
+  voiceData.forEach((item) => {
+    const div = document.createElement("div");
+    div.className = "voice-item";
+    div.innerHTML = `
+      <div class="voice-header">
+        <span class="voice-type">${item.type}</span>
+        <span class="voice-status ${item.status}">${item.status}</span>
+      </div>
+      <p class="voice-desc">${item.desc}</p>
+      <small style="color:var(--text-secondary)">${item.date}</small>
+    `;
+    list.appendChild(div);
+  });
+}
+
+function handleLfSubmit(e) {
+  e.preventDefault();
+  const newItem = {
+    id: Date.now(),
+    type: document.getElementById("lfType").value,
+    name: document.getElementById("lfName").value,
+    location: document.getElementById("lfLocation").value,
+    contact: document.getElementById("lfContact").value,
+    date: new Date().toLocaleDateString(),
+  };
+  lfData.unshift(newItem);
+  localStorage.setItem("lfData", JSON.stringify(lfData));
+  closeLfModal();
+  e.target.reset();
+  renderLfItems();
+  showNotification("Post berhasil ditambahkan!", "success");
+}
+
+function renderLfItems() {
+  const grid = document.getElementById("lfGrid");
+  grid.innerHTML = "";
+  lfData.forEach((item) => {
+    const div = document.createElement("div");
+    div.className = "lf-card";
+    div.innerHTML = `
+      <span class="lf-badge ${item.type}">${item.type}</span>
+      <div class="lf-title">${item.name}</div>
+      <div class="lf-detail">📍 ${item.location}</div>
+      <div class="lf-detail">📅 ${item.date}</div>
+      <button class="lf-contact-btn" onclick="contactSeller('${item.contact}', '${item.name}')">
+        Hubungi (WA)
+      </button>
+    `;
+    grid.appendChild(div);
+  });
+}
+
+function openLfModal() {
+  const modal = document.getElementById("lfModal");
+  modal.style.display = "flex";
+  setTimeout(() => modal.classList.add("active"), 10);
+}
+
+function closeLfModal() {
+  const modal = document.getElementById("lfModal");
+  modal.classList.remove("active");
+  setTimeout(() => (modal.style.display = "none"), 300);
+}
+
+window.openLfModal = openLfModal;
+window.closeLfModal = closeLfModal;
