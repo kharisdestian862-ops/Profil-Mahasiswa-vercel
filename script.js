@@ -10095,26 +10095,53 @@ function initKTM() {
 }
 
 function processDownloadKTM() {
-  const cardElement = document.querySelector(".ktm-card");
+  const card = document.getElementById("studentCard");
+
+  const isBackVisible = card.classList.contains("is-flipped");
+
+  const sourceElement = isBackVisible
+    ? document.querySelector(".ktm-back")
+    : document.querySelector(".ktm-front");
 
   showNotification("Sedang memproses gambar KTM...", "info");
 
-  // html2canvas opsi
+  const clone = sourceElement.cloneNode(true);
+
+  clone.style.transform = "none";
+  clone.style.position = "fixed";
+  clone.style.top = "-10000px";
+  clone.style.left = "0";
+  clone.style.width = "400px";
+  clone.style.height = "250px";
+  clone.style.borderRadius = "16px";
+
+  document.body.appendChild(clone);
+
   const options = {
     backgroundColor: null,
-    scale: 3, // Kualitas tinggi
+    scale: 3,
+    logging: false,
+    useCORS: true,
   };
 
-  html2canvas(cardElement, options)
+  html2canvas(clone, options)
     .then((canvas) => {
       const link = document.createElement("a");
-      link.download = "KTM_Digital_UCIC.png";
+
+      link.download = `KTM_Digital_UCIC_${
+        isBackVisible ? "Belakang" : "Depan"
+      }.png`;
       link.href = canvas.toDataURL("image/png");
       link.click();
+
+      document.body.removeChild(clone);
+
       showNotification("KTM berhasil diunduh!", "success");
     })
     .catch((err) => {
       console.error(err);
+
+      if (document.body.contains(clone)) document.body.removeChild(clone);
       showNotification("Gagal mengunduh KTM", "error");
     });
 }
