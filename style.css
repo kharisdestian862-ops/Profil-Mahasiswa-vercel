@@ -7926,6 +7926,23 @@ body.dark-mode .erd-table-footer input {
   color: var(--text-primary);
 }
 
+#miCanvasWrapper {
+  position: relative;
+  overflow: auto;
+  contain: layout paint;
+}
+
+#miCanvasWrapper > svg.leader-line {
+  position: absolute !important;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  clip-path: inset(0 0 0 0);
+  overflow: hidden;
+  width: 100% !important;
+  height: 100% !important;
+}
+
 #miFab {
   background: #22c55e;
 }
