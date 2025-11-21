@@ -9057,3 +9057,255 @@ body.dark-mode .room-card.in-use .room-status {
     min-height: 300px;
   }
 }
+
+.ktm-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  padding: 2rem;
+}
+
+.ktm-scene {
+  width: 400px;
+  height: 250px;
+  perspective: 1000px; /* Memberikan efek 3D */
+  cursor: pointer;
+}
+
+.ktm-card {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+/* Class ini ditambahkan via JS untuk membalik kartu */
+.ktm-card.is-flipped {
+  transform: rotateY(180deg);
+}
+
+.ktm-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  -webkit-backface-visibility: hidden; /* Safari */
+  backface-visibility: hidden;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+}
+
+/* --- TAMPILAN DEPAN --- */
+.ktm-front {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 1.2rem;
+}
+
+/* Efek pattern background (opsional) */
+.ktm-front::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: radial-gradient(
+      circle at 20% 120%,
+      rgba(255, 255, 255, 0.1) 10%,
+      transparent 10.5%
+    ),
+    radial-gradient(
+      circle at 80% -20%,
+      rgba(255, 255, 255, 0.1) 20%,
+      transparent 20.5%
+    );
+  pointer-events: none;
+}
+
+.ktm-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 1.5rem;
+}
+
+.ktm-logo {
+  font-size: 24px;
+  font-weight: bold;
+  background: white;
+  color: #1e3a8a;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ktm-univ-name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  line-height: 1.2;
+}
+
+.ktm-body {
+  display: flex;
+  gap: 1.5rem;
+  flex: 1;
+}
+
+.ktm-photo-placeholder {
+  width: 80px;
+  height: 100px;
+  background: #e2e8f0;
+  color: #1e3a8a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.5rem;
+  border-radius: 8px;
+  border: 2px solid white;
+}
+
+.ktm-details h3 {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.ktm-label {
+  font-size: 0.65rem;
+  opacity: 0.8;
+  text-transform: uppercase;
+  margin-bottom: 0.1rem;
+}
+
+.ktm-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.ktm-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.ktm-chip {
+  width: 40px;
+  height: 28px;
+  background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+  border-radius: 6px;
+  position: relative;
+}
+.ktm-chip::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.ktm-type {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  opacity: 0.8;
+}
+
+/* --- TAMPILAN BELAKANG --- */
+.ktm-back {
+  background: #f8fafc;
+  color: #333;
+  transform: rotateY(180deg);
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e2e8f0;
+}
+
+.ktm-back-header {
+  background: #1e3a8a;
+  height: 40px;
+  width: 100%;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.ktm-rules {
+  font-size: 0.7rem;
+  padding: 0 1.5rem;
+  color: #64748b;
+  flex: 1;
+}
+.ktm-rules ol {
+  padding-left: 15px;
+}
+.ktm-rules li {
+  margin-bottom: 4px;
+}
+
+.ktm-qr-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 1rem;
+}
+
+#ktmNimQr {
+  font-family: monospace;
+  font-size: 0.9rem;
+  letter-spacing: 2px;
+  font-weight: 600;
+}
+
+.ktm-back-footer {
+  text-align: center;
+  font-size: 0.7rem;
+  color: #94a3b8;
+  margin-bottom: 10px;
+}
+
+/* Responsif untuk HP */
+@media (max-width: 480px) {
+  .ktm-scene {
+    width: 100%;
+    max-width: 340px; /* Sedikit lebih kecil di HP */
+    height: 215px;
+  }
+  .ktm-header {
+    margin-bottom: 1rem;
+  }
+  .ktm-logo {
+    width: 32px;
+    height: 32px;
+    font-size: 18px;
+  }
+  .ktm-univ-name {
+    font-size: 0.8rem;
+  }
+  .ktm-photo-placeholder {
+    width: 70px;
+    height: 90px;
+  }
+  .ktm-details h3 {
+    font-size: 1rem;
+  }
+}
