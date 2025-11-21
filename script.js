@@ -1640,6 +1640,11 @@ const translations = {
     "roomfinder.until": "Available until",
     "roomfinder.occupied": "Occupied by",
     "roomfinder.untilTime": "until",
+
+    "nav.ktm": "Digital Student ID",
+    "ktm.title": "Digital Student ID (KTM)",
+    "ktm.subtitle": "Your virtual student card. Click to flip.",
+    "ktm.download": "Download Card",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -2258,6 +2263,12 @@ const translations = {
     "roomfinder.until": "Kosong sampai",
     "roomfinder.occupied": "Dipakai oleh",
     "roomfinder.untilTime": "sampai",
+
+    "nav.ktm": "KTM Digital",
+    "ktm.title": "KTM Digital",
+    "ktm.subtitle":
+      "Kartu Tanda Mahasiswa Virtual Anda. Klik kartu untuk membalik.",
+    "ktm.download": "Unduh KTM",
   },
 };
 
@@ -2606,6 +2617,7 @@ function switchSection(sectionId) {
     if (sectionId === "info-center") initInfoCenter();
     if (sectionId === "study-center") initStudyCenter();
     if (sectionId === "room-finder") initRoomFinder();
+    if (sectionId === "ktm-digital") initKTM();
 
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
@@ -9969,4 +9981,87 @@ function createRoomCard(roomName, status, infoLine1, infoLine2) {
     <p class="room-info">${infoLine2}</p>
   `;
   return card;
+}
+
+let ktmInitialized = false;
+
+function initKTM() {
+  const card = document.getElementById("studentCard");
+  const downloadBtn = document.getElementById("downloadKtmBtn");
+
+  // 1. Isi Data Mahasiswa
+  const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  if (user.fullName) {
+    document.getElementById("ktmName").textContent = user.fullName;
+    document.getElementById("ktmNim").textContent = user.nim;
+    document.getElementById("ktmProdi").textContent = user.programStudi;
+    document.getElementById("ktmNimQr").textContent = user.nim;
+
+    // Inisial Foto
+    const initials = user.fullName
+      .split(" ")
+      .slice(0, 2)
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase();
+    document.getElementById("ktmPhoto").textContent = initials;
+  }
+
+  // 2. Generate QR Code (Hanya sekali)
+  if (!ktmInitialized) {
+    const qrContainer = document.getElementById("ktmQrCode");
+    qrContainer.innerHTML = ""; // Bersihkan
+    new QRCode(qrContainer, {
+      text: user.nim || "2023001",
+      width: 80,
+      height: 80,
+      colorDark: "#000000",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H,
+    });
+
+    // 3. Event Listener: Flip Card
+    card.addEventListener("click", () => {
+      card.classList.toggle("is-flipped");
+    });
+
+    // 4. Event Listener: Download
+    downloadBtn.addEventListener("click", () => {
+      // Pastikan kartu menghadap depan sebelum download
+      if (card.classList.contains("is-flipped")) {
+        card.classList.remove("is-flipped");
+        // Tunggu animasi balik selesai (800ms) baru download
+        setTimeout(processDownloadKTM, 850);
+      } else {
+        processDownloadKTM();
+      }
+    });
+
+    ktmInitialized = true;
+  }
+}
+
+function processDownloadKTM() {
+  const cardElement = document.querySelector(".ktm-card");
+
+  showNotification("Sedang memproses gambar KTM...", "info");
+
+  // html2canvas opsi
+  const options = {
+    backgroundColor: null,
+    scale: 3, // Kualitas tinggi
+  };
+
+  html2canvas(cardElement, options)
+    .then((canvas) => {
+      const link = document.createElement("a");
+      link.download = "KTM_Digital_UCIC.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+      showNotification("KTM berhasil diunduh!", "success");
+    })
+    .catch((err) => {
+      console.error(err);
+      showNotification("Gagal mengunduh KTM", "error");
+    });
 }
