@@ -1669,6 +1669,20 @@ const translations = {
     "market.form.wa": "WhatsApp Number",
     "market.form.submit": "Post Ad",
     "market.success": "Item posted successfully!",
+
+    "nav.career": "Career Center",
+    "career.title": "Career & Internship Center",
+    "career.subtitle": "Find the best internships and jobs for your future.",
+    "career.filter.all": "All",
+    "career.filter.intern": "Internship",
+    "career.filter.full": "Full-time",
+    "career.filter.part": "Part-time",
+    "career.apply": "Quick Apply",
+    "career.applyTitle": "Apply for Job",
+    "career.form.cv": "Upload CV (PDF)",
+    "career.form.cover": "Cover Letter (Optional)",
+    "career.form.submit": "Submit Application",
+    "career.success": "Application sent successfully!",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -2318,6 +2332,21 @@ const translations = {
     "market.form.wa": "Nomor WhatsApp",
     "market.form.submit": "Pasang Iklan",
     "market.success": "Iklan berhasil dipasang!",
+
+    "nav.career": "Pusat Karir",
+    "career.title": "Pusat Karir & Magang",
+    "career.subtitle":
+      "Temukan peluang magang dan kerja terbaik untuk masa depanmu.",
+    "career.filter.all": "Semua",
+    "career.filter.intern": "Magang",
+    "career.filter.full": "Penuh Waktu",
+    "career.filter.part": "Paruh Waktu",
+    "career.apply": "Lamar Cepat",
+    "career.applyTitle": "Lamar Pekerjaan",
+    "career.form.cv": "Unggah CV (PDF)",
+    "career.form.cover": "Cover Letter (Opsional)",
+    "career.form.submit": "Kirim Lamaran",
+    "career.success": "Lamaran berhasil dikirim!",
   },
 };
 
@@ -2671,6 +2700,7 @@ function switchSection(sectionId) {
     if (sectionId === "room-finder") initRoomFinder();
     if (sectionId === "ktm-digital") initKTM();
     if (sectionId === "marketplace") initMarketplace();
+    if (sectionId === "career-center") initCareerCenter();
 
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
@@ -10374,3 +10404,123 @@ window.closeSellModal = closeSellModal;
 window.contactSeller = contactSeller;
 window.openProductDetail = openProductDetail;
 window.closeProductModal = closeProductModal;
+
+const jobList = [
+  {
+    id: 1,
+    title: "Frontend Developer Intern",
+    company: "Tokopedia",
+    type: "internship",
+    location: "Jakarta (Remote)",
+    salary: "Paid",
+  },
+  {
+    id: 2,
+    title: "Junior Graphic Designer",
+    company: "Gojek",
+    type: "fulltime",
+    location: "Jakarta",
+    salary: "Negotiable",
+  },
+  {
+    id: 3,
+    title: "IT Support Staff",
+    company: "Kampus UCIC",
+    type: "parttime",
+    location: "Cirebon",
+    salary: "Rp 1.5jt",
+  },
+  {
+    id: 4,
+    title: "Data Analyst Intern",
+    company: "Bank BCA",
+    type: "internship",
+    location: "Jakarta",
+    salary: "Paid",
+  },
+  {
+    id: 5,
+    title: "Social Media Admin",
+    company: "Local Coffee Shop",
+    type: "parttime",
+    location: "Cirebon",
+    salary: "Hourly",
+  },
+];
+
+let careerInitialized = false;
+
+function initCareerCenter() {
+  if (!careerInitialized) {
+    const filterBtns = document.querySelectorAll(".career-filter-btn");
+    filterBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        filterBtns.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderJobs(btn.dataset.type);
+      });
+    });
+
+    document.getElementById("applyForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      closeApplyModal();
+      showNotification(
+        translations[currentLanguage]["career.success"],
+        "success"
+      );
+      e.target.reset();
+    });
+
+    careerInitialized = true;
+  }
+  renderJobs("all");
+}
+
+function renderJobs(filterType) {
+  const container = document.getElementById("careerGrid");
+  container.innerHTML = "";
+
+  const filtered =
+    filterType === "all"
+      ? jobList
+      : jobList.filter((j) => j.type === filterType);
+
+  filtered.forEach((job) => {
+    const card = document.createElement("div");
+    card.className = "job-card";
+
+    const logoText = job.company.substring(0, 2).toUpperCase();
+    const btnText = translations[currentLanguage]["career.apply"];
+
+    card.innerHTML = `
+      <div class="job-header">
+        <div class="company-logo">${logoText}</div>
+        <span class="job-type-badge ${job.type}">${job.type}</span>
+      </div>
+      <div class="job-title">${job.title}</div>
+      <div class="company-name">${job.company}</div>
+      <div class="job-details">
+        <div class="job-detail-item">📍 ${job.location}</div>
+        <div class="job-detail-item">💰 ${job.salary}</div>
+      </div>
+      <button class="apply-btn" onclick="openApplyModal('${job.title}')">${btnText}</button>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function openApplyModal(jobTitle) {
+  document.getElementById("applyJobTitle").textContent =
+    "Position: " + jobTitle;
+  const modal = document.getElementById("applyModal");
+  modal.style.display = "flex";
+  setTimeout(() => modal.classList.add("active"), 10);
+}
+
+function closeApplyModal() {
+  const modal = document.getElementById("applyModal");
+  modal.classList.remove("active");
+  setTimeout(() => (modal.style.display = "none"), 300);
+}
+window.openApplyModal = openApplyModal;
+window.closeApplyModal = closeApplyModal;
