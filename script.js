@@ -10042,52 +10042,60 @@ function initKTM() {
   const card = document.getElementById("studentCard");
   const downloadBtn = document.getElementById("downloadKtmBtn");
 
-  // 1. Isi Data Mahasiswa
-  const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
-  if (user.fullName) {
-    document.getElementById("ktmName").textContent = user.fullName;
-    document.getElementById("ktmNim").textContent = user.nim;
-    document.getElementById("ktmProdi").textContent = user.programStudi;
-    document.getElementById("ktmNimQr").textContent = user.nim;
+  const userJson = localStorage.getItem("currentUser");
 
-    // Inisial Foto
-    const initials = user.fullName
-      .split(" ")
-      .slice(0, 2)
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase();
-    document.getElementById("ktmPhoto").textContent = initials;
+  if (userJson) {
+    const user = JSON.parse(userJson);
+
+    if (document.getElementById("ktmName")) {
+      document.getElementById("ktmName").textContent =
+        user.fullName || "Nama Mahasiswa";
+    }
+
+    if (document.getElementById("ktmNim")) {
+      document.getElementById("ktmNim").textContent = user.nim || "000000";
+    }
+    if (document.getElementById("ktmNimQr")) {
+      document.getElementById("ktmNimQr").textContent = user.nim || "000000";
+    }
+
+    if (document.getElementById("ktmProdi")) {
+      document.getElementById("ktmProdi").textContent =
+        user.programStudi || "Umum";
+    }
+
+    if (document.getElementById("ktmPhoto")) {
+      const initials = user.fullName
+        ? user.fullName
+            .split(" ")
+            .slice(0, 2)
+            .map((n) => n[0])
+            .join("")
+            .toUpperCase()
+        : "M";
+      document.getElementById("ktmPhoto").textContent = initials;
+    }
+
+    const qrContainer = document.getElementById("ktmQrCode");
+    if (qrContainer && !qrContainer.innerHTML) {
+      new QRCode(qrContainer, {
+        text: user.nim || "2023001",
+        width: 80,
+        height: 80,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H,
+      });
+    }
   }
 
-  // 2. Generate QR Code (Hanya sekali)
   if (!ktmInitialized) {
-    const qrContainer = document.getElementById("ktmQrCode");
-    qrContainer.innerHTML = ""; // Bersihkan
-    new QRCode(qrContainer, {
-      text: user.nim || "2023001",
-      width: 80,
-      height: 80,
-      colorDark: "#000000",
-      colorLight: "#ffffff",
-      correctLevel: QRCode.CorrectLevel.H,
-    });
-
-    // 3. Event Listener: Flip Card
     card.addEventListener("click", () => {
       card.classList.toggle("is-flipped");
     });
 
-    // 4. Event Listener: Download
     downloadBtn.addEventListener("click", () => {
-      // Pastikan kartu menghadap depan sebelum download
-      if (card.classList.contains("is-flipped")) {
-        card.classList.remove("is-flipped");
-        // Tunggu animasi balik selesai (800ms) baru download
-        setTimeout(processDownloadKTM, 850);
-      } else {
-        processDownloadKTM();
-      }
+      processDownloadKTM();
     });
 
     ktmInitialized = true;
@@ -10114,6 +10122,9 @@ function processDownloadKTM() {
   clone.style.width = "400px";
   clone.style.height = "250px";
   clone.style.borderRadius = "16px";
+  clone.style.boxShadow = "none";
+  clone.style.transition = "none";
+  clone.style.backfaceVisibility = "visible";
 
   document.body.appendChild(clone);
 
@@ -10127,7 +10138,6 @@ function processDownloadKTM() {
   html2canvas(clone, options)
     .then((canvas) => {
       const link = document.createElement("a");
-
       link.download = `KTM_Digital_UCIC_${
         isBackVisible ? "Belakang" : "Depan"
       }.png`;
@@ -10140,7 +10150,6 @@ function processDownloadKTM() {
     })
     .catch((err) => {
       console.error(err);
-
       if (document.body.contains(clone)) document.body.removeChild(clone);
       showNotification("Gagal mengunduh KTM", "error");
     });
