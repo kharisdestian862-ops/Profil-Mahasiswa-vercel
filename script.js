@@ -1645,6 +1645,12 @@ const translations = {
     "ktm.title": "Digital Student ID (KTM)",
     "ktm.subtitle": "Your virtual student card. Click to flip.",
     "ktm.download": "Download Card",
+
+    "ktm.terms_title": "TERMS OF USE",
+    "ktm.rule1": "This card is the property of CIC University.",
+    "ktm.rule2": "Please carry during academic activities.",
+    "ktm.rule3": "Report lost cards to Academic Administration.",
+    "ktm.type": "STUDENT CARD",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -2269,6 +2275,12 @@ const translations = {
     "ktm.subtitle":
       "Kartu Tanda Mahasiswa Virtual Anda. Klik kartu untuk membalik.",
     "ktm.download": "Unduh KTM",
+
+    "ktm.terms_title": "KETENTUAN PENGGUNAAN",
+    "ktm.rule1": "Kartu ini adalah milik Universitas CIC.",
+    "ktm.rule2": "Harap dibawa saat mengikuti kegiatan akademik.",
+    "ktm.rule3": "Kehilangan kartu harap lapor ke BAAK.",
+    "ktm.type": "KARTU MAHASISWA",
   },
 };
 
