@@ -10250,3 +10250,212 @@ body.dark-mode .citation-box {
 body.dark-mode .citation-text {
   color: #e2e8f0;
 }
+
+#skkm-center .main-header {
+  margin-bottom: 10px;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+.skkm-container {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+
+
+.skkm-summary-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 2.5rem;
+  display: flex;
+  align-items: center;
+  gap: 3rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.skkm-progress-circle {
+  width: 120px;
+  height: 120px;
+}
+
+.circular-chart {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.circle-bg {
+  fill: none;
+  stroke: #eee;
+  stroke-width: 3.8;
+}
+
+.circle {
+  fill: none;
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  stroke: var(--primary);
+  animation: progress 1s ease-out forwards;
+}
+
+.percentage {
+  fill: var(--text-primary);
+  font-family: sans-serif;
+  font-weight: bold;
+  font-size: 0.5em;
+  text-anchor: middle;
+}
+
+.skkm-summary-info h3 {
+  font-size: 2rem;
+  color: var(--primary);
+  margin-bottom: 1rem;
+}
+
+.skkm-summary-info p {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.skkm-badge-list {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.skkm-badge {
+  background: var(--background);
+  border: 1px solid var(--border);
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.skkm-history h3 {
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+}
+
+.skkm-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.skkm-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s;
+}
+
+.skkm-item:hover {
+  border-color: var(--primary);
+  transform: translateX(4px);
+}
+
+.skkm-item-info h4 {
+  font-size: 1rem;
+  color: var(--text-primary);
+  margin-bottom: 0.4rem;
+}
+
+.skkm-meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.skkm-item-right {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.skkm-points {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 1.1rem;
+}
+
+.skkm-status {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+.skkm-status.pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+.skkm-status.valid {
+  background: #dcfce7;
+  color: #166534;
+}
+
+.validate-btn {
+  background: #25d366;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.validate-btn:hover {
+  background: #20bd5a;
+}
+
+@media (max-width: 768px) {
+  .skkm-summary-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 2rem;
+    gap: 2rem;
+  }
+  .skkm-badge-list {
+    justify-content: center;
+  }
+  .skkm-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  .skkm-item-right {
+    align-items: flex-start;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+  }
+}
+
+body.dark-mode .circle-bg {
+  stroke: #334155;
+}
+body.dark-mode .percentage {
+  fill: #f1f5f9;
+}
+body.dark-mode .skkm-badge {
+  background: #1e293b;
+  border-color: #334155;
+}
+body.dark-mode .skkm-item {
+  background: #1e293b;
+  border-color: #334155;
+}
