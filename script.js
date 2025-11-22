@@ -1755,6 +1755,25 @@ const translations = {
     "skkm.form.submit": "Save Activity",
     "skkm.validate": "Validate to DPA",
     "skkm.success": "Activity added! Please contact DPA for validation.",
+
+    "nav.library": "E-Library",
+    "library.title": "Digital Library",
+    "library.subtitle": "Browse books, journals, and academic resources.",
+    "library.cat.all": "All",
+    "library.cat.textbook": "Textbooks",
+    "library.cat.journal": "Journals",
+    "library.cat.thesis": "Thesis",
+    "library.status.available": "Available",
+    "library.status.borrowed": "Borrowed",
+    "library.borrow": "Borrow Book",
+    "library.return": "Return Book",
+    "library.success_borrow": "Book borrowed successfully!",
+    "library.success_return": "Book returned successfully!",
+
+    "library.borrowForm.title": "Book Borrowing Form",
+    "library.borrowForm.phone": "Phone Number (WhatsApp)",
+    "library.borrowForm.duration": "Loan Duration",
+    "library.borrow_success": "Borrowing request submitted successfully!",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -2494,6 +2513,26 @@ const translations = {
     "skkm.form.submit": "Simpan Kegiatan",
     "skkm.validate": "Validasi ke DPA",
     "skkm.success": "Kegiatan disimpan! Silakan hubungi DPA untuk validasi.",
+
+    "nav.library": "E-Library",
+    "library.title": "Perpustakaan Digital",
+    "library.subtitle":
+      "Cari buku, jurnal, dan referensi akademik untuk studi Anda.",
+    "library.cat.all": "Semua",
+    "library.cat.textbook": "Buku Ajar",
+    "library.cat.journal": "Jurnal",
+    "library.cat.thesis": "Skripsi",
+    "library.status.available": "Tersedia",
+    "library.status.borrowed": "Dipinjam",
+    "library.borrow": "Pinjam Buku",
+    "library.return": "Kembalikan Buku",
+    "library.success_borrow": "Buku berhasil dipinjam!",
+    "library.success_return": "Buku berhasil dikembalikan!",
+
+    "library.borrowForm.title": "Formulir Peminjaman Buku",
+    "library.borrowForm.phone": "Nomor Telepon (WhatsApp)",
+    "library.borrowForm.duration": "Durasi Peminjaman",
+    "library.borrow_success": "Permintaan peminjaman berhasil diajukan!",
   },
 };
 
@@ -2853,6 +2892,7 @@ function switchSection(sectionId) {
     if (sectionId === "help-center") initHelpCenter();
     if (sectionId === "krs-online") initKRS();
     if (sectionId === "citation-center") initCitationCenter();
+    if (sectionId === "library-center") initLibrary();
 
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
@@ -11788,3 +11828,320 @@ function renderAiFlowchart(steps) {
 window.openAiFlowchartModal = openAiFlowchartModal;
 window.closeAiFlowchartModal = closeAiFlowchartModal;
 window.generateFlowchartWithAI = generateFlowchartWithAI;
+
+let libraryInitialized = false;
+let libraryData = JSON.parse(localStorage.getItem("libraryData") || "[]");
+
+if (libraryData.length === 0) {
+  libraryData = [
+    {
+      id: 1,
+      title: "Introduction to Algorithms",
+      author: "Thomas H. Cormen",
+      category: "textbook",
+      isbn: "9780262033848",
+      year: "2009",
+      shelf: "A-01",
+      status: "available",
+      color: "#ef4444",
+    },
+    {
+      id: 2,
+      title: "Clean Code",
+      author: "Robert C. Martin",
+      category: "textbook",
+      isbn: "9780132350884",
+      year: "2008",
+      shelf: "A-02",
+      status: "borrowed",
+      color: "#3b82f6",
+    },
+    {
+      id: 3,
+      title: "Artificial Intelligence: A Modern Approach",
+      author: "Stuart Russell",
+      category: "textbook",
+      isbn: "9780136042594",
+      year: "2020",
+      shelf: "B-05",
+      status: "available",
+      color: "#f59e0b",
+    },
+    {
+      id: 4,
+      title: "Jurnal Sistem Informasi Vol. 5",
+      author: "Universitas CIC",
+      category: "journal",
+      isbn: "ISSN-1234",
+      year: "2023",
+      shelf: "J-10",
+      status: "available",
+      color: "#10b981",
+    },
+    {
+      id: 5,
+      title: "Analisis Sentimen Pengguna Twitter",
+      author: "Budi Santoso (Alumni)",
+      category: "thesis",
+      isbn: "NIM-2019005",
+      year: "2023",
+      shelf: "S-01",
+      status: "available",
+      color: "#8b5cf6",
+    },
+    {
+      id: 6,
+      title: "Design Patterns",
+      author: "Erich Gamma",
+      category: "textbook",
+      isbn: "9780201633610",
+      year: "1994",
+      shelf: "A-03",
+      status: "available",
+      color: "#ec4899",
+    },
+  ];
+  localStorage.setItem("libraryData", JSON.stringify(libraryData));
+}
+
+function initLibrary() {
+  if (!libraryInitialized) {
+    const catBtns = document.querySelectorAll(".lib-cat-btn");
+    catBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        catBtns.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        renderLibrary(btn.dataset.cat);
+      });
+    });
+
+    document
+      .getElementById("librarySearchInput")
+      .addEventListener("input", (e) => {
+        renderLibrary("all", e.target.value);
+      });
+
+    libraryInitialized = true;
+  }
+  renderLibrary("all");
+}
+
+function renderLibrary(category, searchQuery = "") {
+  const container = document.getElementById("libraryGrid");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  let items = libraryData;
+
+  if (category !== "all") {
+    items = items.filter((item) => item.category === category);
+  }
+
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    items = items.filter(
+      (item) =>
+        item.title.toLowerCase().includes(q) ||
+        item.author.toLowerCase().includes(q)
+    );
+  }
+
+  // Ikon Buku SVG
+  const bookSvg = `
+    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+      <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+    </svg>
+  `;
+
+  items.forEach((book) => {
+    const card = document.createElement("div");
+    card.className = "book-card";
+    card.onclick = () => openBookDetail(book.id);
+
+    const statusText =
+      translations[currentLanguage][`library.status.${book.status}`];
+    const statusClass = book.status;
+
+    card.innerHTML = `
+      <div class="book-cover" style="background: ${book.color}15; color: ${book.color};">
+        ${bookSvg}
+        <div class="book-status-overlay ${statusClass}">${statusText}</div>
+      </div>
+      <div class="book-details">
+        <div class="book-title">${book.title}</div>
+        <div class="book-author">${book.author}</div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function openBookDetail(id) {
+  const book = libraryData.find((b) => b.id === id);
+  if (!book) return;
+
+  document.getElementById("modalBookTitle").textContent = book.title;
+  document.getElementById("modalBookAuthor").textContent = book.author;
+  document.getElementById("modalBookCat").textContent =
+    book.category.toUpperCase();
+  document.getElementById("modalBookISBN").textContent = book.isbn;
+  document.getElementById("modalBookYear").textContent = book.year;
+  document.getElementById("modalBookShelf").textContent = book.shelf;
+
+  const statusEl = document.getElementById("modalBookStatus");
+  const btn = document.getElementById("btnBorrowBook");
+  const cover = document.getElementById("modalBookCover");
+
+  // Set warna cover
+  cover.style.background = `${book.color}20`;
+  cover.style.color = book.color;
+
+  statusEl.textContent =
+    translations[currentLanguage][`library.status.${book.status}`];
+  statusEl.className = `book-status-badge ${
+    book.status === "available" ? "present" : "absent"
+  }`;
+
+  // LOGIKA TOMBOL
+  if (book.status === "available") {
+    btn.textContent = translations[currentLanguage]["library.borrow"];
+    btn.className = "submit-task-btn";
+    btn.disabled = false;
+    // UBAH DISINI: Panggil openBorrowForm bukan toggleBookStatus
+    btn.onclick = () => openBorrowForm(book.id);
+  } else {
+    btn.textContent = translations[currentLanguage]["library.return"];
+    btn.className = "cancel-btn";
+    btn.disabled = false;
+    // Jika mengembalikan buku, langsung proses tanpa form
+    btn.onclick = () => processReturnBook(book.id);
+  }
+
+  // Isi deskripsi dummy jika kosong
+  document.getElementById("modalBookDesc").textContent =
+    "Buku ini membahas tentang " +
+    book.title +
+    " secara mendalam dan komprehensif.";
+
+  const modal = document.getElementById("bookDetailModal");
+  modal.style.display = "flex";
+  setTimeout(() => modal.classList.add("active"), 10);
+}
+
+function closeBookModal() {
+  const modal = document.getElementById("bookDetailModal");
+  modal.classList.remove("active");
+  setTimeout(() => (modal.style.display = "none"), 300);
+}
+
+function openBorrowForm(bookId) {
+  // Tutup modal detail dulu
+  closeBookModal();
+
+  const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
+
+  // Isi otomatis data mahasiswa
+  document.getElementById("borrowBookId").value = bookId;
+  document.getElementById("borrowName").value = user.fullName || "";
+  document.getElementById("borrowNim").value = user.nim || "";
+  document.getElementById("borrowEmail").value = user.email || "";
+  document.getElementById("borrowPhone").value = ""; // Kosongkan no hp agar diisi manual
+
+  // Buka modal form
+  const modal = document.getElementById("borrowFormModal");
+  modal.style.display = "flex";
+  setTimeout(() => modal.classList.add("active"), 10);
+}
+
+function closeBorrowModal() {
+  const modal = document.getElementById("borrowFormModal");
+  modal.classList.remove("active");
+  setTimeout(() => (modal.style.display = "none"), 300);
+}
+
+// 4. Inisialisasi Listener Form (Tambahkan di initLibrary atau global)
+document.addEventListener("DOMContentLoaded", () => {
+  const borrowForm = document.getElementById("borrowForm");
+  if (borrowForm) {
+    borrowForm.addEventListener("submit", handleBorrowSubmit);
+  }
+});
+
+function handleBorrowSubmit(e) {
+  e.preventDefault();
+
+  const bookId = parseInt(document.getElementById("borrowBookId").value);
+  const phone = document.getElementById("borrowPhone").value;
+  const duration = document.getElementById("borrowDuration").value;
+
+  const bookIndex = libraryData.findIndex((b) => b.id === bookId);
+
+  if (bookIndex > -1) {
+    // Update status buku
+    libraryData[bookIndex].status = "borrowed";
+
+    // Simpan perubahan ke localStorage
+    localStorage.setItem("libraryData", JSON.stringify(libraryData));
+
+    // Notifikasi dan Refresh
+    showNotification(
+      translations[currentLanguage]["library.borrow_success"],
+      "success"
+    );
+    closeBorrowModal();
+
+    // Refresh tampilan grid library
+    const activeCatBtn = document.querySelector(".lib-cat-btn.active");
+    const currentCat = activeCatBtn ? activeCatBtn.dataset.cat : "all";
+    renderLibrary(currentCat);
+  }
+}
+
+function processReturnBook(bookId) {
+  if (confirm("Apakah Anda yakin ingin mengembalikan buku ini?")) {
+    const bookIndex = libraryData.findIndex((b) => b.id === bookId);
+    if (bookIndex > -1) {
+      libraryData[bookIndex].status = "available";
+      localStorage.setItem("libraryData", JSON.stringify(libraryData));
+
+      showNotification(
+        translations[currentLanguage]["library.success_return"],
+        "success"
+      );
+      closeBookModal();
+
+      const activeCatBtn = document.querySelector(".lib-cat-btn.active");
+      const currentCat = activeCatBtn ? activeCatBtn.dataset.cat : "all";
+      renderLibrary(currentCat);
+    }
+  }
+}
+
+function toggleBookStatus(id) {
+  const book = libraryData.find((b) => b.id === id);
+  if (book) {
+    if (book.status === "available") {
+      book.status = "borrowed";
+      showNotification(
+        translations[currentLanguage]["library.success_borrow"],
+        "success"
+      );
+    } else {
+      book.status = "available";
+      showNotification(
+        translations[currentLanguage]["library.success_return"],
+        "success"
+      );
+    }
+    localStorage.setItem("libraryData", JSON.stringify(libraryData));
+    closeBookModal();
+    renderLibrary(document.querySelector(".lib-cat-btn.active").dataset.cat);
+  }
+}
+
+window.openBookDetail = openBookDetail;
+window.closeBookModal = closeBookModal;
+window.openBorrowForm = openBorrowForm;
+window.closeBorrowModal = closeBorrowModal;
