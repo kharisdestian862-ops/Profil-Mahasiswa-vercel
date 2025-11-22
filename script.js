@@ -9411,6 +9411,10 @@ function initMiCenter() {
 
   const canvas = document.getElementById("miCanvas");
 
+  document
+    .getElementById("miDownloadFlowchartBtn")
+    .addEventListener("click", downloadFlowchart);
+
   document.getElementById("miAddTerminator").addEventListener("click", () => {
     const text = translations[currentLanguage]["mi.terminator"] || "Terminator";
     createFlowchartShape("terminator", text, canvas);
@@ -9721,11 +9725,10 @@ function makeFlowchartDraggable(elmnt) {
 }
 
 function downloadFlowchart() {
-  const node = document.getElementById("miCanvas"); // Tangkap area kanvas
+  const node = document.getElementById("miCanvas");
 
   showNotification("Memproses gambar flowchart...", "info");
 
-  // Update posisi garis dulu biar pas
   if (typeof miLines !== "undefined") {
     miLines.forEach((line) => {
       try {
@@ -9733,8 +9736,6 @@ function downloadFlowchart() {
       } catch (e) {}
     });
   }
-
-  // Gunakan dom-to-image untuk memotret
   domtoimage
     .toPng(node, {
       bgcolor: document.body.classList.contains("dark-mode")
@@ -9742,6 +9743,10 @@ function downloadFlowchart() {
         : "#ffffff",
       width: node.scrollWidth,
       height: node.scrollHeight,
+      style: {
+        transform: "scale(1)",
+        "transform-origin": "top left",
+      },
     })
     .then(function (dataUrl) {
       const link = document.createElement("a");
@@ -9751,12 +9756,11 @@ function downloadFlowchart() {
       showNotification("Flowchart berhasil diunduh!", "success");
     })
     .catch(function (error) {
-      console.error("oops, something went wrong!", error);
+      console.error("Gagal download:", error);
       showNotification("Gagal mengunduh flowchart.", "error");
     });
 }
 
-// Pastikan fungsi ini bisa dipanggil dari HTML
 window.downloadFlowchart = downloadFlowchart;
 
 const wrapperEl = document.getElementById("miCanvasWrapper");
