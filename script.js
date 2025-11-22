@@ -2514,7 +2514,7 @@ const translations = {
     "skkm.validate": "Validasi ke DPA",
     "skkm.success": "Kegiatan disimpan! Silakan hubungi DPA untuk validasi.",
 
-    "nav.library": "E-Library",
+    "nav.library": "E-Perpustakaan",
     "library.title": "Perpustakaan Digital",
     "library.subtitle":
       "Cari buku, jurnal, dan referensi akademik untuk studi Anda.",
