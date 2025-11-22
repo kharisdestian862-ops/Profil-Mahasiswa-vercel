@@ -2881,6 +2881,10 @@ function switchSection(sectionId) {
     if (sectionId === "marketplace") {
       initMarketplace();
     }
+
+    if (sectionId === "schedule") {
+      updateClassScheduleFromKRS(); // <--- TAMBAHKAN INI
+    }
   }
 }
 
@@ -9579,6 +9583,10 @@ function initMiCenter() {
     .getElementById("miDownloadFlowchartBtn")
     .addEventListener("click", downloadFlowchart);
 
+  document
+    .getElementById("miAiFlowchartBtn")
+    .addEventListener("click", openAiFlowchartModal);
+
   canvas.addEventListener("click", (e) => {
     if (e.target === canvas) {
       if (miSelectedSocket) {
@@ -11219,16 +11227,16 @@ function resetKRSSelection() {
 function submitKRS() {
   if (selectedKRS.length === 0) return;
 
-  if (
-    confirm(
-      "Apakah Anda yakin ingin mengajukan KRS ini? Data tidak dapat diubah setelah diajukan."
-    )
-  ) {
+  if (confirm("Apakah Anda yakin ingin mengajukan KRS ini?")) {
     isKRSSubmitted = true;
     localStorage.setItem("krsSubmitted", "true");
+    localStorage.setItem("krsSubmissionTime", Date.now());
+
     showNotification(translations[currentLanguage]["krs.success"], "success");
     showKRSResult();
     updateKRSStatus();
+
+    updateClassScheduleFromKRS();
   }
 }
 
@@ -11287,9 +11295,26 @@ function showKRSResult() {
 }
 
 function editKRS() {
-  if (confirm("Batalkan pengajuan dan edit kembali KRS?")) {
+  const submissionTime = localStorage.getItem("krsSubmissionTime");
+
+  if (submissionTime) {
+    const timeNow = Date.now();
+    const timeDiff = timeNow - parseInt(submissionTime);
+    const fiveMinutes = 5 * 60 * 1000;
+
+    if (timeDiff > fiveMinutes) {
+      alert(
+        "⛔ Batas waktu pengubahan (5 menit) sudah habis.\n\nKRS Anda sudah dikunci oleh sistem. Silakan hubungi Dosen Wali untuk revisi."
+      );
+      return;
+    }
+  }
+
+  if (confirm("Masih dalam waktu toleransi 5 menit. Ingin mengubah KRS?")) {
     isKRSSubmitted = false;
     localStorage.setItem("krsSubmitted", "false");
+    localStorage.removeItem("krsSubmissionTime");
+
     updateKRSStatus();
     document.getElementById("krsFormView").style.display = "block";
     document.getElementById("krsResultView").style.display = "none";
@@ -11520,3 +11545,232 @@ function closeSkkmModal() {
 window.openSkkmModal = openSkkmModal;
 window.closeSkkmModal = closeSkkmModal;
 window.contactDPA = contactDPA;
+
+function updateClassScheduleFromKRS() {
+  const isSubmitted = localStorage.getItem("krsSubmitted") === "true";
+  if (!isSubmitted) return;
+
+  const selectedIds = JSON.parse(localStorage.getItem("krsDraft") || "[]");
+  const myCourses = availableCoursesSem5.filter((course) =>
+    selectedIds.includes(course.id)
+  );
+
+  const days = [
+    "monday",
+    "tuesday",
+    "wednesday",
+    "thursday",
+    "friday",
+    "saturday",
+  ];
+  days.forEach((day) => {
+    const dayContainer = document.querySelector(
+      `.schedule-day[data-day="${day}"] .class-list`
+    );
+    if (dayContainer) {
+      dayContainer.innerHTML = "";
+    }
+  });
+
+  myCourses.forEach((course) => {
+    const scheduleParts = course.schedule.split(", ");
+    const dayNameIndo = scheduleParts[0];
+    const timeRange = scheduleParts[1].split("-");
+
+    const dayKey = getDayKeyFromIndo(dayNameIndo);
+
+    const dayContainer = document.querySelector(
+      `.schedule-day[data-day="${dayKey}"] .class-list`
+    );
+    const dayWrapper = document.querySelector(
+      `.schedule-day[data-day="${dayKey}"]`
+    );
+
+    if (dayContainer) {
+      if (dayWrapper) dayWrapper.style.display = "block";
+
+      const classItem = document.createElement("div");
+      classItem.className = "class-item";
+
+      const statusText = "Upcoming";
+      const statusClass = "upcoming";
+
+      classItem.innerHTML = `
+        <div class="class-time">
+          <span class="time-start">${timeRange[0]}</span>
+          <span class="time-separator">-</span>
+          <span class="time-end">${timeRange[1]}</span>
+        </div>
+        <div class="class-info">
+          <h4 class="class-name">${course.name}</h4>
+          <div class="class-details">
+            <span class="class-room">Room: A-301</span>
+            <span class="class-lecturer">${course.code} • ${course.class}</span>
+          </div>
+        </div>
+        <div class="class-status ${statusClass}">
+          ${statusText}
+        </div>
+      `;
+
+      dayContainer.appendChild(classItem);
+    }
+  });
+
+  updateScheduleSummary(myCourses.length);
+}
+
+function getDayKeyFromIndo(dayName) {
+  const map = {
+    Senin: "monday",
+    Selasa: "tuesday",
+    Rabu: "wednesday",
+    Kamis: "thursday",
+    Jumat: "friday",
+    Sabtu: "saturday",
+    Minggu: "sunday",
+  };
+  return map[dayName] || "monday";
+}
+
+function updateScheduleSummary(totalClasses) {
+  const totalEl = document.getElementById("totalClasses");
+  if (totalEl) totalEl.textContent = totalClasses;
+
+  if (document.getElementById("completedClasses"))
+    document.getElementById("completedClasses").textContent = "0";
+  if (document.getElementById("upcomingClasses"))
+    document.getElementById("upcomingClasses").textContent = totalClasses;
+}
+
+function openAiFlowchartModal() {
+  const modal = document.getElementById("aiFlowchartModal");
+  modal.style.display = "flex";
+  setTimeout(() => modal.classList.add("active"), 10);
+}
+
+function closeAiFlowchartModal() {
+  const modal = document.getElementById("aiFlowchartModal");
+  modal.classList.remove("active");
+  setTimeout(() => (modal.style.display = "none"), 300);
+}
+
+async function generateFlowchartWithAI() {
+  const promptInput = document.getElementById("aiFlowchartPrompt");
+  const promptText = promptInput.value.trim();
+  const btn = document.getElementById("btnGenerateAiFlow");
+
+  if (!promptText) return;
+
+  btn.innerHTML = "⏳ Sedang Berpikir...";
+  btn.disabled = true;
+
+  // 1. System Prompt Khusus (Agar AI membalas dengan JSON)
+  const systemInstruction = `
+    Anda adalah Flowchart Architect. Tugas Anda adalah mengubah deskripsi teks menjadi struktur data JSON untuk flowchart.
+    
+    Gunakan HANYA tipe shape berikut:
+    - terminator (untuk Mulai/Selesai)
+    - process (untuk tindakan/aksi)
+    - decision (untuk percabangan IF/ELSE)
+    - inputoutput (untuk Input/Output data)
+    - display (untuk menampilkan pesan)
+    - database (untuk simpan data)
+    
+    Format respon HARUS berupa Array JSON murni tanpa teks lain.
+    Contoh format:
+    [
+      {"type": "terminator", "text": "Mulai"},
+      {"type": "inputoutput", "text": "Input Email"},
+      {"type": "decision", "text": "Email Valid?"},
+      {"type": "process", "text": "Masuk Dashboard"},
+      {"type": "terminator", "text": "Selesai"}
+    ]
+    
+    Deskripsi User: "${promptText}"
+  `;
+
+  try {
+    // 2. Panggil API Chat Anda
+    const response = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        message: systemInstruction,
+        context: "Flowchart Generation Mode",
+        language: "id",
+      }),
+    });
+
+    const data = await response.json();
+
+    let aiContent = "";
+    if (data.choices && data.choices[0]) {
+      aiContent = data.choices[0].message.content;
+    } else {
+      throw new Error("Respon AI kosong");
+    }
+
+    // 3. Bersihkan Respon (Hapus markdown ```json jika ada)
+    aiContent = aiContent
+      .replace(/```json/g, "")
+      .replace(/```/g, "")
+      .trim();
+
+    // 4. Parsing JSON
+    const flowSteps = JSON.parse(aiContent);
+
+    if (!Array.isArray(flowSteps)) throw new Error("Format JSON salah");
+
+    // 5. Gambar ke Kanvas
+    renderAiFlowchart(flowSteps);
+
+    closeAiFlowchartModal();
+    showNotification("Flowchart berhasil dibuat oleh AI!", "success");
+    promptInput.value = "";
+  } catch (error) {
+    console.error("AI Error:", error);
+    alert("Gagal membuat flowchart. Coba deskripsi yang lebih spesifik.");
+  } finally {
+    btn.innerHTML = "✨ Generate";
+    btn.disabled = false;
+  }
+}
+
+function renderAiFlowchart(steps) {
+  const canvas = document.getElementById("miCanvas");
+
+  // Reset Kanvas
+  canvas.innerHTML = "";
+  miLines.forEach((line) => line.remove());
+  miLines = [];
+
+  let startX = 400;
+  let startY = 50;
+  let gapY = 130;
+  let lastShape = null;
+
+  steps.forEach((step, index) => {
+    // Mapping tipe data AI ke class CSS kita jika beda
+    let shapeType = step.type.toLowerCase();
+    if (shapeType === "database") shapeType = "direct-storage"; // Mapping khusus
+
+    // Gunakan fungsi generator yang sudah kita buat sebelumnya
+    const shapeEl = createShapeForGenerator(
+      shapeType,
+      step.text,
+      startX,
+      startY + index * gapY
+    );
+
+    if (lastShape) {
+      connectShapes(lastShape, shapeEl);
+    }
+    lastShape = shapeEl;
+  });
+}
+
+// Pastikan window functions terekspos
+window.openAiFlowchartModal = openAiFlowchartModal;
+window.closeAiFlowchartModal = closeAiFlowchartModal;
+window.generateFlowchartWithAI = generateFlowchartWithAI;
