@@ -96,6 +96,10 @@
               >E-Library</a
             >
 
+            <a href="#" data-section="thesis-center" data-i18n="nav.thesis"
+              >Tugas Akhir</a
+            >
+
             <a href="#" data-section="settings" data-i18n="nav.settings"
               >Settings</a
             >
@@ -176,6 +180,10 @@
 
           <a href="#" data-section="library-center" data-i18n="nav.library"
             >E-Library</a
+          >
+
+          <a href="#" data-section="thesis-center" data-i18n="nav.thesis"
+            >Tugas Akhir</a
           >
 
           <a href="#" data-section="settings" data-i18n="nav.settings"
@@ -4058,6 +4066,383 @@ Jalankan tes untuk melihat hasil...
             </div>
           </div>
 
+          <section class="section" id="thesis-center" style="display: none">
+            <header class="main-header">
+              <div>
+                <h1 data-i18n="thesis.title">Sistem Tugas Akhir & Skripsi</h1>
+                <div data-i18n="thesis.subtitle">
+                  Portal manajemen pendaftaran, bimbingan, dan sidang tugas
+                  akhir.
+                </div>
+              </div>
+            </header>
+
+            <div id="thesisLockScreen">
+              <div class="thesis-lock-card">
+                <div class="lock-icon-wrapper">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lock-icon"
+                  >
+                    <rect
+                      x="3"
+                      y="11"
+                      width="18"
+                      height="11"
+                      rx="2"
+                      ry="2"
+                    ></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                  </svg>
+                </div>
+                <h3>Pengecekan Persyaratan Akademik</h3>
+                <p>
+                  Sistem sedang memverifikasi kelayakan Anda untuk mengambil
+                  Tugas Akhir/Skripsi.
+                </p>
+
+                <div class="requirements-list">
+                  <div class="req-item" id="reqFinance">
+                    <div class="req-status-icon"></div>
+                    <div class="req-text">
+                      <strong>Administrasi Keuangan</strong>
+                      <span>Lunas pembayaran SPP/UKT semester berjalan.</span>
+                    </div>
+                  </div>
+
+                  <div class="req-item" id="reqSks">
+                    <div class="req-status-icon"></div>
+                    <div class="req-text">
+                      <strong>Jumlah SKS Lulus</strong>
+                      <span id="reqSksDetail">Min. 106 (D3) atau 139 (S1)</span>
+                    </div>
+                  </div>
+
+                  <div class="req-item" id="reqGpa">
+                    <div class="req-status-icon"></div>
+                    <div class="req-text">
+                      <strong>Indeks Prestasi Kumulatif (IPK)</strong>
+                      <span id="reqGpaDetail">Minimal 2.50</span>
+                    </div>
+                  </div>
+
+                  <div class="req-item" id="reqGradeD">
+                    <div class="req-status-icon"></div>
+                    <div class="req-text">
+                      <strong>Nilai Mata Kuliah 'D'</strong>
+                      <span id="reqGradeDDetail">Maksimal 2 mata kuliah</span>
+                    </div>
+                  </div>
+
+                  <div class="req-item" id="reqGradeE">
+                    <div class="req-status-icon"></div>
+                    <div class="req-text">
+                      <strong>Nilai Mata Kuliah 'E'</strong>
+                      <span>Tidak boleh ada nilai E</span>
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  id="btnUnlockThesis"
+                  class="submit-task-btn"
+                  style="width: 100%; margin-top: 1.5rem; display: none"
+                >
+                  Lanjut ke Dashboard Skripsi
+                </button>
+
+                <div
+                  id="lockMessage"
+                  class="lock-warning"
+                  style="display: none"
+                >
+                  Anda belum memenuhi syarat. Silakan hubungi Dosen Wali atau
+                  BAAK.
+                </div>
+              </div>
+            </div>
+
+            <div id="thesisDashboard" style="display: none">
+              <div class="thesis-status-banner">
+                <div class="ts-icon">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    width="32"
+                    height="32"
+                  >
+                    <path
+                      d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"
+                    ></path>
+                    <path
+                      d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"
+                    ></path>
+                    <path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0"></path>
+                    <path d="M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"></path>
+                  </svg>
+                </div>
+                <div class="ts-info">
+                  <h4>Status Saat Ini: Pengajuan Judul</h4>
+                  <p>
+                    Silakan ajukan 3 opsi judul skripsi Anda untuk diperiksa
+                    oleh Koordinator TA.
+                  </p>
+                </div>
+                <div class="ts-action">
+                  <span class="status-badge pending">Menunggu Pengajuan</span>
+                </div>
+              </div>
+
+              <div class="thesis-timeline-container">
+                <div class="thesis-step active">
+                  <div class="step-circle">1</div>
+                  <span>Judul</span>
+                </div>
+                <div class="thesis-step">
+                  <div class="step-circle">2</div>
+                  <span>Proposal</span>
+                </div>
+                <div class="thesis-step">
+                  <div class="step-circle">3</div>
+                  <span>Bimbingan</span>
+                </div>
+                <div class="thesis-step">
+                  <div class="step-circle">4</div>
+                  <span>Semhas</span>
+                </div>
+                <div class="thesis-step">
+                  <div class="step-circle">5</div>
+                  <span>Sidang</span>
+                </div>
+              </div>
+
+              <div class="thesis-grid">
+                <div class="thesis-main-col">
+                  <div class="thesis-card action-card">
+                    <div class="card-header-simple">
+                      <h3>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          width="20"
+                          height="20"
+                          style="margin-right: 8px; vertical-align: text-bottom"
+                        >
+                          <path
+                            d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                          ></path>
+                          <polyline points="14 2 14 8 20 8"></polyline>
+                          <line x1="16" y1="13" x2="8" y2="13"></line>
+                          <line x1="16" y1="17" x2="8" y2="17"></line>
+                          <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                        Pengajuan Judul Skripsi
+                      </h3>
+                    </div>
+                    <div class="card-body-simple">
+                      <p
+                        style="
+                          margin-bottom: 1.5rem;
+                          color: var(--text-secondary);
+                        "
+                      >
+                        Ajukan topik penelitian Anda. Pastikan judul belum
+                        pernah diteliti sebelumnya.
+                      </p>
+
+                      <div
+                        class="title-submission-list"
+                        id="titleSubmissionList"
+                      ></div>
+
+                      <button
+                        class="submit-task-btn"
+                        onclick="openProposalModal()"
+                        style="width: 100%; margin-top: 1rem"
+                      >
+                        + Tambah Judul Baru
+                      </button>
+                    </div>
+                  </div>
+
+                  <div class="thesis-card">
+                    <div class="card-header-simple">
+                      <h3>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          width="20"
+                          height="20"
+                          style="margin-right: 8px; vertical-align: text-bottom"
+                        >
+                          <path
+                            d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"
+                          ></path>
+                        </svg>
+                        Dokumen Saya
+                      </h3>
+                    </div>
+                    <div class="doc-list">
+                      <div class="doc-item">
+                        <div class="doc-icon">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            width="24"
+                            height="24"
+                          >
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path
+                              d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+                            ></path>
+                          </svg>
+                        </div>
+                        <div class="doc-info">
+                          <h4>Pedoman Penulisan Skripsi 2025.pdf</h4>
+                          <span>2.4 MB • Diunduh 12 kali</span>
+                        </div>
+                        <button class="icon-btn">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            width="20"
+                            height="20"
+                          >
+                            <path
+                              d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                            ></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                          </svg>
+                        </button>
+                      </div>
+                      <div class="doc-item">
+                        <div class="doc-icon">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            width="24"
+                            height="24"
+                          >
+                            <path
+                              d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                            ></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                          </svg>
+                        </div>
+                        <div class="doc-info">
+                          <h4>Template Proposal.docx</h4>
+                          <span>1.1 MB</span>
+                        </div>
+                        <button class="icon-btn">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            stroke-width="2"
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            width="20"
+                            height="20"
+                          >
+                            <path
+                              d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                            ></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                          </svg>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="thesis-side-col">
+                  <div class="thesis-card advisor-card">
+                    <h3>Dosen Pembimbing</h3>
+                    <div class="advisor-empty">
+                      <div class="advisor-avatar">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          width="32"
+                          height="32"
+                        >
+                          <path
+                            d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"
+                          ></path>
+                          <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                      </div>
+                      <p>Belum ditentukan</p>
+                      <small
+                        >Dosen akan ditetapkan setelah judul diterima.</small
+                      >
+                    </div>
+                  </div>
+
+                  <div class="thesis-card log-card">
+                    <h3>Log Aktivitas</h3>
+                    <div class="activity-log">
+                      <div class="log-item">
+                        <div class="log-dot"></div>
+                        <div class="log-content">
+                          <p>Anda berhasil membuka kunci fitur Skripsi.</p>
+                          <small>Baru saja</small>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
           <section class="section" id="settings" style="display: none">
             <h2 data-i18n="settings.title">Settings</h2>
             <div class="settings-content">
@@ -4652,6 +5037,42 @@ Stop"
             <span>✨ Generate</span>
           </button>
         </div>
+      </div>
+    </div>
+
+    <div id="proposalModal" class="modal-overlay" style="display: none">
+      <div class="modal-content">
+        <h3>Ajukan Judul Skripsi</h3>
+        <form id="proposalForm">
+          <div class="form-group">
+            <label>Topik / Judul Penelitian</label>
+            <textarea
+              id="propTitle"
+              rows="3"
+              required
+              placeholder="Contoh: Implementasi Deep Learning untuk..."
+            ></textarea>
+          </div>
+          <div class="form-group">
+            <label>Deskripsi Singkat / Rumusan Masalah</label>
+            <textarea
+              id="propDesc"
+              rows="4"
+              required
+              placeholder="Jelaskan singkat latar belakang masalah..."
+            ></textarea>
+          </div>
+          <div class="modal-actions">
+            <button
+              type="button"
+              class="cancel-btn"
+              onclick="closeProposalModal()"
+            >
+              Batal
+            </button>
+            <button type="submit" class="submit-task-btn">Ajukan</button>
+          </div>
+        </form>
       </div>
     </div>
 
