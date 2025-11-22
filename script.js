@@ -9716,37 +9716,207 @@ function makeFlowchartDraggable(elmnt) {
   }
 }
 
-function downloadFlowchart() {
+function downloadFlowchartFixed() {
   const canvasEl = document.getElementById("miCanvas");
-
-  const wrapperEl = document.getElementById("miCanvasWrapper");
 
   showNotification("Membuat gambar PNG...", "info");
 
-  const options = {
-    backgroundColor: null,
-    width: canvasEl.scrollWidth,
-    height: canvasEl.scrollHeight,
-    windowWidth: canvasEl.scrollWidth,
-    windowHeight: canvasEl.scrollHeight,
-    scrollX: 0,
-    scrollY: 0,
-    x: 0,
-    y: 0,
-  };
+  // Tunggu semua LeaderLine selesai render
+  setTimeout(() => {
+    // 1. Buat SVG container baru untuk menangkap semuanya
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    const bbox = canvasEl.getBoundingClientRect();
 
-  html2canvas(canvasEl, options)
-    .then((canvasImage) => {
-      const link = document.createElement("a");
-      link.href = canvasImage.toDataURL("image/png");
-      link.download = "flowchart-prodi-mi.png";
-      link.click();
-      showNotification("Flowchart berhasil diunduh!", "success");
-    })
-    .catch((err) => {
-      console.error("Gagal download flowchart:", err);
-      showNotification("Gagal mengunduh flowchart.", "error");
+    svg.setAttribute("width", bbox.width);
+    svg.setAttribute("height", bbox.height);
+    svg.setAttribute("viewBox", `0 0 ${bbox.width} ${bbox.height}`);
+    svg.style.background = "white";
+
+    // 2. Tambahkan semua shapes ke SVG
+    const shapes = canvasEl.querySelectorAll(".flowchart-shape");
+    shapes.forEach((shape) => {
+      const shapeGroup = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "g"
+      );
+
+      const rect = shape.getBoundingClientRect();
+      const x = rect.left - bbox.left;
+      const y = rect.top - bbox.top;
+
+      const text = shape.querySelector(".shape-text")?.textContent || "";
+      const shapeClass = shape.className.baseVal;
+
+      // Draw shape berdasarkan tipe
+      drawShapeToSVG(
+        shapeGroup,
+        shapeClass,
+        x,
+        y,
+        rect.width,
+        rect.height,
+        text
+      );
+      svg.appendChild(shapeGroup);
     });
+
+    // 3. Tambahkan semua garis LeaderLine
+    miLines.forEach((line) => {
+      try {
+        // Ambil koordinat dari elemen start dan end
+        const startEl = line.start;
+        const endEl = line.end;
+
+        if (startEl && endEl) {
+          const startRect = startEl.getBoundingClientRect();
+          const endRect = endEl.getBoundingClientRect();
+
+          const x1 = startRect.left - bbox.left + startRect.width / 2;
+          const y1 = startRect.top - bbox.top + startRect.height / 2;
+          const x2 = endRect.left - bbox.left + endRect.width / 2;
+          const y2 = endRect.top - bbox.top + endRect.height / 2;
+
+          // Buat garis dengan panah
+          drawArrowToSVG(svg, x1, y1, x2, y2);
+        }
+      } catch (err) {
+        console.warn("Error drawing line:", err);
+      }
+    });
+
+    // 4. Convert SVG ke Canvas kemudian ke PNG
+    const canvas = document.createElement("canvas");
+    canvas.width = svg.getAttribute("width");
+    canvas.height = svg.getAttribute("height");
+
+    const ctx = canvas.getContext("2d");
+    ctx.fillStyle = "white";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const svgString = new XMLSerializer().serializeToString(svg);
+    const svgBlob = new Blob([svgString], { type: "image/svg+xml" });
+    const svgUrl = URL.createObjectURL(svgBlob);
+
+    const img = new Image();
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0);
+      downloadCanvasPNG(canvas);
+      URL.revokeObjectURL(svgUrl);
+    };
+    img.src = svgUrl;
+  }, 500);
+}
+
+function drawShapeToSVG(group, shapeClass, x, y, w, h, text) {
+  const shapeType = shapeClass.match(/shape-(\w+)/)?.[1] || "process";
+
+  let pathEl;
+
+  switch (shapeType) {
+    case "terminator":
+      // Rounded rectangle
+      pathEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      const rx = Math.min(w / 4, 15);
+      pathEl.setAttribute(
+        "d",
+        `M ${x + rx},${y} L ${x + w - rx},${y} Q ${x + w},${y} ${x + w},${
+          y + h / 2
+        } Q ${x + w},${y + h} ${x + w - rx},${y + h} L ${x + rx},${
+          y + h
+        } Q ${x},${y + h} ${x},${y + h / 2} Q ${x},${y} ${x + rx},${y}`
+      );
+      break;
+
+    case "decision":
+      // Diamond
+      pathEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      pathEl.setAttribute(
+        "d",
+        `M ${x + w / 2},${y} L ${x + w},${y + h / 2} L ${x + w / 2},${
+          y + h
+        } L ${x},${y + h / 2} Z`
+      );
+      break;
+
+    case "inputoutput":
+      // Parallelogram
+      pathEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      const skew = 15;
+      pathEl.setAttribute(
+        "d",
+        `M ${x + skew},${y} L ${x + w},${y} L ${x + w - skew},${y + h} L ${x},${
+          y + h
+        } Z`
+      );
+      break;
+
+    default:
+      // Rectangle (process)
+      pathEl = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      pathEl.setAttribute("x", x);
+      pathEl.setAttribute("y", y);
+      pathEl.setAttribute("width", w);
+      pathEl.setAttribute("height", h);
+      pathEl.setAttribute("rx", 5);
+  }
+
+  pathEl.setAttribute("fill", "#f0f9ff");
+  pathEl.setAttribute("stroke", "#2b26b9");
+  pathEl.setAttribute("stroke-width", "2");
+  group.appendChild(pathEl);
+
+  // Tambah text
+  const textEl = document.createElementNS("http://www.w3.org/2000/svg", "text");
+  textEl.setAttribute("x", x + w / 2);
+  textEl.setAttribute("y", y + h / 2);
+  textEl.setAttribute("text-anchor", "middle");
+  textEl.setAttribute("dominant-baseline", "middle");
+  textEl.setAttribute("font-size", "12");
+  textEl.setAttribute("font-family", "Arial");
+  textEl.setAttribute("fill", "#1e293b");
+  textEl.textContent = text.substring(0, 30); // Potong teks panjang
+  group.appendChild(textEl);
+}
+
+// Helper: Draw Arrow ke SVG
+function drawArrowToSVG(svg, x1, y1, x2, y2) {
+  const lineEl = document.createElementNS("http://www.w3.org/2000/svg", "line");
+  lineEl.setAttribute("x1", x1);
+  lineEl.setAttribute("y1", y1);
+  lineEl.setAttribute("x2", x2);
+  lineEl.setAttribute("y2", y2);
+  lineEl.setAttribute("stroke", "#64748b");
+  lineEl.setAttribute("stroke-width", "2");
+  svg.appendChild(lineEl);
+
+  // Gambar arrowhead (segitiga di ujung garis)
+  const angle = Math.atan2(y2 - y1, x2 - x1);
+  const arrowSize = 10;
+
+  const arrowX1 = x2 - arrowSize * Math.cos(angle - Math.PI / 6);
+  const arrowY1 = y2 - arrowSize * Math.sin(angle - Math.PI / 6);
+  const arrowX2 = x2 - arrowSize * Math.cos(angle + Math.PI / 6);
+  const arrowY2 = y2 - arrowSize * Math.sin(angle + Math.PI / 6);
+
+  const arrowHead = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "polygon"
+  );
+  arrowHead.setAttribute(
+    "points",
+    `${x2},${y2} ${arrowX1},${arrowY1} ${arrowX2},${arrowY2}`
+  );
+  arrowHead.setAttribute("fill", "#64748b");
+  svg.appendChild(arrowHead);
+}
+
+// Helper: Download canvas sebagai PNG
+function downloadCanvasPNG(canvas) {
+  const link = document.createElement("a");
+  link.href = canvas.toDataURL("image/png");
+  link.download = "flowchart-prodi-mi.png";
+  link.click();
+  showNotification("Flowchart berhasil diunduh dengan garis panah!", "success");
 }
 
 const wrapperEl = document.getElementById("miCanvasWrapper");
