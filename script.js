@@ -9571,6 +9571,10 @@ function initMiCenter() {
     .getElementById("miCodeToFlowchartBtn")
     .addEventListener("click", openCodeToFlowchartModal);
 
+  document
+    .getElementById("miAiFlowchartBtn")
+    .addEventListener("click", openAiFlowchartModal);
+
   document.getElementById("miClearCanvasBtn").addEventListener("click", () => {
     if (confirm("Anda yakin ingin menghapus semua bentuk dari kanvas?")) {
       canvas.innerHTML = "";
