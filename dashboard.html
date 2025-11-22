@@ -195,6 +195,27 @@
             </svg>
           </button>
 
+          <button class="fab-item" id="citationFab" title="Generator Sitasi">
+            <span class="fab-label" data-i18n="nav.citation">Citation Gen</span>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path
+                d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"
+              ></path>
+              <path d="M12 11h5"></path>
+              <path d="M12 15h5"></path>
+              <path d="M12 7h5"></path>
+            </svg>
+          </button>
+
           <button class="fab-item" id="dkvFab" title="Alat DKV">
             <span class="fab-label" id="dkvFab" data-i18n="nav.dkv"
               >Pixel Pad</span
@@ -3683,6 +3704,126 @@ Jalankan tes untuk melihat hasil...
                 </button>
               </div>
               <div class="lf-grid" id="lfGrid"></div>
+            </div>
+          </section>
+
+          <section class="section" id="citation-center" style="display: none">
+            <header class="main-header">
+              <div>
+                <h1 data-i18n="citation.title">Generator Daftar Pustaka</h1>
+                <div data-i18n="citation.subtitle">
+                  Buat sitasi otomatis untuk tugas dan makalah Anda (Format
+                  APA).
+                </div>
+              </div>
+            </header>
+
+            <div class="citation-container">
+              <div class="citation-form-card">
+                <div class="form-group">
+                  <label data-i18n="citation.sourceType">Jenis Sumber</label>
+                  <select id="citeType">
+                    <option value="book" data-i18n="citation.type.book">
+                      Buku
+                    </option>
+                    <option value="journal" data-i18n="citation.type.journal">
+                      Jurnal Ilmiah
+                    </option>
+                    <option value="website" data-i18n="citation.type.website">
+                      Website
+                    </option>
+                  </select>
+                </div>
+
+                <div class="form-group-row">
+                  <div class="form-group">
+                    <label data-i18n="citation.authorLast"
+                      >Nama Belakang Penulis</label
+                    >
+                    <input
+                      type="text"
+                      id="citeAuthorLast"
+                      placeholder="Contoh: Pressman"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label data-i18n="citation.authorFirst"
+                      >Inisial Nama Depan</label
+                    >
+                    <input
+                      type="text"
+                      id="citeAuthorFirst"
+                      placeholder="Contoh: R. S."
+                    />
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label data-i18n="citation.year">Tahun Terbit</label>
+                  <input type="number" id="citeYear" placeholder="2024" />
+                </div>
+
+                <div class="form-group">
+                  <label data-i18n="citation.contentTitle"
+                    >Judul (Buku/Artikel)</label
+                  >
+                  <input
+                    type="text"
+                    id="citeTitle"
+                    placeholder="Software Engineering: A Practitioner's Approach"
+                  />
+                </div>
+
+                <div class="form-group" id="groupPublisher">
+                  <label data-i18n="citation.publisher">Penerbit</label>
+                  <input
+                    type="text"
+                    id="citePublisher"
+                    placeholder="McGraw-Hill Education"
+                  />
+                </div>
+
+                <div class="form-group" id="groupJournal" style="display: none">
+                  <label data-i18n="citation.journalName"
+                    >Nama Jurnal & Volume</label
+                  >
+                  <input
+                    type="text"
+                    id="citeJournal"
+                    placeholder="Jurnal Informatika, 5(2)"
+                  />
+                </div>
+
+                <div class="form-group" id="groupUrl" style="display: none">
+                  <label>URL</label>
+                  <input type="text" id="citeUrl" placeholder="https://..." />
+                </div>
+
+                <button
+                  class="submit-task-btn"
+                  id="generateCiteBtn"
+                  style="width: 100%; margin-top: 1rem"
+                  data-i18n="citation.generate"
+                >
+                  Buat Sitasi
+                </button>
+              </div>
+
+              <div class="citation-result-card">
+                <h3 data-i18n="citation.result">Hasil:</h3>
+                <div class="citation-box">
+                  <p id="citationOutput" class="citation-text">
+                    Isi formulir untuk melihat hasil...
+                  </p>
+                </div>
+                <button
+                  class="exam-btn"
+                  onclick="copyCitation()"
+                  data-i18n="citation.copy"
+                >
+                  Salin Teks
+                </button>
+              </div>
             </div>
           </section>
 
