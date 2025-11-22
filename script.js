@@ -782,7 +782,7 @@ const financialData = {
     totalTagihan: 12500000,
     totalBayar: 8500000,
     sisaTagihan: 4000000,
-    status: "partially_paid", // paid, partially_paid, unpaid
+    status: "paid", // paid, partially_paid, unpaid
   },
 
   tuitionFees: [
@@ -1774,6 +1774,11 @@ const translations = {
     "library.borrowForm.phone": "Phone Number (WhatsApp)",
     "library.borrowForm.duration": "Loan Duration",
     "library.borrow_success": "Borrowing request submitted successfully!",
+
+    "nav.thesis": "Final Project",
+    "thesis.title": "Final Project & Thesis System",
+    "thesis.subtitle":
+      "Management portal for thesis registration, guidance, and defense.",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -2533,6 +2538,11 @@ const translations = {
     "library.borrowForm.phone": "Nomor Telepon (WhatsApp)",
     "library.borrowForm.duration": "Durasi Peminjaman",
     "library.borrow_success": "Permintaan peminjaman berhasil diajukan!",
+
+    "nav.thesis": "Tugas Akhir",
+    "thesis.title": "Sistem Tugas Akhir & Skripsi",
+    "thesis.subtitle":
+      "Portal manajemen pendaftaran, bimbingan, dan sidang tugas akhir.",
   },
 };
 
@@ -2893,6 +2903,7 @@ function switchSection(sectionId) {
     if (sectionId === "krs-online") initKRS();
     if (sectionId === "citation-center") initCitationCenter();
     if (sectionId === "library-center") initLibrary();
+    if (sectionId === "thesis-center") initThesis();
 
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
@@ -12145,3 +12156,158 @@ window.openBookDetail = openBookDetail;
 window.closeBookModal = closeBookModal;
 window.openBorrowForm = openBorrowForm;
 window.closeBorrowModal = closeBorrowModal;
+
+let thesisInitialized = false;
+
+const academicRecord = {
+  programLevel: "S1",
+  totalSksLulus: 140,
+  ipk: 3.42,
+  jumlahNilaiD: 1,
+  jumlahNilaiE: 0,
+};
+
+function initThesis() {
+  const financeStatus = financialData.summary.status;
+
+  const minSks = academicRecord.programLevel === "S1" ? 139 : 106;
+
+  const checkFinance = financeStatus === "paid";
+  const checkSks = academicRecord.totalSksLulus >= minSks;
+  const checkGpa = academicRecord.ipk >= 2.5;
+  const checkGradeD = academicRecord.jumlahNilaiD <= 2;
+  const checkGradeE = academicRecord.jumlahNilaiE === 0;
+
+  // Update UI Checklist
+  updateRequirementUI(
+    "reqFinance",
+    checkFinance,
+    checkFinance ? "Lunas" : "Belum Lunas"
+  );
+  updateRequirementUI(
+    "reqSks",
+    checkSks,
+    `${academicRecord.totalSksLulus} SKS (Min: ${minSks})`
+  );
+  updateRequirementUI("reqGpa", checkGpa, `IPK: ${academicRecord.ipk}`);
+  updateRequirementUI(
+    "reqGradeD",
+    checkGradeD,
+    `${academicRecord.jumlahNilaiD} Mata Kuliah`
+  );
+  updateRequirementUI(
+    "reqGradeE",
+    checkGradeE,
+    `${academicRecord.jumlahNilaiE} Mata Kuliah`
+  );
+
+  const allPassed =
+    checkFinance && checkSks && checkGpa && checkGradeD && checkGradeE;
+
+  const btnUnlock = document.getElementById("btnUnlockThesis");
+  const msgLock = document.getElementById("lockMessage");
+  const lockScreen = document.getElementById("thesisLockScreen");
+  const dashboard = document.getElementById("thesisDashboard");
+
+  if (allPassed) {
+    btnUnlock.style.display = "block";
+    msgLock.style.display = "none";
+
+    btnUnlock.onclick = () => {
+      lockScreen.style.display = "none";
+      dashboard.style.display = "block";
+      showNotification("Akses Skripsi Diberikan", "success");
+    };
+  } else {
+    btnUnlock.style.display = "none";
+    msgLock.style.display = "block";
+    dashboard.style.display = "none";
+    lockScreen.style.display = "block";
+  }
+
+  thesisInitialized = true;
+}
+
+function updateRequirementUI(elementId, isPassed, detailText) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+
+  el.className = `req-item ${isPassed ? "pass" : "fail"}`;
+
+  const detailEl = el.querySelector("span");
+  if (detailText) {
+    const label = el.querySelector("strong").textContent;
+    el.querySelector(
+      ".req-text"
+    ).innerHTML = `<strong>${label}</strong><span>${detailText}</span>`;
+  }
+}
+
+let submittedTitles = [];
+
+function openProposalModal() {
+  if (submittedTitles.length >= 3) {
+    alert("Anda sudah mengajukan maksimal 3 judul.");
+    return;
+  }
+  const modal = document.getElementById("proposalModal");
+  modal.style.display = "flex";
+  setTimeout(() => modal.classList.add("active"), 10);
+}
+
+function closeProposalModal() {
+  const modal = document.getElementById("proposalModal");
+  modal.classList.remove("active");
+  setTimeout(() => (modal.style.display = "none"), 300);
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const propForm = document.getElementById("proposalForm");
+  if (propForm) {
+    propForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const title = document.getElementById("propTitle").value;
+      const desc = document.getElementById("propDesc").value;
+
+      const newItem = {
+        id: Date.now(),
+        title: title,
+        desc: desc,
+        status: "Menunggu Review",
+      };
+
+      submittedTitles.push(newItem);
+      renderTitles();
+
+      closeProposalModal();
+      e.target.reset();
+      showNotification("Judul berhasil diajukan!", "success");
+    });
+  }
+});
+
+function renderTitles() {
+  const container = document.getElementById("titleSubmissionList");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  if (submittedTitles.length === 0) {
+    container.innerHTML = `<p style="text-align:center; color:var(--text-secondary); font-style:italic;">Belum ada judul yang diajukan.</p>`;
+    return;
+  }
+
+  submittedTitles.forEach((item, index) => {
+    const div = document.createElement("div");
+    div.className = "title-item";
+    div.innerHTML = `
+      <h4>Opsi ${index + 1}: ${item.title}</h4>
+      <p>${item.desc}</p>
+      <div style="margin-top:0.5rem; font-size:0.8rem; font-weight:bold; color:var(--warning);">
+        Status: ${item.status}
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
