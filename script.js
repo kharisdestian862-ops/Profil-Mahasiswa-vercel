@@ -9402,6 +9402,7 @@ function makeElementDraggable(elmnt) {
   }
 }
 
+window.downloadFlowchart = downloadFlowchart;
 let miIsInitialized = false;
 let miLines = [];
 let miSelectedSocket = null;
