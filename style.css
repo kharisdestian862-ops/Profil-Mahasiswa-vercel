@@ -10766,3 +10766,624 @@ body.dark-mode #borrowForm input[readonly] {
   background-color: rgba(255, 255, 255, 0.05);
   color: var(--text-secondary);
 }
+
+.thesis-lock-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 3rem;
+  max-width: 600px;
+  margin: 0 auto;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+}
+
+.lock-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  background: #f1f5f9;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1.5rem;
+}
+
+.lock-icon {
+  width: 40px;
+  height: 40px;
+  color: var(--text-secondary);
+}
+
+.thesis-lock-card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.thesis-lock-card p {
+  color: var(--text-secondary);
+  margin-bottom: 2rem;
+}
+
+.requirements-list {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.req-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.req-item.pass {
+  border-color: var(--success);
+  background: #dcfce7;
+}
+
+.req-item.fail {
+  border-color: var(--error);
+  background: #fee2e2;
+}
+
+.req-status-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--border);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+.req-item.pass .req-status-icon::before {
+  content: "✓";
+  color: white;
+  font-weight: bold;
+}
+.req-item.pass .req-status-icon {
+  background: var(--success);
+}
+
+.req-item.fail .req-status-icon::before {
+  content: "✕";
+  color: white;
+  font-weight: bold;
+}
+.req-item.fail .req-status-icon {
+  background: var(--error);
+}
+
+.req-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.req-text strong {
+  color: var(--text-primary);
+  font-size: 0.95rem;
+}
+.req-text span {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+}
+
+.lock-warning {
+  margin-top: 1.5rem;
+  color: var(--error);
+  font-weight: 600;
+  padding: 0.75rem;
+  background: #fee2e2;
+  border-radius: 8px;
+}
+
+/* Timeline Styles for Dashboard */
+.thesis-timeline {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 3rem;
+  position: relative;
+  padding: 0 2rem;
+}
+
+.thesis-timeline::before {
+  content: "";
+  position: absolute;
+  top: 15px;
+  left: 3rem;
+  right: 3rem;
+  height: 2px;
+  background: var(--border);
+  z-index: 0;
+}
+
+.timeline-item {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  opacity: 0.5;
+}
+
+.timeline-item.active {
+  opacity: 1;
+}
+
+.timeline-dot {
+  width: 32px;
+  height: 32px;
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.timeline-item.active .timeline-dot {
+  background: var(--primary);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.2);
+}
+
+.timeline-item span {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* Dark Mode */
+body.dark-mode .lock-icon-wrapper {
+  background: #334155;
+}
+body.dark-mode .req-item.pass {
+  background: #064e3b;
+  border-color: #065f46;
+}
+body.dark-mode .req-item.fail {
+  background: #7f1d1d;
+  border-color: #991b1b;
+}
+body.dark-mode .lock-warning {
+  background: #450a0a;
+  color: #fca5a5;
+}
+
+.thesis-status-banner {
+  background: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    var(--primary-dark) 100%
+  );
+  border-radius: 16px; /* Radius lebih halus */
+  padding: 2rem;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.25); /* Shadow lebih lembut */
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.ts-icon {
+  width: 64px;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: white; /* Pastikan ikon SVG putih */
+}
+
+.ts-icon svg {
+  width: 32px;
+  height: 32px;
+}
+
+.ts-info {
+  flex: 1;
+}
+
+.ts-info h4 {
+  font-size: 1.5rem;
+  margin: 0 0 0.5rem 0;
+  font-weight: 700;
+  color: white;
+}
+
+.ts-info p {
+  font-size: 1rem;
+  margin: 0;
+  opacity: 0.9;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+/* Timeline */
+.thesis-timeline-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 3rem;
+  position: relative;
+  padding: 0 3rem; /* Padding kiri kanan diperbesar agar garis tidak mentok */
+}
+
+.thesis-timeline-container::before {
+  content: "";
+  position: absolute;
+  top: 24px; /* Posisi garis vertikal di tengah circle */
+  left: 3rem;
+  right: 3rem;
+  height: 4px;
+  background: var(--border);
+  z-index: 0;
+  border-radius: 2px;
+}
+
+.thesis-step {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100px;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.thesis-step.active {
+  opacity: 1;
+}
+
+.step-circle {
+  width: 50px;
+  height: 50px;
+  background: var(--surface);
+  border: 4px solid var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--text-secondary);
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.thesis-step.active .step-circle {
+  border-color: var(--primary);
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.15); /* Efek glow */
+  transform: scale(1.1);
+}
+
+.thesis-step span {
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--text-primary);
+}
+
+/* Grid Layout */
+.thesis-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr; /* Kolom kiri lebih lebar */
+  gap: 2rem;
+  align-items: start;
+}
+
+/* Card Umum */
+.thesis-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.card-header-simple {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--background); /* Sedikit lebih gelap dari surface */
+  display: flex;
+  align-items: center;
+}
+
+.card-header-simple h3 {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.card-header-simple svg {
+  color: var(--primary);
+}
+
+.card-body-simple {
+  padding: 1.5rem;
+}
+
+/* List Pengajuan Judul */
+.title-submission-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.title-item {
+  background: var(--background);
+  border: 1px solid var(--border);
+  padding: 1.25rem;
+  border-radius: 10px;
+  border-left: 4px solid var(--secondary);
+  transition: transform 0.2s;
+}
+
+.title-item:hover {
+  transform: translateX(4px);
+  border-left-color: var(--primary);
+}
+
+.title-item h4 {
+  font-size: 1.05rem;
+  margin: 0 0 0.5rem 0;
+  color: var(--text-primary);
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.title-item p {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin: 0 0 0.75rem 0;
+  line-height: 1.6;
+}
+
+/* Advisor Card */
+.advisor-card {
+  text-align: center;
+  padding: 2rem 1.5rem;
+}
+
+.advisor-card h3 {
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+}
+
+.advisor-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.advisor-avatar {
+  width: 80px;
+  height: 80px;
+  background: var(--background);
+  border: 2px dashed var(--border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.advisor-avatar svg {
+  width: 40px;
+  height: 40px;
+  opacity: 0.5;
+}
+
+.advisor-empty p {
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.advisor-empty small {
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+/* Activity Log */
+.log-card h3 {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  margin: 0;
+  font-size: 1.1rem;
+  background: var(--background);
+}
+
+.activity-log {
+  padding: 1.5rem;
+}
+
+.log-item {
+  display: flex;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  border-left: 2px solid var(--border);
+  padding-left: 1.5rem;
+  position: relative;
+  margin-left: 0.5rem;
+}
+
+.log-item:last-child {
+  border-left: 2px solid transparent;
+  padding-bottom: 0;
+}
+
+.log-dot {
+  position: absolute;
+  left: -5px; /* Agar pas di tengah garis */
+  top: 0;
+  width: 10px;
+  height: 10px;
+  background: var(--primary);
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px var(--surface); /* Efek terpisah dari garis */
+}
+
+.log-content p {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin: 0 0 0.25rem 0;
+  line-height: 1.4;
+}
+
+.log-content small {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* Dokumen List */
+.doc-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.doc-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+}
+
+.doc-item:hover {
+  background: var(--background);
+}
+
+.doc-item:last-child {
+  border-bottom: none;
+}
+
+.doc-icon {
+  width: 40px;
+  height: 40px;
+  background: rgba(37, 99, 235, 0.1);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+}
+
+.doc-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.doc-info h4 {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin: 0 0 0.25rem 0;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.doc-info span {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s;
+}
+
+.icon-btn:hover {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--primary);
+}
+
+/* Responsif */
+@media (max-width: 900px) {
+  .thesis-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .thesis-timeline-container {
+    overflow-x: auto;
+    padding-bottom: 1.5rem;
+    justify-content: flex-start;
+    gap: 2rem;
+  }
+
+  .thesis-timeline-container::before {
+    width: 100%; /* Garis timeline tetap panjang */
+    min-width: 500px;
+  }
+
+  .thesis-step {
+    flex-shrink: 0; /* Mencegah circle mengecil */
+  }
+}
+
+/* Dark Mode Support */
+body.dark-mode .thesis-card {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+body.dark-mode .card-header-simple,
+body.dark-mode .log-card h3 {
+  background: #1e293b; /* Sedikit lebih gelap */
+  border-color: var(--border);
+}
+
+body.dark-mode .title-item {
+  background: #1e293b;
+  border-color: var(--border);
+}
+
+body.dark-mode .thesis-step.active .step-circle {
+  color: white;
+  box-shadow: 0 0 0 6px rgba(59, 130, 246, 0.2);
+}
+
+body.dark-mode .doc-item:hover {
+  background: #334155;
+}
+
+body.dark-mode .icon-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+body.dark-mode .log-dot {
+  box-shadow: 0 0 0 4px var(--surface);
+}
