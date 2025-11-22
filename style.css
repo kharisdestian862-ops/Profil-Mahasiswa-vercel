@@ -9958,3 +9958,227 @@ body.dark-mode .lf-card {
 body.dark-mode .voice-item {
   background: var(--background);
 }
+
+.krs-status-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: var(--background);
+  border-radius: 20px;
+  font-size: 0.85rem;
+  border: 1px solid var(--border);
+}
+
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.status-indicator.pending {
+  background: var(--warning);
+}
+.status-indicator.submitted {
+  background: var(--success);
+}
+
+.krs-info-panel {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.krs-stat {
+  background: var(--surface);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  text-align: center;
+}
+
+.krs-stat.highlight {
+  border-color: var(--primary);
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.krs-stat span {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: 4px;
+}
+
+.krs-stat strong {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+}
+
+.krs-table-wrapper {
+  background: var(--surface);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  overflow-x: auto;
+  margin-bottom: 2rem;
+}
+
+.krs-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+
+.krs-table th,
+.krs-table td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.krs-table th {
+  background: var(--background);
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.krs-table tr:last-child td {
+  border-bottom: none;
+}
+
+.krs-table tr:hover {
+  background-color: var(--background);
+}
+
+/* Checkbox Style */
+.krs-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  accent-color: var(--primary);
+}
+
+/* KSM Result Card (Print layout) */
+.krs-result-card {
+  background: white;
+  color: black;
+  padding: 3rem;
+  border-radius: 0;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+  font-family: "Times New Roman", serif; /* Formal look */
+}
+
+.ksm-header {
+  display: flex;
+  align-items: center;
+  border-bottom: 3px double black;
+  padding-bottom: 1.5rem;
+  margin-bottom: 2rem;
+  gap: 1.5rem;
+}
+
+.ksm-logo {
+  width: 60px;
+  height: 60px;
+  background: #000;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 24px;
+  border-radius: 50%;
+}
+
+.ksm-title h3 {
+  margin: 0;
+  font-size: 1.4rem;
+  text-transform: uppercase;
+}
+
+.ksm-title p {
+  margin: 5px 0 0;
+  font-size: 1rem;
+}
+
+.ksm-student-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.info-row {
+  display: flex;
+}
+.info-row .label {
+  width: 100px;
+  font-weight: bold;
+}
+
+.ksm-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 3rem;
+}
+
+.ksm-table th,
+.ksm-table td {
+  border: 1px solid black;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+}
+
+.ksm-table th {
+  background: #f0f0f0;
+  text-align: center;
+}
+
+.ksm-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 3rem;
+}
+
+.signature-box {
+  text-align: center;
+  width: 200px;
+}
+
+/* Dark Mode Overrides */
+body.dark-mode .krs-stat,
+body.dark-mode .krs-table-wrapper {
+  background: var(--surface);
+  border-color: var(--border);
+}
+
+body.dark-mode .krs-stat.highlight {
+  background: rgba(59, 130, 246, 0.1);
+}
+
+body.dark-mode .krs-table th {
+  background: #1e293b;
+  color: var(--text-primary);
+}
+
+body.dark-mode .krs-table tr:hover {
+  background: #334155;
+}
+
+/* KSM Card tetap putih di dark mode agar bisa diprint */
+body.dark-mode .krs-result-card {
+  background: white;
+  color: black;
+}
+
+@media (max-width: 768px) {
+  .krs-result-card {
+    padding: 1.5rem;
+    font-size: 0.8rem;
+  }
+  .ksm-student-info {
+    grid-template-columns: 1fr;
+  }
+}
