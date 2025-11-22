@@ -1700,6 +1700,26 @@ const translations = {
     "help.lf.type": "Status",
     "help.lf.item": "Item Name",
     "help.lf.location": "Location",
+
+    "nav.krs": "Online KRS",
+    "krs.title": "Online Study Plan (KRS)",
+    "krs.subtitle": "Select courses for the upcoming semester. Max 24 credits.",
+    "krs.ipk_last": "Last GPA",
+    "krs.max_sks": "Max Credits",
+    "krs.selected_sks": "Selected Credits",
+    "krs.code": "Code",
+    "krs.course": "Course Name",
+    "krs.sks": "Credits",
+    "krs.class": "Class",
+    "krs.schedule": "Schedule",
+    "krs.quota": "Quota",
+    "krs.reset": "Reset Selection",
+    "krs.submit": "Submit KRS",
+    "krs.edit": "Edit KRS",
+    "krs.download": "Download KSM (PDF)",
+    "krs.success": "KRS successfully submitted!",
+    "krs.status_draft": "Draft (Not Sent)",
+    "krs.status_submitted": "Submitted (Waiting Approval)",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -2382,6 +2402,27 @@ const translations = {
     "help.lf.type": "Status",
     "help.lf.item": "Nama Barang",
     "help.lf.location": "Lokasi",
+
+    "nav.krs": "KRS Online",
+    "krs.title": "KRS Online",
+    "krs.subtitle":
+      "Pilih mata kuliah untuk semester depan. Batas pengambilan 24 SKS.",
+    "krs.ipk_last": "IPK Lalu",
+    "krs.max_sks": "Jatah SKS",
+    "krs.selected_sks": "SKS Dipilih",
+    "krs.code": "Kode",
+    "krs.course": "Mata Kuliah",
+    "krs.sks": "SKS",
+    "krs.class": "Kelas",
+    "krs.schedule": "Jadwal",
+    "krs.quota": "Kuota",
+    "krs.reset": "Reset Pilihan",
+    "krs.submit": "Ajukan KRS",
+    "krs.edit": "Ubah KRS",
+    "krs.download": "Unduh KSM (PDF)",
+    "krs.success": "KRS berhasil diajukan!",
+    "krs.status_draft": "Draft (Belum Dikirim)",
+    "krs.status_submitted": "Diajukan (Menunggu Persetujuan)",
   },
 };
 
@@ -2737,6 +2778,7 @@ function switchSection(sectionId) {
     if (sectionId === "marketplace") initMarketplace();
     if (sectionId === "career-center") initCareerCenter();
     if (sectionId === "help-center") initHelpCenter();
+    if (sectionId === "krs-online") initKRS();
 
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
@@ -10744,15 +10786,15 @@ function generateFlowchartFromInput() {
   if (!code.trim()) return;
 
   const canvas = document.getElementById("miCanvas");
-  
+
   canvas.innerHTML = "";
-  miLines.forEach(line => line.remove());
+  miLines.forEach((line) => line.remove());
   miLines = [];
 
-  const lines = code.split("\n").filter(line => line.trim() !== "");
-  
+  const lines = code.split("\n").filter((line) => line.trim() !== "");
+
   let lastShape = null;
-  let startX = 400; 
+  let startX = 400;
   let startY = 50;
   let gapY = 120;
   let shapeCount = 0;
@@ -10760,77 +10802,107 @@ function generateFlowchartFromInput() {
   lines.forEach((line) => {
     const text = line.trim();
     const lowerText = text.toLowerCase();
-    
+
     // Filter: Abaikan baris kosong, komentar, atau kurung kurawal saja
-    if (!text || text === "{" || text === "}" || text.startsWith("//") || text.startsWith("#") || text.startsWith("/*")) {
-        return;
+    if (
+      !text ||
+      text === "{" ||
+      text === "}" ||
+      text.startsWith("//") ||
+      text.startsWith("#") ||
+      text.startsWith("/*")
+    ) {
+      return;
     }
 
-    let type = "process"; 
+    let type = "process";
 
     // 1. DETEKSI TERMINATOR (Start/End)
     if (
-        // Umum
-        lowerText.includes("start") || lowerText.includes("stop") || lowerText.includes("begin") || lowerText.includes("end") ||
-        // Python
-        lowerText.startsWith("def ") || lowerText.startsWith("return") ||
-        // JS / C++ / C#
-        lowerText.startsWith("function ") || lowerText.includes("class ") || 
-        lowerText.includes("void main") || lowerText.includes("int main") || lowerText.includes("static void main")
+      // Umum
+      lowerText.includes("start") ||
+      lowerText.includes("stop") ||
+      lowerText.includes("begin") ||
+      lowerText.includes("end") ||
+      // Python
+      lowerText.startsWith("def ") ||
+      lowerText.startsWith("return") ||
+      // JS / C++ / C#
+      lowerText.startsWith("function ") ||
+      lowerText.includes("class ") ||
+      lowerText.includes("void main") ||
+      lowerText.includes("int main") ||
+      lowerText.includes("static void main")
     ) {
       type = "terminator";
-    } 
-    
+    }
+
     // 2. DETEKSI DECISION (Percabangan/Loop)
     else if (
-        lowerText.startsWith("if") || lowerText.startsWith("else") || lowerText.startsWith("elif") ||
-        lowerText.startsWith("while") || lowerText.startsWith("for") || lowerText.startsWith("do ") ||
-        lowerText.startsWith("switch") || lowerText.startsWith("case")
+      lowerText.startsWith("if") ||
+      lowerText.startsWith("else") ||
+      lowerText.startsWith("elif") ||
+      lowerText.startsWith("while") ||
+      lowerText.startsWith("for") ||
+      lowerText.startsWith("do ") ||
+      lowerText.startsWith("switch") ||
+      lowerText.startsWith("case")
     ) {
       type = "decision";
-    } 
-    
+    }
+
     // 3. DETEKSI INPUT
     else if (
-        // Umum
-        lowerText.includes("input") || lowerText.includes("read") || lowerText.includes("get") ||
-        // JS
-        lowerText.includes("prompt(") || 
-        // C++
-        lowerText.includes("cin >>") || 
-        // C#
-        lowerText.includes("console.readline") || 
-        // Java
-        lowerText.includes("scanner.next")
+      // Umum
+      lowerText.includes("input") ||
+      lowerText.includes("read") ||
+      lowerText.includes("get") ||
+      // JS
+      lowerText.includes("prompt(") ||
+      // C++
+      lowerText.includes("cin >>") ||
+      // C#
+      lowerText.includes("console.readline") ||
+      // Java
+      lowerText.includes("scanner.next")
     ) {
       type = "inputoutput";
-    } 
-    
+    }
+
     // 4. DETEKSI OUTPUT (Display)
     else if (
-        // Umum
-        lowerText.includes("print") || lowerText.includes("display") || lowerText.includes("output") ||
-        // JS
-        lowerText.includes("console.log") || lowerText.includes("alert") ||
-        // Python
-        lowerText.startsWith("print(") ||
-        // C++
-        lowerText.includes("cout <<") || 
-        // C#
-        lowerText.includes("console.writeline") || lowerText.includes("console.write") ||
-        // Java
-        lowerText.includes("system.out.print")
+      // Umum
+      lowerText.includes("print") ||
+      lowerText.includes("display") ||
+      lowerText.includes("output") ||
+      // JS
+      lowerText.includes("console.log") ||
+      lowerText.includes("alert") ||
+      // Python
+      lowerText.startsWith("print(") ||
+      // C++
+      lowerText.includes("cout <<") ||
+      // C#
+      lowerText.includes("console.writeline") ||
+      lowerText.includes("console.write") ||
+      // Java
+      lowerText.includes("system.out.print")
     ) {
-      type = "display"; 
-    } 
-    
+      type = "display";
+    }
+
     // 5. DEFAULT (Process)
     else {
       type = "process";
     }
 
-    const shapeEl = createShapeForGenerator(type, text, startX, startY + (shapeCount * gapY));
-    
+    const shapeEl = createShapeForGenerator(
+      type,
+      text,
+      startX,
+      startY + shapeCount * gapY
+    );
+
     if (lastShape) {
       connectShapes(lastShape, shapeEl);
     }
@@ -10905,3 +10977,270 @@ function connectShapes(source, target) {
     miLines.push(line);
   }
 }
+
+const availableCoursesSem5 = [
+  {
+    id: "M501",
+    code: "TI501",
+    name: "Mobile Programming",
+    sks: 4,
+    class: "A",
+    schedule: "Senin, 08:00-11:30",
+    quota: "35/40",
+  },
+  {
+    id: "M502",
+    code: "TI502",
+    name: "Cloud Computing",
+    sks: 3,
+    class: "A",
+    schedule: "Selasa, 13:00-15:30",
+    quota: "30/40",
+  },
+  {
+    id: "M503",
+    code: "TI503",
+    name: "Artificial Intelligence",
+    sks: 3,
+    class: "A",
+    schedule: "Rabu, 08:00-10:30",
+    quota: "38/40",
+  },
+  {
+    id: "M504",
+    code: "TI504",
+    name: "Computer Security",
+    sks: 3,
+    class: "B",
+    schedule: "Kamis, 10:00-12:30",
+    quota: "20/40",
+  },
+  {
+    id: "M505",
+    code: "TI505",
+    name: "Software Testing",
+    sks: 3,
+    class: "A",
+    schedule: "Jumat, 09:00-11:30",
+    quota: "32/40",
+  },
+  {
+    id: "M506",
+    code: "TI506",
+    name: "Human Computer Interaction",
+    sks: 3,
+    class: "C",
+    schedule: "Senin, 13:00-15:30",
+    quota: "15/40",
+  },
+  {
+    id: "M507",
+    code: "TI507",
+    name: "Technopreneurship",
+    sks: 2,
+    class: "A",
+    schedule: "Sabtu, 08:00-10:00",
+    quota: "40/50",
+  },
+  {
+    id: "M508",
+    code: "TI508",
+    name: "Data Mining",
+    sks: 3,
+    class: "B",
+    schedule: "Selasa, 08:00-10:30",
+    quota: "10/40",
+  },
+];
+
+let krsInitialized = false;
+let selectedKRS = JSON.parse(localStorage.getItem("krsDraft") || "[]");
+let isKRSSubmitted = localStorage.getItem("krsSubmitted") === "true";
+
+function initKRS() {
+  renderKRSTable();
+  updateKRSStatus();
+
+  if (isKRSSubmitted) {
+    showKRSResult();
+  } else {
+    document.getElementById("krsFormView").style.display = "block";
+    document.getElementById("krsResultView").style.display = "none";
+  }
+
+  krsInitialized = true;
+}
+
+function renderKRSTable() {
+  const tbody = document.getElementById("krsCourseList");
+  if (!tbody) return;
+
+  tbody.innerHTML = "";
+  let totalSks = 0;
+
+  availableCoursesSem5.forEach((course, index) => {
+    const isSelected = selectedKRS.includes(course.id);
+    if (isSelected) totalSks += course.sks;
+
+    const row = document.createElement("tr");
+    row.innerHTML = `
+      <td style="text-align: center;">
+        <input type="checkbox" class="krs-checkbox" data-id="${
+          course.id
+        }" data-sks="${course.sks}" 
+        ${isSelected ? "checked" : ""} onchange="toggleKrsCourse(this)">
+      </td>
+      <td>${course.code}</td>
+      <td style="font-weight: 600;">${course.name}</td>
+      <td>${course.sks}</td>
+      <td>${course.class}</td>
+      <td>${course.schedule}</td>
+      <td>${course.quota}</td>
+    `;
+    tbody.appendChild(row);
+  });
+
+  document.getElementById("totalSksCounter").textContent = totalSks;
+  updateSubmitButton(totalSks);
+}
+
+function toggleKrsCourse(checkbox) {
+  const id = checkbox.dataset.id;
+  const sks = parseInt(checkbox.dataset.sks);
+  let currentTotal = parseInt(
+    document.getElementById("totalSksCounter").textContent
+  );
+
+  if (checkbox.checked) {
+    if (currentTotal + sks > 24) {
+      alert("Maaf, batas maksimal adalah 24 SKS.");
+      checkbox.checked = false;
+      return;
+    }
+    selectedKRS.push(id);
+    currentTotal += sks;
+  } else {
+    selectedKRS = selectedKRS.filter((item) => item !== id);
+    currentTotal -= sks;
+  }
+
+  localStorage.setItem("krsDraft", JSON.stringify(selectedKRS));
+  document.getElementById("totalSksCounter").textContent = currentTotal;
+  updateSubmitButton(currentTotal);
+}
+
+function updateSubmitButton(totalSks) {
+  const btn = document.getElementById("submitKrsBtn");
+  if (btn) btn.disabled = totalSks === 0;
+}
+
+function resetKRSSelection() {
+  if (confirm("Reset semua pilihan?")) {
+    selectedKRS = [];
+    localStorage.setItem("krsDraft", "[]");
+    renderKRSTable();
+  }
+}
+
+function submitKRS() {
+  if (selectedKRS.length === 0) return;
+
+  if (
+    confirm(
+      "Apakah Anda yakin ingin mengajukan KRS ini? Data tidak dapat diubah setelah diajukan."
+    )
+  ) {
+    isKRSSubmitted = true;
+    localStorage.setItem("krsSubmitted", "true");
+    showNotification(translations[currentLanguage]["krs.success"], "success");
+    showKRSResult();
+    updateKRSStatus();
+  }
+}
+
+function updateKRSStatus() {
+  const statusText = document.getElementById("krsStatusText");
+  const statusDot = document.querySelector("#krsStatusBadge .status-indicator");
+
+  if (isKRSSubmitted) {
+    statusText.textContent =
+      translations[currentLanguage]["krs.status_submitted"];
+    statusDot.className = "status-indicator submitted";
+  } else {
+    statusText.textContent = translations[currentLanguage]["krs.status_draft"];
+    statusDot.className = "status-indicator pending";
+  }
+}
+
+function showKRSResult() {
+  document.getElementById("krsFormView").style.display = "none";
+  document.getElementById("krsResultView").style.display = "block";
+
+  const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  document.getElementById("ksmName").textContent = user.fullName || "Mahasiswa";
+  document.getElementById("ksmNim").textContent = user.nim || "000000";
+  document.getElementById("ksmProdi").textContent = user.programStudi || "-";
+  document.getElementById("ksmSignatureName").textContent =
+    user.fullName || "Mahasiswa";
+  document.getElementById("ksmDate").textContent =
+    new Date().toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+
+  const tbody = document.getElementById("ksmTableBody");
+  tbody.innerHTML = "";
+  let total = 0;
+  let no = 1;
+
+  availableCoursesSem5.forEach((course) => {
+    if (selectedKRS.includes(course.id)) {
+      total += course.sks;
+      const row = `<tr>
+        <td style="text-align:center;">${no++}</td>
+        <td>${course.code}</td>
+        <td>${course.name}</td>
+        <td style="text-align:center;">${course.sks}</td>
+        <td style="text-align:center;">${course.class}</td>
+        <td>${course.schedule}</td>
+      </tr>`;
+      tbody.innerHTML += row;
+    }
+  });
+
+  document.getElementById("ksmTotalSks").textContent = total;
+}
+
+function editKRS() {
+  if (confirm("Batalkan pengajuan dan edit kembali KRS?")) {
+    isKRSSubmitted = false;
+    localStorage.setItem("krsSubmitted", "false");
+    updateKRSStatus();
+    document.getElementById("krsFormView").style.display = "block";
+    document.getElementById("krsResultView").style.display = "none";
+    renderKRSTable();
+  }
+}
+
+function downloadKSM() {
+  const element = document.getElementById("ksmDocument");
+  showNotification("Mengunduh KSM...", "info");
+
+  const opt = {
+    margin: 10,
+    filename: "KSM_Semester_5.pdf",
+    image: { type: "jpeg", quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+  };
+
+  html2pdf().set(opt).from(element).save();
+}
+
+// Expose to window
+window.resetKRSSelection = resetKRSSelection;
+window.submitKRS = submitKRS;
+window.toggleKrsCourse = toggleKrsCourse;
+window.editKRS = editKRS;
+window.downloadKSM = downloadKSM;
