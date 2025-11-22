@@ -8055,18 +8055,59 @@ body.dark-mode .erd-table-footer input {
 }
 
 .flowchart-shape.shape-decision {
-  width: 150px;
-  height: 100px;
+  width: 120px;
+  height: 120px;
   min-width: 0;
   min-height: 0;
   transform: rotate(45deg);
   border-radius: 4px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .flowchart-shape.shape-decision .shape-text {
   transform: rotate(-45deg);
-  max-width: 120px;
+  width: 140px;
   text-align: center;
+  line-height: 1.2;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.flowchart-shape.shape-decision .socket-top {
+  top: -6px !important;
+  left: -6px !important;
+  right: auto !important;
+  bottom: auto !important;
+  transform: translate(0, 0) !important;
+}
+
+.flowchart-shape.shape-decision .socket-right {
+  top: -6px !important;
+  right: -6px !important;
+  left: auto !important;
+  bottom: auto !important;
+  transform: translate(0, 0) !important;
+}
+
+.flowchart-shape.shape-decision .socket-bottom {
+  bottom: -6px !important;
+  right: -6px !important;
+  left: auto !important;
+  top: auto !important;
+  transform: translate(0, 0) !important;
+}
+
+.flowchart-shape.shape-decision .socket-left {
+  bottom: -6px !important;
+  left: -6px !important;
+  right: auto !important;
+  top: auto !important;
+  transform: translate(0, 0) !important;
 }
 
 .flowchart-shape.shape-data {
@@ -10262,8 +10303,6 @@ body.dark-mode .citation-text {
   flex-direction: column;
   gap: 3rem;
 }
-
-
 
 .skkm-summary-card {
   background: var(--surface);
