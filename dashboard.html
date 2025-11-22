@@ -45,6 +45,11 @@
             <a href="#" data-section="profile" data-i18n="nav.profile"
               >Profile</a
             >
+
+            <a href="#" data-section="krs-online" data-i18n="nav.krs"
+              >KRS Online</a
+            >
+
             <a href="#" data-section="ktm-digital" data-i18n="nav.ktm"
               >KTM Digital</a
             >
@@ -120,6 +125,9 @@
             >Dashboard</a
           >
           <a href="#" data-section="profile" data-i18n="nav.profile">Profile</a>
+          <a href="#" data-section="krs-online" data-i18n="nav.krs"
+            >KRS Online</a
+          >
           <a href="#" data-section="ktm-digital" data-i18n="nav.ktm"
             >KTM Digital</a
           >
@@ -534,8 +542,6 @@
             </section>
           </section>
 
-          <!-- Profile Section -->
-          <!-- Profile Section - TAMBAHKAN ID -->
           <section class="section" id="profile" style="display: none">
             <h2 data-i18n="profile.title">Profile</h2>
             <div class="profile-info">
@@ -572,6 +578,179 @@
                 <span class="info-value" id="profileDetailEmail"
                   >kharis.destian@example.ac.id</span
                 >
+              </div>
+            </div>
+          </section>
+
+          <section class="section" id="krs-online" style="display: none">
+            <header class="main-header">
+              <div>
+                <h1 data-i18n="krs.title">KRS Online (Semester 5)</h1>
+                <div data-i18n="krs.subtitle">
+                  Pilih mata kuliah untuk semester depan. Batas pengambilan
+                  adalah 24 SKS.
+                </div>
+              </div>
+              <div class="krs-status-badge" id="krsStatusBadge">
+                <span class="status-indicator pending"></span>
+                <span id="krsStatusText">Draft (Belum Dikirim)</span>
+              </div>
+            </header>
+
+            <!-- View 1: Formulir Pengisian KRS -->
+            <div id="krsFormView">
+              <div class="krs-container">
+                <!-- Info Panel -->
+                <div class="krs-info-panel">
+                  <div class="krs-stat">
+                    <span data-i18n="krs.ipk_last">IPK Lalu</span>
+                    <strong>3.42</strong>
+                  </div>
+                  <div class="krs-stat">
+                    <span data-i18n="krs.max_sks">Jatah SKS</span>
+                    <strong>24</strong>
+                  </div>
+                  <div class="krs-stat highlight">
+                    <span data-i18n="krs.selected_sks">SKS Dipilih</span>
+                    <strong id="totalSksCounter">0</strong>
+                  </div>
+                </div>
+
+                <!-- Tabel Pemilihan -->
+                <div class="krs-table-wrapper">
+                  <table class="krs-table">
+                    <thead>
+                      <tr>
+                        <th style="width: 50px">#</th>
+                        <th data-i18n="krs.code">Kode</th>
+                        <th data-i18n="krs.course">Mata Kuliah</th>
+                        <th data-i18n="krs.sks">SKS</th>
+                        <th data-i18n="krs.class">Kelas</th>
+                        <th data-i18n="krs.schedule">Jadwal</th>
+                        <th data-i18n="krs.quota">Kuota</th>
+                      </tr>
+                    </thead>
+                    <tbody id="krsCourseList">
+                      <!-- Diisi oleh JS -->
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Footer Aksi -->
+                <div class="krs-actions">
+                  <button
+                    class="cancel-btn"
+                    onclick="resetKRSSelection()"
+                    data-i18n="krs.reset"
+                  >
+                    Reset Pilihan
+                  </button>
+                  <button
+                    class="submit-task-btn"
+                    onclick="submitKRS()"
+                    id="submitKrsBtn"
+                    data-i18n="krs.submit"
+                  >
+                    Ajukan KRS
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- View 2: Hasil KRS (KSM) -->
+            <div id="krsResultView" style="display: none">
+              <div class="krs-result-card" id="ksmDocument">
+                <div class="ksm-header">
+                  <div class="ksm-logo">*</div>
+                  <div class="ksm-title">
+                    <h3>KARTU STUDI MAHASISWA (KSM)</h3>
+                    <p>Semester Ganjil 2025/2026</p>
+                  </div>
+                </div>
+
+                <div class="ksm-student-info">
+                  <div class="info-row">
+                    <span class="label">Nama:</span>
+                    <span class="value" id="ksmName">Loading...</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="label">NIM:</span>
+                    <span class="value" id="ksmNim">Loading...</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="label">Prodi:</span>
+                    <span class="value" id="ksmProdi">Loading...</span>
+                  </div>
+                  <div class="info-row">
+                    <span class="label">Dosen Wali:</span>
+                    <span class="value">Bambang Sugiarto, M.Kom</span>
+                  </div>
+                </div>
+
+                <table class="ksm-table">
+                  <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Kode</th>
+                      <th>Mata Kuliah</th>
+                      <th>SKS</th>
+                      <th>Kelas</th>
+                      <th>Jadwal</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ksmTableBody">
+                    <!-- Diisi JS -->
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <td
+                        colspan="3"
+                        style="text-align: right; font-weight: bold"
+                      >
+                        Total SKS
+                      </td>
+                      <td id="ksmTotalSks" style="font-weight: bold">0</td>
+                      <td colspan="2"></td>
+                    </tr>
+                  </tfoot>
+                </table>
+
+                <div class="ksm-footer">
+                  <div class="signature-box">
+                    <p>Cirebon, <span id="ksmDate"></span></p>
+                    <p>Mahasiswa</p>
+                    <br /><br /><br />
+                    <p
+                      id="ksmSignatureName"
+                      style="text-decoration: underline; font-weight: bold"
+                    ></p>
+                  </div>
+                  <div class="signature-box">
+                    <p>Mengetahui,</p>
+                    <p>Dosen Wali</p>
+                    <br /><br /><br />
+                    <p style="text-decoration: underline; font-weight: bold">
+                      Bambang Sugiarto, M.Kom
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div class="krs-actions" style="margin-top: 2rem">
+                <button
+                  class="cancel-btn"
+                  onclick="editKRS()"
+                  data-i18n="krs.edit"
+                >
+                  Ubah KRS
+                </button>
+                <button
+                  class="submit-task-btn"
+                  onclick="downloadKSM()"
+                  data-i18n="krs.download"
+                >
+                  Unduh KSM (PDF)
+                </button>
               </div>
             </div>
           </section>
