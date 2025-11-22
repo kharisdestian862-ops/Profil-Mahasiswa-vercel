@@ -1720,6 +1720,25 @@ const translations = {
     "krs.success": "KRS successfully submitted!",
     "krs.status_draft": "Draft (Not Sent)",
     "krs.status_submitted": "Submitted (Waiting Approval)",
+
+    "nav.citation": "Citation Gen",
+    "citation.title": "Citation Generator",
+    "citation.subtitle":
+      "Automatically generate citations for your papers (APA Style).",
+    "citation.sourceType": "Source Type",
+    "citation.type.book": "Book",
+    "citation.type.journal": "Journal Article",
+    "citation.type.website": "Website",
+    "citation.authorLast": "Author Last Name",
+    "citation.authorFirst": "First Name Initial",
+    "citation.year": "Year",
+    "citation.contentTitle": "Title",
+    "citation.publisher": "Publisher",
+    "citation.journalName": "Journal Name & Volume",
+    "citation.generate": "Generate Citation",
+    "citation.result": "Result:",
+    "citation.copy": "Copy to Clipboard",
+    "citation.copied": "Copied!",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -2423,6 +2442,25 @@ const translations = {
     "krs.success": "KRS berhasil diajukan!",
     "krs.status_draft": "Draft (Belum Dikirim)",
     "krs.status_submitted": "Diajukan (Menunggu Persetujuan)",
+
+    "nav.citation": "Generator Sitasi",
+    "citation.title": "Generator Daftar Pustaka",
+    "citation.subtitle":
+      "Buat sitasi otomatis untuk tugas dan makalah Anda (Format APA).",
+    "citation.sourceType": "Jenis Sumber",
+    "citation.type.book": "Buku",
+    "citation.type.journal": "Jurnal Ilmiah",
+    "citation.type.website": "Website",
+    "citation.authorLast": "Nama Belakang Penulis",
+    "citation.authorFirst": "Inisial Nama Depan",
+    "citation.year": "Tahun Terbit",
+    "citation.contentTitle": "Judul",
+    "citation.publisher": "Penerbit",
+    "citation.journalName": "Nama Jurnal & Volume",
+    "citation.generate": "Buat Sitasi",
+    "citation.result": "Hasil:",
+    "citation.copy": "Salin Teks",
+    "citation.copied": "Tersalin!",
   },
 };
 
@@ -2690,6 +2728,7 @@ function initFAB() {
     miFab: "mi-center",
     pomodoroFab: "study-center",
     marketFab: "marketplace",
+    citationFab: "citation-center",
   };
 
   Object.keys(fabItems).forEach((id) => {
@@ -2746,6 +2785,7 @@ function switchSection(sectionId) {
     "mi-center",
     "study-center",
     "marketplace",
+    "citation-center",
   ];
 
   if (fullWidthSections.includes(sectionId)) {
@@ -2779,6 +2819,7 @@ function switchSection(sectionId) {
     if (sectionId === "career-center") initCareerCenter();
     if (sectionId === "help-center") initHelpCenter();
     if (sectionId === "krs-online") initKRS();
+    if (sectionId === "citation-center") initCitationCenter();
 
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
@@ -11244,3 +11285,70 @@ window.submitKRS = submitKRS;
 window.toggleKrsCourse = toggleKrsCourse;
 window.editKRS = editKRS;
 window.downloadKSM = downloadKSM;
+
+let citationInitialized = false;
+
+function initCitationCenter() {
+  if (!citationInitialized) {
+    const typeSelect = document.getElementById("citeType");
+    const generateBtn = document.getElementById("generateCiteBtn");
+
+    typeSelect.addEventListener("change", (e) => {
+      const type = e.target.value;
+      document.getElementById("groupPublisher").style.display =
+        type === "book" ? "block" : "none";
+      document.getElementById("groupJournal").style.display =
+        type === "journal" ? "block" : "none";
+      document.getElementById("groupUrl").style.display =
+        type === "website" ? "block" : "none";
+    });
+
+    generateBtn.addEventListener("click", generateCitation);
+    citationInitialized = true;
+  }
+}
+
+function generateCitation() {
+  const type = document.getElementById("citeType").value;
+  const last = document.getElementById("citeAuthorLast").value.trim();
+  const first = document.getElementById("citeAuthorFirst").value.trim();
+  const year = document.getElementById("citeYear").value.trim();
+  const title = document.getElementById("citeTitle").value.trim();
+
+  if (!last || !year || !title) {
+    alert("Mohon lengkapi Nama, Tahun, dan Judul.");
+    return;
+  }
+
+  let result = "";
+
+  // Format APA: Last, F. M. (Year). Title.
+  const authorPart = `${last}, ${first}.`;
+
+  if (type === "book") {
+    const publisher = document.getElementById("citePublisher").value.trim();
+    // APA Book: Author, A. A. (Year). Title of work. Publisher.
+    result = `${authorPart} (${year}). <i>${title}</i>. ${publisher}.`;
+  } else if (type === "journal") {
+    const journal = document.getElementById("citeJournal").value.trim();
+    // APA Journal: Author, A. A. (Year). Title of article. Title of Periodical, volume number(issue number), pages.
+    result = `${authorPart} (${year}). ${title}. <i>${journal}</i>.`;
+  } else if (type === "website") {
+    const url = document.getElementById("citeUrl").value.trim();
+    // APA Web: Author, A. A. (Year, Month Date). Title of page. Site Name. URL
+    result = `${authorPart} (${year}). <i>${title}</i>. Diakses dari ${url}`;
+  }
+
+  document.getElementById("citationOutput").innerHTML = result;
+}
+
+function copyCitation() {
+  const text = document.getElementById("citationOutput").innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    showNotification(
+      translations[currentLanguage]["citation.copied"],
+      "success"
+    );
+  });
+}
+window.copyCitation = copyCitation;
