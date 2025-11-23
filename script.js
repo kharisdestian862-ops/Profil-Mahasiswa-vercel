@@ -1779,6 +1779,10 @@ const translations = {
     "thesis.title": "Final Project & Thesis System",
     "thesis.subtitle":
       "Management portal for thesis registration, guidance, and defense.",
+
+    "nav.music": "Music Player",
+    "music.title": "Music Player",
+    "music.subtitle": "Upload your favorite songs and listen while studying.",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -2543,6 +2547,10 @@ const translations = {
     "thesis.title": "Sistem Tugas Akhir & Skripsi",
     "thesis.subtitle":
       "Portal manajemen pendaftaran, bimbingan, dan sidang tugas akhir.",
+
+    "nav.music": "Pemutar Musik",
+    "music.title": "Pemutar Musik",
+    "music.subtitle": "Upload lagu favoritmu dan dengarkan sambil belajar.",
   },
 };
 
@@ -2811,6 +2819,7 @@ function initFAB() {
     pomodoroFab: "study-center",
     marketFab: "marketplace",
     citationFab: "citation-center",
+    musicFab: "music-center",
   };
 
   Object.keys(fabItems).forEach((id) => {
@@ -2868,6 +2877,7 @@ function switchSection(sectionId) {
     "study-center",
     "marketplace",
     "citation-center",
+    "music-center",
   ];
 
   if (fullWidthSections.includes(sectionId)) {
@@ -2904,6 +2914,7 @@ function switchSection(sectionId) {
     if (sectionId === "citation-center") initCitationCenter();
     if (sectionId === "library-center") initLibrary();
     if (sectionId === "thesis-center") initThesis();
+    if (sectionId === "music-center") initMusicPlayer();
 
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
@@ -12310,4 +12321,146 @@ function renderTitles() {
     `;
     container.appendChild(div);
   });
+}
+
+let musicInitialized = false;
+let playlist = [];
+let currentSongIndex = 0;
+let isPlaying = false;
+const audio = document.getElementById("audioPlayer");
+
+function initMusicPlayer() {
+  if (!musicInitialized) {
+    document
+      .getElementById("musicUploadInput")
+      .addEventListener("change", handleMusicUpload);
+    document.getElementById("playBtn").addEventListener("click", togglePlay);
+    document.getElementById("prevBtn").addEventListener("click", prevSong);
+    document.getElementById("nextBtn").addEventListener("click", nextSong);
+    document.getElementById("progressBar").addEventListener("input", seekSong);
+
+    audio.addEventListener("timeupdate", updateProgress);
+    audio.addEventListener("ended", nextSong);
+
+    musicInitialized = true;
+  }
+}
+
+function handleMusicUpload(e) {
+  const files = Array.from(e.target.files);
+  if (files.length === 0) return;
+
+  files.forEach((file) => {
+    const url = URL.createObjectURL(file);
+    playlist.push({
+      title: file.name.replace(/\.[^/.]+$/, ""),
+      artist: "Local File",
+      src: url,
+    });
+  });
+
+  renderPlaylist();
+  if (playlist.length > 0 && !isPlaying) {
+    loadSong(playlist.length - files.length);
+  }
+}
+
+function renderPlaylist() {
+  const container = document.getElementById("playlistContainer");
+  container.innerHTML = "";
+
+  if (playlist.length === 0) {
+    container.innerHTML =
+      '<div class="empty-playlist">Belum ada lagu. Upload file MP3 sekarang.</div>';
+    return;
+  }
+
+  playlist.forEach((song, index) => {
+    const div = document.createElement("div");
+    div.className = `playlist-item ${
+      index === currentSongIndex ? "active" : ""
+    }`;
+    div.onclick = () => loadSong(index);
+    div.innerHTML = `
+      <div class="song-icon">🎵</div>
+      <div class="song-info">
+        <div class="song-title">${song.title}</div>
+        <div class="song-artist">${song.artist}</div>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function loadSong(index) {
+  currentSongIndex = index;
+  const song = playlist[currentSongIndex];
+
+  document.getElementById("currentTrackTitle").textContent = song.title;
+  document.getElementById("currentTrackArtist").textContent = song.artist;
+
+  audio.src = song.src;
+  renderPlaylist();
+  playSong();
+}
+
+function togglePlay() {
+  if (playlist.length === 0) return;
+  if (isPlaying) {
+    pauseSong();
+  } else {
+    playSong();
+  }
+}
+
+function playSong() {
+  isPlaying = true;
+  audio.play();
+  document.getElementById("iconPlay").style.display = "none";
+  document.getElementById("iconPause").style.display = "block";
+}
+
+function pauseSong() {
+  isPlaying = false;
+  audio.pause();
+  document.getElementById("iconPlay").style.display = "block";
+  document.getElementById("iconPause").style.display = "none";
+}
+
+function prevSong() {
+  currentSongIndex--;
+  if (currentSongIndex < 0) {
+    currentSongIndex = playlist.length - 1;
+  }
+  loadSong(currentSongIndex);
+}
+
+function nextSong() {
+  currentSongIndex++;
+  if (currentSongIndex > playlist.length - 1) {
+    currentSongIndex = 0;
+  }
+  loadSong(currentSongIndex);
+}
+
+function updateProgress() {
+  const { duration, currentTime } = audio;
+  const progressPercent = (currentTime / duration) * 100;
+  document.getElementById("progressBar").value = progressPercent || 0;
+
+  document.getElementById("currentTime").textContent = formatTime(currentTime);
+  document.getElementById("durationTime").textContent = formatTime(duration);
+}
+
+function seekSong() {
+  const progressBar = document.getElementById("progressBar");
+  const duration = audio.duration;
+  audio.currentTime = (progressBar.value / 100) * duration;
+}
+
+function formatTime(time) {
+  if (isNaN(time)) return "0:00";
+  const minutes = Math.floor(time / 60);
+  const seconds = Math.floor(time % 60);
+  return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
 }
