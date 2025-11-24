@@ -1,4 +1,3 @@
-// Complete Data Structure with Attendance, Tasks, and Materials
 let attendanceData = {
   algorithms: {
     name: "Algorithms",
@@ -12350,18 +12349,56 @@ function handleMusicUpload(e) {
   const files = Array.from(e.target.files);
   if (files.length === 0) return;
 
+  showNotification("Memproses file musik...", "info");
+
+  let processedCount = 0;
+
   files.forEach((file) => {
     const url = URL.createObjectURL(file);
-    playlist.push({
+
+    const newSong = {
       title: file.name.replace(/\.[^/.]+$/, ""),
-      artist: "Local File",
+      artist: "Unknown Artist",
       src: url,
+      cover: null,
+    };
+
+    jsmediatags.read(file, {
+      onSuccess: function (tag) {
+        const tags = tag.tags;
+
+        if (tags.title) newSong.title = tags.title;
+        if (tags.artist) newSong.artist = tags.artist;
+
+        if (tags.picture) {
+          const { data, format } = tags.picture;
+          let base64String = "";
+          for (let i = 0; i < data.length; i++) {
+            base64String += String.fromCharCode(data[i]);
+          }
+          newSong.cover = `data:${format};base64,${window.btoa(base64String)}`;
+        }
+
+        playlist.push(newSong);
+        finishProcessing();
+      },
+      onError: function (error) {
+        console.log("Gagal baca tag:", error);
+        playlist.push(newSong);
+        finishProcessing();
+      },
     });
   });
 
-  renderPlaylist();
-  if (playlist.length > 0 && !isPlaying) {
-    loadSong(playlist.length - files.length);
+  function finishProcessing() {
+    processedCount++;
+    if (processedCount === files.length) {
+      renderPlaylist();
+      if (playlist.length > 0 && !isPlaying) {
+        loadSong(playlist.length - files.length);
+      }
+      showNotification("Musik berhasil ditambahkan!", "success");
+    }
   }
 }
 
@@ -12398,6 +12435,18 @@ function loadSong(index) {
 
   document.getElementById("currentTrackTitle").textContent = song.title;
   document.getElementById("currentTrackArtist").textContent = song.artist;
+
+  const albumArt = document.getElementById("currentAlbumArt");
+
+  if (song.cover) {
+    albumArt.style.backgroundImage = `url(${song.cover})`;
+    albumArt.style.backgroundSize = "cover";
+    albumArt.style.backgroundPosition = "center";
+    albumArt.innerHTML = "";
+  } else {
+    albumArt.style.backgroundImage = "none";
+    albumArt.innerHTML = "🎵";
+  }
 
   audio.src = song.src;
   renderPlaylist();
