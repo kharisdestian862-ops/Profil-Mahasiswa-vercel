@@ -101,6 +101,10 @@
               >Tugas Akhir</a
             >
 
+            <a href="#" data-section="letters-center" data-i18n="nav.letters"
+              >Layanan Surat</a
+            >
+
             <a href="#" data-section="settings" data-i18n="nav.settings"
               >Settings</a
             >
@@ -185,6 +189,10 @@
 
           <a href="#" data-section="thesis-center" data-i18n="nav.thesis"
             >Tugas Akhir</a
+          >
+
+          <a href="#" data-section="letters-center" data-i18n="nav.letters"
+            >Layanan Surat</a
           >
 
           <a href="#" data-section="settings" data-i18n="nav.settings"
@@ -4565,6 +4573,223 @@ Jalankan tes untuk melihat hasil...
 
             <audio id="audioPlayer"></audio>
           </section>
+
+          <section class="section" id="letters-center" style="display: none">
+            <header class="main-header">
+              <div>
+                <h1 data-i18n="letters.title">Layanan Persuratan Akademik</h1>
+                <div data-i18n="letters.subtitle">
+                  Ajukan dan unduh surat keterangan resmi universitas secara
+                  digital.
+                </div>
+              </div>
+              <button
+                class="exam-btn"
+                onclick="openLetterModal()"
+                data-i18n="letters.request"
+              >
+                + Buat Pengajuan Baru
+              </button>
+            </header>
+
+            <div class="letters-container">
+              <div class="letters-summary">
+                <div class="summary-card">
+                  <div class="summary-value" id="letterTotal">0</div>
+                  <div class="summary-label" data-i18n="letters.total">
+                    Total Pengajuan
+                  </div>
+                </div>
+                <div class="summary-card">
+                  <div
+                    class="summary-value"
+                    id="letterPending"
+                    style="color: var(--warning)"
+                  >
+                    0
+                  </div>
+                  <div class="summary-label" data-i18n="letters.processing">
+                    Diproses
+                  </div>
+                </div>
+                <div class="summary-card">
+                  <div
+                    class="summary-value"
+                    id="letterReady"
+                    style="color: var(--success)"
+                  >
+                    0
+                  </div>
+                  <div class="summary-label" data-i18n="letters.ready">
+                    Siap Unduh
+                  </div>
+                </div>
+              </div>
+
+              <div class="finance-table">
+                <div
+                  class="table-header"
+                  style="grid-template-columns: 50px 2fr 1.5fr 1.5fr 1.5fr 1fr"
+                >
+                  <div>No</div>
+                  <div data-i18n="letters.type">Jenis Surat</div>
+                  <div data-i18n="letters.date">Tanggal</div>
+                  <div data-i18n="letters.purpose">Keperluan</div>
+                  <div data-i18n="letters.status">Status</div>
+                  <div data-i18n="letters.action">Aksi</div>
+                </div>
+                <div id="lettersTableBody" class="table-body"></div>
+              </div>
+            </div>
+
+            <div
+              id="letterTemplate"
+              style="
+                display: none;
+                font-family: 'Times New Roman', serif;
+                padding: 40px;
+                background: white;
+                color: black;
+                width: 210mm;
+              "
+            >
+              <div
+                style="
+                  text-align: center;
+                  border-bottom: 3px double black;
+                  padding-bottom: 10px;
+                  margin-bottom: 30px;
+                "
+              >
+                <h3
+                  style="margin: 0; font-size: 16pt; text-transform: uppercase"
+                >
+                  Universitas Catur Insan Cendekia
+                </h3>
+                <p style="margin: 5px 0; font-size: 11pt">
+                  Fakultas Teknologi Informasi
+                </p>
+                <small>Jl. Kesambi No. 202, Cirebon - Jawa Barat</small>
+              </div>
+
+              <div style="text-align: center; margin-bottom: 30px">
+                <h2
+                  style="text-decoration: underline; margin: 0; font-size: 14pt"
+                  id="printLetterTitle"
+                >
+                  SURAT KETERANGAN
+                </h2>
+                <p style="margin: 5px 0">
+                  Nomor: <span id="printLetterNo">001/UCIC/FTI/XI/2025</span>
+                </p>
+              </div>
+
+              <p>
+                Yang bertanda tangan di bawah ini, Dekan Fakultas Teknologi
+                Informasi Universitas Catur Insan Cendekia, menerangkan bahwa:
+              </p>
+
+              <table style="width: 100%; margin: 20px 0">
+                <tr>
+                  <td style="width: 150px">Nama</td>
+                  <td>: <span id="printName">Nama Mhs</span></td>
+                </tr>
+                <tr>
+                  <td>NIM</td>
+                  <td>: <span id="printNim">NIM Mhs</span></td>
+                </tr>
+                <tr>
+                  <td>Program Studi</td>
+                  <td>: <span id="printProdi">Prodi Mhs</span></td>
+                </tr>
+                <tr>
+                  <td>Semester</td>
+                  <td>: <span id="printSem">Semester</span></td>
+                </tr>
+              </table>
+
+              <p id="printBody">Adalah benar mahasiswa aktif...</p>
+
+              <p>
+                Demikian surat keterangan ini dibuat untuk dipergunakan
+                sebagaimana mestinya.
+              </p>
+
+              <div
+                style="
+                  float: right;
+                  width: 200px;
+                  margin-top: 50px;
+                  text-align: center;
+                "
+              >
+                <p>Cirebon, <span id="printDate">Tgl</span></p>
+                <p>Dekan FTI,</p>
+                <div
+                  style="
+                    height: 80px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: blue;
+                    border: 1px dashed #ccc;
+                    margin: 10px 0;
+                  "
+                >
+                  [Ttd Digital & Cap]
+                </div>
+                <p style="font-weight: bold; text-decoration: underline">
+                  Dr. Iwan Sidharta, M.Kom
+                </p>
+                <p>NIP. 19820101 201001 1 001</p>
+              </div>
+            </div>
+          </section>
+
+          <div id="letterModal" class="modal-overlay" style="display: none">
+            <div class="modal-content">
+              <h3 data-i18n="letters.formTitle">Buat Pengajuan Surat</h3>
+              <form id="letterForm">
+                <div class="form-group">
+                  <label data-i18n="letters.type">Jenis Surat</label>
+                  <select id="letterType" required>
+                    <option value="aktif">Surat Keterangan Aktif Kuliah</option>
+                    <option value="magang">Surat Pengantar Magang</option>
+                    <option value="kelakuan">
+                      Surat Keterangan Kelakuan Baik
+                    </option>
+                    <option value="beasiswa">Surat Rekomendasi Beasiswa</option>
+                  </select>
+                </div>
+                <div class="form-group">
+                  <label data-i18n="letters.purpose">Keperluan</label>
+                  <textarea
+                    id="letterPurpose"
+                    rows="3"
+                    placeholder="Contoh: Persyaratan administrasi tunjangan gaji orang tua"
+                    required
+                  ></textarea>
+                </div>
+                <div class="modal-actions">
+                  <button
+                    type="button"
+                    class="cancel-btn"
+                    onclick="closeLetterModal()"
+                    data-i18n="tasks.cancel"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    type="submit"
+                    class="submit-task-btn"
+                    data-i18n="letters.submit"
+                  >
+                    Ajukan
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
 
           <section class="section" id="settings" style="display: none">
             <h2 data-i18n="settings.title">Settings</h2>
