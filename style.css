@@ -7098,7 +7098,6 @@ body.dark-mode .status-col .status-imbalance {
   margin-left: auto;
 }
 
-/* Tombol Alat */
 .dkv-tool-btn,
 .dkv-action-btn {
   padding: 0.5rem 1rem;
@@ -11592,4 +11591,134 @@ body.dark-mode .album-art {
 }
 body.dark-mode .song-icon {
   background: #334155;
+}
+
+.mini-player {
+  position: fixed;
+  bottom: 0;
+  left: 281px;
+  right: 0;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 0.8rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 9999;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mini-player.active {
+  transform: translateY(0);
+}
+
+.mini-track-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  cursor: pointer;
+  flex: 1;
+}
+
+.mini-album-art {
+  width: 40px;
+  height: 40px;
+  background: var(--primary);
+  color: white;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  background-size: cover;
+  background-position: center;
+}
+
+.mini-text h4 {
+  font-size: 0.9rem;
+  margin: 0;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+}
+
+.mini-text p {
+  font-size: 0.75rem;
+  margin: 0;
+  color: var(--text-secondary);
+}
+
+.mini-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mini-controls button {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.mini-progress-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: transparent;
+}
+
+#miniProgressFill {
+  height: 100%;
+  background: var(--primary);
+  width: 0%;
+  transition: width 0.1s linear;
+}
+
+@media (max-width: 768px) {
+  .mini-player {
+    bottom: 0;
+    padding: 0.6rem 1rem;
+    left: 0;
+  }
+  .mini-text h4 {
+    max-width: 150px;
+  }
+}
+
+/* Dark Mode */
+body.dark-mode .mini-player {
+  background: #1e293b; /* Sedikit lebih terang dari background utama */
+  border-color: #334155;
+}
+
+/* Animasi Transisi Halaman Musik */
+#music-center {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+#music-center.slide-up {
+  animation: slideUpEnter 0.3s forwards;
+}
+
+@keyframes slideUpEnter {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.fab-container.raised {
+  bottom: 100px !important;
+  transition: bottom 0.3s ease;
 }
