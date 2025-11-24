@@ -424,12 +424,20 @@ body.menu-open {
 .sidebar {
   background: var(--surface);
   border-right: 1px solid var(--border);
-  padding: 2rem 1.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
   position: sticky;
   top: 0;
-  height: 100vh;
-  overflow-y: auto;
+  padding: 0;
+  overflow: hidden;
+}
+
+.sidebar .profile {
+  padding: 2rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0;
+  flex-shrink: 0;
 }
 
 .profile {
@@ -475,9 +483,23 @@ body.menu-open {
 }
 
 .sidebar nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+.sidebar nav::-webkit-scrollbar {
+  width: 6px;
+}
+.sidebar nav::-webkit-scrollbar-thumb {
+  background-color: var(--border);
+  border-radius: 3px;
+}
+.sidebar nav::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .sidebar nav a {
@@ -494,6 +516,8 @@ body.menu-open {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-height: 50px;
+  flex-shrink: 0;
 }
 
 .sidebar nav a:hover {
@@ -1553,16 +1577,17 @@ body.menu-open {
 }
 
 .logout-btn {
-  margin-top: 2rem;
   width: 100%;
-  padding: 0.8rem;
   background: #e74c3c;
-  color: #fff;
-  border: none;
+  color: white;
   border-radius: 8px;
-  font-weight: 600;
   cursor: pointer;
-  transition: background 0.3s;
+  font-weight: 600;
+  padding: 0.8rem;
+  margin: 1rem 1.5rem;
+  width: auto;
+  flex-shrink: 0;
+  min-height: 48px;
 }
 
 .logout-btn:hover {
@@ -11770,3 +11795,4 @@ body.dark-mode .mini-player {
     gap: 0.5rem;
   }
 }
+
