@@ -12457,6 +12457,9 @@ function loadSong(index) {
 
   if (song.cover) {
     albumArt.style.backgroundImage = `url(${song.cover})`;
+    albumArt.style.backgroundSize = "contain";
+    albumArt.style.backgroundRepeat = "no-repeat";
+    albumArt.style.backgroundPosition = "center";
     albumArt.innerHTML = "";
   } else {
     albumArt.style.backgroundImage = "none";
