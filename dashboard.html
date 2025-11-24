@@ -5199,6 +5199,55 @@ Stop"
       </div>
     </div>
 
+    <div id="miniPlayer" class="mini-player" style="display: none">
+      <div class="mini-track-info" onclick="expandMiniPlayer()">
+        <div class="mini-album-art">🎵</div>
+        <div class="mini-text">
+          <h4 id="miniTrackTitle">Judul Lagu</h4>
+          <p id="miniTrackArtist">Artis</p>
+        </div>
+      </div>
+      <div class="mini-controls">
+        <button id="miniPlayBtn">
+          <svg
+            id="miniIconPlay"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M8 5v14l11-7z" />
+          </svg>
+          <svg
+            id="miniIconPause"
+            style="display: none"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="currentColor"
+          >
+            <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+          </svg>
+        </button>
+        <button onclick="closeMiniPlayer()">
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="mini-progress-bar">
+        <div id="miniProgressFill"></div>
+      </div>
+    </div>
+
     <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
