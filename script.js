@@ -2944,7 +2944,25 @@ function switchSection(sectionId) {
     }
 
     if (sectionId === "schedule") {
-      updateClassScheduleFromKRS(); // <--- TAMBAHKAN INI
+      updateClassScheduleFromKRS();
+    }
+
+    const miniPlayer = document.getElementById("miniPlayer");
+    if (sectionId === "music-center") {
+      if (miniPlayer) miniPlayer.classList.remove("active");
+      const fabContainer = document.getElementById("fabContainer");
+      if (fabContainer) fabContainer.classList.remove("raised");
+      const musicSec = document.getElementById("music-center");
+      musicSec.classList.add("slide-up");
+      setTimeout(() => musicSec.classList.remove("slide-up"), 300);
+    } else {
+      if (playlist.length > 0 && miniPlayer) {
+        miniPlayer.style.display = "flex";
+        setTimeout(() => miniPlayer.classList.add("active"), 50);
+
+        const fabContainer = document.getElementById("fabContainer");
+        if (fabContainer) fabContainer.classList.add("raised");
+      }
     }
   }
 }
@@ -12435,17 +12453,25 @@ function loadSong(index) {
 
   document.getElementById("currentTrackTitle").textContent = song.title;
   document.getElementById("currentTrackArtist").textContent = song.artist;
-
   const albumArt = document.getElementById("currentAlbumArt");
 
   if (song.cover) {
     albumArt.style.backgroundImage = `url(${song.cover})`;
-    albumArt.style.backgroundSize = "cover";
-    albumArt.style.backgroundPosition = "center";
     albumArt.innerHTML = "";
   } else {
     albumArt.style.backgroundImage = "none";
     albumArt.innerHTML = "🎵";
+  }
+
+  document.getElementById("miniTrackTitle").textContent = song.title;
+  document.getElementById("miniTrackArtist").textContent = song.artist;
+  const miniArt = document.querySelector(".mini-album-art");
+  if (song.cover) {
+    miniArt.style.backgroundImage = `url(${song.cover})`;
+    miniArt.innerHTML = "";
+  } else {
+    miniArt.style.backgroundImage = "none";
+    miniArt.innerHTML = "🎵";
   }
 
   audio.src = song.src;
@@ -12465,15 +12491,23 @@ function togglePlay() {
 function playSong() {
   isPlaying = true;
   audio.play();
+
   document.getElementById("iconPlay").style.display = "none";
   document.getElementById("iconPause").style.display = "block";
+
+  document.getElementById("miniIconPlay").style.display = "none";
+  document.getElementById("miniIconPause").style.display = "block";
 }
 
 function pauseSong() {
   isPlaying = false;
   audio.pause();
+
   document.getElementById("iconPlay").style.display = "block";
   document.getElementById("iconPause").style.display = "none";
+
+  document.getElementById("miniIconPlay").style.display = "block";
+  document.getElementById("miniIconPause").style.display = "none";
 }
 
 function prevSong() {
@@ -12495,10 +12529,14 @@ function nextSong() {
 function updateProgress() {
   const { duration, currentTime } = audio;
   const progressPercent = (currentTime / duration) * 100;
-  document.getElementById("progressBar").value = progressPercent || 0;
 
+  document.getElementById("progressBar").value = progressPercent || 0;
   document.getElementById("currentTime").textContent = formatTime(currentTime);
   document.getElementById("durationTime").textContent = formatTime(duration);
+
+  document.getElementById("miniProgressFill").style.width = `${
+    progressPercent || 0
+  }%`;
 }
 
 function seekSong() {
@@ -12513,3 +12551,26 @@ function formatTime(time) {
   const seconds = Math.floor(time % 60);
   return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
 }
+
+function expandMiniPlayer() {
+  switchSection("music-center");
+}
+
+function closeMiniPlayer() {
+  const miniPlayer = document.getElementById("miniPlayer");
+  miniPlayer.classList.remove("active");
+  const fabContainer = document.getElementById("fabContainer");
+  if (fabContainer) fabContainer.classList.remove("raised");
+  setTimeout(() => {
+    miniPlayer.style.display = "none";
+  }, 300);
+  pauseSong();
+}
+
+document.getElementById("miniPlayBtn").addEventListener("click", (e) => {
+  e.stopPropagation();
+  togglePlay();
+});
+
+window.expandMiniPlayer = expandMiniPlayer;
+window.closeMiniPlayer = closeMiniPlayer;
