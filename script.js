@@ -1782,6 +1782,25 @@ const translations = {
     "nav.music": "Music Player",
     "music.title": "Music Player",
     "music.subtitle": "Upload your favorite songs and listen while studying.",
+
+    "nav.letters": "E-Services",
+    "letters.title": "Academic Letter Services",
+    "letters.subtitle":
+      "Request and download official university letters digitally.",
+    "letters.request": "+ New Request",
+    "letters.total": "Total Requests",
+    "letters.processing": "Processing",
+    "letters.ready": "Ready to Download",
+    "letters.type": "Letter Type",
+    "letters.date": "Date",
+    "letters.purpose": "Purpose",
+    "letters.status": "Status",
+    "letters.action": "Action",
+    "letters.formTitle": "Request Letter",
+    "letters.submit": "Submit Request",
+    "letters.status_pending": "Processing by Admin",
+    "letters.status_approved": "Approved (Signed)",
+    "letters.download": "Download PDF",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -2550,6 +2569,25 @@ const translations = {
     "nav.music": "Pemutar Musik",
     "music.title": "Pemutar Musik",
     "music.subtitle": "Upload lagu favoritmu dan dengarkan sambil belajar.",
+
+    "nav.letters": "Layanan Surat",
+    "letters.title": "Layanan Persuratan Akademik",
+    "letters.subtitle":
+      "Ajukan dan unduh surat keterangan resmi universitas secara digital.",
+    "letters.request": "+ Buat Pengajuan",
+    "letters.total": "Total Pengajuan",
+    "letters.processing": "Diproses",
+    "letters.ready": "Siap Unduh",
+    "letters.type": "Jenis Surat",
+    "letters.date": "Tanggal",
+    "letters.purpose": "Keperluan",
+    "letters.status": "Status",
+    "letters.action": "Aksi",
+    "letters.formTitle": "Buat Pengajuan Surat",
+    "letters.submit": "Ajukan",
+    "letters.status_pending": "Diproses TU",
+    "letters.status_approved": "Disetujui (Tertanda)",
+    "letters.download": "Unduh PDF",
   },
 };
 
@@ -2914,6 +2952,7 @@ function switchSection(sectionId) {
     if (sectionId === "library-center") initLibrary();
     if (sectionId === "thesis-center") initThesis();
     if (sectionId === "music-center") initMusicPlayer();
+    if (sectionId === "letters-center") initLetters();
 
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
@@ -12577,3 +12616,197 @@ document.getElementById("miniPlayBtn").addEventListener("click", (e) => {
 
 window.expandMiniPlayer = expandMiniPlayer;
 window.closeMiniPlayer = closeMiniPlayer;
+
+let lettersInitialized = false;
+let lettersData = JSON.parse(localStorage.getItem("lettersData") || "[]");
+
+function initLetters() {
+  if (!lettersInitialized) {
+    document
+      .getElementById("letterForm")
+      .addEventListener("submit", handleLetterSubmit);
+    lettersInitialized = true;
+  }
+  renderLettersTable();
+}
+
+function renderLettersTable() {
+  const tbody = document.getElementById("lettersTableBody");
+  if (!tbody) return;
+
+  tbody.innerHTML = "";
+
+  // Hitung statistik
+  let pending = 0;
+  let ready = 0;
+
+  if (lettersData.length === 0) {
+    tbody.innerHTML = `<div style="padding:2rem; text-align:center; color:var(--text-secondary); grid-column:1/-1;">Belum ada pengajuan surat.</div>`;
+  }
+
+  lettersData.forEach((item, index) => {
+    if (item.status === "pending") pending++;
+    else if (item.status === "approved") ready++;
+
+    const row = document.createElement("div");
+    row.className = "table-row";
+    // Grid kolom disesuaikan dengan header di HTML
+    row.style.gridTemplateColumns = "50px 2fr 1.5fr 1.5fr 1.5fr 1fr";
+
+    const statusText =
+      item.status === "approved"
+        ? translations[currentLanguage]["letters.status_approved"]
+        : translations[currentLanguage]["letters.status_pending"];
+
+    const statusClass = item.status;
+
+    const actionBtn =
+      item.status === "approved"
+        ? `<button class="download-btn" onclick="generateLetterPDF(${item.id})">${translations[currentLanguage]["letters.download"]}</button>`
+        : `<span style="color:var(--text-secondary); font-size:0.8rem;">-</span>`;
+
+    let typeName = item.type;
+    if (item.type === "aktif") typeName = "Surat Keterangan Aktif Kuliah";
+    if (item.type === "magang") typeName = "Surat Pengantar Magang";
+    if (item.type === "kelakuan") typeName = "Surat Keterangan Kelakuan Baik";
+    if (item.type === "beasiswa") typeName = "Rekomendasi Beasiswa";
+
+    row.innerHTML = `
+      <div>${index + 1}</div>
+      <div style="font-weight:600;">${typeName}</div>
+      <div>${item.date}</div>
+      <div style="font-size:0.9rem;">${item.purpose}</div>
+      <div><span class="letter-status-badge ${statusClass}">${statusText}</span></div>
+      <div style="text-align:right;">${actionBtn}</div>
+    `;
+    tbody.appendChild(row);
+  });
+
+  document.getElementById("letterTotal").textContent = lettersData.length;
+  document.getElementById("letterPending").textContent = pending;
+  document.getElementById("letterReady").textContent = ready;
+}
+
+function handleLetterSubmit(e) {
+  e.preventDefault();
+
+  const newItem = {
+    id: Date.now(),
+    type: document.getElementById("letterType").value,
+    purpose: document.getElementById("letterPurpose").value,
+    date: new Date().toLocaleDateString(),
+    status: "pending", // Awalnya pending
+  };
+
+  lettersData.unshift(newItem);
+  localStorage.setItem("lettersData", JSON.stringify(lettersData));
+
+  closeLetterModal();
+  e.target.reset();
+  renderLettersTable();
+  showNotification("Pengajuan berhasil dikirim ke TU!", "success");
+
+  // SIMULASI OTOMATIS DISETUJUI SETELAH 5 DETIK (Untuk Demo)
+  setTimeout(() => {
+    const index = lettersData.findIndex((x) => x.id === newItem.id);
+    if (index !== -1) {
+      lettersData[index].status = "approved";
+      lettersData[index].docNumber = `S.Ket/${Math.floor(
+        Math.random() * 1000
+      )}/FTI/2025`;
+      localStorage.setItem("lettersData", JSON.stringify(lettersData));
+      if (document.getElementById("letters-center").style.display !== "none") {
+        renderLettersTable();
+        showNotification(
+          "Surat Anda telah disetujui & ditandatangani!",
+          "success"
+        );
+      }
+    }
+  }, 5000);
+}
+
+function generateLetterPDF(id) {
+  const item = lettersData.find((x) => x.id === id);
+  if (!item) return;
+
+  const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
+
+  // Isi Template
+  let title = "SURAT KETERANGAN";
+  let body = "";
+
+  if (item.type === "aktif") {
+    title = "SURAT KETERANGAN AKTIF KULIAH";
+    body = `Adalah benar mahasiswa aktif pada Program Studi ${
+      user.programStudi
+    } Fakultas Teknologi Informasi Universitas Catur Insan Cendekia pada Semester ${
+      user.semester || 4
+    } Tahun Akademik 2024/2025.<br><br>Surat ini dibuat untuk keperluan: <b>${
+      item.purpose
+    }</b>.`;
+  } else if (item.type === "magang") {
+    title = "SURAT PENGANTAR MAGANG";
+    body = `Adalah mahasiswa kami yang akan melaksanakan Kerja Praktik / Magang.<br><br>Kami mohon kesediaan Bapak/Ibu untuk dapat menerima mahasiswa tersebut.<br>Keperluan: <b>${item.purpose}</b>.`;
+  } else {
+    title = "SURAT REKOMENDASI";
+    body = `Adalah mahasiswa dengan perilaku baik dan prestasi akademik yang memuaskan.<br><br>Surat ini diberikan untuk keperluan: <b>${item.purpose}</b>.`;
+  }
+
+  document.getElementById("printLetterTitle").textContent = title;
+  document.getElementById("printLetterNo").textContent =
+    item.docNumber || "001/Draft";
+  document.getElementById("printName").textContent =
+    user.fullName || "Nama Mahasiswa";
+  document.getElementById("printNim").textContent = user.nim || "NIM";
+  document.getElementById("printProdi").textContent = user.programStudi || "TI";
+  document.getElementById("printSem").textContent = user.semester || "4";
+  document.getElementById("printBody").innerHTML = body;
+  document.getElementById("printDate").textContent =
+    new Date().toLocaleDateString("id-ID", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+
+  // Generate PDF
+  const element = document.getElementById("letterTemplate");
+  element.style.display = "block"; // Tampilkan sebentar untuk dicapture
+
+  const opt = {
+    margin: 10,
+    filename: `Surat_${item.type}_${user.nim}.pdf`,
+    image: { type: "jpeg", quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+  };
+
+  html2pdf()
+    .set(opt)
+    .from(element)
+    .save()
+    .then(() => {
+      element.style.display = "none"; // Sembunyikan lagi
+    });
+}
+
+function openLetterModal() {
+  const modal = document.getElementById("letterModal");
+  modal.style.display = "flex";
+  setTimeout(() => modal.classList.add("active"), 10);
+  // Sembunyikan FAB agar tidak menghalangi
+  const fab = document.getElementById("fabContainer");
+  if (fab) fab.style.display = "none";
+}
+
+function closeLetterModal() {
+  const modal = document.getElementById("letterModal");
+  modal.classList.remove("active");
+  setTimeout(() => (modal.style.display = "none"), 300);
+  const fab = document.getElementById("fabContainer");
+  if (fab) fab.style.display = "block";
+}
+
+window.openLetterModal = openLetterModal;
+window.closeLetterModal = closeLetterModal;
+window.generateLetterPDF = generateLetterPDF;
