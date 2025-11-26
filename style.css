@@ -12040,93 +12040,236 @@ body.dark-mode .lyric-line.active {
 
 /* DPA Full Page Styles */
 .dpa-container-full {
-  max-width: 800px;
+  max-width: 700px; /* Sedikit lebih ramping agar fokus */
   margin: 0 auto;
 }
 
+/* State Container (Empty / Loading) */
+.dpa-state {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 3rem 2rem;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.dpa-icon-placeholder {
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 1.5rem;
+  color: var(--primary);
+  opacity: 0.5;
+  background: rgba(37, 99, 235, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dpa-icon-placeholder svg {
+  width: 40px;
+  height: 40px;
+}
+
+/* Kartu Hasil DPA (Result State) */
 .dpa-card-large {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
-  padding: 3rem;
+  overflow: hidden; /* Agar border radius rapi */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Bagian Atas Kartu (Avatar & Info) */
+.dpa-header-large {
+  padding: 3rem 2rem;
+  background: linear-gradient(
+    to bottom,
+    var(--background) 0%,
+    var(--surface) 100%
+  );
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   text-align: center;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid var(--border);
 }
 
 .dpa-avatar-large {
   width: 120px;
   height: 120px;
-  background: #e0e7ff;
+  background: var(--surface);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 4rem;
-  margin: 0 auto 1.5rem;
+  margin-bottom: 1.5rem;
   border: 4px solid white;
-  box-shadow: 0 0 0 2px var(--primary);
+  box-shadow: 0 0 0 3px var(--primary), 0 8px 20px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.dpa-avatar-large svg {
+  width: 60px;
+  height: 60px;
+  color: var(--primary);
 }
 
 .dpa-details-large h2 {
-  font-size: 1.8rem;
+  font-size: 1.75rem;
+  font-weight: 700;
   color: var(--text-primary);
-  margin-bottom: 0.5rem;
+  margin: 0 0 0.5rem 0;
+}
+
+.dpa-details-large p {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin: 0 0 1rem 0;
+  font-family: monospace; /* Agar angka NIDN terlihat rapi */
+  letter-spacing: 1px;
+}
+
+/* Badge Status (Penting untuk kerapihan) */
+.dpa-status-badge {
+  display: inline-block;
+  padding: 6px 16px;
+  border-radius: 20px;
+  background: #dcfce7;
+  color: #166534;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid #86efac;
+}
+
+/* Bagian Bawah Kartu (Action & Alert) */
+.dpa-actions-large {
+  padding: 2rem;
+  background: var(--surface);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.dpa-success-msg {
+  display: flex;
+  align-items: flex-start; /* Align top agar rapi jika teks panjang */
+  gap: 1rem;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  padding: 1.25rem;
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-size: 0.95rem;
+  text-align: left;
+  line-height: 1.5;
+}
+
+.dpa-success-msg svg {
+  flex-shrink: 0;
+  color: var(--success);
+  margin-top: 2px;
 }
 
 .whatsapp-btn-large {
+  width: 100%;
   background: #25d366;
   color: white;
   border: none;
-  padding: 1rem 2rem;
-  border-radius: 8px;
+  padding: 1rem;
+  border-radius: 12px;
   cursor: pointer;
   font-weight: 600;
   font-size: 1rem;
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.8rem;
-  transition: all 0.2s;
-  margin-top: 1rem;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.2);
 }
 
 .whatsapp-btn-large:hover {
   background: #1ebc57;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+  box-shadow: 0 6px 16px rgba(37, 211, 102, 0.3);
+}
+
+/* Loading Spinner Styles */
+.dpa-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 2rem;
+}
+
+.spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(37, 99, 235, 0.1);
+  border-top: 4px solid var(--primary);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsif Mobile */
+@media (max-width: 600px) {
+  .dpa-card-large {
+    border-radius: 12px;
+  }
+  .dpa-header-large {
+    padding: 2rem 1.5rem;
+  }
+  .dpa-details-large h2 {
+    font-size: 1.5rem;
+  }
+  .dpa-actions-large {
+    padding: 1.5rem;
+  }
 }
 
 /* Dark Mode Adjustments */
+body.dark-mode .dpa-state,
 body.dark-mode .dpa-card-large {
   background: var(--surface);
+  border-color: var(--border);
 }
+
+body.dark-mode .dpa-header-large {
+  background: linear-gradient(to bottom, #0f172a 0%, var(--surface) 100%);
+  border-bottom-color: var(--border);
+}
+
 body.dark-mode .dpa-avatar-large {
-  background: #334155;
-  border-color: var(--surface);
+  background: #1e293b;
+  border-color: var(--surface); /* Border menyatu dengan background */
+  box-shadow: 0 0 0 3px var(--primary);
 }
 
-.dpa-icon-placeholder {
-  width: 100px;
-  height: 100px;
-  margin: 0 auto 1.5rem;
-  color: var(--primary);
-  opacity: 0.8;
+body.dark-mode .dpa-status-badge {
+  background: rgba(16, 185, 129, 0.2);
+  color: #86efac;
+  border-color: rgba(16, 185, 129, 0.3);
 }
 
-.dpa-avatar-large svg {
-  width: 60%;
-  height: 60%;
-  color: var(--primary);
+body.dark-mode .dpa-success-msg {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.2);
 }
 
-.dpa-success-msg {
-  display: flex;
-  align-items: center;
-  gap: 0.8rem;
-  background: rgba(16, 185, 129, 0.1); /* Green tint */
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
-  color: var(--text-primary);
-  font-size: 0.95rem;
-  text-align: left;
+body.dark-mode .dpa-icon-placeholder {
+  background: rgba(59, 130, 246, 0.15);
 }
