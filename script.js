@@ -1801,6 +1801,14 @@ const translations = {
     "letters.status_pending": "Processing by Admin",
     "letters.status_approved": "Approved (Signed)",
     "letters.download": "Download PDF",
+
+    "edom.subtitle":
+      "Mandatory for viewing final grades. Your identity is anonymous.",
+    "edom.progress": "Progress:",
+    "edom.fill": "Fill Survey",
+    "edom.completed": "Completed",
+    "edom.pending": "Pending",
+    "edom.success": "Evaluation submitted successfully!",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -2588,6 +2596,16 @@ const translations = {
     "letters.status_pending": "Diproses TU",
     "letters.status_approved": "Disetujui (Tertanda)",
     "letters.download": "Unduh PDF",
+
+    "nav.edom": "EDOM",
+    "edom.title": "Evaluasi Dosen (EDOM)",
+    "edom.subtitle":
+      "Wajib diisi untuk melihat Kartu Hasil Studi (KHS). Identitas dirahasiakan.",
+    "edom.progress": "Progres Pengisian:",
+    "edom.fill": "Isi Kuesioner",
+    "edom.completed": "Selesai",
+    "edom.pending": "Belum Diisi",
+    "edom.success": "Evaluasi berhasil dikirim!",
   },
 };
 
@@ -2952,7 +2970,7 @@ function switchSection(sectionId) {
     if (sectionId === "library-center") initLibrary();
     if (sectionId === "thesis-center") initThesis();
     if (sectionId === "music-center") initMusicPlayer();
-    if (sectionId === "letters-center") initLetters();
+    if (sectionId === "edom-center") initEdom();
 
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
@@ -12381,6 +12399,7 @@ function renderTitles() {
 
 let musicInitialized = false;
 let playlist = [];
+let currentLyrics = [];
 let currentSongIndex = 0;
 let isPlaying = false;
 const audio = document.getElementById("audioPlayer");
@@ -12397,6 +12416,20 @@ function initMusicPlayer() {
 
     audio.addEventListener("timeupdate", updateProgress);
     audio.addEventListener("ended", nextSong);
+    audio.addEventListener("play", () => updatePlayBtnUI(true));
+    audio.addEventListener("pause", () => updatePlayBtnUI(false));
+
+    const miniPlayBtn = document.getElementById("miniPlayBtn");
+    if (miniPlayBtn) {
+      miniPlayBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        togglePlay();
+      });
+    }
+
+    document
+      .getElementById("lrcUploadInput")
+      .addEventListener("change", handleLrcUpload);
 
     musicInitialized = true;
   }
@@ -12576,9 +12609,12 @@ function updateProgress() {
   document.getElementById("currentTime").textContent = formatTime(currentTime);
   document.getElementById("durationTime").textContent = formatTime(duration);
 
-  document.getElementById("miniProgressFill").style.width = `${
-    progressPercent || 0
-  }%`;
+  const miniFill = document.getElementById("miniProgressFill");
+  if (miniFill) {
+    miniFill.style.width = `${progressPercent || 0}%`;
+  }
+
+  syncLyrics(currentTime);
 }
 
 function seekSong() {
@@ -12810,3 +12846,241 @@ function closeLetterModal() {
 window.openLetterModal = openLetterModal;
 window.closeLetterModal = closeLetterModal;
 window.generateLetterPDF = generateLetterPDF;
+
+let edomInitialized = false;
+let edomData = JSON.parse(localStorage.getItem("edomData") || "[]");
+
+function initEdom() {
+  // Generate data from attendanceData if empty
+  if (edomData.length === 0) {
+    Object.entries(attendanceData).forEach(([key, course]) => {
+      // Ambil nama dosen dari jadwal (simulasi)
+      let lecturerName = "Dosen Pengampu";
+      // Logic sederhana untuk ambil nama dosen dari string html statis atau database
+      if (key === "algorithms") lecturerName = "Dr. Ahmad Santoso, M.Kom.";
+      if (key === "databases") lecturerName = "Dr. Budi Prasetyo, M.Sc.";
+      if (key === "webdev") lecturerName = "Dian Purnama, M.Kom.";
+      if (key === "softwareeng") lecturerName = "Prof. Siti Rahayu, M.T.";
+
+      edomData.push({
+        id: key,
+        course: course.name,
+        code: course.code,
+        lecturer: lecturerName,
+        status: "pending",
+      });
+    });
+    localStorage.setItem("edomData", JSON.stringify(edomData));
+  }
+
+  if (!edomInitialized) {
+    document
+      .getElementById("edomForm")
+      .addEventListener("submit", handleEdomSubmit);
+    edomInitialized = true;
+  }
+  renderEdomList();
+}
+
+function renderEdomList() {
+  const container = document.getElementById("edomList");
+  if (!container) return;
+
+  container.innerHTML = "";
+  let completedCount = 0;
+
+  edomData.forEach((item) => {
+    if (item.status === "completed") completedCount++;
+
+    const div = document.createElement("div");
+    div.className = `edom-card ${item.status}`;
+
+    const statusText =
+      item.status === "completed"
+        ? translations[currentLanguage]["edom.completed"]
+        : translations[currentLanguage]["edom.pending"];
+
+    const btnText = translations[currentLanguage]["edom.fill"];
+    const btnState = item.status === "completed" ? "disabled" : "";
+    const btnLabel = item.status === "completed" ? "✓ Terkirim" : btnText;
+
+    div.innerHTML = `
+      <div class="edom-info">
+        <span class="edom-status-badge ${item.status}">${statusText}</span>
+        <h3 style="margin-top:0.5rem;">${item.course}</h3>
+        <p>${item.lecturer}</p>
+        <small style="color:var(--text-secondary);">${item.code}</small>
+      </div>
+      <button class="edom-btn" ${btnState} onclick="openEdomModal('${item.id}')">
+        ${btnLabel}
+      </button>
+    `;
+    container.appendChild(div);
+  });
+
+  // Update Progress Bar
+  const total = edomData.length;
+  const percent = (completedCount / total) * 100;
+  document.getElementById(
+    "edomProgressText"
+  ).textContent = `${completedCount}/${total}`;
+  document.getElementById("edomProgressBar").style.width = `${percent}%`;
+}
+
+function openEdomModal(id) {
+  const item = edomData.find((d) => d.id === id);
+  if (!item) return;
+
+  document.getElementById("edomCourseId").value = id;
+  document.getElementById("edomModalTitle").textContent =
+    "Evaluasi: " + item.course;
+  document.getElementById("edomModalSubtitle").textContent =
+    "Dosen: " + item.lecturer;
+
+  const modal = document.getElementById("edomModal");
+  modal.style.display = "flex";
+  setTimeout(() => modal.classList.add("active"), 10);
+}
+
+function closeEdomModal() {
+  const modal = document.getElementById("edomModal");
+  modal.classList.remove("active");
+  setTimeout(() => (modal.style.display = "none"), 300);
+  document.getElementById("edomForm").reset();
+}
+
+function handleEdomSubmit(e) {
+  e.preventDefault();
+  const id = document.getElementById("edomCourseId").value;
+
+  const index = edomData.findIndex((x) => x.id === id);
+  if (index !== -1) {
+    edomData[index].status = "completed";
+    localStorage.setItem("edomData", JSON.stringify(edomData));
+
+    closeEdomModal();
+    renderEdomList();
+    showNotification(translations[currentLanguage]["edom.success"], "success");
+  }
+}
+
+window.openEdomModal = openEdomModal;
+window.closeEdomModal = closeEdomModal;
+
+function switchMusicTab(tabName) {
+  document
+    .querySelectorAll(".music-tab-btn")
+    .forEach((btn) => btn.classList.remove("active"));
+  event.target.classList.add("active");
+
+  document.querySelectorAll(".music-tab-content").forEach((content) => {
+    content.style.display = "none";
+    content.classList.remove("active");
+  });
+
+  const target = document.getElementById(`music-tab-${tabName}`);
+  if (target) {
+    target.style.display = "flex";
+    target.classList.add("active");
+  }
+}
+
+function handleLrcUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function (event) {
+    const text = event.target.result;
+    parseLRC(text);
+    showNotification("Lirik berhasil dimuat!", "success");
+  };
+  reader.readAsText(file);
+}
+
+function parseLRC(lrcText) {
+  currentLyrics = [];
+  const lines = lrcText.split("\n");
+  const timeReg = /\[(\d{2}):(\d{2})\.(\d{2,3})\]/;
+
+  lines.forEach((line) => {
+    const match = line.match(timeReg);
+    if (match) {
+      const min = parseInt(match[1]);
+      const sec = parseInt(match[2]);
+      const ms = parseInt(match[3]);
+      const time = min * 60 + sec + ms / 100;
+      const text = line.replace(timeReg, "").trim();
+
+      if (text) {
+        currentLyrics.push({ time, text });
+      }
+    }
+  });
+
+  renderLyricsUI();
+}
+
+function renderLyricsUI() {
+  const container = document.getElementById("lyricsContainer");
+  container.innerHTML = "";
+
+  if (currentLyrics.length === 0) {
+    container.innerHTML =
+      '<div class="empty-lyrics"><p>Format lirik tidak dikenali.</p></div>';
+    return;
+  }
+
+  const spacerTop = document.createElement("div");
+  spacerTop.style.height = "30%";
+  container.appendChild(spacerTop);
+
+  currentLyrics.forEach((line, index) => {
+    const p = document.createElement("p");
+    p.className = "lyric-line";
+    p.id = `lyric-${index}`;
+    p.textContent = line.text;
+
+    p.onclick = () => {
+      audio.currentTime = line.time;
+      playSong();
+    };
+
+    container.appendChild(p);
+  });
+
+  const spacerBottom = document.createElement("div");
+  spacerBottom.style.height = "50%";
+  container.appendChild(spacerBottom);
+}
+
+function syncLyrics(currentTime) {
+  if (currentLyrics.length === 0) return;
+
+  let activeIndex = -1;
+  for (let i = 0; i < currentLyrics.length; i++) {
+    if (currentTime >= currentLyrics[i].time) {
+      activeIndex = i;
+    } else {
+      break;
+    }
+  }
+
+  if (activeIndex !== -1) {
+    document
+      .querySelectorAll(".lyric-line")
+      .forEach((el) => el.classList.remove("active"));
+
+    const activeEl = document.getElementById(`lyric-${activeIndex}`);
+    if (activeEl) {
+      activeEl.classList.add("active");
+
+      activeEl.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }
+}
+
+window.switchMusicTab = switchMusicTab;
