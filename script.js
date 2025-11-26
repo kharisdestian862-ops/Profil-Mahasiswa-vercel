@@ -1809,6 +1809,19 @@ const translations = {
     "edom.completed": "Completed",
     "edom.pending": "Pending",
     "edom.success": "Evaluation submitted successfully!",
+
+    "nav.dpa": "DPA",
+    "profile.dpa_title": "Academic Supervisor",
+    "profile.dpa_desc":
+      "View your status and contact your academic advisor for guidance.",
+    "dpa.empty_state":
+      "You don't have an Academic Advisor yet. The system will assign one randomly.",
+    "dpa.btn_gacha": "Find My Advisor",
+    "dpa.loading": "Processing academic data...",
+    "dpa.status_active": "Active Advisor",
+    "dpa.success_msg":
+      "Academic Advisor assigned. Please contact them for KRS validation.",
+    "dpa.btn_whatsapp": "Contact Advisor via WhatsApp",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -2606,6 +2619,19 @@ const translations = {
     "edom.completed": "Selesai",
     "edom.pending": "Belum Diisi",
     "edom.success": "Evaluasi berhasil dikirim!",
+
+    "nav.dpa": "DPA",
+    "profile.dpa_title": "Dosen Pendamping Akademik",
+    "profile.dpa_desc":
+      "Lihat status dan hubungi Dosen Wali Anda untuk bimbingan akademik.",
+    "dpa.empty_state":
+      "Anda belum memiliki Dosen Wali. Sistem akan menentukan DPA Anda secara acak.",
+    "dpa.btn_gacha": "Tentukan DPA Saya",
+    "dpa.loading": "Sedang memproses data akademik...",
+    "dpa.status_active": "Dosen Wali Aktif",
+    "dpa.success_msg":
+      "Dosen Wali telah ditetapkan. Silakan hubungi beliau untuk validasi KRS.",
+    "dpa.btn_whatsapp": "Hubungi DPA via WhatsApp",
   },
 };
 
@@ -2971,6 +2997,7 @@ function switchSection(sectionId) {
     if (sectionId === "thesis-center") initThesis();
     if (sectionId === "music-center") initMusicPlayer();
     if (sectionId === "edom-center") initEdom();
+    if (sectionId === "dpa-center") initDPA();
 
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
@@ -3003,6 +3030,10 @@ function switchSection(sectionId) {
     if (sectionId === "schedule") {
       updateClassScheduleFromKRS();
     }
+
+    const links = document.querySelectorAll(
+      ".sidebar nav a, .mobile-sidebar nav a"
+    );
 
     const miniPlayer = document.getElementById("miniPlayer");
     if (sectionId === "music-center") {
@@ -13084,3 +13115,102 @@ function syncLyrics(currentTime) {
 }
 
 window.switchMusicTab = switchMusicTab;
+
+const lecturersDB = [
+  {
+    name: "Dr. Ahmad Santoso, M.Kom.",
+    nidn: "0412098801",
+    phone: "6281234567890",
+  },
+  {
+    name: "Dr. Budi Prasetyo, M.Sc.",
+    nidn: "0415059002",
+    phone: "6289876543210",
+  },
+  {
+    name: "Prof. Siti Rahayu, M.T.",
+    nidn: "0420018503",
+    phone: "6285555555555",
+  },
+  { name: "Dian Purnama, M.Kom.", nidn: "0405039204", phone: "6281111111111" },
+  {
+    name: "Bambang Sugiarto, M.Kom.",
+    nidn: "0410108005",
+    phone: "6289999999999",
+  },
+];
+
+function initDPA() {
+  // 1. Cek apakah user sudah punya DPA di localStorage
+  const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
+
+  if (user.dpa) {
+    // Jika sudah ada, langsung tampilkan hasilnya
+    showDPAResult(user.dpa);
+  } else {
+    // Jika belum, tampilkan tombol Gacha
+    document.getElementById("dpaEmptyState").style.display = "block";
+    document.getElementById("dpaLoadingState").style.display = "none";
+    document.getElementById("dpaResultState").style.display = "none";
+  }
+}
+
+function startDPAGacha() {
+  // 1. Ubah tampilan ke Loading
+  document.getElementById("dpaEmptyState").style.display = "none";
+  document.getElementById("dpaLoadingState").style.display = "block";
+
+  // 2. Simulasi proses "mencari" selama 3 detik
+  setTimeout(() => {
+    // 3. Pilih dosen secara acak
+    const randomIndex = Math.floor(Math.random() * lecturersDB.length);
+    const selectedDPA = lecturersDB[randomIndex];
+
+    // 4. Simpan ke data user di localStorage
+    const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
+    user.dpa = selectedDPA;
+    localStorage.setItem("currentUser", JSON.stringify(user));
+
+    // 5. Tampilkan Hasil
+    document.getElementById("dpaLoadingState").style.display = "none";
+    showDPAResult(selectedDPA);
+
+    showNotification("DPA berhasil ditentukan!", "success");
+  }, 3000); // 3000ms = 3 detik
+}
+
+function showDPAResult(dpa) {
+  document.getElementById("dpaEmptyState").style.display = "none";
+  document.getElementById("dpaLoadingState").style.display = "none";
+  const resultState = document.getElementById("dpaResultState");
+  resultState.style.display = "block";
+
+  document.getElementById("dpaName").textContent = dpa.name;
+  document.getElementById("dpaNidn").textContent = "NIDN: " + dpa.nidn;
+}
+
+function contactDPAWhatsApp() {
+  const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  if (!user.dpa) return;
+
+  const studentName = user.fullName || "Mahasiswa";
+  const studentNim = user.nim || "NIM";
+
+  // Pesan otomatis sopan
+  const message = `Assalamu'alaikum Bapak/Ibu ${user.dpa.name}.%0A%0ASaya ${studentName} (NIM: ${studentNim}), mahasiswa bimbingan Bapak/Ibu.%0ASaya ingin mengajukan validasi KRS/Konsultasi Akademik.%0A%0AMohon arahannya. Terima kasih.`;
+
+  const url = `https://wa.me/${user.dpa.phone}?text=${message}`;
+  window.open(url, "_blank");
+}
+
+// PENTING: Panggil initDPA saat profil dimuat
+// Tambahkan baris ini di akhir fungsi loadUserProfile yang sudah ada
+// (Atau copy ulang fungsi loadUserProfile di bawah ini untuk mengganti yang lama)
+const originalLoadUserProfile = window.loadUserProfile;
+window.loadUserProfile = function () {
+  if (originalLoadUserProfile) originalLoadUserProfile();
+  initDPA();
+};
+
+window.startDPAGacha = startDPAGacha;
+window.contactDPAWhatsApp = contactDPAWhatsApp;
