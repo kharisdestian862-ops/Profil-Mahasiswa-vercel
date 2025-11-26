@@ -195,6 +195,8 @@
             >Layanan Surat</a
           >
 
+          <a href="#" data-section="edom-center" data-i18n="nav.edom">EDOM</a>
+
           <a href="#" data-section="settings" data-i18n="nav.settings"
             >Settings</a
           >
@@ -4562,10 +4564,56 @@ Jalankan tes untuk melihat hasil...
               </div>
 
               <div class="playlist-card">
-                <h3>Playlist Anda</h3>
-                <div class="playlist-list" id="playlistContainer">
-                  <div class="empty-playlist">
-                    Belum ada lagu. Upload file MP3 sekarang.
+                <div class="music-tabs">
+                  <button
+                    class="music-tab-btn active"
+                    onclick="switchMusicTab('playlist')"
+                  >
+                    Playlist
+                  </button>
+                  <button
+                    class="music-tab-btn"
+                    onclick="switchMusicTab('lyrics')"
+                  >
+                    Lirik
+                  </button>
+                </div>
+
+                <div id="music-tab-playlist" class="music-tab-content active">
+                  <div class="playlist-list" id="playlistContainer">
+                    <div class="empty-playlist">
+                      Belum ada lagu. Upload file MP3 sekarang.
+                    </div>
+                  </div>
+                </div>
+
+                <div
+                  id="music-tab-lyrics"
+                  class="music-tab-content"
+                  style="display: none"
+                >
+                  <div class="lyrics-header">
+                    <button
+                      class="exam-btn small"
+                      onclick="document.getElementById('lrcUploadInput').click()"
+                    >
+                      + Upload .LRC
+                    </button>
+                    <input
+                      type="file"
+                      id="lrcUploadInput"
+                      accept=".lrc"
+                      style="display: none"
+                    />
+                  </div>
+                  <div class="lyrics-container" id="lyricsContainer">
+                    <div class="empty-lyrics">
+                      <p>Belum ada lirik.</p>
+                      <small
+                        >Upload file .lrc untuk menampilkan lirik
+                        berjalan.</small
+                      >
+                    </div>
                   </div>
                 </div>
               </div>
@@ -4785,6 +4833,135 @@ Jalankan tes untuk melihat hasil...
                     data-i18n="letters.submit"
                   >
                     Ajukan
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <section class="section" id="edom-center" style="display: none">
+            <header class="main-header">
+              <div>
+                <h1 data-i18n="edom.title">Evaluasi Dosen (EDOM)</h1>
+                <div data-i18n="edom.subtitle">
+                  Wajib diisi untuk melihat Kartu Hasil Studi (KHS). Identitas
+                  Anda dirahasiakan.
+                </div>
+              </div>
+              <div class="edom-progress-card">
+                <div class="edom-progress-text">
+                  <span data-i18n="edom.progress">Progres Pengisian:</span>
+                  <strong id="edomProgressText">0/0</strong>
+                </div>
+                <div class="progress-bg">
+                  <div
+                    class="progress-bar"
+                    id="edomProgressBar"
+                    style="width: 0%"
+                  ></div>
+                </div>
+              </div>
+            </header>
+
+            <div class="edom-list" id="edomList"></div>
+          </section>
+
+          <div id="edomModal" class="modal-overlay" style="display: none">
+            <div class="modal-content edom-modal-content">
+              <div class="edom-header">
+                <h3 id="edomModalTitle">Evaluasi Dosen</h3>
+                <p id="edomModalSubtitle">Mata Kuliah</p>
+              </div>
+
+              <form id="edomForm">
+                <input type="hidden" id="edomCourseId" />
+
+                <div class="edom-question-group">
+                  <h4>A. Kompetensi Pedagogik</h4>
+                  <div class="edom-q">
+                    <p>
+                      1. Dosen menyampaikan materi dengan jelas dan mudah
+                      dipahami.
+                    </p>
+                    <div class="rating-options">
+                      <label
+                        ><input type="radio" name="q1" value="1" /> 1</label
+                      >
+                      <label
+                        ><input type="radio" name="q1" value="2" /> 2</label
+                      >
+                      <label
+                        ><input type="radio" name="q1" value="3" /> 3</label
+                      >
+                      <label
+                        ><input type="radio" name="q1" value="4" checked />
+                        4</label
+                      >
+                    </div>
+                  </div>
+                  <div class="edom-q">
+                    <p>2. Dosen memberikan kesempatan tanya jawab di kelas.</p>
+                    <div class="rating-options">
+                      <label
+                        ><input type="radio" name="q2" value="1" /> 1</label
+                      >
+                      <label
+                        ><input type="radio" name="q2" value="2" /> 2</label
+                      >
+                      <label
+                        ><input type="radio" name="q2" value="3" /> 3</label
+                      >
+                      <label
+                        ><input type="radio" name="q2" value="4" checked />
+                        4</label
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <div class="edom-question-group">
+                  <h4>B. Kedisiplinan</h4>
+                  <div class="edom-q">
+                    <p>
+                      3. Dosen memulai dan mengakhiri perkuliahan tepat waktu.
+                    </p>
+                    <div class="rating-options">
+                      <label
+                        ><input type="radio" name="q3" value="1" /> 1</label
+                      >
+                      <label
+                        ><input type="radio" name="q3" value="2" /> 2</label
+                      >
+                      <label
+                        ><input type="radio" name="q3" value="3" /> 3</label
+                      >
+                      <label
+                        ><input type="radio" name="q3" value="4" checked />
+                        4</label
+                      >
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Saran & Masukan (Opsional)</label>
+                  <textarea
+                    id="edomFeedback"
+                    rows="3"
+                    placeholder="Tulis masukan untuk dosen..."
+                  ></textarea>
+                </div>
+
+                <div class="modal-actions">
+                  <button
+                    type="button"
+                    class="cancel-btn"
+                    onclick="closeEdomModal()"
+                  >
+                    Batal
+                  </button>
+                  <button type="submit" class="submit-task-btn">
+                    Kirim Evaluasi
                   </button>
                 </div>
               </form>
