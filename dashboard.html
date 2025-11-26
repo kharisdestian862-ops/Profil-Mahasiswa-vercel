@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title data-i18n="dashboard.title">Student Dashboard</title>
     <link rel="icon" type="image/png" href="UCIC L(1).png" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"
+    />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
@@ -114,7 +118,6 @@
             >
           </nav>
 
-          <!-- Logout Button -->
           <button
             class="logout-btn-mobile"
             id="logoutBtnMobile"
@@ -125,7 +128,6 @@
         </div>
       </div>
 
-      <!-- Desktop Sidebar -->
       <aside class="sidebar">
         <div class="profile">
           <div class="avatar" id="desktopAvatarDisplay">KD</div>
@@ -479,18 +481,14 @@
         </button>
       </div>
 
-      <!-- Main + Right Sidebar Wrapper -->
       <div class="main-wrapper">
-        <!-- Main Content -->
         <main class="main-content">
-          <!-- Dashboard Section -->
           <section class="section" id="dashboard">
             <header class="main-header">
               <h1 data-i18n="dashboard.title">Kharis Dashboard</h1>
               <div data-i18n="dashboard.welcome">Welcome back,</div>
             </header>
 
-            <!-- Stats Cards -->
             <section class="cards">
               <div class="card">
                 <div class="card-title" data-i18n="dashboard.gpa">IPK</div>
@@ -529,7 +527,6 @@
               </div>
             </section>
 
-            <!-- Learning Progress + Courses Table -->
             <section class="main-section">
               <div class="chart-section">
                 <div class="chart-header">
@@ -808,10 +805,8 @@
               </div>
             </header>
 
-            <!-- View 1: Formulir Pengisian KRS -->
             <div id="krsFormView">
               <div class="krs-container">
-                <!-- Info Panel -->
                 <div class="krs-info-panel">
                   <div class="krs-stat">
                     <span data-i18n="krs.ipk_last">IPK Lalu</span>
@@ -827,7 +822,6 @@
                   </div>
                 </div>
 
-                <!-- Tabel Pemilihan -->
                 <div class="krs-table-wrapper">
                   <table class="krs-table">
                     <thead>
@@ -841,13 +835,10 @@
                         <th data-i18n="krs.quota">Kuota</th>
                       </tr>
                     </thead>
-                    <tbody id="krsCourseList">
-                      <!-- Diisi oleh JS -->
-                    </tbody>
+                    <tbody id="krsCourseList"></tbody>
                   </table>
                 </div>
 
-                <!-- Footer Aksi -->
                 <div class="krs-actions">
                   <button
                     class="cancel-btn"
@@ -868,7 +859,6 @@
               </div>
             </div>
 
-            <!-- View 2: Hasil KRS (KSM) -->
             <div id="krsResultView" style="display: none">
               <div class="krs-result-card" id="ksmDocument">
                 <div class="ksm-header">
@@ -909,9 +899,7 @@
                       <th>Jadwal</th>
                     </tr>
                   </thead>
-                  <tbody id="ksmTableBody">
-                    <!-- Diisi JS -->
-                  </tbody>
+                  <tbody id="ksmTableBody"></tbody>
                   <tfoot>
                     <tr>
                       <td
@@ -1109,7 +1097,6 @@
             </div>
           </section>
 
-          <!-- Grades Section -->
           <section class="section" id="grades" style="display: none">
             <h2 data-i18n="grades.title">Grades</h2>
 
@@ -1143,16 +1130,13 @@
             <div class="grades-list" id="dynamicGradesList"></div>
           </section>
 
-          <!-- Attendance Section -->
           <section class="section" id="attendance" style="display: none">
-            <!-- Breadcrumb Navigation -->
             <div class="breadcrumb" id="attendanceBreadcrumb">
               <span class="breadcrumb-item active" data-i18n="attendance.title"
                 >Attendance</span
               >
             </div>
 
-            <!-- View 1: Course List -->
             <div id="courseListView">
               <h2 data-i18n="attendance.select_course">Select Course</h2>
               <p
@@ -1260,7 +1244,6 @@
               </div>
             </div>
 
-            <!-- View 2: Course Detail -->
             <div id="courseDetailView" style="display: none">
               <div class="detail-header">
                 <button class="back-btn" id="backToCourseList">
@@ -1302,9 +1285,7 @@
                 </div>
               </div>
 
-              <!-- Attendance Tab -->
               <div class="tab-content active" id="attendanceTab">
-                <!-- Attendance Summary -->
                 <div class="attendance-summary">
                   <div class="summary-card">
                     <div class="summary-value" id="detailAttendanceRate">
@@ -1337,7 +1318,6 @@
                   </div>
                 </div>
 
-                <!-- Detailed Attendance Table -->
                 <div class="attendance-details">
                   <h3 data-i18n="attendance.meeting_history">
                     Meeting History
@@ -1361,13 +1341,10 @@
                       </div>
                     </div>
 
-                    <div class="table-body" id="attendanceTableBody">
-                      <!-- Will be populated by JavaScript -->
-                    </div>
+                    <div class="table-body" id="attendanceTableBody"></div>
                   </div>
                 </div>
 
-                <!-- Attendance Legend -->
                 <div class="attendance-legend">
                   <div class="legend-item">
                     <span class="legend-color present"></span>
@@ -1396,9 +1373,7 @@
                 </div>
               </div>
 
-              <!-- Tasks Tab -->
               <div class="tab-content" id="tasksTab">
-                <!-- Task Summary -->
                 <div class="attendance-summary">
                   <div class="summary-card">
                     <div class="summary-value" id="detailTaskCompletion">
@@ -1426,29 +1401,22 @@
                   </div>
                 </div>
 
-                <!-- Tasks List -->
                 <div class="tasks-section">
                   <h3 data-i18n="tasks.course_tasks">Course Tasks</h3>
-                  <div class="tasks-list" id="tasksList">
-                    <!-- Will be populated by JavaScript -->
-                  </div>
+                  <div class="tasks-list" id="tasksList"></div>
                 </div>
               </div>
 
-              <!-- Materials Tab -->
               <div class="tab-content" id="materialsTab">
                 <div class="materials-section">
                   <h3 data-i18n="materials.learning_materials">
                     Learning Materials
                   </h3>
-                  <div class="materials-list" id="materialsList">
-                    <!-- Will be populated by JavaScript -->
-                  </div>
+                  <div class="materials-list" id="materialsList"></div>
                 </div>
               </div>
             </div>
 
-            <!-- View 3: Attendance Code Input -->
             <div id="codeInputView" style="display: none">
               <div class="detail-header">
                 <button class="back-btn" id="backToDetail">
@@ -1518,7 +1486,6 @@
               </div>
             </div>
 
-            <!-- View 4: Task Submission -->
             <div id="taskSubmissionView" style="display: none">
               <div class="detail-header">
                 <button class="back-btn" id="backToDetailFromTask">
@@ -1613,15 +1580,12 @@
                     </div>
                   </div>
 
-                  <div class="submission-status" id="submissionStatus">
-                    <!-- Will show current submission status -->
-                  </div>
+                  <div class="submission-status" id="submissionStatus"></div>
                 </div>
               </div>
             </div>
           </section>
 
-          <!-- Schedule Section -->
           <section class="section" id="schedule" style="display: none">
             <header class="main-header">
               <h1 data-i18n="schedule.title">Class Schedule</h1>
@@ -1969,7 +1933,6 @@
             </div>
           </div>
 
-          <!-- Finance Section -->
           <section id="finance" class="section" style="display: none">
             <div class="section-header">
               <div>
@@ -1980,7 +1943,6 @@
               </div>
             </div>
 
-            <!-- Payment Summary Cards -->
             <div class="finance-summary">
               <div class="summary-card total-bill">
                 <div class="summary-icon">💰</div>
@@ -2032,7 +1994,6 @@
               </div>
             </div>
 
-            <!-- Finance Tabs -->
             <div class="finance-tabs">
               <button
                 class="finance-tab-btn active"
@@ -2068,7 +2029,6 @@
               </button>
             </div>
 
-            <!-- Bills Tab -->
             <div id="billsTab" class="finance-tab-content active">
               <div class="finance-table">
                 <div class="table-header">
@@ -2087,13 +2047,10 @@
                   </div>
                   <div class="col-action" data-i18n="finance.action">Aksi</div>
                 </div>
-                <div id="billsTableBody" class="table-body">
-                  <!-- Populated by JavaScript -->
-                </div>
+                <div id="billsTableBody" class="table-body"></div>
               </div>
             </div>
 
-            <!-- Payment History Tab -->
             <div id="historyTab" class="finance-tab-content">
               <div class="finance-table">
                 <div class="table-header">
@@ -2112,24 +2069,19 @@
                   </div>
                   <div class="col-action" data-i18n="finance.action">Aksi</div>
                 </div>
-                <div id="historyTableBody" class="table-body">
-                  <!-- Populated by JavaScript -->
-                </div>
+                <div id="historyTableBody" class="table-body"></div>
               </div>
             </div>
 
-            <!-- Payment Methods Tab -->
             <div id="methodsTab" class="finance-tab-content">
-              <div class="payment-methods-grid" id="paymentMethodsGrid">
-                <!-- Populated by JavaScript -->
-              </div>
+              <div class="payment-methods-grid" id="paymentMethodsGrid"></div>
             </div>
 
-            <!-- Scholarships Tab -->
             <div id="scholarshipsTab" class="finance-tab-content">
-              <div class="scholarships-container" id="scholarshipsContainer">
-                <!-- Populated by JavaScript -->
-              </div>
+              <div
+                class="scholarships-container"
+                id="scholarshipsContainer"
+              ></div>
             </div>
           </section>
 
@@ -3546,7 +3498,6 @@ Jalankan tes untuk melihat hasil...
               <div class="campus-map-section">
                 <h3>Lokasi Kampus</h3>
 
-                <!-- KAMPUS 1 - GEDUNG UTAMA -->
                 <div class="campus-location-card">
                   <div class="location-header">
                     <div class="location-number">1</div>
@@ -3594,7 +3545,6 @@ Jalankan tes untuk melihat hasil...
                   </div>
                 </div>
 
-                <!-- KAMPUS 2 -->
                 <div class="campus-location-card">
                   <div class="location-header">
                     <div class="location-number">2</div>
@@ -3642,7 +3592,6 @@ Jalankan tes untuk melihat hasil...
                   </div>
                 </div>
 
-                <!-- INFO FOOTER -->
                 <div class="map-footer-info">
                   <div class="info-box">
                     <svg
@@ -5800,6 +5749,7 @@ Stop"
     <script src="https://cdn.jsdelivr.net/npm/leader-line-new@1.1.9/leader-line.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jsmediatags/3.9.5/jsmediatags.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
     <script src="script.js"></script>
   </body>
 </html>
