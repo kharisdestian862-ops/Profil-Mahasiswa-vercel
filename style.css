@@ -28,7 +28,6 @@ body {
   --border: #e2e8f0;
 }
 
-/* ===== MOBILE HEADER & MENU - IMPROVED ===== */
 .mobile-header {
   display: none;
   background: var(--surface);
@@ -118,7 +117,6 @@ body {
   transform: rotate(-45deg) translate(7px, -6px);
 }
 
-/* Mobile Menu Overlay - IMPROVED */
 .mobile-menu-overlay {
   position: fixed;
   top: 0;
@@ -139,7 +137,6 @@ body {
   pointer-events: auto;
 }
 
-/* Mobile Sidebar - CLEANED UP */
 .mobile-sidebar {
   position: fixed;
   top: 0;
@@ -205,7 +202,6 @@ body {
   line-height: 1.4;
 }
 
-/* Navigation Links */
 .mobile-sidebar nav {
   display: flex;
   flex-direction: column;
@@ -233,7 +229,6 @@ body {
   box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
 }
 
-/* Mobile Right Sidebar Content */
 .mobile-right-content {
   display: flex;
   flex-direction: column;
@@ -388,7 +383,6 @@ body {
   display: none;
 }
 
-/* Logout Button Mobile */
 .logout-btn-mobile {
   margin-top: auto;
   width: 100%;
@@ -407,7 +401,6 @@ body {
   background: #c0392b;
 }
 
-/* Body scroll lock */
 body.menu-open {
   overflow: hidden;
   height: 100vh;
@@ -817,7 +810,6 @@ body.menu-open {
   word-wrap: break-word;
 }
 
-/* Breadcrumb */
 .breadcrumb {
   display: flex;
   align-items: center;
@@ -846,14 +838,12 @@ body.menu-open {
   margin: 0 0.25rem;
 }
 
-/* Section Description */
 .section-description {
   color: var(--text-secondary);
   margin-bottom: 2rem;
   font-size: 0.95rem;
 }
 
-/* Courses Grid */
 .courses-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -927,7 +917,6 @@ body.menu-open {
   font-weight: 500;
 }
 
-/* Detail View */
 .detail-header {
   margin-bottom: 2rem;
 }
@@ -966,7 +955,6 @@ body.menu-open {
   color: var(--text-secondary);
 }
 
-/* Course Tabs */
 .course-tabs {
   display: flex;
   gap: 0.5rem;
@@ -1222,7 +1210,6 @@ body.menu-open {
   color: var(--text-secondary);
 }
 
-/* Code Input View */
 .code-input-container {
   display: flex;
   justify-content: center;
@@ -1594,7 +1581,6 @@ body.menu-open {
   background: #c0392b;
 }
 
-/* ===== TASK SYSTEM STYLES ===== */
 .tasks-section {
   margin-top: 2rem;
 }
@@ -1699,7 +1685,6 @@ body.menu-open {
   transform: scale(1.05);
 }
 
-/* Task Submission View */
 .task-submission-container {
   display: flex;
   justify-content: center;
@@ -1848,7 +1833,6 @@ body.menu-open {
   background: #475569;
 }
 
-/* Submission Status Cards */
 .submission-status-card {
   padding: 1.5rem;
   border-radius: 8px;
@@ -1883,7 +1867,6 @@ body.menu-open {
   font-size: 0.875rem;
 }
 
-/* ===== MATERIALS SYSTEM STYLES ===== */
 .materials-section {
   margin-top: 2rem;
 }
@@ -1974,7 +1957,6 @@ body.menu-open {
   transform: scale(1.05);
 }
 
-/* Quick Settings */
 .quick-settings {
   background: var(--surface);
   padding: 1.5rem;
@@ -2031,12 +2013,10 @@ body.menu-open {
   color: var(--text-primary);
 }
 
-/* Sembunyikan checkbox asli */
 #quickDarkMode {
   display: none;
 }
 
-/* ===== DARK MODE STYLES ===== */
 body.dark-mode {
   --background: #0f172a;
   --surface: #1e293b;
@@ -2052,13 +2032,11 @@ body.dark-mode {
   --error: #ef4444;
 }
 
-/* Background utama */
 body.dark-mode {
   background: var(--background);
   color: var(--text-primary);
 }
 
-/* Container dan wrapper */
 body.dark-mode .container {
   background: var(--background);
 }
@@ -2067,7 +2045,6 @@ body.dark-mode .main-wrapper {
   background: var(--background);
 }
 
-/* Sidebar */
 body.dark-mode .sidebar {
   background: var(--surface);
   border-right-color: var(--border);
@@ -2117,7 +2094,6 @@ body.dark-mode .logout-btn-mobile:hover {
   background: #b91c1c;
 }
 
-/* Cards dan sections */
 body.dark-mode .card,
 body.dark-mode .main-header,
 body.dark-mode .chart-section,
@@ -2139,7 +2115,6 @@ body.dark-mode .summary-card {
   border-color: var(--border);
 }
 
-/* Text colors */
 body.dark-mode .card-title,
 body.dark-mode .card-subtitle,
 body.dark-mode .grade-info-text,
@@ -2166,7 +2141,6 @@ body.dark-mode .legend-text {
   color: var(--text-secondary);
 }
 
-/* Background elements */
 body.dark-mode .grade-row,
 body.dark-mode .info-item,
 body.dark-mode .task-item,
@@ -2182,7 +2156,6 @@ body.dark-mode .program {
   background: var(--surface);
 }
 
-/* Hover states */
 body.dark-mode .grade-row:hover,
 body.dark-mode .task-item:hover,
 body.dark-mode .material-item:hover,
@@ -2191,7 +2164,6 @@ body.dark-mode .course-card:hover {
   background: #334155;
 }
 
-/* Buttons */
 body.dark-mode .back-btn,
 body.dark-mode .tab-btn,
 body.dark-mode .attend-btn,
@@ -2226,7 +2198,6 @@ body.dark-mode .tab-btn.active {
   color: white;
 }
 
-/* Input fields */
 body.dark-mode input[type="text"],
 body.dark-mode input[type="file"],
 body.dark-mode textarea,
@@ -2253,7 +2224,6 @@ body.dark-mode input[type="file"]:hover {
   border-color: var(--primary);
 }
 
-/* Status badges */
 body.dark-mode .present {
   background: #065f46;
   color: #34d399;
@@ -2278,7 +2248,6 @@ body.dark-mode .pending {
   border: 1px solid #374151;
 }
 
-/* Student info card */
 body.dark-mode .student-info {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: white;
@@ -2289,7 +2258,6 @@ body.dark-mode .student-info p {
   color: white;
 }
 
-/* Progress bar */
 body.dark-mode .progress-bg {
   background: rgba(255, 255, 255, 0.2);
 }
@@ -2302,20 +2270,17 @@ body.dark-mode .progress-text {
   color: white;
 }
 
-/* Warning boxes */
 body.dark-mode .attendance-warning {
   background: #451a03;
   border-color: #92400e;
   color: #fef3c7;
 }
 
-/* Code info */
 body.dark-mode .code-info {
   background: #1e293b;
   border-color: var(--border);
 }
 
-/* Submission status cards */
 body.dark-mode .submission-status-card.success {
   background: #065f46;
   border-color: #34d399;
@@ -2334,13 +2299,11 @@ body.dark-mode .submission-status-card.info {
   color: #93c5fd;
 }
 
-/* Stat badges */
 body.dark-mode .stat-badge {
   background: #374151;
   color: var(--text-secondary);
 }
 
-/* Breadcrumb */
 body.dark-mode .breadcrumb-item {
   color: var(--text-secondary);
 }
@@ -2353,18 +2316,15 @@ body.dark-mode .breadcrumb-item:hover {
   color: var(--primary);
 }
 
-/* Course card */
 body.dark-mode .course-card:hover {
   border-color: var(--primary);
   background: #334155;
 }
 
-/* Tab content */
 body.dark-mode .tab-content {
   background: transparent;
 }
 
-/* Mobile menu */
 body.dark-mode .mobile-sidebar nav a {
   color: var(--text-secondary);
 }
@@ -2375,7 +2335,6 @@ body.dark-mode .mobile-sidebar nav a.active {
   color: white;
 }
 
-/* Settings */
 body.dark-mode .setting-group {
   background: var(--surface);
   border-color: var(--border);
@@ -2385,7 +2344,6 @@ body.dark-mode .setting-item {
   border-bottom-color: var(--border);
 }
 
-/* Quick actions */
 body.dark-mode .actions button {
   background: var(--surface);
   color: var(--text-primary);
@@ -2398,7 +2356,6 @@ body.dark-mode .actions button:hover {
   border-color: var(--primary);
 }
 
-/* Toggle switch */
 body.dark-mode .toggle-slider {
   background: #64748b;
 }
@@ -2407,7 +2364,6 @@ body.dark-mode .toggle-text {
   color: var(--text-primary);
 }
 
-/* Chart sections */
 body.dark-mode .chart-section {
   background: var(--surface);
 }
@@ -2416,25 +2372,21 @@ body.dark-mode .chart-header h2 {
   color: var(--text-primary);
 }
 
-/* Table header */
 body.dark-mode .table-header {
   background: #1e293b;
   color: var(--text-primary);
   border-bottom-color: var(--border);
 }
 
-/* Disabled buttons */
 body.dark-mode .attend-btn:disabled {
   background: var(--border);
   color: var(--text-secondary);
 }
 
-/* Legend */
 body.dark-mode .attendance-legend {
   border-top-color: var(--border);
 }
 
-/* Code message */
 body.dark-mode .code-message.success {
   background: #065f46;
   color: #34d399;
@@ -2447,7 +2399,6 @@ body.dark-mode .code-message.error {
   border-color: #fca5a5;
 }
 
-/* Task submission */
 body.dark-mode .task-submission-card {
   background: var(--surface);
 }
@@ -2456,13 +2407,11 @@ body.dark-mode .task-header {
   border-bottom-color: var(--border);
 }
 
-/* File input */
 body.dark-mode input[type="file"] {
   background: #1e293b;
   border-color: var(--border);
 }
 
-/* Primary text elements */
 body.dark-mode .main-header h1,
 body.dark-mode .main-header div,
 body.dark-mode .card-value,
@@ -2492,13 +2441,11 @@ body.dark-mode .col-meeting {
   color: var(--text-primary);
 }
 
-/* Program badge */
 body.dark-mode .program {
   background: #374151;
   color: var(--text-secondary);
 }
 
-/* Navigation links */
 body.dark-mode .sidebar nav a {
   color: var(--text-secondary);
 }
@@ -2513,7 +2460,6 @@ body.dark-mode .sidebar nav a.active {
   color: white;
 }
 
-/* Logout button */
 body.dark-mode .logout-btn,
 body.dark-mode .logout-btn-mobile {
   background: #dc2626;
@@ -2525,7 +2471,6 @@ body.dark-mode .logout-btn-mobile:hover {
   background: #b91c1c;
 }
 
-/* Hamburger menu */
 body.dark-mode .hamburger span {
   background: var(--text-primary);
 }
@@ -2534,7 +2479,6 @@ body.dark-mode .hamburger.active span {
   background: #ffffff;
 }
 
-/* Scrollbar */
 body.dark-mode ::-webkit-scrollbar-track {
   background: #1e293b;
 }
@@ -2547,7 +2491,6 @@ body.dark-mode ::-webkit-scrollbar-thumb:hover {
   background: #64748b;
 }
 
-/* Form elements di task submission */
 body.dark-mode .submission-form input[type="file"] {
   background: #1e293b;
   border-color: var(--border);
@@ -2564,11 +2507,6 @@ body.dark-mode .submission-form textarea:focus {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-/* ==================================== */
-/* ===== 13. SCHEDULE SECTION STYLES ===== */
-/* ==================================== */
-
-/* Filter Bar Styling */
 .schedule-filters {
   display: flex;
   flex-wrap: wrap;
@@ -2594,7 +2532,6 @@ body.dark-mode .submission-form textarea:focus {
   font-size: 0.875rem;
 }
 
-/* Style select box to match existing ones */
 #dayFilter {
   padding: 0.5rem 1rem;
   border: 1px solid var(--border);
@@ -2609,17 +2546,16 @@ body.dark-mode .submission-form textarea:focus {
 .week-indicator {
   font-weight: 600;
   color: var(--text-primary);
-  background: #f1f5f9; /* Light mode */
+  background: #f1f5f9;
   padding: 0.6rem 1rem;
   border-radius: 6px;
   font-size: 0.875rem;
 }
 
 body.dark-mode .week-indicator {
-  background: #374151; /* Dark mode (from .program style) */
+  background: #374151;
 }
 
-/* Main Schedule Layout */
 .weekly-schedule {
   display: flex;
   flex-direction: column;
@@ -2653,7 +2589,6 @@ body.dark-mode .week-indicator {
   gap: 1.5rem;
 }
 
-/* Individual Class Item Card */
 .class-item {
   display: grid;
   grid-template-columns: 120px 1fr 110px;
@@ -2665,17 +2600,16 @@ body.dark-mode .week-indicator {
   border: 1px solid var(--border);
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease;
-  border-left: 4px solid transparent; /* For hover effect */
+  border-left: 4px solid transparent;
 }
 
 .class-item:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border-left: 4px solid var(--primary);
-  padding-left: calc(1.5rem - 4px); /* Adjust padding to keep content aligned */
+  padding-left: calc(1.5rem - 4px);
 }
 
-/* Class Time */
 .class-time {
   display: flex;
   flex-direction: column;
@@ -2700,9 +2634,8 @@ body.dark-mode .week-indicator {
   margin: 0.25rem 0;
 }
 
-/* Class Info */
 .class-info {
-  min-width: 0; /* Important for text truncation */
+  min-width: 0;
 }
 
 .class-info .class-name {
@@ -2730,7 +2663,6 @@ body.dark-mode .week-indicator {
   text-overflow: ellipsis;
 }
 
-/* Class Status Badge */
 .class-status {
   font-weight: 600;
   padding: 0.5rem 1rem;
@@ -2740,7 +2672,6 @@ body.dark-mode .week-indicator {
   white-space: nowrap;
 }
 
-/* Status colors (borrowing from attendance styles) */
 .class-status.ongoing {
   color: var(--warning);
   background: #fef3c7;
@@ -2756,7 +2687,6 @@ body.dark-mode .week-indicator {
   background: #dcfce7;
 }
 
-/* Dark mode for statuses */
 body.dark-mode .class-status.ongoing {
   background: #78350f;
   color: #fcd34d;
@@ -2772,7 +2702,6 @@ body.dark-mode .class-status.finished {
   color: #34d399;
 }
 
-/* Schedule Summary (reusing .summary-card) */
 .schedule-summary {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -2780,29 +2709,24 @@ body.dark-mode .class-status.finished {
   margin-top: 1rem;
 }
 
-/* ==================================== */
-/* ===== 14. SCHEDULE RESPONSIVE ===== */
-/* ==================================== */
-
 @media (max-width: 768px) {
   .class-item {
-    grid-template-columns: 1fr; /* Stack everything */
+    grid-template-columns: 1fr;
     gap: 1rem;
   }
 
   .class-time {
-    /* Make it horizontal */
     flex-direction: row;
     gap: 0.5rem;
     justify-content: flex-start;
     border-right: none;
     padding: 0.75rem 1rem;
     border-radius: 6px;
-    background: #f8fafc; /* Light mode */
+    background: #f8fafc;
   }
 
   body.dark-mode .class-time {
-    background: #0f172a; /* Dark mode bg */
+    background: #0f172a;
   }
 
   .class-time .time-separator {
@@ -2810,7 +2734,7 @@ body.dark-mode .class-status.finished {
   }
 
   .class-status {
-    width: 100%; /* Make status button full-width */
+    width: 100%;
   }
 
   .schedule-filters {
@@ -2835,7 +2759,6 @@ body.dark-mode .class-status.finished {
   }
 }
 
-/* Responsive Design */
 @media (max-width: 1200px) {
   .main-section {
     grid-template-columns: 1fr;
@@ -3002,7 +2925,6 @@ body.dark-mode .class-status.finished {
   }
 }
 
-/* Scrollbar Styles */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -3032,7 +2954,6 @@ body.dark-mode ::-webkit-scrollbar-thumb:hover {
   background: #64748b;
 }
 
-/* Loading States */
 .loading {
   opacity: 0.7;
   pointer-events: none;
@@ -3062,7 +2983,6 @@ body.dark-mode ::-webkit-scrollbar-thumb:hover {
   }
 }
 
-/* Final adjustments for specific components */
 .grade-info {
   display: flex;
   flex-direction: column;
@@ -3075,20 +2995,17 @@ body.dark-mode ::-webkit-scrollbar-thumb:hover {
   line-height: 1.3;
 }
 
-/* Ensure proper text truncation */
 .text-truncate {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-/* Ensure images are responsive */
 img {
   max-width: 100%;
   height: auto;
 }
 
-/* Fix for mobile menu scroll */
 body.menu-open {
   overflow: hidden;
   position: fixed;
@@ -3096,7 +3013,6 @@ body.menu-open {
   height: 100%;
 }
 
-/* Ensure proper z-index stacking */
 .mobile-header {
   z-index: 1000;
 }
@@ -3109,7 +3025,6 @@ body.menu-open {
   z-index: 1002;
 }
 
-/* Final touch - smooth transitions for theme changes */
 * {
   transition: background-color 0.3s ease, color 0.3s ease,
     border-color 0.3s ease;
@@ -3192,10 +3107,9 @@ body.menu-open {
   margin-top: 1.5rem;
 }
 
-/* Dark mode for modal inputs */
 body.dark-mode .modal-content .form-group input[type="date"],
 body.dark-mode .modal-content .form-group textarea {
-  background: var(--background); /* Slightly darker bg */
+  background: var(--background);
 }
 
 .gpa-calculator-results {
@@ -3420,7 +3334,6 @@ body.dark-mode .chatbot-fab {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
 
-/* 2. Halaman Penuh Chatbot */
 #chatbot {
   flex-direction: column;
   height: 100%;
@@ -3429,8 +3342,8 @@ body.dark-mode .chatbot-fab {
 .chatbot-fullpage-wrapper {
   display: flex;
   flex-direction: column;
-  flex: 1; /* Penting agar mengisi sisa halaman */
-  height: 75vh; /* Tentukan tinggi tetap */
+  flex: 1;
+  height: 75vh;
   max-height: 800px;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -3439,7 +3352,6 @@ body.dark-mode .chatbot-fab {
   overflow: hidden;
 }
 
-/* 3. Area Pesan (Adaptasi dari style lama) */
 .chatbot-messages {
   flex: 1;
   padding: 1.5rem;
@@ -3471,7 +3383,6 @@ body.dark-mode .chatbot-fab {
   border-bottom-right-radius: 0;
 }
 
-/* Perbaikan untuk list HTML */
 .chat-message.bot ul {
   padding-left: 20px;
   margin-top: 0.5rem;
@@ -3484,7 +3395,6 @@ body.dark-mode .chat-message.bot {
   background: #334155;
 }
 
-/* 4. Area Input (Adaptasi dari style lama) */
 .chatbot-input {
   display: flex;
   border-top: 1px solid var(--border);
@@ -3552,7 +3462,6 @@ body.chatbot-active .main-wrapper .main-content {
   }
 }
 
-/* 5. Responsif untuk Halaman Chatbot */
 @media (max-width: 768px) {
   .chatbot-fab {
     width: 50px;
@@ -3567,7 +3476,7 @@ body.chatbot-active .main-wrapper .main-content {
   }
 
   .chatbot-fullpage-wrapper {
-    height: 70vh; /* Gunakan lebih banyak ruang di mobile */
+    height: 70vh;
   }
 
   .chat-message {
@@ -3604,7 +3513,7 @@ body.chatbot-active .main-wrapper .main-content {
 }
 
 .chat-bubble.bot-message {
-  background: #e0e7ff; /* Warna biru muda (Light mode) */
+  background: #e0e7ff;
   border: 1px solid var(--primary);
 }
 
@@ -4022,8 +3931,6 @@ body.dark-mode .scroll-to-bottom-btn:hover {
   font-size: 0.9em;
 }
 
-/* ===== CODE PLAYGROUND STYLES ===== */
-/* ===== CODE PLAYGROUND STYLES ===== */
 #codeplayground {
   flex-direction: column;
 }
@@ -4173,7 +4080,6 @@ body.dark-mode .scroll-to-bottom-btn:hover {
   color: #888;
 }
 
-/* Loading state */
 .output-result.loading {
   display: flex;
   align-items: center;
@@ -4198,7 +4104,6 @@ body.dark-mode .scroll-to-bottom-btn:hover {
   }
 }
 
-/* Theme toggle */
 .theme-toggle {
   display: flex;
   align-items: center;
@@ -4235,7 +4140,6 @@ body.full-layout-active .chatbot-fab {
   }
 }
 
-/* Responsive */
 @media (max-width: 768px) {
   .playground-content {
     grid-template-columns: 1fr;
@@ -4263,7 +4167,6 @@ body.full-layout-active .chatbot-fab {
   }
 }
 
-/* Dark mode adjustments */
 body.dark-mode .playground-container,
 body.dark-mode .playground-toolbar,
 body.dark-mode .editor-container,
@@ -4665,7 +4568,6 @@ body.dark-mode .output-header {
   }
 }
 
-/* SVG Icon Styles */
 .scholarships-container {
   display: grid;
   gap: 1.5rem;
@@ -4761,7 +4663,6 @@ body.dark-mode .output-header {
   color: var(--primary);
 }
 
-/* Finance Section Dark Mode Support */
 body.dark-mode .finance-summary .summary-card {
   background: var(--surface);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -5007,7 +4908,6 @@ body.dark-mode .scholarships-container svg {
   stroke: var(--primary) !important;
 }
 
-/* Finance Section Mobile Responsive - IMPROVED */
 @media (max-width: 768px) {
   #finance {
     overflow-x: hidden;
@@ -5026,7 +4926,6 @@ body.dark-mode .scholarships-container svg {
   }
 }
 
-/* Extra Small Devices (< 480px) */
 @media (max-width: 480px) {
   .summary-value {
     font-size: 1.125rem;
@@ -5058,7 +4957,6 @@ body.dark-mode .scholarships-container svg {
   }
 }
 
-/* Landscape Mobile */
 @media (max-width: 768px) and (orientation: landscape) {
   .finance-summary {
     grid-template-columns: repeat(2, 1fr);
@@ -5069,7 +4967,6 @@ body.dark-mode .scholarships-container svg {
   }
 }
 
-/* Prevent horizontal scroll */
 @media (max-width: 768px) {
   #finance {
     overflow-x: hidden;
@@ -5079,7 +4976,6 @@ body.dark-mode .scholarships-container svg {
     overflow-x: hidden;
   }
 
-  /* Make sure long text wraps */
   .finance-table .col-semester,
   .finance-table .col-type,
   .finance-table .col-description {
@@ -5089,7 +4985,6 @@ body.dark-mode .scholarships-container svg {
   }
 }
 
-/* Touch Improvements */
 @media (hover: none) and (pointer: coarse) {
   .finance-tab-btn {
     min-height: 44px;
@@ -5114,7 +5009,6 @@ body.dark-mode .scholarships-container svg {
   }
 }
 
-/* Finance Section Header - Same style as Schedule */
 #finance .section-header {
   background: linear-gradient(
     135deg,
@@ -5145,7 +5039,6 @@ body.dark-mode #finance .section-header {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-/* Mobile Finance Header */
 @media (max-width: 768px) {
   #finance .section-header {
     padding: 1.5rem;
@@ -5178,11 +5071,11 @@ body.dark-mode #finance .section-header {
 
 .code-fab {
   position: fixed;
-  bottom: 100px; /* Posisi di atas tombol chat (2rem + 60px + jarak) */
+  bottom: 100px;
   right: 2rem;
   width: 60px;
   height: 60px;
-  background: var(--primary); /* Gunakan warna aksen agar beda dengan chat */
+  background: var(--primary);
   color: white;
   border-radius: 50%;
   display: flex;
@@ -5199,18 +5092,16 @@ body.dark-mode #finance .section-header {
   filter: brightness(1.1);
 }
 
-/* Sembunyikan kedua tombol saat mode layar penuh (Chat/Code) aktif */
 body.full-layout-active .chatbot-fab,
 body.full-layout-active .code-fab {
   display: none !important;
 }
 
-/* Responsif Mobile */
 @media (max-width: 768px) {
   .code-fab {
     width: 50px;
     height: 50px;
-    bottom: 6rem; /* Sesuaikan jarak vertikal di mobile */
+    bottom: 6rem;
     right: 1.5rem;
   }
 
@@ -5220,7 +5111,6 @@ body.full-layout-active .code-fab {
   }
 }
 
-/* Dark Mode support */
 body.dark-mode .code-fab {
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
 }
@@ -5520,7 +5410,6 @@ body.dark-mode .code-fab {
   background: #10b981;
 }
 
-/* Dark Mode Fixes untuk Group Chat */
 .dark-mode .group-chat-container {
   background: #1e293b;
   color: #e2e8f0;
@@ -5621,7 +5510,6 @@ body.dark-mode .code-fab {
   color: #94a3b8;
 }
 
-/* Mobile Responsive */
 @media (max-width: 768px) {
   .group-chat-container {
     flex-direction: column;
@@ -5722,7 +5610,6 @@ body.dark-mode .code-fab {
   }
 }
 
-/* Pastikan text warna putih di dark mode untuk semua elemen */
 .dark-mode .group-chat-container,
 .dark-mode .group-chat-header,
 .dark-mode .group-messages,
@@ -5736,14 +5623,12 @@ body.dark-mode .code-fab {
   color: inherit;
 }
 
-/* Fix untuk text hitam yang masih muncul */
 .dark-mode .other-message .message-bubble .message-text,
 .dark-mode .own-message .message-bubble .message-text,
 .dark-mode .system-text {
   color: inherit;
 }
 
-/* Pastikan placeholder text juga visible di dark mode */
 .dark-mode #groupMessageInput::placeholder {
   color: #94a3b8;
   opacity: 1;
@@ -5778,7 +5663,6 @@ body.dark-mode .code-fab {
   }
 }
 
-/* Pastikan scroll behavior baik di mobile */
 .group-messages {
   -webkit-overflow-scrolling: touch;
 }
@@ -5787,7 +5671,6 @@ body.dark-mode .code-fab {
   -webkit-overflow-scrolling: touch;
 }
 
-/* Fix untuk input di mobile */
 #groupMessageInput {
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -5811,16 +5694,14 @@ body.dark-mode .code-fab {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: 1rem; /* Jarak antar pesan lebih lega */
-  background-color: var(--background); /* Gunakan background dashboard biasa */
-  /* Hapus background image pattern WA */
+  gap: 1rem;
+  background-color: var(--background);
   background-image: none;
 }
 
-/* Chat Bubble Styling (Mengikuti gaya Chatbot AI) */
 .chat-bubble {
   max-width: 75%;
-  padding: 0.75rem 1.25rem; /* Padding lebih besar seperti chatbot */
+  padding: 0.75rem 1.25rem;
   border-radius: 12px;
   position: relative;
   font-size: 0.95rem;
@@ -5829,35 +5710,31 @@ body.dark-mode .code-fab {
   word-wrap: break-word;
 }
 
-/* Pesan Sendiri (Kanan - Biru) */
 .chat-bubble.me {
   align-self: flex-end;
-  background-color: var(--primary); /* Warna Biru Utama */
+  background-color: var(--primary);
   color: white;
-  border-bottom-right-radius: 2px; /* Sudut lancip di kanan bawah */
+  border-bottom-right-radius: 2px;
 }
 
-/* Pesan Orang Lain (Kiri - Abu/Putih) */
 .chat-bubble.others {
   align-self: flex-start;
   background-color: var(--surface);
-  border: 1px solid var(--border); /* Tambah border tipis agar jelas */
+  border: 1px solid var(--border);
   color: var(--text-primary);
-  border-bottom-left-radius: 2px; /* Sudut lancip di kiri bawah */
+  border-bottom-left-radius: 2px;
 }
 
-/* Dark Mode Adjustments */
 body.dark-mode .chat-messages-area {
-  background-color: var(--background); /* Gelap */
+  background-color: var(--background);
 }
 
 body.dark-mode .chat-bubble.others {
-  background-color: #1e293b; /* Surface dark mode */
+  background-color: #1e293b;
   border-color: #334155;
   color: var(--text-primary);
 }
 
-/* Nama Pengirim */
 .chat-bubble .sender-name {
   font-size: 0.75rem;
   font-weight: 700;
@@ -5865,12 +5742,10 @@ body.dark-mode .chat-bubble.others {
   display: block;
 }
 
-/* Warna nama user lain (agar kontras di background putih/gelap) */
 .chat-bubble.others .sender-name {
   color: var(--primary);
 }
 
-/* Nama sendiri tidak perlu ditampilkan atau warnanya putih pudar */
 .chat-bubble.me .sender-name {
   color: rgba(255, 255, 255, 0.9);
 }
@@ -5895,7 +5770,6 @@ body.dark-mode .chat-bubble.others {
   color: var(--text-secondary);
 }
 
-/* Input Area */
 .chat-input-area {
   padding: 1rem;
   background: var(--surface);
@@ -5908,7 +5782,7 @@ body.dark-mode .chat-bubble.others {
 .chat-input-area input {
   flex: 1;
   padding: 0.8rem 1.2rem;
-  border-radius: 12px; /* Radius lebih kotak agar modern */
+  border-radius: 12px;
   border: 1px solid var(--border);
   background: var(--background);
   color: var(--text-primary);
@@ -5927,7 +5801,7 @@ body.dark-mode .chat-bubble.others {
   border: none;
   width: 48px;
   height: 48px;
-  border-radius: 12px; /* Tombol kotak dengan sudut tumpul */
+  border-radius: 12px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -6341,13 +6215,11 @@ body.dark-mode .kanban-fab {
   transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-/* PERBAIKAN: Show FAB items dengan animation cascade */
 .fab-container.active .fab-item {
   opacity: 1;
   transform: scale(1);
 }
 
-/* Delay Animasi Berurutan (Dari Bawah ke Atas) */
 .fab-container.active .fab-item:nth-child(1) {
   transition-delay: 0.05s;
 }
@@ -6366,7 +6238,6 @@ body.dark-mode .kanban-fab {
   height: 24px !important;
 }
 
-/* Labels (Tooltip) */
 .fab-label {
   position: absolute;
   right: 60px;
@@ -6384,7 +6255,6 @@ body.dark-mode .kanban-fab {
   pointer-events: none;
 }
 
-/* Dark Mode Labels */
 body.dark-mode .fab-label {
   background: #1e293b;
   color: white;
@@ -6396,7 +6266,6 @@ body.dark-mode .fab-label {
   transform: translateX(0);
 }
 
-/* Warna Spesifik */
 #chatbotFab {
   background: #2563eb;
 }
@@ -6410,15 +6279,13 @@ body.dark-mode .fab-label {
   background: #f59e0b;
 }
 #febFab {
-  background: #8b5cf6; /* Warna Ungu */
+  background: #8b5cf6;
 }
 
-/* Sembunyikan saat mode full layout aktif */
 body.full-layout-active .fab-container {
   display: none !important;
 }
 
-/* Responsif Mobile */
 @media (max-width: 768px) {
   .fab-container {
     bottom: 20px;
@@ -6463,14 +6330,12 @@ body.full-layout-active .fab-container {
   display: block;
 }
 
-/* List Ujian */
 .exam-list {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-/* Kartu Ujian (Mirip .class-item) */
 .exam-card {
   display: grid;
   grid-template-columns: 130px 1fr 120px;
@@ -6491,7 +6356,6 @@ body.full-layout-active .fab-container {
   border-left-color: var(--accent);
 }
 
-/* Waktu Ujian */
 .exam-time {
   display: flex;
   flex-direction: column;
@@ -6513,7 +6377,6 @@ body.full-layout-active .fab-container {
   color: var(--primary);
 }
 
-/* Info Ujian */
 .exam-info {
   min-width: 0;
 }
@@ -6533,7 +6396,6 @@ body.full-layout-active .fab-container {
   color: var(--text-secondary);
 }
 
-/* Status & Tombol */
 .exam-action {
   display: flex;
   flex-direction: column;
@@ -6550,7 +6412,6 @@ body.full-layout-active .fab-container {
   white-space: nowrap;
 }
 
-/* Status (Mirip .class-status) */
 .exam-status.upcoming {
   color: var(--text-secondary);
   background: #f1f5f9;
@@ -6583,7 +6444,6 @@ body.full-layout-active .fab-container {
   cursor: not-allowed;
 }
 
-/* Dark Mode */
 body.dark-mode .exam-tab-btn {
   color: var(--text-secondary);
 }
@@ -6607,7 +6467,6 @@ body.dark-mode .exam-btn:disabled {
   color: #64748b;
 }
 
-/* Responsif */
 @media (max-width: 768px) {
   .exam-card {
     grid-template-columns: 1fr;
@@ -6684,7 +6543,6 @@ body.dark-mode .exam-btn:disabled {
   margin-bottom: 1.5rem;
 }
 
-/* Pilihan Ganda */
 .options-group {
   display: flex;
   flex-direction: column;
@@ -6712,7 +6570,6 @@ body.dark-mode .exam-btn:disabled {
   color: var(--primary);
 }
 
-/* Esai & Coding Textarea */
 .essay-textarea,
 .coding-textarea {
   width: 100%;
@@ -6729,10 +6586,8 @@ body.dark-mode .exam-btn:disabled {
   font-family: "Courier New", monospace;
   background: #1e1e1e;
   color: #d4d4d4;
-  /* (Kita pinjam style dari Code Playground) */
 }
 
-/* Tombol Submit Ujian */
 .submit-exam-btn {
   width: 100%;
   padding: 1rem;
@@ -6750,7 +6605,6 @@ body.dark-mode .exam-btn:disabled {
   background: #0da75c;
 }
 
-/* Dark Mode (PENTING) */
 body.dark-mode .exam-page-header,
 body.dark-mode .exam-question-block {
   background: var(--surface);
@@ -6773,7 +6627,7 @@ body.dark-mode .essay-textarea {
   color: var(--text-primary);
 }
 body.dark-mode .coding-textarea {
-  background: #1e1e1e; /* Tetap gelap */
+  background: #1e1e1e;
   color: #d4d4d4;
   border-color: var(--border);
 }
@@ -6815,7 +6669,6 @@ body.dark-mode .coding-textarea {
   display: block;
 }
 
-/* Wadah Alat */
 .feb-tool-container {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -6836,7 +6689,6 @@ body.dark-mode .coding-textarea {
   margin-bottom: 2rem;
 }
 
-/* Tata Letak Kalkulator */
 .calc-wrapper {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -6876,7 +6728,6 @@ body.dark-mode .coding-textarea {
   outline: none;
 }
 
-/* Kotak Hasil Kalkulator */
 .calc-result-box {
   background: linear-gradient(135deg, var(--primary), var(--primary-dark));
   color: white;
@@ -6925,7 +6776,6 @@ body.dark-mode .coding-textarea {
   background: var(--error);
 }
 
-/* Tabel Jurnal Akuntansi */
 .journal-table {
   border: 1px solid var(--border);
   border-radius: 8px;
@@ -7016,7 +6866,6 @@ body.dark-mode .coding-textarea {
   color: var(--error);
 }
 
-/* Dark Mode FEB */
 body.dark-mode .feb-tab-btn {
   color: var(--text-secondary);
 }
@@ -7060,7 +6909,6 @@ body.dark-mode .status-col .status-imbalance {
   color: var(--error);
 }
 
-/* Responsif FEB */
 @media (max-width: 768px) {
   .calc-wrapper {
     grid-template-columns: 1fr;
@@ -7094,7 +6942,6 @@ body.dark-mode .status-col .status-imbalance {
   background: #f97316;
 }
 
-/* Toolbar Alat */
 .dkv-toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -7157,7 +7004,6 @@ body.dark-mode .status-col .status-imbalance {
   color: white;
 }
 
-/* Palet Warna */
 .color-palette {
   display: flex;
   gap: 5px;
@@ -7174,7 +7020,6 @@ body.dark-mode .status-col .status-imbalance {
   transform: scale(1.2);
 }
 
-/* Kanvas Pixel */
 .pixel-canvas-wrapper {
   width: 100%;
   height: 65vh;
@@ -7193,7 +7038,7 @@ body.dark-mode .status-col .status-imbalance {
   border: 1px solid #94a3b8;
   background: #ffffff;
   cursor: crosshair;
-  transform-origin: top left; /* PENTING: Atur titik zoom/pan */
+  transform-origin: top left;
 }
 
 #pixelCanvas.grid-on .pixel-cell {
@@ -7207,7 +7052,6 @@ body.dark-mode .status-col .status-imbalance {
   background: #ffffff;
 }
 
-/* Dark Mode DKV */
 body.dark-mode .dkv-toolbar {
   background: var(--surface);
   border-color: var(--border);
@@ -7230,11 +7074,11 @@ body.dark-mode .dkv-tool-btn.active {
   color: white;
 }
 body.dark-mode .pixel-canvas-wrapper {
-  background: #0f172a; /* Latar belakang lebih gelap */
+  background: #0f172a;
 }
 body.dark-mode #pixelCanvas {
   border-color: #475569;
-  background: #ffffff; /* Kanvas tetap putih */
+  background: #ffffff;
 }
 body.dark-mode #pixelCanvas.grid-on .pixel-cell {
   border-color: #334155;
@@ -7247,7 +7091,7 @@ body.dark-mode #pixelCanvas.grid-on .pixel-cell {
 }
 
 .clear-chat-btn {
-  background-color: var(--error); /* Warna merah */
+  background-color: var(--error);
   color: white;
   border: none;
   padding: 0.6rem 1rem;
@@ -7256,11 +7100,11 @@ body.dark-mode #pixelCanvas.grid-on .pixel-cell {
   font-weight: 500;
   font-size: 0.85rem;
   transition: background-color 0.2s;
-  flex-shrink: 0; /* Mencegah tombol mengecil */
+  flex-shrink: 0;
 }
 
 .clear-chat-btn:hover {
-  background-color: #b91c1c; /* Merah lebih gelap */
+  background-color: #b91c1c;
 }
 
 body.dark-mode .clear-chat-btn {
@@ -7270,7 +7114,6 @@ body.dark-mode .clear-chat-btn:hover {
   background-color: #ef4444;
 }
 
-/* Penyesuaian untuk mobile */
 @media (max-width: 480px) {
   #chat .main-header {
     flex-direction: column;
@@ -8631,7 +8474,6 @@ body.dark-mode .flowchart-shape.shape-sequential-storage::after {
   background: #f1f5f9;
   color: var(--text-secondary);
 }
-/* ===== CAMPUS MAP - INTERACTIVE GOOGLE MAPS VERSION ===== */
 .campus-map-section {
   padding: 1.5rem;
   max-width: 1200px;
@@ -8759,7 +8601,6 @@ body.dark-mode .flowchart-shape.shape-sequential-storage::after {
   transform: translateY(0);
 }
 
-/* Map Footer Info */
 .map-footer-info {
   margin-top: 2rem;
   display: flex;
@@ -8793,7 +8634,6 @@ body.dark-mode .flowchart-shape.shape-sequential-storage::after {
   line-height: 1.6;
 }
 
-/* Dark Mode Support */
 body.dark-mode .campus-map-section h3 {
   color: #f1f5f9;
 }
@@ -8832,7 +8672,6 @@ body.dark-mode .info-box svg {
   color: #4338ca;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .campus-map-section {
     padding: 1rem;
@@ -9156,7 +8995,7 @@ body.dark-mode .room-card.in-use .room-status {
 .ktm-scene {
   width: 400px;
   height: 250px;
-  perspective: 1000px; /* Memberikan efek 3D */
+  perspective: 1000px;
   cursor: pointer;
 }
 
@@ -9168,7 +9007,6 @@ body.dark-mode .room-card.in-use .room-status {
   transform-style: preserve-3d;
 }
 
-/* Class ini ditambahkan via JS untuk membalik kartu */
 .ktm-card.is-flipped {
   transform: rotateY(180deg);
 }
@@ -9177,14 +9015,13 @@ body.dark-mode .room-card.in-use .room-status {
   position: absolute;
   width: 100%;
   height: 100%;
-  -webkit-backface-visibility: hidden; /* Safari */
+  -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   border-radius: 16px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
   overflow: hidden;
 }
 
-/* --- TAMPILAN DEPAN --- */
 .ktm-front {
   background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
   color: white;
@@ -9193,7 +9030,6 @@ body.dark-mode .room-card.in-use .room-status {
   padding: 1.2rem;
 }
 
-/* Efek pattern background (opsional) */
 .ktm-front::before {
   content: "";
   position: absolute;
@@ -9311,7 +9147,6 @@ body.dark-mode .room-card.in-use .room-status {
   opacity: 0.8;
 }
 
-/* --- TAMPILAN BELAKANG --- */
 .ktm-back {
   background: #f8fafc;
   color: #333;
@@ -9370,11 +9205,10 @@ body.dark-mode .room-card.in-use .room-status {
   margin-bottom: 10px;
 }
 
-/* Responsif untuk HP */
 @media (max-width: 480px) {
   .ktm-scene {
     width: 100%;
-    max-width: 340px; /* Sedikit lebih kecil di HP */
+    max-width: 340px;
     height: 215px;
   }
   .ktm-header {
@@ -9548,7 +9382,6 @@ body.dark-mode .market-img-placeholder {
   padding: 2rem;
 }
 
-/* Agar SVG di dalam placeholder besar dan bagus */
 .product-detail-image svg,
 .market-img-placeholder svg {
   width: 80px;
@@ -9633,7 +9466,6 @@ body.dark-mode .market-img-placeholder {
   padding: 0.8rem;
 }
 
-/* Responsif Modal */
 @media (max-width: 768px) {
   .product-detail-grid {
     grid-template-columns: 1fr;
@@ -9650,7 +9482,6 @@ body.dark-mode .market-img-placeholder {
   }
 }
 
-/* Dark Mode Fixes */
 body.dark-mode .product-detail-image {
   background: #0f172a;
 }
@@ -9814,7 +9645,6 @@ body.dark-mode .product-cat-badge {
   color: white;
 }
 
-/* Dark Mode */
 body.dark-mode .company-logo {
   background: #334155;
 }
@@ -10120,7 +9950,6 @@ body.dark-mode .voice-item {
   background-color: var(--background);
 }
 
-/* Checkbox Style */
 .krs-checkbox {
   width: 18px;
   height: 18px;
@@ -10128,7 +9957,6 @@ body.dark-mode .voice-item {
   accent-color: var(--primary);
 }
 
-/* KSM Result Card (Print layout) */
 .krs-result-card {
   background: white;
   color: black;
@@ -10137,7 +9965,7 @@ body.dark-mode .voice-item {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
   max-width: 800px;
   margin: 0 auto;
-  font-family: "Times New Roman", serif; /* Formal look */
+  font-family: "Times New Roman", serif;
 }
 
 .ksm-header {
@@ -10217,7 +10045,6 @@ body.dark-mode .voice-item {
   width: 200px;
 }
 
-/* Dark Mode Overrides */
 body.dark-mode .krs-stat,
 body.dark-mode .krs-table-wrapper {
   background: var(--surface);
@@ -10237,7 +10064,6 @@ body.dark-mode .krs-table tr:hover {
   background: #334155;
 }
 
-/* KSM Card tetap putih di dark mode agar bisa diprint */
 body.dark-mode .krs-result-card {
   background: white;
   color: black;
@@ -10299,14 +10125,12 @@ body.dark-mode .krs-result-card {
   word-break: break-word;
 }
 
-/* Mode Responsif */
 @media (max-width: 768px) {
   .citation-container {
     grid-template-columns: 1fr;
   }
 }
 
-/* Dark Mode */
 body.dark-mode .citation-form-card,
 body.dark-mode .citation-result-card {
   background: var(--surface);
@@ -10915,7 +10739,6 @@ body.dark-mode #borrowForm input[readonly] {
   border-radius: 8px;
 }
 
-/* Timeline Styles for Dashboard */
 .thesis-timeline {
   display: flex;
   justify-content: space-between;
@@ -10971,7 +10794,6 @@ body.dark-mode #borrowForm input[readonly] {
   font-weight: 600;
 }
 
-/* Dark Mode */
 body.dark-mode .lock-icon-wrapper {
   background: #334155;
 }
@@ -10994,14 +10816,14 @@ body.dark-mode .lock-warning {
     var(--primary) 0%,
     var(--primary-dark) 100%
   );
-  border-radius: 16px; /* Radius lebih halus */
+  border-radius: 16px;
   padding: 2rem;
   color: white;
   display: flex;
   align-items: center;
   gap: 1.5rem;
   margin-bottom: 2.5rem;
-  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.25); /* Shadow lebih lembut */
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.25);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -11014,7 +10836,7 @@ body.dark-mode .lock-warning {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  color: white; /* Pastikan ikon SVG putih */
+  color: white;
 }
 
 .ts-icon svg {
@@ -11041,19 +10863,18 @@ body.dark-mode .lock-warning {
   color: rgba(255, 255, 255, 0.9);
 }
 
-/* Timeline */
 .thesis-timeline-container {
   display: flex;
   justify-content: space-between;
   margin-bottom: 3rem;
   position: relative;
-  padding: 0 3rem; /* Padding kiri kanan diperbesar agar garis tidak mentok */
+  padding: 0 3rem;
 }
 
 .thesis-timeline-container::before {
   content: "";
   position: absolute;
-  top: 24px; /* Posisi garis vertikal di tengah circle */
+  top: 24px;
   left: 3rem;
   right: 3rem;
   height: 4px;
@@ -11098,7 +10919,7 @@ body.dark-mode .lock-warning {
   border-color: var(--primary);
   background: var(--primary);
   color: white;
-  box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.15); /* Efek glow */
+  box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.15);
   transform: scale(1.1);
 }
 
@@ -11109,15 +10930,13 @@ body.dark-mode .lock-warning {
   color: var(--text-primary);
 }
 
-/* Grid Layout */
 .thesis-grid {
   display: grid;
-  grid-template-columns: 2fr 1fr; /* Kolom kiri lebih lebar */
+  grid-template-columns: 2fr 1fr;
   gap: 2rem;
   align-items: start;
 }
 
-/* Card Umum */
 .thesis-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -11130,7 +10949,7 @@ body.dark-mode .lock-warning {
 .card-header-simple {
   padding: 1.25rem 1.5rem;
   border-bottom: 1px solid var(--border);
-  background: var(--background); /* Sedikit lebih gelap dari surface */
+  background: var(--background);
   display: flex;
   align-items: center;
 }
@@ -11153,7 +10972,6 @@ body.dark-mode .lock-warning {
   padding: 1.5rem;
 }
 
-/* List Pengajuan Judul */
 .title-submission-list {
   display: flex;
   flex-direction: column;
@@ -11189,7 +11007,6 @@ body.dark-mode .lock-warning {
   line-height: 1.6;
 }
 
-/* Advisor Card */
 .advisor-card {
   text-align: center;
   padding: 2rem 1.5rem;
@@ -11240,7 +11057,6 @@ body.dark-mode .lock-warning {
   line-height: 1.4;
 }
 
-/* Activity Log */
 .log-card h3 {
   padding: 1.25rem 1.5rem;
   border-bottom: 1px solid var(--border);
@@ -11270,13 +11086,13 @@ body.dark-mode .lock-warning {
 
 .log-dot {
   position: absolute;
-  left: -5px; /* Agar pas di tengah garis */
+  left: -5px;
   top: 0;
   width: 10px;
   height: 10px;
   background: var(--primary);
   border-radius: 50%;
-  box-shadow: 0 0 0 4px var(--surface); /* Efek terpisah dari garis */
+  box-shadow: 0 0 0 4px var(--surface);
 }
 
 .log-content p {
@@ -11291,7 +11107,6 @@ body.dark-mode .lock-warning {
   color: var(--text-secondary);
 }
 
-/* Dokumen List */
 .doc-list {
   display: flex;
   flex-direction: column;
@@ -11360,7 +11175,6 @@ body.dark-mode .lock-warning {
   color: var(--primary);
 }
 
-/* Responsif */
 @media (max-width: 900px) {
   .thesis-grid {
     grid-template-columns: 1fr;
@@ -11374,16 +11188,15 @@ body.dark-mode .lock-warning {
   }
 
   .thesis-timeline-container::before {
-    width: 100%; /* Garis timeline tetap panjang */
+    width: 100%;
     min-width: 500px;
   }
 
   .thesis-step {
-    flex-shrink: 0; /* Mencegah circle mengecil */
+    flex-shrink: 0;
   }
 }
 
-/* Dark Mode Support */
 body.dark-mode .thesis-card {
   background: var(--surface);
   border-color: var(--border);
@@ -11391,7 +11204,7 @@ body.dark-mode .thesis-card {
 
 body.dark-mode .card-header-simple,
 body.dark-mode .log-card h3 {
-  background: #1e293b; /* Sedikit lebih gelap */
+  background: #1e293b;
   border-color: var(--border);
 }
 
@@ -11718,13 +11531,11 @@ body.dark-mode .song-icon {
   }
 }
 
-/* Dark Mode */
 body.dark-mode .mini-player {
-  background: #1e293b; /* Sedikit lebih terang dari background utama */
+  background: #1e293b;
   border-color: #334155;
 }
 
-/* Animasi Transisi Halaman Musik */
 #music-center {
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
@@ -12038,13 +11849,11 @@ body.dark-mode .lyric-line.active {
   margin-top: 3rem;
 }
 
-/* DPA Full Page Styles */
 .dpa-container-full {
-  max-width: 700px; /* Sedikit lebih ramping agar fokus */
+  max-width: 700px;
   margin: 0 auto;
 }
 
-/* State Container (Empty / Loading) */
 .dpa-state {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -12072,18 +11881,16 @@ body.dark-mode .lyric-line.active {
   height: 40px;
 }
 
-/* Kartu Hasil DPA (Result State) */
 .dpa-card-large {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
-  overflow: hidden; /* Agar border radius rapi */
+  overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
 }
 
-/* Bagian Atas Kartu (Avatar & Info) */
 .dpa-header-large {
   padding: 3rem 2rem;
   background: linear-gradient(
@@ -12129,11 +11936,10 @@ body.dark-mode .lyric-line.active {
   font-size: 1rem;
   color: var(--text-secondary);
   margin: 0 0 1rem 0;
-  font-family: monospace; /* Agar angka NIDN terlihat rapi */
+  font-family: monospace;
   letter-spacing: 1px;
 }
 
-/* Badge Status (Penting untuk kerapihan) */
 .dpa-status-badge {
   display: inline-block;
   padding: 6px 16px;
@@ -12145,7 +11951,6 @@ body.dark-mode .lyric-line.active {
   border: 1px solid #86efac;
 }
 
-/* Bagian Bawah Kartu (Action & Alert) */
 .dpa-actions-large {
   padding: 2rem;
   background: var(--surface);
@@ -12156,7 +11961,7 @@ body.dark-mode .lyric-line.active {
 
 .dpa-success-msg {
   display: flex;
-  align-items: flex-start; /* Align top agar rapi jika teks panjang */
+  align-items: flex-start;
   gap: 1rem;
   background: rgba(16, 185, 129, 0.1);
   border: 1px solid rgba(16, 185, 129, 0.2);
@@ -12198,7 +12003,6 @@ body.dark-mode .lyric-line.active {
   box-shadow: 0 6px 16px rgba(37, 211, 102, 0.3);
 }
 
-/* Loading Spinner Styles */
 .dpa-loader {
   display: flex;
   flex-direction: column;
@@ -12225,7 +12029,6 @@ body.dark-mode .lyric-line.active {
   }
 }
 
-/* Responsif Mobile */
 @media (max-width: 600px) {
   .dpa-card-large {
     border-radius: 12px;
@@ -12241,7 +12044,6 @@ body.dark-mode .lyric-line.active {
   }
 }
 
-/* Dark Mode Adjustments */
 body.dark-mode .dpa-state,
 body.dark-mode .dpa-card-large {
   background: var(--surface);
@@ -12255,7 +12057,7 @@ body.dark-mode .dpa-header-large {
 
 body.dark-mode .dpa-avatar-large {
   background: #1e293b;
-  border-color: var(--surface); /* Border menyatu dengan background */
+  border-color: var(--surface);
   box-shadow: 0 0 0 3px var(--primary);
 }
 
@@ -12272,4 +12074,46 @@ body.dark-mode .dpa-success-msg {
 
 body.dark-mode .dpa-icon-placeholder {
   background: rgba(59, 130, 246, 0.15);
+}
+
+.driver-popover.driverjs-theme {
+  background-color: var(--surface);
+  color: var(--text-primary);
+  border-radius: 12px;
+  padding: 15px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.driver-popover.driverjs-theme .driver-popover-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--primary);
+}
+
+.driver-popover.driverjs-theme .driver-popover-description {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--text-secondary);
+  margin-bottom: 0;
+}
+
+.driver-popover.driverjs-theme button {
+  background-color: var(--primary);
+  color: white;
+  text-shadow: none;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.driver-popover.driverjs-theme button:hover {
+  background-color: var(--primary-dark);
+}
+
+/* Tombol Close/Skip */
+.driver-popover.driverjs-theme .driver-popover-close-btn {
+  color: var(--text-secondary);
 }
