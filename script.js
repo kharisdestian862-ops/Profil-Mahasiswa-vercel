@@ -13214,3 +13214,89 @@ window.loadUserProfile = function () {
 
 window.startDPAGacha = startDPAGacha;
 window.contactDPAWhatsApp = contactDPAWhatsApp;
+
+function initOnboardingTour() {
+  // 1. Ambil data user saat ini
+  const user = JSON.parse(localStorage.getItem("currentUser"));
+
+  // 2. Cek apakah user ada DAN apakah dia user baru
+  if (user && user.isNewUser === true) {
+    // Definisi Driver
+    const driver = window.driver.js.driver({
+      showProgress: true,
+      animate: true,
+      allowClose: false, // Paksa user ikut tour (opsional)
+      doneBtnText: "Selesai",
+      nextBtnText: "Lanjut",
+      prevBtnText: "Kembali",
+      steps: [
+        {
+          element: "#mobileNameDisplay", // Target elemen (untuk mobile) atau header
+          popover: {
+            title: "Selamat Datang! 👋",
+            description:
+              "Halo mahasiswa baru! Ini adalah dashboard akademik Anda. Mari kita keliling sebentar.",
+          },
+        },
+        {
+          element: ".sidebar",
+          popover: {
+            title: "Navigasi Utama",
+            description:
+              "Di sini Anda bisa mengakses Profil, KRS, Nilai, Jadwal, dan layanan akademik lainnya.",
+          },
+        },
+        {
+          element: "#fabTrigger",
+          popover: {
+            title: "Menu Pintas (Magic Button)",
+            description:
+              "Klik tombol ini untuk membuka alat bantu keren seperti Music Player, Chatbot AI, Kalkulator, dan lainnya!",
+            side: "left",
+          },
+        },
+        {
+          element: ".sidebar-right",
+          popover: {
+            title: "Info Cepat",
+            description:
+              "Lihat progres semester, kehadiran, dan aksi cepat di panel ini.",
+            side: "left",
+          },
+        },
+        {
+          element: "#logoutBtn",
+          popover: {
+            title: "Keluar",
+            description:
+              "Jangan lupa logout jika menggunakan komputer umum ya.",
+          },
+        },
+      ],
+      onDestroyStarted: () => {
+        // 3. SAAT TOUR SELESAI/DITUTUP: Matikan status user baru
+        user.isNewUser = false;
+
+        localStorage.setItem("currentUser", JSON.stringify(user));
+
+        let usersDb = JSON.parse(localStorage.getItem("users_db") || "[]");
+        const userIndex = usersDb.findIndex((u) => u.email === user.email);
+        if (userIndex !== -1) {
+          usersDb[userIndex].isNewUser = false;
+          localStorage.setItem("users_db", JSON.stringify(usersDb));
+        }
+
+        showNotification("Tour selesai! Selamat belajar.", "success");
+        driver.destroy();
+      },
+    });
+
+    setTimeout(() => {
+      driver.drive();
+    }, 1000);
+  }
+}
+
+window.addEventListener("load", () => {
+  setTimeout(initOnboardingTour, 1500);
+});
