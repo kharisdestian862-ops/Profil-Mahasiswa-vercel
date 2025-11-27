@@ -12663,3 +12663,21 @@ body.dark-mode .fac-history-status.approved {
   color: #6ee7b7;
   border-color: #065f46;
 }
+
+.setting-group.danger-zone {
+  border: 1px solid #fca5a5;
+  background: #fef2f2;
+}
+
+.setting-group.danger-zone h3 {
+  color: #b91c1c;
+}
+
+body.dark-mode .setting-group.danger-zone {
+  background: #450a0a;
+  border-color: #7f1d1d;
+}
+
+body.dark-mode .setting-group.danger-zone h3 {
+  color: #fca5a5;
+}
