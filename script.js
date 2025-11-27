@@ -1831,6 +1831,16 @@ const translations = {
     "facility.title": "Facility & Equipment Booking",
     "facility.subtitle":
       "Request permission to use campus buildings, labs, or tools.",
+
+    "settings.security": "Account Security",
+    "settings.new_password": "New Password",
+    "settings.confirm_password": "Confirm New Password",
+    "settings.btn_change_pass": "Update Password",
+    "settings.data_mgmt": "Data Management",
+    "settings.data_desc":
+      "Download a copy of your data or reset the application to start fresh.",
+    "settings.btn_export": "Backup Data (JSON)",
+    "settings.btn_reset": "Reset App (Delete All)",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -2651,6 +2661,16 @@ const translations = {
     "facility.title": "Layanan Peminjaman Fasilitas",
     "facility.subtitle":
       "Ajukan izin penggunaan gedung, laboratorium, dan inventaris kampus.",
+
+    "settings.security": "Keamanan Akun",
+    "settings.new_password": "Password Baru",
+    "settings.confirm_password": "Konfirmasi Password Baru",
+    "settings.btn_change_pass": "Ubah Password",
+    "settings.data_mgmt": "Manajemen Data",
+    "settings.data_desc":
+      "Unduh salinan data Anda atau reset aplikasi untuk mulai dari awal.",
+    "settings.btn_export": "Backup Data (JSON)",
+    "settings.btn_reset": "Reset Aplikasi (Hapus Semua)",
   },
 };
 
@@ -4379,8 +4399,6 @@ function showTranscript() {
   transcriptWindow.document.close();
 }
 
-// Main initialization
-// Main initialization
 document.addEventListener("DOMContentLoaded", function () {
   // 1. Ambil data Mata Kuliah dari Database API
   fetch("/api/get_courses_db")
@@ -4410,6 +4428,7 @@ document.addEventListener("DOMContentLoaded", function () {
     })
     .finally(() => {
       // 2. Inisialisasi Semua Fitur (Setelah data siap)
+      syncAllSystems();
       initLanguage();
       initHamburgerMenu();
       initFAB();
@@ -7094,6 +7113,10 @@ function processPayment(billId, method) {
       bill.status = "pending";
       populateBillsTable();
     }
+  }, 2000);
+
+  setTimeout(() => {
+    syncAllSystems();
   }, 2000);
 }
 
@@ -11338,13 +11361,24 @@ const availableCoursesSem5 = [
 ];
 
 let krsInitialized = false;
-let selectedKRS = JSON.parse(localStorage.getItem("krsDraft") || "[]");
-let isKRSSubmitted = localStorage.getItem("krsSubmitted") === "true";
+let selectedKRS = [];
+let isKRSSubmitted = false;
+
+function getUserKRSKey(type) {
+  const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
+  const nim = user.nim || "guest";
+  return `${type}_${nim}`;
+}
 
 function initKRS() {
+  const draftKey = getUserKRSKey("krsDraft");
+  const submitKey = getUserKRSKey("krsSubmitted");
+
+  selectedKRS = JSON.parse(localStorage.getItem(draftKey) || "[]");
+  isKRSSubmitted = localStorage.getItem(submitKey) === "true";
+
   renderKRSTable();
   updateKRSStatus();
-
   if (isKRSSubmitted) {
     showKRSResult();
   } else {
@@ -11362,7 +11396,7 @@ function renderKRSTable() {
   tbody.innerHTML = "";
   let totalSks = 0;
 
-  availableCoursesSem5.forEach((course, index) => {
+  availableCoursesSem5.forEach((course) => {
     const isSelected = selectedKRS.includes(course.id);
     if (isSelected) totalSks += course.sks;
 
@@ -11408,7 +11442,9 @@ function toggleKrsCourse(checkbox) {
     currentTotal -= sks;
   }
 
-  localStorage.setItem("krsDraft", JSON.stringify(selectedKRS));
+  // Simpan ke kunci UNIK user
+  localStorage.setItem(getUserKRSKey("krsDraft"), JSON.stringify(selectedKRS));
+
   document.getElementById("totalSksCounter").textContent = currentTotal;
   updateSubmitButton(currentTotal);
 }
@@ -11421,7 +11457,8 @@ function updateSubmitButton(totalSks) {
 function resetKRSSelection() {
   if (confirm("Reset semua pilihan?")) {
     selectedKRS = [];
-    localStorage.setItem("krsDraft", "[]");
+    // Reset kunci UNIK user
+    localStorage.setItem(getUserKRSKey("krsDraft"), "[]");
     renderKRSTable();
   }
 }
@@ -11431,10 +11468,16 @@ function submitKRS() {
 
   if (confirm("Apakah Anda yakin ingin mengajukan KRS ini?")) {
     isKRSSubmitted = true;
-    localStorage.setItem("krsSubmitted", "true");
-    localStorage.setItem("krsSubmissionTime", Date.now());
 
-    showNotification(translations[currentLanguage]["krs.success"], "success");
+    // Simpan status ke kunci UNIK user
+    localStorage.setItem(getUserKRSKey("krsSubmitted"), "true");
+    localStorage.setItem(getUserKRSKey("krsSubmissionTime"), Date.now());
+
+    syncAllSystems();
+    showNotification(
+      "KRS berhasil! Data Keuangan & Akademik telah diperbarui.",
+      "success"
+    );
     showKRSResult();
     updateKRSStatus();
 
@@ -11497,7 +11540,10 @@ function showKRSResult() {
 }
 
 function editKRS() {
-  const submissionTime = localStorage.getItem("krsSubmissionTime");
+  // Cek waktu berdasarkan kunci UNIK user
+  const submissionTime = localStorage.getItem(
+    getUserKRSKey("krsSubmissionTime")
+  );
 
   if (submissionTime) {
     const timeNow = Date.now();
@@ -11506,7 +11552,7 @@ function editKRS() {
 
     if (timeDiff > fiveMinutes) {
       alert(
-        "⛔ Batas waktu pengubahan (5 menit) sudah habis.\n\nKRS Anda sudah dikunci oleh sistem. Silakan hubungi Dosen Wali untuk revisi."
+        "⛔ Batas waktu pengubahan (5 menit) sudah habis.\n\nKRS Anda sudah dikunci. Silakan hubungi Dosen Wali."
       );
       return;
     }
@@ -11514,8 +11560,10 @@ function editKRS() {
 
   if (confirm("Masih dalam waktu toleransi 5 menit. Ingin mengubah KRS?")) {
     isKRSSubmitted = false;
-    localStorage.setItem("krsSubmitted", "false");
-    localStorage.removeItem("krsSubmissionTime");
+
+    // Reset status di kunci UNIK user
+    localStorage.setItem(getUserKRSKey("krsSubmitted"), "false");
+    localStorage.removeItem(getUserKRSKey("krsSubmissionTime"));
 
     updateKRSStatus();
     document.getElementById("krsFormView").style.display = "block";
@@ -11829,14 +11877,6 @@ window.closeSkkmModal = closeSkkmModal;
 window.contactDPA = contactDPA;
 
 function updateClassScheduleFromKRS() {
-  const isSubmitted = localStorage.getItem("krsSubmitted") === "true";
-  if (!isSubmitted) return;
-
-  const selectedIds = JSON.parse(localStorage.getItem("krsDraft") || "[]");
-  const myCourses = availableCoursesSem5.filter((course) =>
-    selectedIds.includes(course.id)
-  );
-
   const days = [
     "monday",
     "tuesday",
@@ -11845,59 +11885,73 @@ function updateClassScheduleFromKRS() {
     "friday",
     "saturday",
   ];
+
   days.forEach((day) => {
     const dayContainer = document.querySelector(
       `.schedule-day[data-day="${day}"] .class-list`
     );
     if (dayContainer) {
-      dayContainer.innerHTML = "";
+      dayContainer.innerHTML = `<p class="empty-schedule-msg" style="padding:1rem; color:var(--text-secondary); font-style:italic;">Tidak ada jadwal kelas.</p>`;
     }
   });
 
-  myCourses.forEach((course) => {
-    const scheduleParts = course.schedule.split(", ");
-    const dayNameIndo = scheduleParts[0];
-    const timeRange = scheduleParts[1].split("-");
+  const submitKey = getUserKRSKey("krsSubmitted");
+  const isSubmitted = localStorage.getItem(submitKey) === "true";
 
-    const dayKey = getDayKeyFromIndo(dayNameIndo);
+  if (!isSubmitted) {
+    updateScheduleSummary(0);
+    return;
+  }
 
-    const dayContainer = document.querySelector(
-      `.schedule-day[data-day="${dayKey}"] .class-list`
-    );
-    const dayWrapper = document.querySelector(
-      `.schedule-day[data-day="${dayKey}"]`
-    );
+  const draftKey = getUserKRSKey("krsDraft");
+  const selectedIds = JSON.parse(localStorage.getItem(draftKey) || "[]");
+  const myCourses = availableCoursesSem5.filter((course) =>
+    selectedIds.includes(course.id)
+  );
 
-    if (dayContainer) {
-      if (dayWrapper) dayWrapper.style.display = "block";
+  if (myCourses.length > 0) {
+    myCourses.forEach((course) => {
+      const scheduleParts = course.schedule.split(", ");
+      const dayNameIndo = scheduleParts[0];
+      const timeRange = scheduleParts[1].split("-");
+      const dayKey = getDayKeyFromIndo(dayNameIndo);
 
-      const classItem = document.createElement("div");
-      classItem.className = "class-item";
+      const dayContainer = document.querySelector(
+        `.schedule-day[data-day="${dayKey}"] .class-list`
+      );
 
-      const statusText = "Upcoming";
-      const statusClass = "upcoming";
+      if (dayContainer) {
+        if (dayContainer.querySelector(".empty-schedule-msg")) {
+          dayContainer.innerHTML = "";
+        }
 
-      classItem.innerHTML = `
-        <div class="class-time">
-          <span class="time-start">${timeRange[0]}</span>
-          <span class="time-separator">-</span>
-          <span class="time-end">${timeRange[1]}</span>
-        </div>
-        <div class="class-info">
-          <h4 class="class-name">${course.name}</h4>
-          <div class="class-details">
-            <span class="class-room">Room: A-301</span>
-            <span class="class-lecturer">${course.code} • ${course.class}</span>
-          </div>
-        </div>
-        <div class="class-status ${statusClass}">
-          ${statusText}
-        </div>
-      `;
+        const classItem = document.createElement("div");
+        classItem.className = "class-item";
+        const statusText = "Upcoming";
+        const statusClass = "upcoming";
 
-      dayContainer.appendChild(classItem);
-    }
-  });
+        classItem.innerHTML = `
+            <div class="class-time">
+              <span class="time-start">${timeRange[0]}</span>
+              <span class="time-separator">-</span>
+              <span class="time-end">${timeRange[1]}</span>
+            </div>
+            <div class="class-info">
+              <h4 class="class-name">${course.name}</h4>
+              <div class="class-details">
+                <span class="class-room">Room: A-301</span>
+                <span class="class-lecturer">${course.code} • ${course.class}</span>
+              </div>
+            </div>
+            <div class="class-status ${statusClass}">
+              ${statusText}
+            </div>
+          `;
+
+        dayContainer.appendChild(classItem);
+      }
+    });
+  }
 
   updateScheduleSummary(myCourses.length);
 }
@@ -13843,3 +13897,246 @@ window.filterFacility = filterFacility;
 window.showMyBookings = showMyBookings;
 window.closeHistoryModal = closeHistoryModal;
 window.handleFacilitySubmit = handleFacilitySubmit;
+
+function syncAllSystems() {
+  console.log("🔄 Mengsinkronkan seluruh data sistem...");
+
+  // 1. Cek User & Profil
+  const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
+
+  // 2. Integrasi KRS -> AKADEMIK & KEUANGAN
+  // Cek apakah KRS sudah disubmit?
+  const isKrsSubmitted = localStorage.getItem("krsSubmitted") === "true";
+  const krsDraft = JSON.parse(localStorage.getItem("krsDraft") || "[]");
+
+  if (isKrsSubmitted && krsDraft.length > 0) {
+    // A. Update Data Mata Kuliah (attendanceData) berdasarkan KRS
+    // Kita mapping ID KRS ke Data Akademik
+    krsDraft.forEach((courseId) => {
+      // Cari detail course dari availableCoursesSem5 (Data master KRS)
+      const courseInfo = availableCoursesSem5.find((c) => c.id === courseId);
+
+      if (courseInfo) {
+        // Buat Key unik (misal: "TI501" -> "mobileprogramming")
+        const key = courseInfo.name.toLowerCase().replace(/ /g, "");
+
+        // Jika matkul ini belum ada di data akademik, tambahkan!
+        if (!attendanceData[key]) {
+          attendanceData[key] = {
+            name: courseInfo.name,
+            code: courseInfo.code,
+            credits: courseInfo.sks,
+            currentWeek: 1, // Default mulai minggu 1
+            meetings: generateDummyMeetings(), // Generate pertemuan default
+            tasks: [],
+            materials: [],
+          };
+        }
+      }
+    });
+
+    // B. Update Tagihan Keuangan berdasarkan SKS
+    // Misal: Biaya per SKS = Rp 200.000
+    const biayaPerSks = 200000;
+    let totalSks = 0;
+    krsDraft.forEach((id) => {
+      const c = availableCoursesSem5.find((x) => x.id === id);
+      if (c) totalSks += c.sks;
+    });
+
+    const biayaSksBaru = totalSks * biayaPerSks;
+
+    // Cek apakah tagihan SKS ini sudah ada di financialData?
+    const cekTagihan = financialData.tuitionFees.find(
+      (f) => f.type === "Biaya SKS Semester Ini"
+    );
+    if (!cekTagihan) {
+      // Jika belum ada, buat tagihan baru
+      financialData.tuitionFees.push({
+        id: Date.now(),
+        semester: `Semester ${user.semester || 5}`,
+        type: "Biaya SKS Semester Ini",
+        amount: biayaSksBaru,
+        dueDate: "2025-02-01",
+        status: "unpaid", // Belum bayar
+        paymentMethod: null,
+        receiptNumber: null,
+      });
+      // Update total tagihan
+      financialData.summary.totalTagihan += biayaSksBaru;
+      financialData.summary.sisaTagihan += biayaSksBaru;
+      financialData.summary.status = "partially_paid"; // Status berubah jadi belum lunas total
+    }
+  }
+
+  // 3. Integrasi KEUANGAN -> AKSES (Blocker)
+  // Cek apakah ada tagihan "overdue" atau sisa tagihan > 5 Juta?
+  const isFinanceProblem = financialData.summary.sisaTagihan > 5000000;
+
+  if (isFinanceProblem) {
+    // Blokir akses KRS jika keuangan bermasalah
+    const krsBtn = document.getElementById("submitKrsBtn");
+    if (krsBtn) {
+      krsBtn.disabled = true;
+      krsBtn.textContent = "Lunasi Tagihan Dulu";
+      krsBtn.style.backgroundColor = "#94a3b8";
+    }
+  }
+
+  // 4. Integrasi NILAI -> DASHBOARD
+  // Hitung ulang IPK dari data tugas yang ada di attendanceData
+  calculateGlobalGPA();
+
+  // Simpan semua perubahan ke LocalStorage agar permanen
+  localStorage.setItem("financialData", JSON.stringify(financialData));
+  localStorage.setItem("attendanceData", JSON.stringify(attendanceData));
+}
+
+// Helper: Generator Pertemuan Dummy (Untuk matkul baru dari KRS)
+function generateDummyMeetings() {
+  return Array.from({ length: 14 }, (_, i) => ({
+    id: i + 1,
+    date: "TBA",
+    topic: `Pertemuan Ke-${i + 1}`,
+    status: "not_started",
+  }));
+}
+
+// Helper: Hitung IPK Global untuk Dashboard
+function calculateGlobalGPA() {
+  let totalBobot = 0;
+  let totalSks = 0;
+  let totalHadir = 0;
+  let totalPertemuan = 0;
+
+  Object.values(attendanceData).forEach((course) => {
+    // Hitung Kehadiran
+    course.meetings.forEach((m) => {
+      if (m.status === "present") totalHadir++;
+      if (m.status !== "not_started") totalPertemuan++;
+    });
+
+    // Hitung Nilai (Dari Tugas)
+    let nilaiTotal = 0;
+    let tugasCount = 0;
+    course.tasks.forEach((t) => {
+      if (t.score !== null) {
+        nilaiTotal += t.score;
+        tugasCount++;
+      }
+    });
+
+    if (tugasCount > 0) {
+      const rataRata = nilaiTotal / tugasCount;
+      let bobot = 0;
+      if (rataRata >= 85) bobot = 4.0;
+      else if (rataRata >= 70) bobot = 3.0;
+      else if (rataRata >= 55) bobot = 2.0;
+      else if (rataRata >= 40) bobot = 1.0;
+
+      totalBobot += bobot * course.credits;
+      totalSks += course.credits;
+    }
+  });
+
+  // Update UI Dashboard Depan
+  const gpa = totalSks > 0 ? (totalBobot / totalSks).toFixed(2) : "0.00";
+  const attendRate =
+    totalPertemuan > 0 ? Math.round((totalHadir / totalPertemuan) * 100) : 0;
+
+  const dashGPA = document.querySelector(
+    '.card-title[data-i18n="dashboard.gpa"] + .card-value'
+  );
+  const dashSKS = document.querySelector(
+    '.card-title[data-i18n="dashboard.credits"] + .card-value'
+  );
+  const dashAttend = document.querySelector(
+    '.card-title[data-i18n="dashboard.attendance"] + .card-value'
+  );
+  const dashCourse = document.querySelector(
+    '.card-title[data-i18n="dashboard.active_courses"] + .card-value'
+  );
+
+  if (dashGPA) dashGPA.textContent = gpa;
+  if (dashSKS) dashSKS.textContent = totalSks; // Total SKS diambil
+  if (dashAttend) dashAttend.textContent = `${attendRate}%`;
+  if (dashCourse) dashCourse.textContent = Object.keys(attendanceData).length;
+}
+
+function changePassword() {
+  const newPass = document.getElementById("newPassword").value;
+  const confirmPass = document.getElementById("confirmNewPassword").value;
+
+  if (!newPass || !confirmPass) {
+    alert("Mohon isi kedua kolom password.");
+    return;
+  }
+
+  if (newPass !== confirmPass) {
+    alert("Password tidak sama!");
+    return;
+  }
+
+  if (newPass.length < 6) {
+    alert("Password minimal 6 karakter.");
+    return;
+  }
+
+  // Update di LocalStorage
+  const user = JSON.parse(localStorage.getItem("currentUser"));
+  user.password = newPass; // Note: Di app nyata ini harus di-hash
+  localStorage.setItem("currentUser", JSON.stringify(user));
+
+  // Update di Database Users juga
+  let usersDb = JSON.parse(localStorage.getItem("users_db") || "[]");
+  const index = usersDb.findIndex((u) => u.email === user.email);
+  if (index !== -1) {
+    usersDb[index].password = newPass; // Di app nyata, gunakan hash
+    localStorage.setItem("users_db", JSON.stringify(usersDb));
+  }
+
+  alert("Password berhasil diubah! Silakan login ulang.");
+
+  // Logout otomatis
+  localStorage.removeItem("isLoggedIn");
+  window.location.href = "index.html";
+}
+
+function exportUserData() {
+  const dataToExport = {
+    user: JSON.parse(localStorage.getItem("currentUser")),
+    settings: JSON.parse(localStorage.getItem("userSettings")),
+    skkm: JSON.parse(localStorage.getItem("skkmData")),
+    tasks: JSON.parse(localStorage.getItem("kanbanTasks")),
+    finance: JSON.parse(localStorage.getItem("financialData")),
+  };
+
+  const dataStr =
+    "data:text/json;charset=utf-8," +
+    encodeURIComponent(JSON.stringify(dataToExport, null, 2));
+  const downloadAnchorNode = document.createElement("a");
+  downloadAnchorNode.setAttribute("href", dataStr);
+  downloadAnchorNode.setAttribute("download", "backup_data_mahasiswa.json");
+  document.body.appendChild(downloadAnchorNode); // Required for firefox
+  downloadAnchorNode.click();
+  downloadAnchorNode.remove();
+
+  showNotification("Data berhasil didownload!", "success");
+}
+
+function resetApplicationData() {
+  if (
+    confirm(
+      "⚠️ PERINGATAN: Ini akan menghapus SELURUH data Anda (SKKM, Tugas, Chat, dll) dan mengembalikan aplikasi ke awal. Anda akan logout.\n\nApakah Anda yakin?"
+    )
+  ) {
+    localStorage.clear();
+    alert("Aplikasi berhasil di-reset.");
+    window.location.href = "index.html";
+  }
+}
+
+// Expose functions
+window.changePassword = changePassword;
+window.exportUserData = exportUserData;
+window.resetApplicationData = resetApplicationData;
