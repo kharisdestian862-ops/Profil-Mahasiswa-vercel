@@ -1822,6 +1822,10 @@ const translations = {
     "dpa.success_msg":
       "Academic Advisor assigned. Please contact them for KRS validation.",
     "dpa.btn_whatsapp": "Contact Advisor via WhatsApp",
+
+    "nav.queue": "Smart Queue",
+    "queue.title": "Integrated Service Queue",
+    "queue.subtitle": "Get your queue number online and skip the wait.",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -2632,6 +2636,11 @@ const translations = {
     "dpa.success_msg":
       "Dosen Wali telah ditetapkan. Silakan hubungi beliau untuk validasi KRS.",
     "dpa.btn_whatsapp": "Hubungi DPA via WhatsApp",
+
+    "nav.queue": "Antrian Online",
+    "queue.title": "Antrian Layanan Terpadu",
+    "queue.subtitle":
+      "Ambil nomor antrian untuk layanan administrasi tanpa perlu menunggu di lokasi.",
   },
 };
 
@@ -2998,6 +3007,7 @@ function switchSection(sectionId) {
     if (sectionId === "music-center") initMusicPlayer();
     if (sectionId === "edom-center") initEdom();
     if (sectionId === "dpa-center") initDPA();
+    if (sectionId === "queue-center") initQueue();
 
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
@@ -11592,22 +11602,47 @@ function copyCitation() {
 }
 window.copyCitation = copyCitation;
 
-let skkmInitialized = false;
-let skkmData = JSON.parse(localStorage.getItem("skkmData") || "[]");
-
-// Data Dosen Wali (Simulasi)
 const dpaInfo = {
   name: "Bambang Sugiarto, M.Kom",
-  phone: "6281234567890", // Ganti dengan nomor WA asli/dummy
+  phone: "6281234567890",
 };
 
+const skkmRules = {
+  seminar: 10,
+  wajib: 20,
+  organisasi: 30,
+  prestasi: 50,
+};
+
+let skkmInitialized = false;
+let skkmData = [];
+
 function initSKKM() {
+  skkmData = JSON.parse(localStorage.getItem("skkmData") || "[]");
+
   if (!skkmInitialized) {
-    document
-      .getElementById("skkmForm")
-      .addEventListener("submit", handleSkkmSubmit);
+    const typeSelect = document.getElementById("skkmType");
+    const pointsInput = document.getElementById("skkmPoints");
+
+    if (typeSelect && pointsInput) {
+      const updatePoints = () => {
+        const selectedType = typeSelect.value;
+        pointsInput.value = skkmRules[selectedType] || 0;
+      };
+
+      typeSelect.addEventListener("change", updatePoints);
+      updatePoints();
+    }
+
+    const skkmForm = document.getElementById("skkmForm");
+    if (skkmForm && !skkmForm.dataset.listenerAttached) {
+      skkmForm.addEventListener("submit", handleSkkmSubmit);
+      skkmForm.dataset.listenerAttached = "true";
+    }
+
     skkmInitialized = true;
   }
+
   renderSKKM();
 }
 
@@ -11615,16 +11650,16 @@ function renderSKKM() {
   const list = document.getElementById("skkmList");
   if (!list) return;
 
+  skkmData = JSON.parse(localStorage.getItem("skkmData") || "[]");
+
   list.innerHTML = "";
   let totalPoints = 0;
   let countWajib = 0;
   let countPilihan = 0;
 
-  // Urutkan dari terbaru
   skkmData.sort((a, b) => b.id - a.id);
 
   skkmData.forEach((item) => {
-    // Hitung Poin (Hanya yang sudah divalidasi, tapi untuk simulasi kita hitung semua dulu)
     totalPoints += parseInt(item.points);
     if (item.type === "wajib") countWajib++;
     else countPilihan++;
@@ -11632,12 +11667,11 @@ function renderSKKM() {
     const div = document.createElement("div");
     div.className = "skkm-item";
 
-    // Tombol Validasi hanya muncul jika status masih pending
     const validateBtn =
       item.status === "pending"
         ? `<button class="validate-btn" onclick="contactDPA('${item.name}')">
-           <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
-           ${translations[currentLanguage]["skkm.validate"] || "Validasi DPA"}
+           <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+           Validasi DPA
          </button>`
         : "";
 
@@ -11645,9 +11679,18 @@ function renderSKKM() {
       <div class="skkm-item-info">
         <h4>${item.name}</h4>
         <div class="skkm-meta">
-          <span>📌 ${item.type.toUpperCase()}</span>
-          <span>📅 ${item.date}</span>
-          <span>🏆 ${item.level}</span>
+          <span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+            ${item.type.toUpperCase()}
+          </span>
+          <span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            ${item.date}
+          </span>
+          <span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"></circle><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"></polyline></svg>
+            ${item.level}
+          </span>
         </div>
       </div>
       <div class="skkm-item-right">
@@ -11661,45 +11704,92 @@ function renderSKKM() {
     list.appendChild(div);
   });
 
-  // Update UI Progress
-  document.getElementById(
-    "skkmTotalPoints"
-  ).textContent = `${totalPoints} / 100 Poin`;
-  document.getElementById("countWajib").textContent = countWajib;
-  document.getElementById("countPilihan").textContent = countPilihan;
+  const totalEl = document.getElementById("skkmTotalPoints");
+  if (totalEl) totalEl.textContent = `${totalPoints} / 100 Poin`;
+
+  const countWajibEl = document.getElementById("countWajib");
+  if (countWajibEl) countWajibEl.textContent = countWajib;
+
+  const countPilihanEl = document.getElementById("countPilihan");
+  if (countPilihanEl) countPilihanEl.textContent = countPilihan;
 
   const percentage = Math.min(totalPoints, 100);
-  document.getElementById("skkmPercentage").textContent = `${percentage}%`;
-  document
-    .getElementById("skkmProgressPath")
-    .setAttribute("stroke-dasharray", `${percentage}, 100`);
+  const percentEl = document.getElementById("skkmPercentage");
+  if (percentEl) percentEl.textContent = `${percentage}%`;
 
-  if (percentage >= 100) {
-    document.getElementById("skkmProgressPath").style.stroke = "#10b981"; // Hijau jika selesai
+  const pathEl = document.getElementById("skkmProgressPath");
+  if (pathEl) {
+    pathEl.setAttribute("stroke-dasharray", `${percentage}, 100`);
+    if (percentage >= 100) pathEl.style.stroke = "#10b981";
   }
 }
 
 function handleSkkmSubmit(e) {
   e.preventDefault();
 
-  const newItem = {
-    id: Date.now(),
-    name: document.getElementById("skkmName").value,
-    type: document.getElementById("skkmType").value,
-    level: document.getElementById("skkmLevel").value,
-    points: document.getElementById("skkmPoints").value,
-    status: "pending", // Status awal selalu pending
-    date: new Date().toLocaleDateString(),
-  };
+  try {
+    const nameVal = document.getElementById("skkmName").value.trim();
+    const typeVal = document.getElementById("skkmType").value;
+    const levelVal = document.getElementById("skkmLevel").value;
+    const pointsVal = skkmRules[typeVal] || 0;
 
-  skkmData.push(newItem);
-  localStorage.setItem("skkmData", JSON.stringify(skkmData));
+    if (!nameVal) {
+      alert("Nama kegiatan harus diisi!");
+      return false;
+    }
 
-  closeSkkmModal();
-  e.target.reset();
-  renderSKKM();
-  showNotification(translations[currentLanguage]["skkm.success"], "success");
+    const newItem = {
+      id: Date.now(),
+      name: nameVal,
+      type: typeVal,
+      level: levelVal,
+      points: pointsVal,
+      status: "pending",
+      date: new Date().toLocaleDateString(),
+    };
+
+    let currentData = JSON.parse(localStorage.getItem("skkmData") || "[]");
+
+    const isDuplicate = currentData.some(
+      (item) =>
+        item.name === nameVal &&
+        item.type === typeVal &&
+        item.date === newItem.date
+    );
+
+    if (isDuplicate) {
+      alert("Data kegiatan ini sudah ada!");
+      return false;
+    }
+
+    currentData.push(newItem);
+    localStorage.setItem("skkmData", JSON.stringify(currentData));
+
+    skkmData = currentData;
+
+    closeSkkmModal();
+    document.getElementById("skkmForm").reset();
+
+    const typeSelect = document.getElementById("skkmType");
+    if (typeSelect) {
+      typeSelect.value = "wajib";
+      document.getElementById("skkmPoints").value = skkmRules["wajib"];
+    }
+
+    renderSKKM();
+
+    if (typeof showNotification === "function") {
+      showNotification("Data SKKM berhasil disimpan!", "success");
+    }
+
+    return false;
+  } catch (error) {
+    console.error("Error submit SKKM:", error);
+    alert("Terjadi error: " + error.message);
+  }
 }
+
+window.handleSkkmSubmit = handleSkkmSubmit;
 
 function contactDPA(activityName) {
   const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
@@ -13300,3 +13390,196 @@ function initOnboardingTour() {
 window.addEventListener("load", () => {
   setTimeout(initOnboardingTour, 1500);
 });
+
+const queueServices = [
+  {
+    id: "baak",
+    name: "Layanan Akademik (BAAK)",
+    code: "A",
+    current: 102,
+    waiting: 5,
+    status: "open",
+    iconClass: "baak",
+
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>`,
+  },
+  {
+    id: "fin",
+    name: "Layanan Keuangan",
+    code: "B",
+    current: 45,
+    waiting: 12,
+    status: "open",
+    iconClass: "fin",
+
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>`,
+  },
+  {
+    id: "lib",
+    name: "Perpustakaan",
+    code: "C",
+    current: 12,
+    waiting: 0,
+    status: "open",
+    iconClass: "lib",
+
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
+  },
+  {
+    id: "health",
+    name: "Klinik Mahasiswa",
+    code: "D",
+    current: 8,
+    waiting: 2,
+    status: "closed",
+    iconClass: "health",
+
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>`,
+  },
+];
+
+let activeTicket = null;
+let queueInterval = null;
+
+function initQueue() {
+  renderServices();
+  checkActiveTicket();
+}
+
+function renderServices() {
+  const container = document.getElementById("serviceGrid");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  queueServices.forEach((service) => {
+    const isOpen = service.status === "open";
+    const btnText = isOpen ? "Ambil Antrian" : "Tutup (Jam Istirahat)";
+    const btnClass = isOpen ? "" : "closed";
+    const btnAction = isOpen ? `onclick="takeQueue('${service.id}')"` : "";
+
+    const card = document.createElement("div");
+    card.className = "queue-service-card";
+    card.innerHTML = `
+      <div class="q-header">
+        <div class="q-icon ${service.iconClass}">${service.icon}</div>
+        <div class="q-title">
+          <h3>${service.name}</h3>
+          <p>Kode Loket: ${service.code}</p>
+        </div>
+      </div>
+      <div class="q-stats">
+        <div class="q-stat-item">
+          <span>Dipanggil</span>
+          <strong>${service.code}-${service.current}</strong>
+        </div>
+        <div class="q-stat-item">
+          <span>Menunggu</span>
+          <strong>${service.waiting} Orang</strong>
+        </div>
+      </div>
+      <button class="q-btn ${btnClass}" ${btnAction} ${
+      !isOpen ? "disabled" : ""
+    }>
+        ${btnText}
+      </button>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function takeQueue(serviceId) {
+  if (activeTicket) {
+    alert("Anda sudah memiliki antrian aktif. Selesaikan atau batalkan dulu.");
+    return;
+  }
+
+  const service = queueServices.find((s) => s.id === serviceId);
+
+  const myNumber = service.current + service.waiting + 1;
+
+  activeTicket = {
+    serviceId: serviceId,
+    serviceName: service.name,
+    number: `${service.code}-${myNumber}`,
+    currentServing: `${service.code}-${service.current}`,
+    peopleAhead: service.waiting,
+    estWait: (service.waiting + 1) * 3,
+  };
+
+  renderActiveTicket();
+
+  startQueueSimulation();
+
+  showNotification(
+    `Berhasil mengambil antrian ${activeTicket.number}`,
+    "success"
+  );
+}
+
+function renderActiveTicket() {
+  const area = document.getElementById("activeTicketArea");
+  const grid = document.getElementById("serviceGrid");
+
+  if (activeTicket) {
+    area.style.display = "flex";
+    grid.style.display = "none";
+
+    document.getElementById("ticketService").textContent =
+      activeTicket.serviceName;
+    document.getElementById("myTicketNumber").textContent = activeTicket.number;
+    document.getElementById("currentServingTicket").textContent =
+      activeTicket.currentServing;
+    document.getElementById(
+      "peopleAhead"
+    ).textContent = `${activeTicket.peopleAhead} Orang`;
+    document.getElementById(
+      "estWaitTime"
+    ).textContent = `${activeTicket.estWait} Menit`;
+  } else {
+    area.style.display = "none";
+    grid.style.display = "grid";
+  }
+}
+
+function cancelQueue() {
+  if (confirm("Batalkan antrian ini?")) {
+    activeTicket = null;
+    if (queueInterval) clearInterval(queueInterval);
+    renderActiveTicket();
+  }
+}
+
+function startQueueSimulation() {
+  if (queueInterval) clearInterval(queueInterval);
+
+  queueInterval = setInterval(() => {
+    if (!activeTicket) return;
+
+    if (activeTicket.peopleAhead > 0) {
+      activeTicket.peopleAhead--;
+      activeTicket.estWait = Math.max(0, activeTicket.estWait - 3);
+
+      const parts = activeTicket.currentServing.split("-");
+      const nextNum = parseInt(parts[1]) + 1;
+      activeTicket.currentServing = `${parts[0]}-${nextNum}`;
+
+      renderActiveTicket();
+      showNotification("Antrian bergerak! Giliran Anda semakin dekat.", "info");
+    } else {
+      clearInterval(queueInterval);
+      alert(
+        `🔔 Ding Dong! \n\nNomor Antrian ${activeTicket.number} dipersilakan ke loket.`
+      );
+      activeTicket = null;
+      renderActiveTicket();
+    }
+  }, 5000);
+}
+
+function checkActiveTicket() {
+  if (activeTicket) renderActiveTicket();
+}
+
+window.takeQueue = takeQueue;
+window.cancelQueue = cancelQueue;
