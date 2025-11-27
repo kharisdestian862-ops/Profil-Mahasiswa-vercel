@@ -1826,6 +1826,11 @@ const translations = {
     "nav.queue": "Smart Queue",
     "queue.title": "Integrated Service Queue",
     "queue.subtitle": "Get your queue number online and skip the wait.",
+
+    "nav.facility": "Facility Booking",
+    "facility.title": "Facility & Equipment Booking",
+    "facility.subtitle":
+      "Request permission to use campus buildings, labs, or tools.",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -2641,6 +2646,11 @@ const translations = {
     "queue.title": "Antrian Layanan Terpadu",
     "queue.subtitle":
       "Ambil nomor antrian untuk layanan administrasi tanpa perlu menunggu di lokasi.",
+
+    "nav.facility": "Peminjaman Fasilitas",
+    "facility.title": "Layanan Peminjaman Fasilitas",
+    "facility.subtitle":
+      "Ajukan izin penggunaan gedung, laboratorium, dan inventaris kampus.",
   },
 };
 
@@ -3008,6 +3018,7 @@ function switchSection(sectionId) {
     if (sectionId === "edom-center") initEdom();
     if (sectionId === "dpa-center") initDPA();
     if (sectionId === "queue-center") initQueue();
+    if (sectionId === "facility-center") initFacility();
 
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
@@ -13583,3 +13594,252 @@ function checkActiveTicket() {
 
 window.takeQueue = takeQueue;
 window.cancelQueue = cancelQueue;
+
+let facilityBookings = JSON.parse(
+  localStorage.getItem("facilityBookings") || "[]"
+);
+
+const facilitiesDB = [
+  {
+    id: 1,
+    name: "Aula Utama (Convention Hall)",
+    type: "room",
+    cap: "500 Org",
+    status: "available",
+    // Ikon Gedung/Bank
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4 8 4v14"/><path d="M17 21v-8H7v8"/><line x1="9" y1="9" x2="9" y2="10"/><line x1="9" y1="13" x2="9" y2="14"/><line x1="15" y1="9" x2="15" y2="10"/><line x1="15" y1="13" x2="15" y2="14"/></svg>`,
+    desc: "Gedung serbaguna untuk seminar atau acara besar.",
+  },
+  {
+    id: 2,
+    name: "Lab Komputer Umum",
+    type: "room",
+    cap: "40 PC",
+    status: "booked",
+    // Ikon Monitor/PC
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
+    desc: "Lab untuk praktikum atau pelatihan IT.",
+  },
+  {
+    id: 3,
+    name: "Lapangan Basket/Futsal",
+    type: "sport",
+    cap: "Outdoor",
+    status: "available",
+    // Ikon Bola / Aktivitas
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2.1 13.4A10.1 10.1 0 0 0 13.4 21.9"/><path d="M2 10.6a10.1 10.1 0 0 1 11.4-8.5"/><path d="M22 12a10 10 0 0 0-10 10"/><path d="M12 2a14.5 14.5 0 0 0 0 20"/><path d="M2 12h20"/></svg>`,
+    desc: "Lapangan olahraga mahasiswa.",
+  },
+  {
+    id: 4,
+    name: "Proyektor Portable (LCD)",
+    type: "tool",
+    cap: "5 Unit",
+    status: "available",
+    // Ikon Proyektor / Cast
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M2 16.1A5 5 0 0 1 5.9 20M2 12.05A9 9 0 0 1 9.95 20M2 8V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6"/><line x1="2" y1="20" x2="2.01" y2="20"/></svg>`,
+    desc: "Proyektor Epson untuk kegiatan kelas tambahan.",
+  },
+  {
+    id: 5,
+    name: "Sound System Portable",
+    type: "tool",
+    cap: "2 Set",
+    status: "available",
+    // Ikon Speaker
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>`,
+    desc: "Speaker dan Mic wireless untuk kegiatan outdoor.",
+  },
+  {
+    id: 6,
+    name: "Studio Fotografi",
+    type: "room",
+    cap: "15 Org",
+    status: "available",
+    // Ikon Kamera
+    icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>`,
+    desc: "Studio lengkap dengan lighting dan background.",
+  },
+];
+
+let facilityInitialized = false;
+
+function initFacility() {
+  if (!facilityInitialized) {
+    document
+      .getElementById("facilityForm")
+      .addEventListener("submit", handleFacilitySubmit);
+    facilityInitialized = true;
+  }
+  renderFacilities("room"); // Default tab
+}
+
+function filterFacility(type) {
+  // Update Tab UI
+  document
+    .querySelectorAll(".fac-tab-btn")
+    .forEach((btn) => btn.classList.remove("active"));
+  event.target.classList.add("active");
+
+  renderFacilities(type);
+}
+
+function renderFacilities(type) {
+  const container = document.getElementById("facilityGrid");
+  container.innerHTML = "";
+
+  const items = facilitiesDB.filter((f) => f.type === type);
+
+  items.forEach((item) => {
+    const isAvailable = item.status === "available";
+    const btnText = isAvailable ? "Ajukan Peminjaman" : "Sedang Digunakan";
+    const btnState = isAvailable ? "" : "disabled";
+
+    const card = document.createElement("div");
+    card.className = "fac-card";
+    card.innerHTML = `
+      <div class="fac-image">${item.icon}</div>
+      <div class="fac-info">
+        <div class="fac-header">
+          <div>
+            <h3 class="fac-title">${item.name}</h3>
+            <span class="fac-cap">${item.cap}</span>
+          </div>
+          <span class="fac-badge ${item.status}">${
+      isAvailable ? "Tersedia" : "Dipakai"
+    }</span>
+        </div>
+        <p class="fac-desc">${item.desc}</p>
+        <button class="fac-btn" ${btnState} onclick="openFacilityModal(${
+      item.id
+    })">
+          ${btnText}
+        </button>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function openFacilityModal(id) {
+  const item = facilitiesDB.find((f) => f.id === id);
+  if (!item) return;
+
+  document.getElementById("facId").value = id;
+  document.getElementById("facTargetName").textContent = item.name;
+
+  const modal = document.getElementById("facilityModal");
+  modal.style.display = "flex";
+  setTimeout(() => modal.classList.add("active"), 10);
+}
+
+function closeFacilityModal() {
+  const modal = document.getElementById("facilityModal");
+  modal.classList.remove("active");
+  setTimeout(() => (modal.style.display = "none"), 300);
+  document.getElementById("facilityForm").reset();
+}
+
+function handleFacilitySubmit(e) {
+  e.preventDefault();
+
+  // 1. Ambil Data dari Form
+  const id = parseInt(document.getElementById("facId").value);
+  const targetItem = facilitiesDB.find((f) => f.id === id);
+  const date = document.getElementById("facDate").value;
+  const timeStart = document.getElementById("facStart").value;
+  const timeEnd = document.getElementById("facEnd").value;
+  const reason = document.getElementById("facReason").value;
+
+  if (!date || !timeStart || !timeEnd || !reason) {
+    alert("Mohon lengkapi semua data peminjaman.");
+    return;
+  }
+
+  // 2. Buat Objek Booking Baru
+  const newBooking = {
+    id: Date.now(),
+    facilityName: targetItem ? targetItem.name : "Fasilitas Kampus",
+    date: date,
+    time: `${timeStart} - ${timeEnd}`,
+    reason: reason,
+    status: "pending", // Status awal selalu pending
+    timestamp: new Date().toISOString(),
+  };
+
+  // 3. Simpan ke Array & LocalStorage
+  facilityBookings.unshift(newBooking); // Tambah di paling atas
+  localStorage.setItem("facilityBookings", JSON.stringify(facilityBookings));
+
+  // 4. Reset Form & Tutup Modal
+  closeFacilityModal();
+  document.getElementById("facilityForm").reset();
+
+  // 5. Beri Notifikasi
+  showNotification(
+    "Pengajuan berhasil dikirim! Menunggu persetujuan.",
+    "success"
+  );
+
+  // (Opsional) Langsung buka riwayat untuk menunjukkan data masuk
+  setTimeout(() => showMyBookings(), 500);
+}
+
+function showMyBookings() {
+  const modal = document.getElementById("facilityHistoryModal");
+  const list = document.getElementById("facHistoryList");
+
+  // Render Ulang Daftar
+  if (facilityBookings.length === 0) {
+    list.innerHTML =
+      '<div class="empty-state-text">Belum ada riwayat peminjaman.</div>';
+  } else {
+    list.innerHTML = ""; // Bersihkan
+    facilityBookings.forEach((booking) => {
+      // Format Tanggal agar cantik (contoh: 25 Nov 2025)
+      const dateObj = new Date(booking.date);
+      const dateStr = dateObj.toLocaleDateString("id-ID", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      });
+
+      // Tentukan Label Status
+      let statusLabel = "Menunggu";
+      if (booking.status === "approved") statusLabel = "Disetujui";
+      if (booking.status === "rejected") statusLabel = "Ditolak";
+
+      const item = document.createElement("div");
+      item.className = "fac-history-item";
+      item.innerHTML = `
+        <div class="fac-history-info">
+          <h4>${booking.facilityName}</h4>
+          <div class="fac-history-meta">
+            <span>📅 ${dateStr}</span>
+            <span>⏰ ${booking.time}</span>
+          </div>
+          <div class="fac-history-reason">"${booking.reason}"</div>
+        </div>
+        <div class="fac-history-status ${booking.status}">${statusLabel}</div>
+      `;
+      list.appendChild(item);
+    });
+  }
+
+  // Tampilkan Modal
+  modal.style.display = "flex";
+  setTimeout(() => modal.classList.add("active"), 10);
+}
+
+function closeHistoryModal() {
+  const modal = document.getElementById("facilityHistoryModal");
+  modal.classList.remove("active");
+  setTimeout(() => (modal.style.display = "none"), 300);
+}
+
+window.openFacilityModal = openFacilityModal;
+window.closeFacilityModal = closeFacilityModal;
+window.filterFacility = filterFacility;
+window.showMyBookings = showMyBookings;
+window.closeHistoryModal = closeHistoryModal;
+window.handleFacilitySubmit = handleFacilitySubmit;
