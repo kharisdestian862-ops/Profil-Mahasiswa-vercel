@@ -884,34 +884,34 @@ const financialData = {
   paymentMethods: [
     {
       id: 1,
+      type: "qris",
+      name: "QRIS (Scan)",
+      icon: "qr",
+    },
+    {
+      id: 2,
       type: "bank_transfer",
       name: "Transfer Bank",
       bank: "Bank Mandiri",
       accountNumber: "1234567890",
-      accountName: "Universitas XYZ",
-      icon: "bank", // Ganti dari emoji
+      accountName: "Universitas CIC",
+      icon: "bank",
     },
     {
-      id: 2,
+      id: 3,
       type: "virtual_account",
       name: "Virtual Account",
       bank: "Bank BCA",
       accountNumber: "8012023001",
-      accountName: "Kharis Destian Maulana",
-      icon: "card", // Ganti dari emoji
-    },
-    {
-      id: 3,
-      type: "e_wallet",
-      name: "E-Wallet",
-      providers: ["GoPay", "OVO", "Dana"],
-      icon: "wallet", // Ganti dari emoji
+      accountName: "Kharis Destian",
+      icon: "card",
     },
     {
       id: 4,
-      type: "credit_card",
-      name: "Kartu Kredit/Debit",
-      icon: "credit", // Ganti dari emoji
+      type: "e_wallet",
+      name: "E-Wallet",
+      providers: ["GoPay", "OVO", "Dana"],
+      icon: "wallet",
     },
   ],
 
@@ -1841,6 +1841,26 @@ const translations = {
       "Download a copy of your data or reset the application to start fresh.",
     "settings.btn_export": "Backup Data (JSON)",
     "settings.btn_reset": "Reset App (Delete All)",
+
+    "nav.history": "Study History",
+    "history.title": "Academic History",
+    "history.subtitle": "View your grades archive and GPA progress.",
+    "history.ipk": "Cumulative GPA",
+    "history.select_sem": "Select Semester:",
+    "history.print_khs": "Print Grade Card (KHS)",
+
+    "nav.language": "Language Center",
+    "language.title": "Language Center",
+    "language.subtitle": "Proficiency tests and language courses.",
+    "language.best_score": "Best Score",
+    "language.register": "Register",
+    "language.download_cert": "Download Cert",
+
+    "nav.notifications": "Notifications",
+    "notif.page_title": "Notification Center",
+    "notif.page_subtitle": "Your recent activities and alerts.",
+    "notif.clear_all": "Clear All",
+    "notif.empty": "You have no notifications.",
   },
   id: {
     "nav.dashboard": "Dashboard",
@@ -2671,6 +2691,28 @@ const translations = {
       "Unduh salinan data Anda atau reset aplikasi untuk mulai dari awal.",
     "settings.btn_export": "Backup Data (JSON)",
     "settings.btn_reset": "Reset Aplikasi (Hapus Semua)",
+
+    "nav.history": "Riwayat Studi",
+    "history.title": "Riwayat Studi & Transkrip",
+    "history.subtitle":
+      "Arsip nilai per semester dan grafik perkembangan IPK Anda.",
+    "history.ipk": "IPK Kumulatif",
+    "history.select_sem": "Pilih Semester:",
+    "history.print_khs": "Cetak KHS",
+
+    "nav.language": "Pusat Bahasa",
+    "language.title": "Pusat Bahasa (Language Center)",
+    "language.subtitle":
+      "Layanan tes profisiensi bahasa dan kursus pengembangan diri.",
+    "language.best_score": "Skor Terbaik",
+    "language.register": "Daftar",
+    "language.download_cert": "Unduh Sertifikat",
+
+    "nav.notifications": "Notifikasi",
+    "notif.page_title": "Pusat Notifikasi",
+    "notif.page_subtitle": "Riwayat aktivitas dan pemberitahuan terbaru Anda.",
+    "notif.clear_all": "Bersihkan Semua",
+    "notif.empty": "Anda tidak memiliki notifikasi.",
   },
 };
 
@@ -3039,11 +3081,22 @@ function switchSection(sectionId) {
     if (sectionId === "dpa-center") initDPA();
     if (sectionId === "queue-center") initQueue();
     if (sectionId === "facility-center") initFacility();
+    if (sectionId === "history-center") initHistory();
+    if (sectionId === "language-center") initLanguageCenter();
 
     if (sectionId === "dashboard" && typeof chart !== "undefined") {
       setTimeout(() => {
         chart.resize();
       }, 100);
+    }
+
+    if (sectionId === "dashboard") {
+      const user = JSON.parse(localStorage.getItem("currentUser"));
+      if (user) {
+        const firstName = user.fullName.split(" ")[0];
+        // Panggil fungsi update header yang baru kita perbaiki tadi
+        updateDashboardHeader(firstName, user);
+      }
     }
 
     if (sectionId === "codeplayground") {
@@ -3052,6 +3105,13 @@ function switchSection(sectionId) {
 
     if (sectionId === "chat") {
       setTimeout(initGroupChat, 100);
+    }
+
+    if (sectionId === "notifications-center") {
+      renderNotificationsPage();
+      markAllAsRead();
+      const titleEl = document.querySelector(".main-header h1");
+      if (titleEl) titleEl.textContent = "Notifikasi";
     }
 
     if (sectionId === "studyroom") {
@@ -4443,6 +4503,7 @@ document.addEventListener("DOMContentLoaded", function () {
       initQuickActions();
       initGpaCalculator();
       loadUserProfile();
+      initAutoLogout();
 
       window.addEventListener("resize", function () {
         if (chart) {
@@ -5841,41 +5902,28 @@ function loadUserProfile() {
 }
 
 function updateDashboardHeader(firstName, user) {
-  console.log("🔹 updateDashboardHeader() dipanggil");
-
   const titleEl = document.querySelector('h1[data-i18n="dashboard.title"]');
   const welcomeEl = document.querySelector(
     'div[data-i18n="dashboard.welcome"]'
   );
 
-  console.log("📌 Title element found:", !!titleEl);
-  console.log("📌 Welcome element found:", !!welcomeEl);
-
-  // Ambil teks dasar dari kamus bahasa saat ini
-  const baseTitle = translations[currentLanguage]["dashboard.title"];
-  const baseWelcome = translations[currentLanguage]["dashboard.welcome"];
-
-  // Atur format sesuai bahasa
-  if (titleEl) {
-    if (currentLanguage === "en") {
-      titleEl.textContent = `${firstName}'s ${baseTitle}`;
-    } else {
-      titleEl.textContent = `${baseTitle} ${firstName}`;
-    }
+  if (titleEl && user.fullName) {
+    const baseTitle = translations[currentLanguage]["dashboard.title"];
+    titleEl.textContent = `${baseTitle} ${user.fullName}`;
   }
 
-  if (welcomeEl) {
-    welcomeEl.textContent = `${baseWelcome} ${firstName}`;
+  if (welcomeEl && firstName) {
+    const baseWelcome = translations[currentLanguage]["dashboard.welcome"];
+    welcomeEl.textContent = `${baseWelcome} ${firstName},`;
   }
 
-  // Update Mobile Header - PERBAIKAN: gunakan parameter user, bukan variable global
   const mobileNameElement = document.querySelector(".mobile-name");
-  if (mobileNameElement) {
-    mobileNameElement.textContent = user.fullName; // Sekarang user sudah didefinisikan sebagai parameter
+  if (mobileNameElement && user) {
+    mobileNameElement.textContent = firstName;
   }
 
   const mobileAvatarElement = document.querySelector(".mobile-avatar");
-  if (mobileAvatarElement) {
+  if (mobileAvatarElement && user) {
     const initials = user.fullName
       .split(" ")
       .slice(0, 2)
@@ -5884,8 +5932,6 @@ function updateDashboardHeader(firstName, user) {
       .toUpperCase();
     mobileAvatarElement.textContent = initials;
   }
-
-  console.log("✅ Dashboard header updated successfully");
 }
 
 function updateSidebarProfiles(user, firstName) {
@@ -6841,7 +6887,6 @@ function populatePaymentHistory() {
   applyTranslations();
 }
 
-// Populate Payment Methods
 function populatePaymentMethods() {
   const grid = document.getElementById("paymentMethodsGrid");
   if (!grid) return;
@@ -6849,12 +6894,13 @@ function populatePaymentMethods() {
   grid.innerHTML = "";
 
   const iconMap = {
-    bank: '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/></svg>',
-    card: '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>',
+    qr: '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 3h6v6H3z"/><path d="M15 3h6v6h-6z"/><path d="M3 15h6v6H3z"/><path d="M15 15h1v1h-1z"/><path d="M16 16h1v1h-1z"/><path d="M15 17h1v1h-1z"/><path d="M17 15h1v1h-1z"/><path d="M18 16h1v1h-1z"/><path d="M17 17h1v1h-1z"/><path d="M19 15h1v1h-1z"/><path d="M20 16h1v1h-1z"/><path d="M19 17h1v1h-1z"/><path d="M15 19h6v2h-6z"/></svg>',
+    bank: '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/></svg>',
+    card: '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>',
     wallet:
-      '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/></svg>',
+      '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/></svg>',
     credit:
-      '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M7 15h.01M11 15h2"/></svg>',
+      '<svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M7 15h.01M11 15h2"/></svg>',
   };
 
   financialData.paymentMethods.forEach((method) => {
@@ -6863,12 +6909,13 @@ function populatePaymentMethods() {
 
     let detailsHTML = "";
 
-    if (method.bank) {
+    if (method.type === "qris") {
+      detailsHTML = `<div class="method-details"><p>Scan QR Code menggunakan GoPay, OVO, Dana, atau M-Banking.</p></div>`;
+    } else if (method.bank) {
       detailsHTML = `
         <div class="method-details">
           <p><strong>Bank:</strong> ${method.bank}</p>
           <p><strong>No. Rekening:</strong> ${method.accountNumber}</p>
-          <p><strong>Atas Nama:</strong> ${method.accountName}</p>
         </div>
       `;
     } else if (method.providers) {
@@ -6880,32 +6927,14 @@ function populatePaymentMethods() {
     }
 
     card.innerHTML = `
-      <div class="method-icon">${iconMap[method.icon]}</div>
+      <div class="method-icon">${iconMap[method.icon] || iconMap["card"]}</div>
       <div class="method-name">${method.name}</div>
-      <p style="color: #64748b; font-size: 0.875rem;">
-        ${
-          method.type === "bank_transfer"
-            ? "Transfer melalui ATM, Mobile Banking, atau Internet Banking"
-            : method.type === "virtual_account"
-            ? "Nomor Virtual Account khusus untuk Anda"
-            : method.type === "e_wallet"
-            ? "Pembayaran melalui dompet digital"
-            : "Pembayaran dengan kartu"
-        }
-      </p>
       ${detailsHTML}
-      <button class="pay-btn" onclick="selectPaymentMethod('${
-        method.type
-      }')" style="width: 100%; margin-top: 1rem;">
-        Pilih Metode Ini
-      </button>
     `;
-
     grid.appendChild(card);
   });
 }
 
-// Populate Scholarships
 function populateScholarships() {
   const container = document.getElementById("scholarshipsContainer");
   if (!container) return;
@@ -7018,64 +7047,50 @@ function formatDate(dateString) {
   });
 }
 
-// Action Functions
 function payBill(billId) {
   const bill = financialData.tuitionFees.find((b) => b.id === billId);
   if (!bill) return;
 
   const iconMap = {
-    bank: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/></svg>',
-    card: '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>',
+    qr: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h6v6H3z"/><path d="M15 3h6v6h-6z"/><path d="M3 15h6v6H3z"/><path d="M15 15h6v6h-6z"/></svg>',
+    bank: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M3 10h18M5 6l7-3 7 3M4 10v11M20 10v11M8 14v3M12 14v3M16 14v3"/></svg>',
+    card: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>',
     wallet:
-      '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/></svg>',
+      '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z"/></svg>',
     credit:
-      '<svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20M7 15h.01M11 15h2"/></svg>',
+      '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>',
   };
 
   const modal = document.createElement("div");
   modal.className = "payment-modal";
   modal.style.cssText = `
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10000;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.5); display: flex; align-items: center;
+    justify-content: center; z-index: 10000;
   `;
 
   modal.innerHTML = `
-    <div style="background: white; border-radius: 16px; padding: 2rem; max-width: 500px; width: 90%;">
+    <div style="background: var(--surface); color: var(--text-primary); border-radius: 16px; padding: 2rem; max-width: 500px; width: 90%; border: 1px solid var(--border);">
       <h2 style="margin-bottom: 1rem;">Pembayaran Tagihan</h2>
-      <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem;">
+      <div style="background: var(--background); padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; border: 1px solid var(--border);">
         <p style="margin: 0.5rem 0;"><strong>Jenis:</strong> ${bill.type}</p>
         <p style="margin: 0.5rem 0;"><strong>Jumlah:</strong> ${formatCurrency(
           bill.amount
         )}</p>
-        <p style="margin: 0.5rem 0;"><strong>Jatuh Tempo:</strong> ${formatDate(
-          bill.dueDate
-        )}</p>
       </div>
-      <p style="color: #64748b; margin-bottom: 1.5rem;">Pilih metode pembayaran yang Anda inginkan:</p>
+      <p style="color: var(--text-secondary); margin-bottom: 1rem;">Pilih metode pembayaran:</p>
       <div style="display: grid; gap: 0.75rem; margin-bottom: 1.5rem;">
         ${financialData.paymentMethods
           .map(
             (method) => `
           <button onclick="processPayment(${bill.id}, '${method.type}')" style="
-            padding: 1rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            background: white;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            transition: all 0.2s;
-          " onmouseover="this.style.borderColor='#2b26b9'" onmouseout="this.style.borderColor='#e2e8f0'">
-            <span style="color: #2b26b9;">${iconMap[method.icon]}</span>
+            padding: 1rem; border: 1px solid var(--border); border-radius: 8px;
+            background: var(--surface); color: var(--text-primary); cursor: pointer;
+            display: flex; align-items: center; gap: 1rem; transition: all 0.2s;
+          " onmouseover="this.style.borderColor='var(--primary)'" onmouseout="this.style.borderColor='var(--border)'">
+            <span style="color: var(--primary);">${
+              iconMap[method.icon] || iconMap["card"]
+            }</span>
             <span style="font-weight: 600;">${method.name}</span>
           </button>
         `
@@ -7083,42 +7098,174 @@ function payBill(billId) {
           .join("")}
       </div>
       <button onclick="this.closest('.payment-modal').remove()" style="
-        width: 100%;
-        padding: 0.75rem;
-        background: #e2e8f0;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: 600;
+        width: 100%; padding: 0.75rem; background: var(--background); color: var(--text-primary);
+        border: 1px solid var(--border); border-radius: 8px; cursor: pointer; font-weight: 600;
       ">Batal</button>
     </div>
   `;
-
   document.body.appendChild(modal);
 }
 
 function processPayment(billId, method) {
-  // Close modal
   document.querySelector(".payment-modal")?.remove();
 
-  // Simulate payment processing
+  // JIKA METODE ADALAH QRIS, TAMPILKAN POPUP QR
+  if (method === "qris") {
+    showQrisModal(billId);
+    return;
+  }
+
+  // JIKA BUKAN QRIS (Transfer dll), PROSES LANGSUNG SEPERTI BIASA
   showNotification("Memproses pembayaran...", "info");
-
   setTimeout(() => {
-    showNotification("Pembayaran berhasil! Menunggu verifikasi.", "success");
-
-    // Update bill status (simulation)
-    const bill = financialData.tuitionFees.find((b) => b.id === billId);
-    if (bill) {
-      bill.status = "pending";
-      populateBillsTable();
-    }
-  }, 2000);
-
-  setTimeout(() => {
-    syncAllSystems();
+    completePaymentLogic(billId, method);
   }, 2000);
 }
+
+// FUNGSI BARU: Menampilkan Modal QR Code
+function showQrisModal(billId) {
+  const bill = financialData.tuitionFees.find((b) => b.id === billId);
+  if (!bill) return;
+
+  // Buat elemen modal
+  const modal = document.createElement("div");
+  modal.className = "payment-modal";
+  modal.style.cssText = `
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6); display: flex; align-items: center;
+    justify-content: center; z-index: 10001;
+  `;
+
+  modal.innerHTML = `
+    <div style="background: white; border-radius: 16px; padding: 2.5rem; max-width: 400px; width: 90%; text-align: center; position: relative;">
+      <h2 style="color: #1e293b; margin-bottom: 0.5rem;">Scan QRIS</h2>
+      <p style="color: #64748b; margin-bottom: 1.5rem;">Scan kode di bawah ini untuk membayar</p>
+      
+      <div id="qrisContainer" style="
+          background: white; 
+          padding: 10px; 
+          display: flex; 
+          justify-content: center; 
+          align-items: center;
+          margin: 0 auto 1.5rem auto; 
+          min-height: 200px;
+      "></div>
+      
+      <div style="background: #f8fafc; padding: 1rem; border-radius: 8px; margin-bottom: 2rem;">
+        <p style="margin: 0; color: #64748b; font-size: 0.9rem;">Total Tagihan</p>
+        <h3 style="margin: 5px 0 0; color: #1e293b; font-size: 1.5rem;">${formatCurrency(
+          bill.amount
+        )}</h3>
+      </div>
+
+      <button onclick="confirmQrisPayment(${bill.id})" style="
+        width: 100%; padding: 1rem; background: #10b981; color: white;
+        border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;
+        margin-bottom: 0.5rem;
+      ">Saya Sudah Bayar</button>
+      
+      <button onclick="this.closest('.payment-modal').remove()" style="
+        width: 100%; padding: 0.8rem; background: transparent; color: #64748b;
+        border: none; cursor: pointer; font-weight: 500;
+      ">Batalkan</button>
+    </div>
+  `;
+
+  document.body.appendChild(modal);
+
+  // Generate QR Code dengan jeda sedikit agar elemen modal sudah masuk DOM
+  setTimeout(() => {
+    const container = document.getElementById("qrisContainer");
+
+    // Cek apakah container ada
+    if (!container) {
+      console.error("Error: Container QRIS tidak ditemukan.");
+      return;
+    }
+
+    // Cek apakah Library QRCode sudah terload
+    if (typeof QRCode === "undefined") {
+      container.innerHTML =
+        "<p style='color:red; font-size:0.8rem;'>Gagal memuat library QR.<br>Pastikan internet lancar.</p>";
+      return;
+    }
+
+    // Siapkan data
+    const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
+    const nim = user.nim || "MHS";
+    const qrString = `PAY:${nim}-${bill.id}-${bill.amount}`;
+
+    // Bersihkan isi container sebelum generate (mencegah duplikasi)
+    container.innerHTML = "";
+
+    // Buat QR Code
+    try {
+      new QRCode(container, {
+        text: qrString,
+        width: 180,
+        height: 180,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H,
+      });
+    } catch (err) {
+      console.error("Gagal membuat QR Code:", err);
+      container.innerHTML = "Error Generating QR";
+    }
+  }, 150);
+}
+
+// FUNGSI BARU: Konfirmasi Pembayaran QRIS
+function confirmQrisPayment(billId) {
+  document.querySelector(".payment-modal")?.remove();
+  showNotification("Memverifikasi pembayaran QRIS...", "info");
+
+  setTimeout(() => {
+    completePaymentLogic(billId, "qris");
+  }, 1500);
+}
+
+// Helper: Logika Penyelesaian Pembayaran (Dipisah agar bisa dipanggil dari QR maupun Transfer)
+function completePaymentLogic(billId, method) {
+  const bill = financialData.tuitionFees.find((b) => b.id === billId);
+  if (bill) {
+    // Update status tagihan
+    bill.status = "paid";
+    bill.paidDate = new Date().toISOString().split("T")[0];
+    bill.paymentMethod = method === "qris" ? "QRIS (Instant)" : "Transfer";
+    bill.receiptNumber = "RCP" + Date.now();
+
+    // Tambahkan ke history
+    financialData.paymentHistory.unshift({
+      id: Date.now(),
+      date: bill.paidDate,
+      description: bill.type,
+      amount: bill.amount,
+      method: bill.paymentMethod,
+      receiptNumber: bill.receiptNumber,
+      status: "verified",
+    });
+
+    // Update Summary
+    financialData.summary.totalBayar += bill.amount;
+    financialData.summary.sisaTagihan -= bill.amount;
+    if (financialData.summary.sisaTagihan <= 0)
+      financialData.summary.status = "paid";
+
+    // Simpan
+    localStorage.setItem("financialData", JSON.stringify(financialData));
+
+    // Refresh UI
+    populateBillsTable();
+    populatePaymentHistory();
+    populateFinanceSummary();
+    syncAllSystems(); // Sinkronkan dengan dashboard utama
+
+    showNotification("Pembayaran berhasil! Terima kasih.", "success");
+  }
+}
+
+window.confirmQrisPayment = confirmQrisPayment;
 
 function viewReceipt(receiptNumber) {
   const payment = financialData.paymentHistory.find(
@@ -11826,6 +11973,12 @@ function handleSkkmSubmit(e) {
 
     skkmData = currentData;
 
+    addSystemNotification(
+      "SKKM Diunggah",
+      `Sertifikat "${nameVal}" berhasil diunggah dan menunggu validasi.`,
+      "info"
+    );
+
     closeSkkmModal();
     document.getElementById("skkmForm").reset();
 
@@ -12844,9 +12997,6 @@ let lettersData = JSON.parse(localStorage.getItem("lettersData") || "[]");
 
 function initLetters() {
   if (!lettersInitialized) {
-    document
-      .getElementById("letterForm")
-      .addEventListener("submit", handleLetterSubmit);
     lettersInitialized = true;
   }
   renderLettersTable();
@@ -13324,6 +13474,11 @@ function startDPAGacha() {
     // 4. Simpan ke data user di localStorage
     const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
     user.dpa = selectedDPA;
+    addSystemNotification(
+      "Dosen Wali Ditentukan",
+      `Anda telah mendapatkan Dosen Wali: ${selectedDPA.name}`,
+      "success"
+    );
     localStorage.setItem("currentUser", JSON.stringify(user));
 
     // 5. Tampilkan Hasil
@@ -14140,3 +14295,690 @@ function resetApplicationData() {
 window.changePassword = changePassword;
 window.exportUserData = exportUserData;
 window.resetApplicationData = resetApplicationData;
+
+let logoutTimer;
+const INACTIVITY_TIME = 8 * 60 * 1000;
+
+function initAutoLogout() {
+  const activityEvents = [
+    "mousemove",
+    "keypress",
+    "click",
+    "scroll",
+    "touchstart",
+  ];
+
+  activityEvents.forEach((event) => {
+    document.addEventListener(event, resetTimer, true);
+  });
+
+  resetTimer();
+}
+
+function resetTimer() {
+  clearTimeout(logoutTimer);
+
+  logoutTimer = setTimeout(doLogout, INACTIVITY_TIME);
+}
+
+function doLogout() {
+  if (localStorage.getItem("isLoggedIn") === "true") {
+    localStorage.removeItem("isLoggedIn");
+    localStorage.removeItem("currentUser");
+
+    window.location.href = "index.html";
+  }
+}
+
+window.initAutoLogout = initAutoLogout;
+
+let notifications = JSON.parse(localStorage.getItem("notifications") || "[]");
+
+function addSystemNotification(title, message, type = "info") {
+  const newNotif = {
+    id: Date.now(),
+    title: title,
+    message: message,
+    type: type, // info, success, warning
+    time: new Date().toISOString(),
+    read: false,
+  };
+
+  notifications.unshift(newNotif); // Tambah ke paling atas
+  localStorage.setItem("notifications", JSON.stringify(notifications));
+
+  renderNotifications();
+
+  // Opsional: Munculkan juga sebagai toast popup biasa
+  showNotification(message, type);
+}
+
+function toggleNotificationPanel(type) {
+  if (type === "mobile") {
+    const notifSection = document.getElementById("notifications-center");
+
+    const isCurrentlyOpen =
+      notifSection && notifSection.style.display !== "none";
+
+    if (isCurrentlyOpen) {
+      switchSection("dashboard");
+    } else {
+      switchSection("notifications-center");
+    }
+    return;
+  }
+
+  const panelId = "desktopNotifDropdown";
+  const panel = document.getElementById(panelId);
+
+  if (panel) {
+    panel.classList.toggle("active");
+    if (panel.classList.contains("active")) {
+      markAllAsRead();
+    }
+  }
+}
+
+function renderNotifications() {
+  const list = document.getElementById("notifList");
+  const badges = document.querySelectorAll(
+    "#desktopNotifBadge, #mobileNotifBadge"
+  );
+
+  if (!list) return;
+
+  // Hitung yang belum dibaca
+  const unreadCount = notifications.filter((n) => !n.read).length;
+
+  // Update Badge
+  badges.forEach((badge) => {
+    if (unreadCount > 0) {
+      badge.style.display = "flex";
+      badge.textContent = unreadCount > 9 ? "9+" : unreadCount;
+    } else {
+      badge.style.display = "none";
+    }
+  });
+
+  // Render List
+  list.innerHTML = "";
+
+  if (notifications.length === 0) {
+    list.innerHTML = `<div class="empty-notif">Belum ada notifikasi.</div>`;
+    return;
+  }
+
+  notifications.forEach((item) => {
+    const itemEl = document.createElement("div");
+    itemEl.className = `notif-item ${item.read ? "" : "unread"}`;
+
+    // Ikon berdasarkan tipe
+    let iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`;
+    if (item.type === "success")
+      iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>`;
+    if (item.type === "warning")
+      iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`;
+
+    // Format Waktu (misal: "Baru saja", "5 menit yang lalu")
+    const timeStr = timeAgo(new Date(item.time));
+
+    itemEl.innerHTML = `
+      <div class="notif-icon ${item.type}">${iconSvg}</div>
+      <div class="notif-content">
+        <h4>${item.title}</h4>
+        <p>${item.message}</p>
+        <span class="notif-time">${timeStr}</span>
+      </div>
+    `;
+    list.appendChild(itemEl);
+  });
+}
+
+function markAllAsRead() {
+  notifications.forEach((n) => (n.read = true));
+  localStorage.setItem("notifications", JSON.stringify(notifications));
+  renderNotifications(); // Update badge jadi hilang
+}
+
+function clearNotifications() {
+  if (confirm("Hapus semua notifikasi?")) {
+    notifications = [];
+    localStorage.setItem("notifications", JSON.stringify(notifications));
+    renderNotifications();
+  }
+}
+
+// Helper: Time Ago
+function timeAgo(date) {
+  const seconds = Math.floor((new Date() - date) / 1000);
+  let interval = seconds / 31536000;
+  if (interval > 1) return Math.floor(interval) + " tahun lalu";
+  interval = seconds / 2592000;
+  if (interval > 1) return Math.floor(interval) + " bulan lalu";
+  interval = seconds / 86400;
+  if (interval > 1) return Math.floor(interval) + " hari lalu";
+  interval = seconds / 3600;
+  if (interval > 1) return Math.floor(interval) + " jam lalu";
+  interval = seconds / 60;
+  if (interval > 1) return Math.floor(interval) + " menit lalu";
+  return "Baru saja";
+}
+
+// Init saat load
+document.addEventListener("DOMContentLoaded", () => {
+  renderNotifications();
+});
+
+// Expose global
+window.addSystemNotification = addSystemNotification;
+window.toggleNotificationPanel = toggleNotificationPanel;
+window.clearNotifications = clearNotifications;
+
+const academicHistory = {
+  1: {
+    ips: 3.5,
+    sks: 20,
+    courses: [
+      { code: "TI101", name: "Pengantar TI", sks: 3, grade: "A", bobot: 4.0 },
+      {
+        code: "TI102",
+        name: "Algoritma Dasar",
+        sks: 4,
+        grade: "A-",
+        bobot: 3.75,
+      },
+      {
+        code: "UM101",
+        name: "Bahasa Inggris",
+        sks: 2,
+        grade: "B+",
+        bobot: 3.5,
+      },
+      { code: "UM102", name: "Agama", sks: 2, grade: "A", bobot: 4.0 },
+      { code: "TI103", name: "Kalkulus 1", sks: 3, grade: "B", bobot: 3.0 },
+      { code: "TI104", name: "Fisika Dasar", sks: 3, grade: "B", bobot: 3.0 },
+      {
+        code: "TI105",
+        name: "Logika Informatika",
+        sks: 3,
+        grade: "A",
+        bobot: 4.0,
+      },
+    ],
+  },
+  2: {
+    ips: 3.25,
+    sks: 21,
+    courses: [
+      { code: "TI201", name: "Struktur Data", sks: 4, grade: "B+", bobot: 3.5 },
+      {
+        code: "TI202",
+        name: "Arsitektur Komputer",
+        sks: 3,
+        grade: "B",
+        bobot: 3.0,
+      },
+      {
+        code: "TI203",
+        name: "Aljabar Linear",
+        sks: 3,
+        grade: "C+",
+        bobot: 2.5,
+      },
+      { code: "UM202", name: "Pancasila", sks: 2, grade: "A", bobot: 4.0 },
+      { code: "TI204", name: "Statistika", sks: 3, grade: "A-", bobot: 3.75 },
+      { code: "TI205", name: "Basis Data 1", sks: 3, grade: "A", bobot: 4.0 },
+      {
+        code: "TI206",
+        name: "Pemrograman Web 1",
+        sks: 3,
+        grade: "B+",
+        bobot: 3.5,
+      },
+    ],
+  },
+  3: {
+    ips: 3.6,
+    sks: 22,
+    courses: [
+      {
+        code: "TI301",
+        name: "Pemrograman Web 2",
+        sks: 4,
+        grade: "A",
+        bobot: 4.0,
+      },
+      {
+        code: "TI302",
+        name: "Jaringan Komputer",
+        sks: 3,
+        grade: "A-",
+        bobot: 3.75,
+      },
+      {
+        code: "TI303",
+        name: "Sistem Operasi",
+        sks: 3,
+        grade: "B+",
+        bobot: 3.5,
+      },
+      {
+        code: "TI304",
+        name: "Analisis Algoritma",
+        sks: 3,
+        grade: "B",
+        bobot: 3.0,
+      },
+      {
+        code: "TI305",
+        name: "Kecerdasan Buatan",
+        sks: 3,
+        grade: "A",
+        bobot: 4.0,
+      },
+      {
+        code: "TI306",
+        name: "Interaksi Manusia Komputer",
+        sks: 3,
+        grade: "A",
+        bobot: 4.0,
+      },
+      {
+        code: "UM301",
+        name: "Kewirausahaan",
+        sks: 3,
+        grade: "A-",
+        bobot: 3.75,
+      },
+    ],
+  },
+  4: {
+    ips: "Running", // Semester ini
+    sks: 13,
+    courses: [], // Ambil dari attendanceData
+  },
+};
+
+let historyInitialized = false;
+let historyChart = null;
+
+function initHistory() {
+  if (!historyInitialized) {
+    initHistoryChart();
+    historyInitialized = true;
+  }
+  loadSemesterData(4); // Load semester saat ini
+}
+
+function loadSemesterData(semester) {
+  const list = document.getElementById("khsList");
+  const title = document.getElementById("khsTitle");
+  const ipsEl = document.getElementById("khsIps");
+  const sksEl = document.getElementById("khsSks");
+
+  list.innerHTML = "";
+
+  let data = academicHistory[semester];
+  let courses = data.courses;
+
+  // Jika semester 4, ambil data live dari attendanceData
+  if (semester == 4) {
+    courses = Object.values(attendanceData).map((c) => ({
+      code: c.code,
+      name: c.name,
+      sks: c.credits,
+      grade: "-", // Belum ada nilai final
+      bobot: "0.0",
+    }));
+    title.textContent = "Kartu Studi Semester 4 (Berjalan)";
+    ipsEl.textContent = "-";
+  } else {
+    title.textContent = `Hasil Studi Semester ${semester}`;
+    ipsEl.textContent = data.ips;
+  }
+
+  sksEl.textContent = courses.reduce((acc, curr) => acc + curr.sks, 0);
+
+  courses.forEach((course) => {
+    const row = document.createElement("div");
+    row.className = "khs-row";
+    row.innerHTML = `
+      <div data-label="Kode">${course.code}</div>
+      <div data-label="Mata Kuliah"><b>${course.name}</b></div>
+      <div data-label="SKS" class="center">${course.sks}</div>
+      <div data-label="Nilai" class="center grade">${course.grade}</div>
+      <div data-label="Bobot" class="center">${course.bobot}</div>
+    `;
+    list.appendChild(row);
+  });
+}
+
+function initHistoryChart() {
+  const ctx = document.getElementById("gpaTrendChart").getContext("2d");
+
+  // Data IPK per semester
+  const labels = ["Sem 1", "Sem 2", "Sem 3", "Sem 4 (Est)"];
+  const dataPoints = [3.5, 3.25, 3.6, 3.42]; // 3.42 adalah IPK Kumulatif saat ini
+
+  historyChart = new Chart(ctx, {
+    type: "line",
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: "Indeks Prestasi (IP)",
+          data: dataPoints,
+          borderColor: "#2563eb",
+          backgroundColor: "rgba(37, 99, 235, 0.1)",
+          borderWidth: 3,
+          tension: 0.3,
+          fill: true,
+          pointBackgroundColor: "#ffffff",
+          pointBorderColor: "#2563eb",
+          pointRadius: 6,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          min: 0,
+          max: 4.0,
+          grid: { color: "rgba(0,0,0,0.05)" },
+        },
+      },
+      plugins: {
+        legend: { display: false },
+      },
+    },
+  });
+}
+
+function printKHS() {
+  window.print();
+}
+
+window.initHistory = initHistory;
+window.loadSemesterData = loadSemesterData;
+window.printKHS = printKHS;
+
+const languageData = {
+  tests: [
+    {
+      id: 1,
+      name: "EPrT (English Proficiency Test)",
+      type: "Tes Wajib",
+      price: 150000,
+      dates: ["2025-12-10", "2025-12-24"],
+      icon: "toefl",
+    },
+    {
+      id: 2,
+      name: "TOEFL ITP Prediction",
+      type: "Sertifikasi",
+      price: 350000,
+      dates: ["2025-12-15"],
+      icon: "toefl",
+    },
+    {
+      id: 3,
+      name: "JLPT N5 Simulation",
+      type: "Simulasi",
+      price: 75000,
+      dates: ["2025-12-20"],
+      icon: "japan",
+    },
+  ],
+  courses: [
+    {
+      id: 4,
+      name: "English Conversation Club",
+      type: "Short Course",
+      price: 250000,
+      meetings: "8x Pertemuan",
+      icon: "speak",
+    },
+    {
+      id: 5,
+      name: "Basic Japanese (N5)",
+      type: "Regular",
+      price: 500000,
+      meetings: "12x Pertemuan",
+      icon: "japan",
+    },
+  ],
+  history: [
+    {
+      id: 101,
+      name: "EPrT (English Proficiency Test)",
+      date: "2024-06-15",
+      score: 480,
+      status: "Lulus",
+    },
+    {
+      id: 102,
+      name: "EPrT (English Proficiency Test)",
+      date: "2025-01-10",
+      score: 550,
+      status: "Lulus",
+    },
+  ],
+};
+
+let langInitialized = false;
+
+function initLanguageCenter() {
+  if (!langInitialized) {
+    document
+      .getElementById("langTestForm")
+      .addEventListener("submit", handleLangSubmit);
+    langInitialized = true;
+  }
+
+  // Update Skor Terbaik di Header
+  const maxScore = Math.max(...languageData.history.map((h) => h.score), 0);
+  document.getElementById("bestToeflScore").textContent = maxScore;
+
+  filterLang("test");
+}
+
+function filterLang(type) {
+  document
+    .querySelectorAll(".lang-tab-btn")
+    .forEach((btn) => btn.classList.remove("active"));
+  event.target.classList.add("active");
+
+  const container = document.getElementById("langContent");
+  container.innerHTML = "";
+
+  if (type === "history") {
+    renderLangHistory(container);
+  } else if (type === "course") {
+    renderLangGrid(container, languageData.courses, "course");
+  } else {
+    renderLangGrid(container, languageData.tests, "test");
+  }
+}
+
+function renderLangGrid(container, items, mode) {
+  const grid = document.createElement("div");
+  grid.className = "lang-grid";
+
+  items.forEach((item) => {
+    const card = document.createElement("div");
+    card.className = "lang-card";
+
+    const icon = getLangIcon(item.icon);
+    const price = "Rp " + item.price.toLocaleString("id-ID");
+    const metaInfo = mode === "test" ? "Jadwal Tersedia" : item.meetings;
+    const btnText =
+      translations[currentLanguage]["language.register"] || "Daftar";
+
+    card.innerHTML = `
+      <div class="lang-card-header">
+        <div class="lang-icon">${icon}</div>
+        <span class="lang-type">${item.type}</span>
+      </div>
+      <h3 class="lang-title">${item.name}</h3>
+      <p class="lang-desc">Tingkatkan kemampuan bahasa Anda dengan program ini.</p>
+      <div class="lang-meta">
+        <span>${metaInfo}</span>
+        <span class="lang-price">${price}</span>
+      </div>
+      <button class="lang-btn" onclick="openLangModal(${item.id}, '${mode}')">
+        ${btnText}
+      </button>
+    `;
+    grid.appendChild(card);
+  });
+  container.appendChild(grid);
+}
+
+function renderLangHistory(container) {
+  const list = document.createElement("div");
+  list.style.display = "flex";
+  list.style.flexDirection = "column";
+
+  // Urutkan dari terbaru
+  const sortedHistory = [...languageData.history].sort(
+    (a, b) => new Date(b.date) - new Date(a.date)
+  );
+
+  sortedHistory.forEach((item) => {
+    const el = document.createElement("div");
+    el.className = "lang-history-item";
+    el.innerHTML = `
+      <div class="lang-hist-info">
+        <h4>${item.name}</h4>
+        <span class="lang-hist-date">Tanggal: ${item.date} • Status: <span style="color:var(--success)">${item.status}</span></span>
+      </div>
+      <div style="display:flex; align-items:center; gap:1rem;">
+        <div class="lang-hist-score">
+          <span class="score-val">${item.score}</span>
+          <span class="score-label">Score</span>
+        </div>
+        <button class="lang-btn outline" style="padding:0.5rem;" title="Download Sertifikat" onclick="downloadLangCert('${item.name}')">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </button>
+      </div>
+    `;
+    list.appendChild(el);
+  });
+  container.appendChild(list);
+}
+
+function getLangIcon(type) {
+  if (type === "japan")
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4" fill="currentColor" fill-opacity="0.2"/></svg>`;
+  if (type === "speak")
+    return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`;
+}
+
+function openLangModal(id, mode) {
+  const db = mode === "test" ? languageData.tests : languageData.courses;
+  const item = db.find((i) => i.id === id);
+  if (!item) return;
+
+  document.getElementById("langTestId").value = id;
+  document.getElementById("langTestName").textContent = item.name;
+  document.getElementById("langTestPrice").textContent =
+    "Rp " + item.price.toLocaleString("id-ID");
+
+  const dateSelect = document.getElementById("langTestDate");
+  dateSelect.innerHTML = "";
+
+  if (item.dates) {
+    item.dates.forEach((d) => {
+      const opt = document.createElement("option");
+      opt.value = d;
+      opt.textContent = d;
+      dateSelect.appendChild(opt);
+    });
+  } else {
+    const opt = document.createElement("option");
+    opt.textContent = "Jadwal menyusul";
+    dateSelect.appendChild(opt);
+  }
+
+  const modal = document.getElementById("langTestModal");
+  modal.style.display = "flex";
+  setTimeout(() => modal.classList.add("active"), 10);
+}
+
+function closeLangModal() {
+  const modal = document.getElementById("langTestModal");
+  modal.classList.remove("active");
+  setTimeout(() => (modal.style.display = "none"), 300);
+}
+
+function handleLangSubmit(e) {
+  e.preventDefault();
+  closeLangModal();
+  showNotification(
+    "Pendaftaran berhasil! Silakan selesaikan pembayaran.",
+    "success"
+  );
+}
+
+function downloadLangCert(name) {
+  showNotification("Mengunduh sertifikat " + name + "...", "info");
+}
+
+window.filterLang = filterLang;
+window.openLangModal = openLangModal;
+window.closeLangModal = closeLangModal;
+window.handleLangSubmit = handleLangSubmit;
+window.downloadLangCert = downloadLangCert;
+
+function renderNotificationsPage() {
+  const container = document.getElementById("fullPageNotifList");
+  if (!container) return;
+
+  container.innerHTML = "";
+
+  if (notifications.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 4rem; color: var(--text-secondary);">
+        <div style="font-size: 4rem; margin-bottom: 1rem;">📭</div>
+        <p data-i18n="notif.empty">Tidak ada notifikasi.</p>
+      </div>
+    `;
+    applyTranslations(); // Agar teks kosong diterjemahkan
+    return;
+  }
+
+  notifications.forEach((item) => {
+    const itemEl = document.createElement("div");
+    itemEl.className = `notif-page-item ${item.read ? "" : "unread"}`;
+
+    // Tentukan Ikon
+    let iconType = "info";
+    let iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+
+    if (item.type === "success") {
+      iconType = "success";
+      iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>`;
+    } else if (item.type === "warning") {
+      iconType = "warning";
+      iconSvg = `<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>`;
+    }
+
+    const timeStr = timeAgo(new Date(item.time));
+
+    itemEl.innerHTML = `
+      <div class="notif-page-icon ${iconType}">
+        ${iconSvg}
+      </div>
+      <div class="notif-page-content">
+        <h4>${item.title}</h4>
+        <p>${item.message}</p>
+        <span class="notif-page-time">${timeStr}</span>
+      </div>
+    `;
+
+    container.appendChild(itemEl);
+  });
+}
