@@ -8318,7 +8318,7 @@ async function initGroupChat() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...msgData,
-          // socketId: currentSocketId,
+          socketId: currentSocketId,
         }),
       });
 
