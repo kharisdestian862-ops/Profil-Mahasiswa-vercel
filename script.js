@@ -8274,6 +8274,8 @@ async function initGroupChat() {
     const channel = window.pusherInstance.subscribe("campus-chat");
 
     channel.bind("new-message", function (data) {
+      const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+      const myName = currentUser ? currentUser.fullName : "Anonim";
       if (data.username !== myName) {
         renderMessage(data);
         saveMessageToLocal(data);
@@ -8316,7 +8318,7 @@ async function initGroupChat() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           ...msgData,
-          socketId: currentSocketId,
+          // socketId: currentSocketId,
         }),
       });
 
@@ -8333,7 +8335,6 @@ async function initGroupChat() {
       }
     } catch (err) {
       console.error("Gagal kirim pesan ke server:", err);
-      // Opsional: Tampilkan indikator error di pesan
     }
   }
 
