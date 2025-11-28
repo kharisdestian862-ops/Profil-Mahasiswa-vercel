@@ -8240,9 +8240,11 @@ async function initGroupChat() {
   };
   const myName = user.fullName;
 
-  // --- FUNGSI PENGIRIMAN PESAN (DIPERBAIKI) ---
+  // --- FUNGSI PENGIRIMAN PESAN (DIPERBAIKI & DIBERSIHKAN) ---
   async function sendChatMessage() {
     const text = newChatInput.value.trim();
+
+    // Validasi: Jangan kirim jika kosong
     if (!text) return;
 
     const msgData = {
@@ -8254,27 +8256,24 @@ async function initGroupChat() {
       }),
     };
 
-    // A. Render ke Layar & Bersihkan Input (LANGSUNG)
-    try {
-      renderMessage(msgData); // Munculkan bubble chat sendiri
-      newChatInput.value = ""; // Kosongkan input
-      newChatInput.focus();
+    // A. LANGSUNG RENDER & BERSIHKAN INPUT (Optimistic UI)
+    // Ini yang bikin pesan langsung "nongol" dan input jadi kosong
+    renderMessage(msgData);
+    newChatInput.value = ""; // Kosongkan input segera
+    newChatInput.focus(); // Kembalikan kursor
 
-      // Hapus pesan selamat datang jika ada
-      const welcomeMsg = chatMessages.querySelector(".welcome-message");
-      if (welcomeMsg) welcomeMsg.remove();
-    } catch (e) {
-      console.error("Error rendering:", e);
-    }
+    // Hapus pesan selamat datang jika ada
+    const welcomeMsg = chatMessages.querySelector(".welcome-message");
+    if (welcomeMsg) welcomeMsg.remove();
 
-    // B. Simpan ke LocalStorage (Aman dari Quota Exceeded)
+    // B. Simpan ke LocalStorage
     try {
       saveMessageToLocal(msgData);
     } catch (e) {
-      console.warn("LocalStorage penuh:", e);
+      console.warn("LocalStorage penuh/error:", e);
     }
 
-    // C. Kirim ke Server (Pusher)
+    // C. Kirim ke Server (Background Process)
     try {
       // Ambil socketId agar pesan tidak memantul ke diri sendiri
       const socketId = window.pusherInstance?.connection?.socket_id;
@@ -8296,7 +8295,7 @@ async function initGroupChat() {
         );
       }
     } catch (err) {
-      console.error("Gagal kirim ke server:", err);
+      console.error("Gagal kirim ke server (koneksi/backend error):", err);
     }
   }
 
@@ -8324,19 +8323,47 @@ async function initGroupChat() {
   }
 
   async function triggerAIGroupChatResponse(query) {
-    // (Biarkan logika AI seperti sebelumnya jika Anda menggunakannya)
-    // ...
+    // Logika AI tetap sama
+    try {
+      const contextData = getContextForAI(query);
+      const response = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          message: query,
+          context: contextData,
+          language: currentLanguage,
+        }),
+      });
+
+      const data = await response.json();
+      let aiResponse = "Maaf, saya tidak mengerti.";
+
+      if (data.choices && data.choices[0]) {
+        aiResponse = data.choices[0].message.content;
+      }
+
+      const aiMessageData = {
+        username: "AIDA AI",
+        message: aiResponse,
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
+      };
+
+      renderMessage(aiMessageData);
+      saveMessageToLocal(aiMessageData);
+    } catch (error) {
+      console.error("AI Error:", error);
+    }
   }
 
   // --- SETUP PUSHER (Hanya sekali) ---
   if (!window.pusherInstance && typeof Pusher !== "undefined") {
-    // GANTI KEY INI DENGAN KEY PUSHER ANDA YANG BENAR
+    // Gunakan key Anda
     window.pusherInstance = new Pusher("f13ff92cbbe2788163f8", {
       cluster: "ap1",
-    });
-
-    window.pusherInstance.connection.bind("connected", () => {
-      console.log("✅ Terhubung ke Pusher");
     });
 
     const channel = window.pusherInstance.subscribe("campus-chat");
