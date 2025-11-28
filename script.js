@@ -6025,7 +6025,6 @@ function updateDashboardHeader(firstName) {
 
   const mobileNameElement = document.querySelector(".mobile-name");
   if (mobileNameElement) {
-    // Gunakan nama lengkap sesuai permintaan Anda
     mobileNameElement.textContent = user.fullName;
   }
 
@@ -8415,21 +8414,51 @@ async function initGroupChat() {
     }
   }
 
-  function renderMessage(data) {
-    const isMe = data.username === myName;
-    const div = document.createElement("div");
+  async function sendChatMessage() {
+    const text = newChatInput.value.trim();
+    if (!text) return;
 
-    const botClass = data.username === "AIDA AI" ? "bot-message" : "";
-    div.className = `chat-bubble ${isMe ? "me" : "others"} ${botClass}`;
+    const msgData = {
+      username: myName,
+      message: text,
+      timestamp: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
+    };
 
-    div.innerHTML = `
-          ${!isMe ? `<span class="sender-name">${data.username}</span>` : ""}
-          <span class="message-content">${data.message}</span>
-          <span class="timestamp">${data.timestamp}</span>
-      `;
+    renderMessage(msgData);
+    saveMessageToLocal(msgData);
 
-    chatMessages.appendChild(div);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    newChatInput.value = "";
+
+    const welcomeMsg = chatMessages.querySelector(".welcome-message");
+    if (welcomeMsg) welcomeMsg.remove();
+
+    try {
+      const currentSocketId = window.pusherInstance?.connection?.socket_id;
+      await fetch("/api/send-chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...msgData,
+          socketId: currentSocketId,
+        }),
+      });
+
+      const tagAI = "@AIDA";
+      const tagAsdos = "@asdos";
+
+      if (text.toLowerCase().startsWith(tagAI.toLowerCase())) {
+        const question = text.substring(tagAI.length).trim();
+        await triggerAIGroupChatResponse(question);
+      } else if (text.toLowerCase().startsWith(tagAsdos.toLowerCase())) {
+        const question = text.substring(tagAsdos.length).trim();
+        await triggerAIGroupChatResponse(question);
+      }
+    } catch (err) {
+      console.error(err);
+    }
   }
 
   function saveMessageToLocal(data) {
