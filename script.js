@@ -8542,27 +8542,40 @@ function resetGroupChatInit() {
 }
 
 function clearGroupChatHistory() {
-  // Tampilkan konfirmasi
+  console.log("Clear chat history requested");
+
   const confirmClear = confirm(
-    "Apakah Anda yakin ingin menghapus semua riwayat chat lokal? (Ini tidak akan menghapus riwayat orang lain)"
+    "Apakah Anda yakin ingin menghapus semua riwayat chat lokal?\n\n" +
+      "(Ini hanya menghapus dari perangkat Anda, bukan dari server)"
   );
 
-  if (confirmClear) {
-    // 1. Hapus data dari localStorage
-    localStorage.removeItem("groupChatHistory");
+  if (!confirmClear) {
+    console.log("❌ User cancelled clear operation");
+    return;
+  }
 
-    // 2. Bersihkan tampilan chat di layar
+  try {
+    localStorage.removeItem("groupChatHistory");
+    console.log("✅ Removed groupChatHistory from localStorage");
+
     const chatMessages = document.getElementById("groupMessages");
+
     if (chatMessages) {
-      // Sisakan pesan selamat datang
       chatMessages.innerHTML = `
         <div class="system-msg welcome-message" data-i18n="chat.welcome_title">
           Riwayat obrolan telah dibersihkan.
-        </div>`;
+        </div>
+      `;
+      console.log("✅ Cleared chat messages UI");
+
+      applyTranslations();
     }
 
-    // 3. (Opsional) Tampilkan notifikasi
-    showNotification("Riwayat chat lokal berhasil dihapus!", "success");
+    showNotification("Riwayat chat berhasil dihapus!", "success");
+    console.log("✅ Chat history cleared successfully");
+  } catch (error) {
+    console.error("❌ Error clearing chat history:", error);
+    showNotification("Gagal menghapus riwayat chat", "error");
   }
 }
 
