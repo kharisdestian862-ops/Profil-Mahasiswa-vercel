@@ -13523,22 +13523,29 @@ function startDPAGacha() {
     const randomIndex = Math.floor(Math.random() * lecturersDB.length);
     const selectedDPA = lecturersDB[randomIndex];
 
-    // 4. Simpan ke data user di localStorage
     const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
     user.dpa = selectedDPA;
+    localStorage.setItem("currentUser", JSON.stringify(user));
+
+    let usersDb = JSON.parse(localStorage.getItem("users_db") || "[]");
+    const userIndex = usersDb.findIndex((u) => u.email === user.email);
+
+    if (userIndex !== -1) {
+      usersDb[userIndex].dpa = selectedDPA;
+      localStorage.setItem("users_db", JSON.stringify(usersDb));
+    }
+
     addSystemNotification(
       "Dosen Wali Ditentukan",
       `Anda telah mendapatkan Dosen Wali: ${selectedDPA.name}`,
       "success"
     );
-    localStorage.setItem("currentUser", JSON.stringify(user));
 
-    // 5. Tampilkan Hasil
     document.getElementById("dpaLoadingState").style.display = "none";
     showDPAResult(selectedDPA);
 
     showNotification("DPA berhasil ditentukan!", "success");
-  }, 3000); // 3000ms = 3 detik
+  }, 3000);
 }
 
 function showDPAResult(dpa) {
