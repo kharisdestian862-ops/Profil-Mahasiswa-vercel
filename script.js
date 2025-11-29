@@ -4503,6 +4503,7 @@ document.addEventListener("DOMContentLoaded", function () {
       let chart = initChart();
       initKRS();
       updateClassScheduleFromKRS();
+      initDPA();
       initAttendanceSystem();
       initLogout();
       initSettings();
@@ -13503,14 +13504,11 @@ const lecturersDB = [
 ];
 
 function initDPA() {
-  // 1. Cek apakah user sudah punya DPA di localStorage
   const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
 
   if (user.dpa) {
-    // Jika sudah ada, langsung tampilkan hasilnya
     showDPAResult(user.dpa);
   } else {
-    // Jika belum, tampilkan tombol Gacha
     document.getElementById("dpaEmptyState").style.display = "block";
     document.getElementById("dpaLoadingState").style.display = "none";
     document.getElementById("dpaResultState").style.display = "none";
@@ -13518,13 +13516,10 @@ function initDPA() {
 }
 
 function startDPAGacha() {
-  // 1. Ubah tampilan ke Loading
   document.getElementById("dpaEmptyState").style.display = "none";
   document.getElementById("dpaLoadingState").style.display = "block";
 
-  // 2. Simulasi proses "mencari" selama 3 detik
   setTimeout(() => {
-    // 3. Pilih dosen secara acak
     const randomIndex = Math.floor(Math.random() * lecturersDB.length);
     const selectedDPA = lecturersDB[randomIndex];
 
