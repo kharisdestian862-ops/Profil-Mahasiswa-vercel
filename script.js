@@ -3139,6 +3139,13 @@ function switchSection(sectionId) {
       updateClassScheduleFromKRS();
     }
 
+    if (sectionId === "skkm") {
+      console.log("🎯 Loading SKKM section...");
+      setTimeout(() => {
+        initSKKM();
+      }, 100);
+    }
+
     const links = document.querySelectorAll(
       ".sidebar nav a, .mobile-sidebar nav a"
     );
@@ -4663,6 +4670,9 @@ document.addEventListener("DOMContentLoaded", function () {
           switchSection("notes");
         });
       }
+
+      skkmData = JSON.parse(localStorage.getItem("skkmData") || "[]");
+      console.log("📦 Pre-loaded SKKM data:", skkmData);
 
       // Inisialisasi Kanban FAB
       const kanbanFab = document.getElementById("kanbanFab");
@@ -11882,7 +11892,10 @@ let skkmInitialized = false;
 let skkmData = [];
 
 function initSKKM() {
+  console.log("🔄 Initializing SKKM...");
+
   skkmData = JSON.parse(localStorage.getItem("skkmData") || "[]");
+  console.log("📊 Loaded SKKM data:", skkmData);
 
   if (!skkmInitialized) {
     const typeSelect = document.getElementById("skkmType");
@@ -12009,12 +12022,11 @@ function handleSkkmSubmit(e) {
       level: levelVal,
       points: pointsVal,
       status: "pending",
-      date: new Date().toLocaleDateString(),
+      date: new Date().toLocaleDateString("id-ID"), // Format konsisten
     };
 
-    let currentData = JSON.parse(localStorage.getItem("skkmData") || "[]");
-
-    const isDuplicate = currentData.some(
+    // GUNAKAN skkmData yang global untuk konsistensi
+    const isDuplicate = skkmData.some(
       (item) =>
         item.name === nameVal &&
         item.type === typeVal &&
@@ -12026,10 +12038,11 @@ function handleSkkmSubmit(e) {
       return false;
     }
 
-    currentData.push(newItem);
-    localStorage.setItem("skkmData", JSON.stringify(currentData));
+    // Tambahkan ke array global DAN localStorage
+    skkmData.push(newItem);
+    localStorage.setItem("skkmData", JSON.stringify(skkmData));
 
-    skkmData = currentData;
+    console.log("💾 Saved SKKM data:", skkmData);
 
     addSystemNotification(
       "SKKM Diunggah",
@@ -12040,12 +12053,14 @@ function handleSkkmSubmit(e) {
     closeSkkmModal();
     document.getElementById("skkmForm").reset();
 
+    // Reset form values
     const typeSelect = document.getElementById("skkmType");
     if (typeSelect) {
       typeSelect.value = "wajib";
       document.getElementById("skkmPoints").value = skkmRules["wajib"];
     }
 
+    // Render ulang dengan data terbaru
     renderSKKM();
 
     if (typeof showNotification === "function") {
