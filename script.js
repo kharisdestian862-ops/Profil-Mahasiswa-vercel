@@ -4731,12 +4731,20 @@ window.submitTask = submitTask;
 window.switchTab = switchTab;
 
 function getSchedule(input) {
+  const isKrsSubmitted =
+    localStorage.getItem("krsSubmitted_2023001") === "true";
+
+  if (!isKrsSubmitted) {
+    return "Anda belum mengisi KRS. Silakan isi KRS Online terlebih dahulu untuk melihat jadwal.";
+  }
+
   let dayToFind = "";
   if (input.includes("senin")) dayToFind = "monday";
   else if (input.includes("selasa")) dayToFind = "tuesday";
   else if (input.includes("rabu")) dayToFind = "wednesday";
   else if (input.includes("kamis")) dayToFind = "thursday";
   else if (input.includes("jumat")) dayToFind = "friday";
+  else if (input.includes("sabtu")) dayToFind = "saturday";
   else if (input.includes("hari ini")) {
     const days = [
       "sunday",
@@ -4748,44 +4756,49 @@ function getSchedule(input) {
       "saturday",
     ];
     dayToFind = days[new Date().getDay()];
-    if (dayToFind === "sunday" || dayToFind === "saturday") {
-      return translations[currentLanguage]["chat.schedule.today_off"];
-    }
   }
 
+  // 3. Jika hari ditemukan, cari jadwalnya
   if (dayToFind) {
-    const scheduleEl = document.querySelector(
+    // Cek apakah hari libur
+    if (dayToFind === "sunday")
+      return "Hari Minggu libur kuliah. Selamat istirahat!";
+
+    // Ambil data dari DOM Jadwal yang sudah ter-render
+    const dayContainer = document.querySelector(
       `.schedule-day[data-day="${dayToFind}"]`
     );
-    if (!scheduleEl)
-      return translations[currentLanguage]["chat.schedule.not_found"];
 
-    const dayName = scheduleEl.querySelector("h3").textContent;
-    let response = translations[currentLanguage][
-      "chat.schedule.header"
-    ].replace("{dayName}", dayName);
-    const classes = scheduleEl.querySelectorAll(
-      ".class-item:not(.custom-event)"
-    );
+    if (!dayContainer) return "Jadwal tidak ditemukan.";
+
+    const classes = dayContainer.querySelectorAll(".class-item");
 
     if (classes.length === 0) {
-      response += translations[currentLanguage]["chat.briefing.no_class"];
-    } else {
-      classes.forEach((item) => {
-        const time = item.querySelector(".class-time .time-start").textContent;
-        const course = item.querySelector(".class-name").textContent.trim();
-        const room = item.querySelector(".class-room").textContent;
-        response += translations[currentLanguage]["chat.schedule.item"]
-          .replace("{time}", time)
-          .replace("{course}", course)
-          .replace("{room}", room);
-      });
+      return `Tidak ada jadwal kuliah di hari ${
+        dayToFind.charAt(0).toUpperCase() + dayToFind.slice(1)
+      }.`;
     }
+
+    let response = `Jadwal untuk <b>${
+      dayToFind.charAt(0).toUpperCase() + dayToFind.slice(1)
+    }</b>:<ul>`;
+
+    classes.forEach((item) => {
+      const time =
+        item.querySelector(".time-start").textContent +
+        " - " +
+        item.querySelector(".time-end").textContent;
+      const name = item.querySelector(".class-name").textContent;
+      const room = item.querySelector(".class-room").textContent;
+
+      response += `<li><b>${name}</b><br>${time} | ${room}</li>`;
+    });
+
     response += "</ul>";
     return response;
   }
 
-  return translations[currentLanguage]["chat.schedule.prompt"];
+  return "Jadwal hari apa yang ingin Anda ketahui? (Contoh: 'jadwal senin')";
 }
 
 function getCourseList() {
