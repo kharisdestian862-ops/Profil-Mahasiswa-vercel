@@ -8218,9 +8218,13 @@ const groupChat = {
 };
 
 function initPusher() {
+  console.log("🚀 Initializing Pusher...");
+
   // Pastikan Pusher library sudah ter-load di HTML
   if (typeof Pusher === "undefined") {
-    console.error("Pusher library not loaded!");
+    console.error(
+      '❌ Pusher library not loaded! Add <script src="https://js.pusher.com/8.2.0/pusher.min.js"></script> to HTML'
+    );
     return;
   }
 
@@ -8233,72 +8237,180 @@ function initPusher() {
     forceTLS: true,
   });
 
+  console.log("✅ Pusher instance created");
+
   // Ambil Socket ID setelah koneksi
   window.pusherInstance.connection.bind("connected", function () {
-    console.log(
-      "✅ Pusher Connected! Socket ID:",
-      window.pusherInstance.connection.socket_id
-    );
+    const socketId = window.pusherInstance.connection.socket_id;
+    console.log("✅ Pusher Connected! Socket ID:", socketId);
   });
 
   // Subscribe ke Channel
   window.pusherChannelChat = window.pusherInstance.subscribe("campus-chat");
 
+  console.log("📡 Subscribing to channel: campus-chat");
+
   // Bind Event "new-message"
   window.pusherChannelChat.bind("new-message", function (data) {
-    console.log("📨 Pesan masuk:", data);
+    console.log("📨 [PUSHER EVENT] New message received:", data);
 
     // Render ke UI (jangan langsung add, cek dulu si pengirimnya)
     const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
 
+    console.log("🔍 Checking: is message from current user?");
+    console.log("   Current user:", currentUser.fullName);
+    console.log("   Message from:", data.username);
+
     // Hanya render jika bukan pesan dari user ini sendiri
     if (data.username !== currentUser.fullName) {
+      console.log("✅ Rendering message from other user");
       renderMessage(data);
       saveMessageToLocal(data);
+    } else {
+      console.log(
+        "⏭️ Skipping: message is from current user (already rendered optimistically)"
+      );
     }
   });
 
+  console.log('🎯 Event "new-message" bound to channel');
+
   // Error handling
   window.pusherInstance.connection.bind("error", function (err) {
-    console.error("❌ Pusher Error:", err);
+    console.error("❌ Pusher Connection Error:", err);
   });
+
+  console.log("✨ Pusher initialization complete!");
 }
 
 async function initGroupChat() {
+  console.log("📱 Initializing Group Chat...");
+
+  // 1. PASTIKAN Pusher sudah terinit
   if (!window.pusherInstance) {
-    console.log("Initializing Pusher...");
+    console.log("⚠️ Pusher not initialized, initializing now...");
     initPusher();
-    await new Promise((r) => setTimeout(r, 1000)); // Tunggu Pusher connect
+    await new Promise((r) => setTimeout(r, 1500)); // Tunggu Pusher connect
   }
 
   const chatMessages = document.getElementById("groupMessages");
   const chatInput = document.getElementById("groupMessageInput");
   const sendBtn = document.getElementById("sendGroupMessageBtn");
 
-  if (!chatMessages || !chatInput || !sendBtn) return;
+  console.log("🔍 DOM Elements check:");
+  console.log("   chatMessages:", !!chatMessages);
+  console.log("   chatInput:", !!chatInput);
+  console.log("   sendBtn:", !!sendBtn);
+
+  if (!chatMessages || !chatInput || !sendBtn) {
+    console.error("❌ Required DOM elements not found!");
+    return;
+  }
 
   const user = JSON.parse(localStorage.getItem("currentUser")) || {
     fullName: "Anonim",
   };
   const myName = user.fullName;
 
+  console.log("👤 Current user:", myName);
+
   // Load history dari localStorage
   const savedHistory = JSON.parse(
     localStorage.getItem("groupChatHistory") || "[]"
   );
+  console.log("📚 Loading", savedHistory.length, "messages from history");
+
   chatMessages.innerHTML = "";
   if (savedHistory.length > 0) {
     savedHistory.forEach((msg) => renderMessage(msg));
   }
 
   // 2. Setup Event Listener untuk Send
-  sendBtn.onclick = () => sendGroupMessage(chatInput, myName);
-  chatInput.onkeypress = (e) => {
+  sendBtn.onclick = async () => {
+    console.log("🎯 Send button clicked");
+    await sendGroupMessage(chatInput, myName);
+  };
+
+  chatInput.onkeypress = async (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      sendGroupMessage(chatInput, myName);
+      console.log("⌨️ Enter key pressed");
+      await sendGroupMessage(chatInput, myName);
     }
   };
+
+  console.log("✅ Group Chat initialized!");
+}
+
+window.renderMessage = renderMessage;
+window.saveMessageToLocal = saveMessageToLocal;
+window.escapeHtml = escapeHtml;
+window.initPusher = initPusher;
+window.sendGroupMessage = sendGroupMessage;
+
+async function sendGroupMessage(inputEl, senderName) {
+  const text = inputEl.value.trim();
+
+  console.log("📤 Sending message:", text);
+
+  if (!text) {
+    console.log("⚠️ Message is empty, skipping");
+    return;
+  }
+
+  // 1. Render langsung di UI (Optimistic UI)
+  const msgData = {
+    username: senderName,
+    message: text,
+    timestamp: new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+  };
+
+  console.log("🖼️ Rendering message optimistically");
+  renderMessage(msgData);
+  inputEl.value = "";
+  inputEl.focus();
+
+  // Hapus welcome message
+  const chatMessages = document.getElementById("groupMessages");
+  const welcome = chatMessages?.querySelector(".welcome-message");
+  if (welcome) welcome.remove();
+
+  // 2. Simpan ke localStorage
+  saveMessageToLocal(msgData);
+
+  // 3. Kirim ke Backend (agar Pusher broadcast ke user lain)
+  try {
+    const socketId = window.pusherInstance?.connection?.socket_id;
+
+    console.log("🌐 Sending to backend API");
+    console.log("   Socket ID:", socketId);
+
+    const response = await fetch("/api/send-chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: senderName,
+        message: text,
+        timestamp: msgData.timestamp,
+        socketId: socketId,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (result.success) {
+      console.log("✅ Message successfully sent to backend & Pusher");
+    } else {
+      console.error("❌ Backend error:", result.error);
+      showNotification("Gagal mengirim pesan", "error");
+    }
+  } catch (error) {
+    console.error("❌ Network error sending message:", error);
+    showNotification("Gagal mengirim pesan - Network Error", "error");
+  }
 }
 
 async function sendGroupMessage(inputEl, senderName) {
@@ -8352,27 +8464,71 @@ async function sendGroupMessage(inputEl, senderName) {
 }
 
 function renderMessage(data) {
+  console.log("🖼️ Attempting to render:", data);
+
+  // 1. Cari container pesan
   const chatMessages = document.getElementById("groupMessages");
-  const user = JSON.parse(localStorage.getItem("currentUser")) || {};
+
+  if (!chatMessages) {
+    console.error("❌ ERROR: Element #groupMessages tidak ditemukan!");
+    return;
+  }
+
+  // 2. Ambil data user saat ini
+  const user = JSON.parse(localStorage.getItem("currentUser") || "{}");
   const isMe = data.username === user.fullName;
 
+  console.log("👤 Current user:", user.fullName);
+  console.log("💬 Message from:", data.username);
+  console.log("🔍 Is my message?:", isMe);
+
+  // 3. Hapus welcome message jika masih ada
+  const welcome = chatMessages.querySelector(".welcome-message");
+  if (welcome) {
+    welcome.remove();
+    console.log("🗑️ Removed welcome message");
+  }
+
+  // 4. Buat elemen pesan
   const div = document.createElement("div");
   div.className = `chat-bubble ${isMe ? "me" : "others"}`;
+
+  // PENTING: Escape HTML untuk security
+  const escapedMessage = escapeHtml(data.message);
+
   div.innerHTML = `
     ${!isMe ? `<span class="sender-name">${data.username}</span>` : ""}
-    <span class="message-content">${escapeHtml(data.message)}</span>
+    <span class="message-content">${escapedMessage}</span>
     <span class="timestamp">${data.timestamp}</span>
   `;
 
+  // 5. Tambahkan ke container
   chatMessages.appendChild(div);
+
+  // 6. Scroll ke bawah
   chatMessages.scrollTop = chatMessages.scrollHeight;
+
+  console.log("✅ Message rendered successfully!");
 }
 
 function saveMessageToLocal(data) {
-  const history = JSON.parse(localStorage.getItem("groupChatHistory") || "[]");
-  history.push(data);
-  if (history.length > 100) history.shift(); // Keep max 100
-  localStorage.setItem("groupChatHistory", JSON.stringify(history));
+  try {
+    const history = JSON.parse(
+      localStorage.getItem("groupChatHistory") || "[]"
+    );
+
+    history.push(data);
+
+    // Keep max 100 messages
+    if (history.length > 100) {
+      history.shift();
+    }
+
+    localStorage.setItem("groupChatHistory", JSON.stringify(history));
+    console.log("💾 Message saved to localStorage");
+  } catch (error) {
+    console.error("❌ Error saving to localStorage:", error);
+  }
 }
 
 function escapeHtml(text) {
@@ -8381,7 +8537,6 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-// Fungsi untuk reset initialization jika needed
 function resetGroupChatInit() {
   window.groupChatInitialized = false;
 }
