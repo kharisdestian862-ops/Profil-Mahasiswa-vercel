@@ -562,7 +562,7 @@
                 <button
                   class="notif-btn"
                   onclick="toggleNotificationPanel()"
-                  title="Notifikasi"
+                  title="Pusat Notifikasi"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -585,28 +585,6 @@
                     >0</span
                   >
                 </button>
-
-                <div class="notif-dropdown" id="notifDropdown">
-                  <div class="notif-header">
-                    <h3>Notifikasi</h3>
-                    <button
-                      onclick="clearNotifications()"
-                      style="
-                        background: none;
-                        border: none;
-                        color: var(--primary);
-                        cursor: pointer;
-                        font-size: 0.8rem;
-                        font-weight: 600;
-                      "
-                    >
-                      Bersihkan
-                    </button>
-                  </div>
-                  <div class="notif-list" id="notifList">
-                    <div class="empty-notif">Tidak ada notifikasi baru</div>
-                  </div>
-                </div>
               </div>
             </header>
 
@@ -5365,7 +5343,7 @@ Jalankan tes untuk melihat hasil...
                   border: 1px solid var(--border);
                 "
               >
-                🗑️ <span data-i18n="notif.clear_all">Bersihkan Semua</span>
+                <span data-i18n="notif.clear_all">Bersihkan Semua</span>
               </button>
             </header>
 
