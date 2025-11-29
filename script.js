@@ -3104,7 +3104,10 @@ function switchSection(sectionId) {
     }
 
     if (sectionId === "chat") {
-      setTimeout(initGroupChat, 100);
+      setTimeout(() => {
+        initPusher();
+        initGroupChat();
+      }, 100);
     }
 
     if (sectionId === "notifications-center") {
@@ -8214,185 +8217,168 @@ const groupChat = {
   },
 };
 
+function initPusher() {
+  // Pastikan Pusher library sudah ter-load di HTML
+  if (typeof Pusher === "undefined") {
+    console.error("Pusher library not loaded!");
+    return;
+  }
+
+  // Enable logging untuk debug
+  Pusher.logToConsole = true;
+
+  // Inisialisasi Pusher
+  window.pusherInstance = new Pusher("f13ff92cbbe2788163f8", {
+    cluster: "ap1",
+    forceTLS: true,
+  });
+
+  // Ambil Socket ID setelah koneksi
+  window.pusherInstance.connection.bind("connected", function () {
+    console.log(
+      "✅ Pusher Connected! Socket ID:",
+      window.pusherInstance.connection.socket_id
+    );
+  });
+
+  // Subscribe ke Channel
+  window.pusherChannelChat = window.pusherInstance.subscribe("campus-chat");
+
+  // Bind Event "new-message"
+  window.pusherChannelChat.bind("new-message", function (data) {
+    console.log("📨 Pesan masuk:", data);
+
+    // Render ke UI (jangan langsung add, cek dulu si pengirimnya)
+    const currentUser = JSON.parse(localStorage.getItem("currentUser") || "{}");
+
+    // Hanya render jika bukan pesan dari user ini sendiri
+    if (data.username !== currentUser.fullName) {
+      renderMessage(data);
+      saveMessageToLocal(data);
+    }
+  });
+
+  // Error handling
+  window.pusherInstance.connection.bind("error", function (err) {
+    console.error("❌ Pusher Error:", err);
+  });
+}
+
 async function initGroupChat() {
+  if (!window.pusherInstance) {
+    console.log("Initializing Pusher...");
+    initPusher();
+    await new Promise((r) => setTimeout(r, 1000)); // Tunggu Pusher connect
+  }
+
   const chatMessages = document.getElementById("groupMessages");
   const chatInput = document.getElementById("groupMessageInput");
   const sendBtn = document.getElementById("sendGroupMessageBtn");
 
-  // 1. Cek agar tidak init berulang
-  if (window.groupChatInitialized) return;
-  window.groupChatInitialized = true;
-
-  // 2. Setup tombol hapus
-  const clearBtn = document.getElementById("clearChatBtn");
-  if (clearBtn) clearBtn.onclick = clearGroupChatHistory;
-
   if (!chatMessages || !chatInput || !sendBtn) return;
-
-  // 3. Reset Element (Clone untuk hapus event listener lama yang nyangkut)
-  const newSendBtn = sendBtn.cloneNode(true);
-  sendBtn.parentNode.replaceChild(newSendBtn, sendBtn);
-  const newChatInput = chatInput.cloneNode(true);
-  chatInput.parentNode.replaceChild(newChatInput, chatInput);
 
   const user = JSON.parse(localStorage.getItem("currentUser")) || {
     fullName: "Anonim",
   };
   const myName = user.fullName;
 
-  // --- FUNGSI PENGIRIMAN PESAN (DIPERBAIKI & DIBERSIHKAN) ---
-  async function sendChatMessage() {
-    const text = newChatInput.value.trim();
-
-    // Validasi: Jangan kirim jika kosong
-    if (!text) return;
-
-    const msgData = {
-      username: myName,
-      message: text,
-      timestamp: new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit",
-      }),
-    };
-
-    // A. LANGSUNG RENDER & BERSIHKAN INPUT (Optimistic UI)
-    // Ini yang bikin pesan langsung "nongol" dan input jadi kosong
-    renderMessage(msgData);
-    newChatInput.value = ""; // Kosongkan input segera
-    newChatInput.focus(); // Kembalikan kursor
-
-    // Hapus pesan selamat datang jika ada
-    const welcomeMsg = chatMessages.querySelector(".welcome-message");
-    if (welcomeMsg) welcomeMsg.remove();
-
-    // B. Simpan ke LocalStorage
-    try {
-      saveMessageToLocal(msgData);
-    } catch (e) {
-      console.warn("LocalStorage penuh/error:", e);
-    }
-
-    // C. Kirim ke Server (Background Process)
-    try {
-      // Ambil socketId agar pesan tidak memantul ke diri sendiri
-      const socketId = window.pusherInstance?.connection?.socket_id;
-
-      await fetch("/api/send-chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...msgData, socketId }),
-      });
-
-      // Cek Trigger AI (AIDA)
-      const tagAI = "@AIDA";
-      const tagAsdos = "@asdos";
-      if (text.toLowerCase().startsWith(tagAI.toLowerCase())) {
-        await triggerAIGroupChatResponse(text.substring(tagAI.length).trim());
-      } else if (text.toLowerCase().startsWith(tagAsdos.toLowerCase())) {
-        await triggerAIGroupChatResponse(
-          text.substring(tagAsdos.length).trim()
-        );
-      }
-    } catch (err) {
-      console.error("Gagal kirim ke server (koneksi/backend error):", err);
-    }
-  }
-
-  // --- FUNGSI BANTUAN ---
-  function renderMessage(data) {
-    const isMe = data.username === myName;
-    const div = document.createElement("div");
-    div.className = `chat-bubble ${isMe ? "me" : "others"}`;
-    div.innerHTML = `
-        ${!isMe ? `<span class="sender-name">${data.username}</span>` : ""}
-        <span class="message-content">${data.message}</span>
-        <span class="timestamp">${data.timestamp}</span>
-    `;
-    chatMessages.appendChild(div);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-  }
-
-  function saveMessageToLocal(data) {
-    const history = JSON.parse(
-      localStorage.getItem("groupChatHistory") || "[]"
-    );
-    history.push(data);
-    if (history.length > 50) history.shift();
-    localStorage.setItem("groupChatHistory", JSON.stringify(history));
-  }
-
-  async function triggerAIGroupChatResponse(query) {
-    // Logika AI tetap sama
-    try {
-      const contextData = getContextForAI(query);
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          message: query,
-          context: contextData,
-          language: currentLanguage,
-        }),
-      });
-
-      const data = await response.json();
-      let aiResponse = "Maaf, saya tidak mengerti.";
-
-      if (data.choices && data.choices[0]) {
-        aiResponse = data.choices[0].message.content;
-      }
-
-      const aiMessageData = {
-        username: "AIDA AI",
-        message: aiResponse,
-        timestamp: new Date().toLocaleTimeString([], {
-          hour: "2-digit",
-          minute: "2-digit",
-        }),
-      };
-
-      renderMessage(aiMessageData);
-      saveMessageToLocal(aiMessageData);
-    } catch (error) {
-      console.error("AI Error:", error);
-    }
-  }
-
-  // --- SETUP PUSHER (Hanya sekali) ---
-  if (!window.pusherInstance && typeof Pusher !== "undefined") {
-    // Gunakan key Anda
-    window.pusherInstance = new Pusher("f13ff92cbbe2788163f8", {
-      cluster: "ap1",
-    });
-
-    const channel = window.pusherInstance.subscribe("campus-chat");
-    channel.bind("new-message", function (data) {
-      // Hanya tampilkan pesan dari ORANG LAIN
-      if (data.username !== myName) {
-        renderMessage(data);
-        saveMessageToLocal(data);
-      }
-    });
-  }
-
-  // --- LOAD HISTORY ---
+  // Load history dari localStorage
   const savedHistory = JSON.parse(
     localStorage.getItem("groupChatHistory") || "[]"
   );
+  chatMessages.innerHTML = "";
   if (savedHistory.length > 0) {
-    chatMessages.innerHTML = "";
     savedHistory.forEach((msg) => renderMessage(msg));
   }
 
-  // --- EVENT LISTENER ---
-  newSendBtn.addEventListener("click", sendChatMessage);
-  newChatInput.addEventListener("keypress", (e) => {
+  // 2. Setup Event Listener untuk Send
+  sendBtn.onclick = () => sendGroupMessage(chatInput, myName);
+  chatInput.onkeypress = (e) => {
     if (e.key === "Enter") {
-      e.preventDefault(); // Cegah enter bikin baris baru
-      sendChatMessage();
+      e.preventDefault();
+      sendGroupMessage(chatInput, myName);
     }
-  });
+  };
+}
+
+async function sendGroupMessage(inputEl, senderName) {
+  const text = inputEl.value.trim();
+  if (!text) return;
+
+  // 1. Render langsung di UI (Optimistic UI)
+  const msgData = {
+    username: senderName,
+    message: text,
+    timestamp: new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
+  };
+
+  renderMessage(msgData);
+  inputEl.value = "";
+  inputEl.focus();
+
+  // Hapus welcome message
+  const welcome = document.querySelector(".welcome-message");
+  if (welcome) welcome.remove();
+
+  // 2. Simpan ke localStorage
+  saveMessageToLocal(msgData);
+
+  // 3. Kirim ke Backend (agar Pusher broadcast ke user lain)
+  try {
+    const socketId = window.pusherInstance?.connection?.socket_id;
+
+    const response = await fetch("/api/send-chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        username: senderName,
+        message: text,
+        timestamp: msgData.timestamp,
+        socketId: socketId, // PENTING! Agar tidak echo ke diri sendiri
+      }),
+    });
+
+    const result = await response.json();
+    if (!result.success) {
+      console.error("Failed to send message:", result.error);
+    }
+  } catch (error) {
+    console.error("Network error:", error);
+    showNotification("Gagal mengirim pesan", "error");
+  }
+}
+
+function renderMessage(data) {
+  const chatMessages = document.getElementById("groupMessages");
+  const user = JSON.parse(localStorage.getItem("currentUser")) || {};
+  const isMe = data.username === user.fullName;
+
+  const div = document.createElement("div");
+  div.className = `chat-bubble ${isMe ? "me" : "others"}`;
+  div.innerHTML = `
+    ${!isMe ? `<span class="sender-name">${data.username}</span>` : ""}
+    <span class="message-content">${escapeHtml(data.message)}</span>
+    <span class="timestamp">${data.timestamp}</span>
+  `;
+
+  chatMessages.appendChild(div);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function saveMessageToLocal(data) {
+  const history = JSON.parse(localStorage.getItem("groupChatHistory") || "[]");
+  history.push(data);
+  if (history.length > 100) history.shift(); // Keep max 100
+  localStorage.setItem("groupChatHistory", JSON.stringify(history));
+}
+
+function escapeHtml(text) {
+  const div = document.createElement("div");
+  div.textContent = text;
+  return div.innerHTML;
 }
 
 // Fungsi untuk reset initialization jika needed
