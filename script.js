@@ -11509,6 +11509,7 @@ const availableCoursesSem5 = [
     class: "A",
     schedule: "Senin, 08:00-11:30",
     quota: "35/40",
+    room: "Lab Komputer 1", // Tambahan
   },
   {
     id: "M502",
@@ -11518,6 +11519,7 @@ const availableCoursesSem5 = [
     class: "A",
     schedule: "Selasa, 13:00-15:30",
     quota: "30/40",
+    room: "Lab Jaringan", // Tambahan
   },
   {
     id: "M503",
@@ -11527,6 +11529,7 @@ const availableCoursesSem5 = [
     class: "A",
     schedule: "Rabu, 08:00-10:30",
     quota: "38/40",
+    room: "R. A-305", // Tambahan
   },
   {
     id: "M504",
@@ -11536,6 +11539,7 @@ const availableCoursesSem5 = [
     class: "B",
     schedule: "Kamis, 10:00-12:30",
     quota: "20/40",
+    room: "Lab Siber", // Tambahan
   },
   {
     id: "M505",
@@ -11545,6 +11549,7 @@ const availableCoursesSem5 = [
     class: "A",
     schedule: "Jumat, 09:00-11:30",
     quota: "32/40",
+    room: "R. B-202", // Tambahan
   },
   {
     id: "M506",
@@ -11554,6 +11559,7 @@ const availableCoursesSem5 = [
     class: "C",
     schedule: "Senin, 13:00-15:30",
     quota: "15/40",
+    room: "R. A-401", // Tambahan
   },
   {
     id: "M507",
@@ -11563,6 +11569,7 @@ const availableCoursesSem5 = [
     class: "A",
     schedule: "Sabtu, 08:00-10:00",
     quota: "40/50",
+    room: "Aula Utama", // Tambahan
   },
   {
     id: "M508",
@@ -11572,6 +11579,7 @@ const availableCoursesSem5 = [
     class: "B",
     schedule: "Selasa, 08:00-10:30",
     quota: "10/40",
+    room: "Lab Data Science", // Tambahan
   },
 ];
 
@@ -12112,6 +12120,7 @@ function updateClassScheduleFromKRS() {
     "saturday",
   ];
 
+  // 1. Bersihkan jadwal lama
   days.forEach((day) => {
     const dayContainer = document.querySelector(
       `.schedule-day[data-day="${day}"] .class-list`
@@ -12147,6 +12156,7 @@ function updateClassScheduleFromKRS() {
       );
 
       if (dayContainer) {
+        // Hapus pesan kosong jika ada
         if (dayContainer.querySelector(".empty-schedule-msg")) {
           dayContainer.innerHTML = "";
         }
@@ -12155,6 +12165,9 @@ function updateClassScheduleFromKRS() {
         classItem.className = "class-item";
         const statusText = "Upcoming";
         const statusClass = "upcoming";
+
+        // Ambil ruangan dari data course, atau default jika tidak ada
+        const roomName = course.room || "TBA";
 
         classItem.innerHTML = `
             <div class="class-time">
@@ -12165,7 +12178,7 @@ function updateClassScheduleFromKRS() {
             <div class="class-info">
               <h4 class="class-name">${course.name}</h4>
               <div class="class-details">
-                <span class="class-room">Room: A-301</span>
+                <span class="class-room">Room: ${roomName}</span>
                 <span class="class-lecturer">${course.code} • ${course.class}</span>
               </div>
             </div>
@@ -12180,6 +12193,11 @@ function updateClassScheduleFromKRS() {
   }
 
   updateScheduleSummary(myCourses.length);
+
+  // PENTING: Update Room Finder agar data ruangan baru terbaca otomatis
+  if (typeof updateRoomFinder === "function") {
+    updateRoomFinder();
+  }
 }
 
 function getDayKeyFromIndo(dayName) {
