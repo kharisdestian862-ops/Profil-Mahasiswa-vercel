@@ -4526,44 +4526,45 @@ document.addEventListener("DOMContentLoaded", function () {
       const sendBtn = document.getElementById("chatbotSendBtn");
       const scrollToBottomBtn = document.getElementById("scrollToBottomBtn");
 
+      // CARI BAGIAN INI di script.js dan GANTI:
       if (chatbotFab && messagesContainer && inputField && sendBtn) {
         chatbotFab.addEventListener("click", () => {
           switchSection("chatbot");
         });
 
-        if (scrollToBottomBtn) {
-          scrollToBottomBtn.addEventListener("click", () => {
-            messagesContainer.scrollTo({
-              top: messagesContainer.scrollHeight,
-              behavior: "smooth",
-            });
-          });
-
-          messagesContainer.addEventListener("scroll", () => {
-            const scrollFromBottom =
-              messagesContainer.scrollHeight -
-              messagesContainer.scrollTop -
-              messagesContainer.clientHeight;
-
-            if (scrollFromBottom > 150) {
-              scrollToBottomBtn.classList.add("visible");
-            } else {
-              scrollToBottomBtn.classList.remove("visible");
-            }
-          });
-        }
+        // PERBAIKI BAGIAN INI - tambahkan console.log untuk debug
+        console.log("🔧 Setting up chatbot event listeners...");
 
         const sendMessage = () => {
-          const query = inputField.value;
-          if (query.trim() === "") return;
+          const query = inputField.value.trim();
+          console.log("📤 Attempting to send message:", query);
 
+          if (query === "") {
+            console.log("⚠️ Empty message, ignoring");
+            return;
+          }
+
+          // Add user message to UI
           addMessage(query, "user");
           inputField.value = "";
 
           const loadingMessageId = addMessage("...", "bot", true);
 
+          // Get user data for context - TAMBAHKAN INI
+          const userData = JSON.parse(
+            localStorage.getItem("currentUser") || "{}"
+          );
+          const userName = userData.fullName || "Student";
+
           const contextData = getContextForAI(query);
 
+          console.log("🌐 Calling API with:", {
+            query,
+            userName,
+            language: currentLanguage,
+          });
+
+          // PERBAIKI fetch dengan error handling yang lebih baik
           fetch("/api/chat", {
             method: "POST",
             headers: {
@@ -4573,10 +4574,18 @@ document.addEventListener("DOMContentLoaded", function () {
               message: query,
               context: contextData,
               language: currentLanguage,
+              userName: userName, // KIRIM NAMA PENGGUNA
             }),
           })
-            .then((response) => response.json())
+            .then((response) => {
+              console.log("📥 API Response status:", response.status);
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+              }
+              return response.json();
+            })
             .then((data) => {
+              console.log("✅ API Response received:", data);
               removeMessage(loadingMessageId);
 
               if (data.choices && data.choices[0] && data.choices[0].message) {
@@ -4585,6 +4594,7 @@ document.addEventListener("DOMContentLoaded", function () {
               } else if (data.error) {
                 addMessage(`Error: ${data.error}`, "bot");
               } else {
+                console.error("Unexpected API response:", data);
                 addMessage(
                   "Maaf, saya tidak menerima balasan yang valid.",
                   "bot"
@@ -4592,8 +4602,8 @@ document.addEventListener("DOMContentLoaded", function () {
               }
             })
             .catch((error) => {
+              console.error("❌ Fetch error:", error);
               removeMessage(loadingMessageId);
-              console.error("Fetch error:", error);
               addMessage(
                 "Maaf, terjadi masalah koneksi ke server. Coba lagi nanti.",
                 "bot"
@@ -4601,89 +4611,32 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         };
 
-        sendBtn.addEventListener("click", sendMessage);
-        inputField.addEventListener("keypress", (e) => {
+        // PERBAIKI EVENT LISTENERS - tambahkan preventDefault dan logging
+        sendBtn.addEventListener("click", function (e) {
+          console.log("🎯 Send button clicked!");
+          e.preventDefault();
+          e.stopPropagation();
+          sendMessage();
+        });
+
+        inputField.addEventListener("keypress", function (e) {
           if (e.key === "Enter") {
+            console.log("⌨️ Enter key pressed!");
+            e.preventDefault();
             sendMessage();
           }
         });
 
-        const addMessage = (
-          message,
-          sender,
-          isLoading = false,
-          fromHistory = false
-        ) => {
-          const messagesContainer = document.getElementById("chatbotMessages");
-          if (!messagesContainer) return null;
+        // TEST: Coba klik manual untuk debug
+        console.log("✅ Chatbot event listeners setup complete");
 
-          const msgDiv = document.createElement("div");
-          msgDiv.className = `chat-message ${sender}`;
-
-          const messageId = "msg-" + Date.now();
-          msgDiv.id = messageId;
-
-          if (sender === "bot") {
-            msgDiv.classList.add("chat-text");
-            if (isLoading) {
-              msgDiv.innerHTML =
-                '<span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span>';
-              msgDiv.classList.add("loading");
-            } else {
-              const htmlMessage = convertMarkdownToHTML(message);
-              msgDiv.innerHTML = htmlMessage;
-            }
-          } else {
-            const textSpan = document.createElement("span");
-            textSpan.className = "chat-text";
-            textSpan.textContent = message;
-            msgDiv.appendChild(textSpan);
-          }
-
-          messagesContainer.appendChild(msgDiv);
-
-          if (!fromHistory) {
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-          }
-
-          return messageId;
-        };
-
-        // Helper Markdown Converter
-        function convertMarkdownToHTML(markdown) {
-          if (!markdown) return "";
-          let html = markdown;
-          html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-          html = html.replace(/\*(.*?)\*/g, "<em>$1</em>");
-          html = html.replace(/__(.*?)__/g, "<strong>$1</strong>");
-          html = html.replace(/_(.*?)_/g, "<em>$1</em>");
-          html = html.replace(/\n/g, "<br>");
-          html = html.replace(/^\s*[-*]\s+(.+)$/gm, "<li>$1</li>");
-          html = html.replace(/(<li>.*<\/li>)/s, "<ul>$1</ul>");
-          return html;
-        }
-
-        function removeMessage(messageId) {
-          const messageElement = document.getElementById(messageId);
-          if (messageElement) {
-            messageElement.remove();
-          }
-        }
-
-        const userData = JSON.parse(
-          localStorage.getItem("currentUser") || "{}"
-        );
-        const firstName = userData.fullName
-          ? userData.fullName.split(" ")[0]
-          : "Student";
-
-        const initialGreeting =
-          currentLanguage === "id"
-            ? `Halo ${firstName}! Ada yang bisa saya bantu?`
-            : `Hello ${firstName}! How can I help you?`;
-
-        messagesContainer.innerHTML = "";
-        addMessage(initialGreeting, "bot");
+        // Test jika elemen benar-benar ada
+        setTimeout(() => {
+          console.log("🔍 Element check:", {
+            sendBtn: document.getElementById("chatbotSendBtn"),
+            inputField: document.getElementById("chatbotInput"),
+          });
+        }, 1000);
       }
 
       // 4. Event Listeners Tambahan (Study Room, FABs)
