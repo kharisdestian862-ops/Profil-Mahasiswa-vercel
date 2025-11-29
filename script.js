@@ -4731,13 +4731,6 @@ window.submitTask = submitTask;
 window.switchTab = switchTab;
 
 function getSchedule(input) {
-  const isKrsSubmitted =
-    localStorage.getItem("krsSubmitted_2023001") === "true";
-
-  if (!isKrsSubmitted) {
-    return "Anda belum mengisi KRS. Silakan isi KRS Online terlebih dahulu untuk melihat jadwal.";
-  }
-
   let dayToFind = "";
   if (input.includes("senin")) dayToFind = "monday";
   else if (input.includes("selasa")) dayToFind = "tuesday";
@@ -4758,13 +4751,10 @@ function getSchedule(input) {
     dayToFind = days[new Date().getDay()];
   }
 
-  // 3. Jika hari ditemukan, cari jadwalnya
   if (dayToFind) {
-    // Cek apakah hari libur
     if (dayToFind === "sunday")
       return "Hari Minggu libur kuliah. Selamat istirahat!";
 
-    // Ambil data dari DOM Jadwal yang sudah ter-render
     const dayContainer = document.querySelector(
       `.schedule-day[data-day="${dayToFind}"]`
     );
@@ -4783,18 +4773,23 @@ function getSchedule(input) {
       dayToFind.charAt(0).toUpperCase() + dayToFind.slice(1)
     }</b>:<ul>`;
 
+    let hasClass = false;
     classes.forEach((item) => {
-      const time =
-        item.querySelector(".time-start").textContent +
-        " - " +
-        item.querySelector(".time-end").textContent;
-      const name = item.querySelector(".class-name").textContent;
-      const room = item.querySelector(".class-room").textContent;
+      const timeStart = item.querySelector(".time-start")?.textContent;
+      const timeEnd = item.querySelector(".time-end")?.textContent;
+      const name = item.querySelector(".class-name")?.textContent;
+      const room = item.querySelector(".class-room")?.textContent;
 
-      response += `<li><b>${name}</b><br>${time} | ${room}</li>`;
+      if (name && timeStart) {
+        response += `<li><b>${name}</b><br>Jam: ${timeStart} - ${timeEnd} | ${room}</li>`;
+        hasClass = true;
+      }
     });
 
     response += "</ul>";
+
+    if (!hasClass) return `Tidak ada jadwal kuliah di hari ${dayToFind}.`;
+
     return response;
   }
 
