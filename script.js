@@ -4501,6 +4501,8 @@ document.addEventListener("DOMContentLoaded", function () {
       initFAB();
       initSidebar();
       let chart = initChart();
+      initKRS();
+      updateClassScheduleFromKRS();
       initAttendanceSystem();
       initLogout();
       initSettings();
