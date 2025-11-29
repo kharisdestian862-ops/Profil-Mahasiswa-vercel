@@ -14405,29 +14405,15 @@ function addSystemNotification(title, message, type = "info") {
   showNotification(message, type);
 }
 
-function toggleNotificationPanel(type) {
-  if (type === "mobile") {
-    const notifSection = document.getElementById("notifications-center");
+function toggleNotificationPanel() {
+  const notifSection = document.getElementById("notifications-center");
 
-    const isCurrentlyOpen =
-      notifSection && notifSection.style.display !== "none";
+  const isCurrentlyOpen = notifSection && notifSection.style.display !== "none";
 
-    if (isCurrentlyOpen) {
-      switchSection("dashboard");
-    } else {
-      switchSection("notifications-center");
-    }
-    return;
-  }
-
-  const panelId = "desktopNotifDropdown";
-  const panel = document.getElementById(panelId);
-
-  if (panel) {
-    panel.classList.toggle("active");
-    if (panel.classList.contains("active")) {
-      markAllAsRead();
-    }
+  if (isCurrentlyOpen) {
+    switchSection("dashboard");
+  } else {
+    switchSection("notifications-center");
   }
 }
 
