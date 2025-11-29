@@ -3099,6 +3099,10 @@ function switchSection(sectionId) {
       }
     }
 
+    if (sectionId === "chatbot") {
+      setTimeout(initChatbotSection, 100);
+    }
+
     if (sectionId === "codeplayground") {
       setTimeout(initCodePlayground, 50);
     }
@@ -15024,4 +15028,167 @@ function renderNotificationsPage() {
 
     container.appendChild(itemEl);
   });
+}
+
+function addMessage(message, sender, isLoading = false, fromHistory = false) {
+  const messagesContainer = document.getElementById("chatbotMessages");
+  if (!messagesContainer) return null;
+
+  const msgDiv = document.createElement("div");
+  msgDiv.className = `chat-message ${sender}`;
+
+  const messageId = "msg-" + Date.now();
+  msgDiv.id = messageId;
+
+  if (sender === "bot") {
+    msgDiv.classList.add("chat-text");
+    if (isLoading) {
+      msgDiv.innerHTML =
+        '<span class="loading-dot"></span><span class="loading-dot"></span><span class="loading-dot"></span>';
+      msgDiv.classList.add("loading");
+    } else {
+      const htmlMessage = convertMarkdownToHTML(message);
+      msgDiv.innerHTML = htmlMessage;
+    }
+  } else {
+    const textSpan = document.createElement("span");
+    textSpan.className = "chat-text";
+    textSpan.textContent = message;
+    msgDiv.appendChild(textSpan);
+  }
+
+  messagesContainer.appendChild(msgDiv);
+
+  if (!fromHistory) {
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+
+  return messageId;
+}
+
+// Fungsi untuk menghapus pesan
+function removeMessage(messageId) {
+  const messageElement = document.getElementById(messageId);
+  if (messageElement) {
+    messageElement.remove();
+  }
+}
+
+// Fungsi untuk konversi markdown ke HTML
+function convertMarkdownToHTML(markdown) {
+  if (!markdown) return "";
+  let html = markdown;
+  html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+  html = html.replace(/\*(.*?)\*/g, "<em>$1</em>");
+  html = html.replace(/__(.*?)__/g, "<strong>$1</strong>");
+  html = html.replace(/_(.*?)_/g, "<em>$1</em>");
+  html = html.replace(/\n/g, "<br>");
+  html = html.replace(/^\s*[-*]\s+(.+)$/gm, "<li>$1</li>");
+  html = html.replace(/(<li>.*<\/li>)/s, "<ul>$1</ul>");
+  return html;
+}
+
+// Fungsi initChatbot yang baru
+function initChatbot() {
+  const inputField = document.getElementById("chatbotInput");
+  const sendBtn = document.getElementById("chatbotSendBtn");
+  const messagesContainer = document.getElementById("chatbotMessages");
+
+  console.log("🔄 Initializing chatbot...", {
+    inputField: !!inputField,
+    sendBtn: !!sendBtn,
+    messagesContainer: !!messagesContainer,
+  });
+
+  if (!inputField || !sendBtn || !messagesContainer) {
+    console.error("❌ Chatbot elements not found!");
+    return;
+  }
+
+  const sendMessage = () => {
+    const query = inputField.value.trim();
+    console.log("📤 Sending message:", query);
+
+    if (query === "") {
+      console.log("⚠️ Empty message, ignoring");
+      return;
+    }
+
+    // Add user message to UI
+    addMessage(query, "user");
+    inputField.value = "";
+
+    // Show loading indicator
+    const loadingMessageId = addMessage("...", "bot", true);
+
+    // Get user data for context
+    const userData = JSON.parse(localStorage.getItem("currentUser") || "{}");
+    const userName = userData.fullName || "Student";
+
+    const contextData = getContextForAI(query);
+
+    // Call API
+    fetch("/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: query,
+        context: contextData,
+        language: currentLanguage,
+        userName: userName, // Kirim nama pengguna ke API
+      }),
+    })
+      .then((response) => {
+        console.log("📥 API Response status:", response.status);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("✅ API Response data:", data);
+        removeMessage(loadingMessageId);
+
+        if (data.choices && data.choices[0] && data.choices[0].message) {
+          const aiResponse = data.choices[0].message.content;
+          addMessage(aiResponse, "bot");
+        } else if (data.error) {
+          addMessage(`Error: ${data.error}`, "bot");
+        } else {
+          addMessage("Maaf, saya tidak menerima balasan yang valid.", "bot");
+        }
+      })
+      .catch((error) => {
+        console.error("❌ Fetch error:", error);
+        removeMessage(loadingMessageId);
+        addMessage(
+          "Maaf, terjadi masalah koneksi ke server. Coba lagi nanti.",
+          "bot"
+        );
+      });
+  };
+
+  // Event Listeners dengan error handling
+  sendBtn.addEventListener("click", (e) => {
+    console.log("🎯 Send button clicked");
+    e.preventDefault();
+    sendMessage();
+  });
+
+  inputField.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+      console.log("⌨️ Enter key pressed");
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  console.log("✅ Chatbot initialized successfully");
+}
+
+// Fungsi untuk dipanggil saat section chatbot diakses
+function initChatbotSection() {
+  setTimeout(initChatbot, 100);
 }
